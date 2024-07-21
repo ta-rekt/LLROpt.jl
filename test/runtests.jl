@@ -215,6 +215,4 @@ using Test
         @assert sum(t) == sum(onrt) + sum(offrt)
         @assert sum(t) == sum(rt)
     end
-
-
 end

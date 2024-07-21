@@ -31,26 +31,11 @@ function build_mat(weighted_edges, input_edges, c::T) where T<:Any
     return Q
 end
 
-## . - -- .- .-.- . .- .-- -.- .- .- --.-.... - -.-
-export P
-function P(Q, t)
-    UDU = eigen(Q)
-    W = UDU.vectors
-    v = UDU.values
-    D = Diagonal(v)
-    P = W * exp(t * D) * inv(W)
-    return P
-end
-
-## . - -- .- .-.- . .- .-- -.- .- .- --.-.... - -.-
-# hset: vector
-export fpt
-function fpt(Q, hset, t)
-    Q_h = Q .* 1.0
-    for ri in hset
-        Q_h[ri, :] .= 0.0
-    end
-    return Q_h * P(Q_h, t)
+export init_Qs!
+function init_Qs!(m::LLROptModel)
+    m.Q_c = build_mat(m.weighted_edges, m.input_edges, m.c)
+    m.Q_cdc = build_mat(m.weighted_edges, m.input_edges, m.c + m.dc)
+    return m
 end
 
 ## . - -- .- .-.- . .- .-- -.- .- .- --.-.... - -.-
@@ -98,7 +83,6 @@ function pi_on(weighted_edges, input_edges, c, on_ind)
     return P_ss(Q)' * on_ind
 end
 
-
 ## . - -- .- .-.- . .- .-- -.- .- .- --.-.... - -.-
 export variance
 function variance(weighted_edges, input_edges, c, on_ind)
@@ -118,7 +102,6 @@ function sharpness(weighted_edges, input_edges, c, on_ind)
     return g(c) * c
 end
 
-
 ## . - -- .- .-.- . .- .-- -.- .- .- --.-.... - -.-
 export ir_acc
 function ir_acc(weighted_edges, input_edges, c, dc, on_ind)
@@ -130,48 +113,20 @@ function ir_acc(weighted_edges, input_edges, c, dc, on_ind)
     return (p_cdc - p_c)^2 * (var_cdc + var_c) / (4 * var_c * var_cdc)
 end
 
-
 ## . - -- .- .-.- . .- .-- -.- .- .- --.-.... - -.-
 function _select(M, _set, _comp)
     # TODO: check views
     _M = zeros(eltype(M), length(_set), length(_comp))
-    for (i, I) in enumerate(_set), (j, J) in enumerate(_comp)
-        _M[i, j] = M[I, J]
-    end
+    _select!(M, _M, _set, _comp)
     _M
 end
 
-# . - -- .- .-.- . .- .-- -.- .- .- --.-.... - -.-
-export ll_full
-function ll_full(weighted_edges, input_edges, c, ind_set, t_set, t_comp, idist_set)
-    # @assert length(t_set) == length(t_comp)
-    Q = build_mat(weighted_edges, input_edges, c)
-    ind_comp = ones(Int, length(ind_set)) .- ind_set
-    _set = findall(isone, ind_set)
-    _comp = findall(isone, ind_comp)
-
-    w = copy(idist_set)
-    wv = zeros(length(t_set) + length(t_comp) + 1)
-    wv[1] = log(sum(idist_set))
-    i = 2
-    for (ts, tc) in zip(t_set, t_comp)
-        R = fpt(Q, _comp, ts)
-        S = fpt(Q, _set, tc)
-        # @show Q
-        # @show _set
-        # @show S
-        _R = _select(R, _set, _comp)
-        # @show _R
-        _S = _select(S, _comp, _set)
-        # @show _S
-        # TODO: do it inline
-        w = ((w ./ sum(w))' * _R)'
-        wv[i] = log(sum(w)); i+=1
-        w = ((w ./ sum(w))' * _S)'
-        wv[i] = log(sum(w)); i+=1
+function _select!(Msrc, Mdest, _set, _comp)
+    # TODO: check views
+    for (i, I) in enumerate(_set), (j, J) in enumerate(_comp)
+        Mdest[i, j] = Msrc[I, J]
     end
-    wv
-    
+    return Mdest
 end
 
 ## . - -- .- .-.- . .- .-- -.- .- .- --.-.... - -.-
@@ -183,39 +138,6 @@ function _ddist(Q)
         _DD[ri, ci] = - Q[ri, ci]/ Q[ri, ri]
     end
     return _DD
-end
-
-# . - -- .- .-.- . .- .-- -.- .- .- --.-.... - -.-
-# TODO: Finish this shit
-export generate
-function generate(n, Q, idist)
-    s, t = zeros(Int, n), zeros(n)
-    
-    s[1] = sample(eachindex(idist), Weights(idist))
-    q = -Q[s[1], s[1]]
-
-    _DD = _ddist(Q)
-
-    for i in 1:n-1
-        si = s[i]
-        q = -Q[si, si]
-
-        # t
-        e = Exponential(1/q)
-        t[i] = rand(e)
-
-        # s        
-        _dd = _DD[si, :]
-        s[i+1] = sample(eachindex(_dd), Weights(_dd))
-    end
-
-    # t
-    si = s[end]
-    q = -Q[si, si]
-    e = Exponential(1/q)
-    t[end] = rand(e)
-
-    return s, t
 end
 
 ## . - -- .- .-.- . .- .-- -.- .- .- --.-.... - -.-
@@ -230,56 +152,3 @@ function _jump_count(s, on_ind)
     _jump_count
 end
 
-# . - -- .- .-.- . .- .-- -.- .- .- --.-.... - -.-
-export get_residence_time
-function get_residence_time(s, t, on_ind)
-    
-    jc = _jump_count(s, on_ind)
-    rt = zeros(Float64, jc)
-
-    _last_is_on = on_ind[s[1]]
-
-    ji = 1 # jump index
-    for (si, ti) in zip(s, t)
-        if (on_ind[si] ⊻ _last_is_on)
-            _last_is_on = on_ind[si]
-            ji += 1
-        end
-        rt[ji] += ti
-    end
-    # postprocess
-    s_in_on = on_ind[s[1]]
-    onrt = s_in_on ? rt[1:2:end] : rt[2:2:end]
-    offrt = s_in_on ? rt[2:2:end] : rt[1:2:end]
-    return s_in_on, rt, onrt, offrt
-end
-
-## . - -- .- .-.- . .- .-- -.- .- .- --.-.... - -.-
-function _idist0(idist, set_ind)
-    idist0 = idist[findall(set_ind)]
-    idist0 ./= sum(idist0)
-    return idist0
-end
-
-function ir_full(weighted_edges, input_edges, c, dc, on_ind, idist, n)
-    Q = build_mat(weighted_edges, input_edges, c)
-    s, t = generate(n, Q, idist)
-    s_in_on, rt, onrt, offrt = get_residence_time(s, t, on_ind)
-
-    off_ind = on_ind .⊻ true
-    _idist0_on = _idist0(idist, on_ind)
-    _idist0_off = _idist0(idist, off_ind)
-
-    if s_in_on
-        args_ll = (on_ind, onrt, offrt, _idist0_on)
-    else
-        args_ll = (off_ind, offrt, onrt, _idist0_off)
-    end
-
-    # @show args_ll
-    ll_c = ll_full(weighted_edges, input_edges, c, args_ll...)
-    ll_cdc = ll_full(weighted_edges, input_edges, c + dc, args_ll...)
-    llr = cumsum(ll_c .- ll_cdc)
-
-    return onrt, offrt, llr
-end
