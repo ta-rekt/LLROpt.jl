@@ -1,6 +1,7 @@
-using LLROpt
-using Optimization
-
+begin
+    using LLROpt
+    using Optimization
+end
 ##. - -- .- .-.- . .- .-- -.- .- .- --.-.... - -.-
 # GCMAES minimal working example with parabolic function
 # --> doesn't respect search range
@@ -23,8 +24,11 @@ let
 end 
 ##. - -- .- .-.- . .- .-- -.- .- .- --.-.... - -.-
 # Optimization minimal working example with parabolic function
-using OptimizationCMAEvolutionStrategy
-using OptimizationBBO
+begin
+    using OptimizationCMAEvolutionStrategy
+    using OptimizationGCMAES
+    using OptimizationBBO
+end
 
 function f(x, p)
     (x[1] - p[1])^2 + (x[2] - p[2])^2
@@ -33,20 +37,23 @@ end
 let 
     x0 = [0.0,0.0]
     sigma0 = 0.5
-    maxiters = 5000
+    maxiters = 50000
     lb = [0.0,0.0]
     ub = [4.0,5.0]
-    p = [2,3]
+    p = [2,3.5]
 
     optf = Optimization.OptimizationFunction(f)
     prob = Optimization.OptimizationProblem(optf, x0, p, lb=lb, ub=ub, maxiters=maxiters)
-    sol = solve(prob, BBO_adaptive_de_rand_1_bin_radiuslimited())
+    sol = solve(prob, GCMAESOpt())
     
 end 
 ##. - -- .- .-.- . .- .-- -.- .- .- --.-.... - -.-
 # Optimization MWE with ir_acc and ir_full
-using OptimizationBBO
-using JSON
+begin
+    using OptimizationBBO
+    using OptimizationGCMAES
+    using JSON
+end
 
 # IR ACC
 function ir_acc_log(logrates, args...)
@@ -82,20 +89,19 @@ function ir_full_log(logrates, args...)
 
     init!(m)
     EP = EP_ss(m.Q_c)
-    acc = 0
     ir_full!(m)
-    acc += m.llr[end] / (sum(m.rt))
+    acc = m.llr[end] / (sum(m.rt))
 
     (- acc + beta*EP, acc, EP)
 end
 
-let
+@time let
     # rate bounds
-    a = 3e-3        # um
+    a = 3e-3        # ums
     D_tf = 7.4      # um^2/s
     D_cplx = 0.1    # um^2/s
     c = 5.6         # um^-3
-    dc = 0.01 * c
+    dc = 0.1 * c
     dl_tf = 4*a*D_tf
     ub = 5
     lb = 1e-5
@@ -112,7 +118,8 @@ let
     on_ind = BitArray([0,1,0,1])
 
     # GCMAES params
-    maxiters = 5000
+    maxiters_acc = 20000
+    maxiters_full = 20000
     sigma0 = log10(ub) / 4
     x0 = (lub .+ llb) ./ 2
     we = [(u,v,r) for ((u,v),r) in zip(edges, x0)]
@@ -123,14 +130,13 @@ let
         on_ind = on_ind,
         c = c,
         dc = dc,
-        n = 10000,
+        n = 100000,
         idist = ones(4) ./ 4,
     )
     init!(m)
 
-    nbetas = 1
-    # betas = 10 .^ range(-8, stop=-3, length=nbetas)
-    betas = [1e-8]
+    betas = vcat(range(5e-4, stop=5e-5, length=10), 10 .^ range(-4.3, stop=-8, length=10))
+    # betas = [1e-8]
     results_acc = Dict{Int64, Vector{Float32}}()
     results_full = Dict{Int64, Vector{Float32}}()
 
@@ -143,7 +149,7 @@ let
         ep_acc(x) = ir_acc_log(x, args_acc...)[3]
 
         optf_acc = Optimization.OptimizationFunction(targetfun_acc)
-        prob_acc = Optimization.OptimizationProblem(optf_acc, x0, lb=llb, ub=lub, maxiters=maxiters)
+        prob_acc = Optimization.OptimizationProblem(optf_acc, x0, lb=llb, ub=lub, maxiters=maxiters_acc)
         sol_acc = solve(prob_acc, BBO_adaptive_de_rand_1_bin_radiuslimited())
 
         # FULL
@@ -153,17 +159,34 @@ let
         ep_full(x) = ir_full_log(x, args_full...)[3]
 
         optf_full = Optimization.OptimizationFunction(targetfun_full)
-        prob_full = Optimization.OptimizationProblem(optf_full, x0, lb=llb, ub=lub, maxiters=maxiters)
+        prob_full = Optimization.OptimizationProblem(optf_full, x0, lb=llb, ub=lub, maxiters=maxiters_full)
         sol_full = solve(prob_full, BBO_adaptive_de_rand_1_bin_radiuslimited())
 
-        # RESULTS
+        # # # RESULTS
         results_acc[key] = vcat(sol_acc.u, ir_acc(sol_acc.u), ep_acc(sol_acc.u))
-        results_full[key] = vcat(sol_full.u, ir_full(sol_full.u), ep_full(sol_full.u))
-
+        results_full[key] = vcat(sol_full.u, 0, ep_full(sol_full.u), 0)
     end
 
-    file1 = "output_acc.json"
-    file2 = "output_full.json"
+    m.n = 100000
+    N = 100
+
+    file1 = "data/output_acc_pareto_20240724_run2.json"
+    file2 = "data/output_full_pareto_20240724_run2.json"
+
+    # results_full = JSON.parsefile(file2)
+
+    for (key, beta) in enumerate(betas)
+        irvals = Vector{Float32}(undef, N)
+        args_full = [m, beta]
+        ir_full(x) = ir_full_log(x, args_full...)[2]
+        xopt = results_full[string(key)][1:8]
+    
+        for i in 1:N
+            irvals[i] = ir_full(xopt)
+        end
+        results_full[string(key)][9] = Statistics.mean(irvals)
+        results_full[string(key)][11] = Statistics.std(irvals)
+    end
 
     open(file1, "w") do f
         JSON.print(f, results_acc, 4)

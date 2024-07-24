@@ -7,13 +7,11 @@
     using Distributions
     using StatsBase
     using Random
-    using Optimization
-    using OptimizationGCMAES
     using Base.Threads
 end
 
 ## . - -- .- .-.- . .- .-- -.- .- .- --.-.... - -.-
-# DOING: testing multithreading
+# DOING: testing ir_full
 @time let
     # Random.seed!(123)
 
@@ -35,14 +33,11 @@ end
     )
     init!(m0)
     # models = [deepcopy(m0) for t in 1:nthreads()]
-
     # lk = ReentrantLock()
-
     # N = 1000
     acc = 0
     # @threads :static for it in 1:N
     # for it in 1:N
-
     # t = threadid()
     # m = models[t]
     
@@ -53,39 +48,11 @@ end
     # end
 
     # end
-    @show acc/N
+    # @show acc/N
     @show acc
     # N == 100 && @assert acc == 0.20647115491313528
     # N == 1000 && @assert acc == 1.7704159503081027
     nothing
-end
-
-
-## . - -- .- .-.- . .- .-- -.- .- .- --.-.... - -.-
-# DOING: testing ir_full (DEPRECATED)
-
-@time let 
-    Random.seed!(123)
-
-    global weighted_edges = [(1, 2, 0.5), (2, 1, 2.0)]
-    global input_edges = [(1, 2)]
-    global on_ind = BitArray([0, 1])
-    global c = 1.0
-    global dc = c * 1e-1
-    global n = 1000
-    global idist = ones(2) ./ 2
-    
-    N = 1000
-    acc = 0.0
-    for it in 1:N
-        # onrt, offrt, llr = ir_full(weighted_edges, input_edges, c, dc, on_ind, idist, n)
-        ir_full(weighted_edges, input_edges, c, dc, on_ind, idist, n)
-        # acc += llr[end] / (sum(onrt) + sum(offrt))
-    end
-    @show acc/N
-    @show acc
-    # @assert acc == 0.20647115491313528 # N = 100
-    # @assert acc == 1.7704159503081027 # N = 1000
 end
 
 ## . - -- .- .-.- . .- .-- -.- .- .- --.-.... - -.-
@@ -120,5 +87,43 @@ let
         JSON.print(f, dict, 4)
 
     end
+end
 
+## . - -- .- .-.- . .- .-- -.- .- .- --.-.... - -.-
+# DOING: outputting residence times to JSON
+
+@time let 
+
+    kboff = 0.0888
+    konu = 1e-5
+    kbon = 1e-5
+    koffu = 5
+    kuoff = 1e-5
+    konb = 5
+    kuon = 5
+    koffb = 1e-5
+
+    global m = LLROptModel(;
+        weighted_edges = [(1,3,kboff), 
+                          (1,2,konu), 
+                          (2,4,kbon), 
+                          (2,1,koffu), 
+                          (3,1,kuoff), 
+                          (3,4,konb), 
+                          (4,2,kuon), 
+                          (4,3,koffb)],
+        input_edges = [(1,3), (2,4)],
+        on_ind = BitArray([0,1,0,1]),
+        c = 5.6,
+        dc = 0.56,
+        n = 10000000,
+        idist = ones(4) ./ 4,
+    )
+    init!(m)
+    ir_full!(m)
+    # generate!(m)
+    # get_residence_time!(m)
+
+    @show m.llr[end] / (sum(m.rt))
+    0.5*(m.dc/m.c)^2*(m.c*kboff*kuon)/(m.c*kboff+kuon)
 end
