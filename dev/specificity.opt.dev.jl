@@ -1,139 +1,209 @@
-# import Pkg
-# Pkg.add("JSON")
-# Pkg.add("OptimizationBBO")
-# using JSON
-# using OptimizationBBO
+import Pkg
+Pkg.add("JSON")
+Pkg.add("Statistics")
+Pkg.add("Optimization")
+Pkg.add("OptimizationBBO")
+using JSON
+using Statistics
+using Optimization
+using OptimizationBBO
+using LLROpt
 
-# # IR ACC
-# function ir_acc_log(logrates, args...)
-#     edges, iedges, c, dc, on_ind, beta = args
-#     nrates = length(edges)
-#     rates = 10 .^ logrates
-#     wedges = Vector{Tuple{Int64, Int64, Float32}}(undef, nrates)
+# returns - IR_acc_mix - beta * IR_acc_pure - gamma * EP
+function target_acc(logrates, args...)
+    edges1, edges2, iedges, cr, dc, on_ind1, on_ind2, beta, gamma, w = args
+    logcw = log10(cr) + log10(w)
+    kboff, konu, kbon, koffu, kuoff, konb, kuon, koffb = logrates
+    logrates2 = [kuoff, kboff+logcw, kbon+logcw, kuon, konu, kboff, kbon, koffu, kuoff, konb, kuon, koffb, konb, koffb]
 
-#     for i in 1:nrates
-#         w1 = edges[i][1]
-#         w2 = edges[i][2]
-#         w3 = rates[i]
+    wedges1 = [(u,v,10 ^ r) for ((u,v),r) in zip(edges1, logrates)]
+    wedges2 = [(u,v,10 ^ r) for ((u,v),r) in zip(edges2, logrates2)]
 
-#         wedges[i] = (w1, w2, w3)
-#     end
+    Q1 = build_mat(wedges1, iedges, cr)
+    Q2 = build_mat(wedges2, iedges, cr)
+    EP = EP_ss(Q1)
+    ir_acc_pure = ir_acc(wedges1, iedges, cr, dc, on_ind1)
+    ir_acc_mix = ir_acc(wedges2, iedges, cr, dc, on_ind2)
 
-#     Q = build_mat(wedges, iedges, c)
-#     EP = EP_ss(Q)
-#     IR = ir_acc(wedges, iedges, c, dc, on_ind)
+    (- ir_acc_mix - beta*ir_acc_pure - gamma*EP, ir_acc_mix, ir_acc_pure, EP)
+end
 
-#     (- IR + beta*EP, IR, EP)
-# end
+# returns - IR_full_mix - beta * IR_full_pure - gamma * EP
+function target_full(logrates, args...)
+    m1, m2, beta, gamma, w = args
+    logcw = log10(m1.c) + log10(w)
+    kboff, konu, kbon, koffu, kuoff, konb, kuon, koffb = logrates
+    logrates2 = [kuoff, kboff+logcw, kbon+logcw, kuon, konu, kboff, kbon, koffu, kuoff, konb, kuon, koffb, konb, koffb]
 
-# # IR FULL
-# function ir_full_log(logrates, args...)
+    for (keyb, val) in enumerate(logrates)
+        (u,v,r) = m1.weighted_edges[keyb]
+        m1.weighted_edges[keyb] = (u,v,10 ^ val)
+    end
 
-#     m, beta = args
+    for (keyb, val) in enumerate(logrates2)
+        (u,v,r) = m2.weighted_edges[keyb]
+        m2.weighted_edges[keyb] = (u,v,10 ^ val)
+    end
 
-#     for (key, val) in enumerate(logrates)
-#         (u,v,r) = m.weighted_edges[key]
-#         m.weighted_edges[key] = (u,v,10 ^ val)
-#     end
+    init!(m1)
+    init!(m2)
+    EP = EP_ss(m1.Q_c)
+    ir_full!(m1)
+    ir_full!(m2)
+    ir_full_pure = m1.llr[end] / sum(m1.rt)
+    ir_full_mix = m2.llr[end] / sum(m2.rt)
 
-#     init!(m)
-#     EP = EP_ss(m.Q_c)
-#     ir_full!(m)
-#     acc = m.llr[end] / (sum(m.rt))
+    (- ir_full_mix - beta*ir_full_pure - gamma*EP, ir_full_mix, ir_full_pure, EP)
+end
 
-#     (- acc + beta*EP, acc, EP)
-# end
+@time let
+    a = 3e-3        # um
+    D_tf = 7.4      # um^2/s
+    D_cplx = 0.1    # um^2/s
+    w = 0.2
+    cr = 5.6         # um^-3
+    dc = 0.1 * cr
+    cw = w * cr
+    dl_tf = 4*a*D_tf
+    ub = 5
+    lb = 1e-5
+    max_ir_full = 0.5 * (dc/cr)^2 * (cr*dl_tf*ub)/(cr*dl_tf + ub)
 
-# @time let
-#     # rate bounds
-#     a = 3e-3        # ums
-#     D_tf = 7.4      # um^2/s
-#     D_cplx = 0.1    # um^2/s
-#     c = 5.6         # um^-3
-#     dc = 0.1 * c
-#     dl_tf = 4*a*D_tf
-#     ub = 5
-#     lb = 1e-5
-#     max_ir_full = 0.5 * (dc/c)^2 * c*4*a*D_tf
+    # upper bounds for pure ligand circuit
+    llb1 = ones(8) .* log10(lb)
+    lub1 = ones(8) .* log10(ub)
+    lub1[1] = log10(dl_tf)
+    lub1[3] = log10(dl_tf)
 
-#     llb = ones(8) .* log10(lb)
-#     lub = ones(8) .* log10(ub)
-#     lub[1] = log10(dl_tf)
-#     lub[3] = log10(dl_tf)
+    # upper bounds for mixed ligands circuit
+    llb2 = ones(14) .* log10(lb)
+    lub2 = ones(14) .* log10(ub)
+    lub2[6] = log10(dl_tf)
+    lub2[7] = log10(dl_tf)
 
-#     # circuit description
-#     edges = [(1,3), (1,2), (2,4), (2,1), (3,1), (3,4), (4,2), (4,3)]
-#     input_edges = [(1,3), (2,4)]
-#     on_ind = BitArray([0,1,0,1])
+    # circuit descriptions
+    edges1 = [(1,3), (1,2), (2,4), (2,1), (3,1), (3,4), (4,2), (4,3)]
+    edges2 = [(5,1), (1,5), (2,6), (6,2), (1,2), (1,3), (2,4), (2,1), (3,1), (3,4), (4,2), (4,3), (5,6), (6,5)]
+    input_edges = [(1,3), (2,4)]
+    on_ind1 = BitArray([0,1,0,1])
+    on_ind2 = BitArray([0,1,0,1,0,1])
 
-#     # GCMAES params
-#     maxiters_acc = 20000
-#     maxiters_full = 5000
-#     sigma0 = log10(ub) / 4
-#     x0 = (lub .+ llb) ./ 2
-#     we = [(u,v,r) for ((u,v),r) in zip(edges, x0)]
+    # GCMAES params
+    maxiters_acc = 20000
+    maxiters_full = 5000
+    xinit1 = (lub1 .+ llb1) ./ 2
+    xinit2 = (lub2 .+ llb2) ./ 2
+    we1 = [(u,v,r) for ((u,v),r) in zip(edges1, xinit1)]
+    we2 = [(u,v,r) for ((u,v),r) in zip(edges2, xinit2)]
+    n = 10000
 
-#     m = LLROptModel(;
-#         weighted_edges = we,
-#         input_edges = input_edges,
-#         on_ind = on_ind,
-#         c = c,
-#         dc = dc,
-#         n = 100000,
-#         idist = ones(4) ./ 4,
-#     )
-#     init!(m)
+    m1 = LLROptModel(;
+        weighted_edges = we1,
+        input_edges = input_edges,
+        on_ind = on_ind1,
+        c = cr,
+        dc = dc,
+        n = n,
+        idist = ones(4) ./ 4,
+    )
 
-#     betas = vcat(range(5e-4, stop=5e-5, length=10), 10 .^ range(-4.3, stop=-8, length=10))
-#     # betas = [1e-8]
-#     results_acc = Dict{Int64, Vector{Float32}}()
-#     results_full = Dict{Int64, Vector{Float32}}()
+    m2 = LLROptModel(;
+        weighted_edges = we2,
+        input_edges = input_edges,
+        on_ind = on_ind2,
+        c = cr,
+        dc = dc,
+        n = n,
+        idist = ones(6) ./ 6,
+    )
 
-#     for (key, beta) in enumerate(betas)
+    init!(m1)
+    init!(m2)
 
-#         # ACC
-#         args_acc = [edges, m.input_edges, c, dc, on_ind, beta]
-#         targetfun_acc(x, p) = ir_acc_log(x, args_acc...)[1]
-#         ir_acc(x) = ir_acc_log(x, args_acc...)[2]
-#         ep_acc(x) = ir_acc_log(x, args_acc...)[3]
+    betas = vcat(range(1e-1, stop=1, length=5), range(1, stop=1e1, length=5))
+    gammas = [0]  # for now
+    wvals = [3]
 
-#         optf_acc = Optimization.OptimizationFunction(targetfun_acc)
-#         prob_acc = Optimization.OptimizationProblem(optf_acc, x0, lb=llb, ub=lub, maxiters=maxiters_acc)
-#         sol_acc = solve(prob_acc, BBO_adaptive_de_rand_1_bin_radiuslimited())
+    results_acc = Dict{Int64, Dict{Int64, Dict{Int64, Vector{Float32}}}}()
+    results_full = Dict{Int64, Dict{Int64, Dict{Int64, Vector{Float32}}}}()
 
-#         # FULL
-#         args_full = [m, beta]
-#         targetfun_full(x, p) = ir_full_log(x, args_full...)[1]
-#         ir_full(x) = ir_full_log(x, args_full...)[2]
-#         ep_full(x) = ir_full_log(x, args_full...)[3]
+    for (keyb, beta) in enumerate(betas)
+        results_acc[keyb] = Dict{Int64, Dict{Int64, Vector{Float32}}}()
+        results_full[keyb] = Dict{Int64, Dict{Int64, Vector{Float32}}}()
 
-#         optf_full = Optimization.OptimizationFunction(targetfun_full)
-#         prob_full = Optimization.OptimizationProblem(optf_full, x0, lb=llb, ub=lub, maxiters=maxiters_full)
-#         sol_full = solve(prob_full, BBO_adaptive_de_rand_1_bin_radiuslimited())
+        for (keyg, gamma) in enumerate(gammas)
+            results_acc[keyb][keyg] = Dict{Int64, Vector{Float32}}()
+            results_full[keyb][keyg] = Dict{Int64, Vector{Float32}}()
 
-#         # # # RESULTS
-#         results_acc[key] = vcat(sol_acc.u, ir_acc(sol_acc.u), ep_acc(sol_acc.u))
-#         results_full[key] = vcat(sol_full.u, 0, ep_full(sol_full.u))
-#     end
+            for (keyw, w) in enumerate(wvals)
 
-#     m.n = 10000000
+                # ACC
+                args_acc = [edges1, edges2, input_edges, cr, dc, on_ind1, on_ind2, beta, gamma, w]
+                targetfun_acc(x, p) = target_acc(x, args_acc...)[1]
+                ir_acc_mix(x) = target_acc(x, args_acc...)[2]
+                ir_acc_pure(x) = target_acc(x, args_acc...)[3]
+                ep_acc(x) = target_acc(x, args_acc...)[4]
 
-#     for (key, beta) in enumerate(betas)
-#         args_full = [m, beta]
-#         ir_full(x) = ir_full_log(x, args_full...)[2]
-#         xopt = results_full[string(key)][1:8]
-#         results_full[string(key)][9] = ir_full(xopt)
-#     end
+                optf_acc = Optimization.OptimizationFunction(targetfun_acc)
+                prob_acc = Optimization.OptimizationProblem(optf_acc, xinit1, lb=llb1, ub=lub1, maxiters=maxiters_acc)
+                sol_acc = solve(prob_acc, BBO_adaptive_de_rand_1_bin_radiuslimited())
 
-#     file1 = "output_acc_specificity_20240724.json"
-#     file2 = "output_full_specificity_20240724.json"
+                # FULL
+                args_full = [m1, m2, beta, gamma, w]
+                targetfun_full(x, p) = target_full(x, args_full...)[1]
+                ir_full_mix(x) = target_full(x, args_full...)[2]
+                ir_full_pure(x) = target_full(x, args_full...)[3]
+                ep_full(x) = target_full(x, args_full...)[4]
 
-#     open(file1, "w") do f
-#         JSON.print(f, results_acc, 4)
-#     end
+                optf_full = Optimization.OptimizationFunction(targetfun_full)
+                prob_full = Optimization.OptimizationProblem(optf_full, xinit1, lb=llb1, ub=lub1, maxiters=maxiters_full)
+                sol_full = solve(prob_full, BBO_adaptive_de_rand_1_bin_radiuslimited())
 
-#     open("output_full.json", "w") do f
-#         JSON.print(f, results_full, 4)
-#     end
+                # RESULTS
+                results_acc[keyb][keyg][keyw] = vcat(sol_acc.u, ir_acc_mix(sol_acc.u), ir_acc_pure(sol_acc.u), ep_acc(sol_acc.u), beta, gamma, w)
+                results_full[keyb][keyg][keyw] = vcat(sol_full.u, 0, 0, 0, 0, ep_full(sol_full.u), beta, gamma, w)
+            end
+        end
+    end
 
-# end
+    m1.n = 100000
+    m2.n = 100000
+    N = 100
+
+    # results_full = JSON.parsefile(file2)
+
+    for (keyb, beta) in enumerate(betas)
+        for (keyg, gamma) in enumerate(gammas) 
+            for (keyw, w) in enumerate(wvals)
+                irvals_mix = Vector{Float32}(undef, N)
+                irvals_pure = Vector{Float32}(undef, N)
+                args_full = [m1, m2, beta, gamma, w]
+                ir_full_mix(x) = target_full(x, args_full...)[2]
+                ir_full_pure(x) = target_full(x, args_full...)[3]
+                xopt = results_full[keyb][keyg][keyw][1:8]
+            
+                for i in 1:N
+                    irvals_mix[i] = ir_full_mix(xopt)
+                    irvals_pure[i] = ir_full_pure(xopt)
+                end
+
+                results_full[keyb][keyg][keyw][9] = Statistics.mean(irvals_mix)
+                results_full[keyb][keyg][keyw][10] = Statistics.mean(irvals_pure)
+                results_full[keyb][keyg][keyw][11] = Statistics.std(irvals_mix)
+                results_full[keyb][keyg][keyw][12] = Statistics.std(irvals_pure)
+            end
+        end
+    end
+
+    file1 = "data/output_acc_specificity_pareto_20240725.json"
+    file2 = "data/output_full_specificity_pareto_20240725.json"
+
+    open(file1, "w") do f
+        JSON.print(f, results_acc, 4)
+    end
+
+    open(file2, "w") do f
+        JSON.print(f, results_full, 4)
+    end
+
+end

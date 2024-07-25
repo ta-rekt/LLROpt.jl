@@ -50,6 +50,8 @@ end
 ##. - -- .- .-.- . .- .-- -.- .- .- --.-.... - -.-
 # Optimization MWE with ir_acc and ir_full
 begin
+    using LLROpt
+    using Optimization
     using OptimizationBBO
     using OptimizationGCMAES
     using Statistics
@@ -118,7 +120,7 @@ end
     input_edges = [(1,3), (2,4)]
     on_ind = BitArray([0,1,0,1])
 
-    # GCMAES params
+    # Optimization params
     maxiters_acc = 20000
     maxiters_full = 20000
     sigma0 = log10(ub) / 4
@@ -136,7 +138,7 @@ end
     )
     init!(m)
 
-    betas = vcat(range(5e-4, stop=5e-5, length=10), 10 .^ range(-4.3, stop=-8, length=10))
+    betas = vcat(range(3e-4, stop=5e-5, length=5), 10 .^ range(-4.3, stop=-8, length=5))
     # betas = [1e-8]
     results_acc = Dict{Int64, Vector{Float32}}()
     results_full = Dict{Int64, Vector{Float32}}()
@@ -163,12 +165,12 @@ end
         prob_full = Optimization.OptimizationProblem(optf_full, x0, lb=llb, ub=lub, maxiters=maxiters_full)
         sol_full = solve(prob_full, BBO_adaptive_de_rand_1_bin_radiuslimited())
 
-        # # # RESULTS
+        # RESULTS
         results_acc[key] = vcat(sol_acc.u, ir_acc(sol_acc.u), ep_acc(sol_acc.u))
         results_full[key] = vcat(sol_full.u, 0, ep_full(sol_full.u), 0)
     end
 
-    m.n = 100000
+    m.n = 1000000
     N = 100
 
     file1 = "data/output_acc_pareto_20240724_run2.json"
@@ -180,13 +182,14 @@ end
         irvals = Vector{Float32}(undef, N)
         args_full = [m, beta]
         ir_full(x) = ir_full_log(x, args_full...)[2]
-        xopt = results_full[string(key)][1:8]
+        xopt = results_full[key][1:8]
     
         for i in 1:N
             irvals[i] = ir_full(xopt)
         end
-        results_full[string(key)][9] = Statistics.mean(irvals)
-        results_full[string(key)][11] = Statistics.std(irvals)
+
+        results_full[key][9] = Statistics.mean(irvals)
+        results_full[key][11] = Statistics.std(irvals)
     end
 
     open(file1, "w") do f
