@@ -52,6 +52,7 @@ end
 begin
     using OptimizationBBO
     using OptimizationGCMAES
+    using Statistics
     using JSON
 end
 
