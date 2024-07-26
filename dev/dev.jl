@@ -90,40 +90,8 @@ let
 end
 
 ## . - -- .- .-.- . .- .-- -.- .- .- --.-.... - -.-
-# DOING: outputting residence times to JSON
+# DOING: testing command-line input
 
-@time let 
-
-    kboff = 0.0888
-    konu = 1e-5
-    kbon = 1e-5
-    koffu = 5
-    kuoff = 1e-5
-    konb = 5
-    kuon = 5
-    koffb = 1e-5
-
-    global m = LLROptModel(;
-        weighted_edges = [(1,3,kboff), 
-                          (1,2,konu), 
-                          (2,4,kbon), 
-                          (2,1,koffu), 
-                          (3,1,kuoff), 
-                          (3,4,konb), 
-                          (4,2,kuon), 
-                          (4,3,koffb)],
-        input_edges = [(1,3), (2,4)],
-        on_ind = BitArray([0,1,0,1]),
-        c = 5.6,
-        dc = 0.56,
-        n = 10000000,
-        idist = ones(4) ./ 4,
-    )
-    init!(m)
-    ir_full!(m)
-    # generate!(m)
-    # get_residence_time!(m)
-
-    @show m.llr[end] / (sum(m.rt))
-    0.5*(m.dc/m.c)^2*(m.c*kboff*kuon)/(m.c*kboff+kuon)
+let
+    s = readline(stdin)
 end

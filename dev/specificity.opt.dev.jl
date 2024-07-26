@@ -14,7 +14,7 @@ function target_acc(logrates, args...)
     edges1, edges2, iedges, cr, dc, on_ind1, on_ind2, beta, gamma, w = args
     logcw = log10(cr) + log10(w)
     kboff, konu, kbon, koffu, kuoff, konb, kuon, koffb = logrates
-    logrates2 = [kuoff, kboff+logcw, kbon+logcw, kuon, konu, kboff, kbon, koffu, kuoff, konb, kuon, koffb, konb, koffb]
+    logrates2 = [kuoff+log10(gamma), kboff+logcw, kbon+logcw, kuon+log10(gamma), konu, kboff, kbon, koffu, kuoff, konb, kuon, koffb, konb, koffb]
 
     wedges1 = [(u,v,10 ^ r) for ((u,v),r) in zip(edges1, logrates)]
     wedges2 = [(u,v,10 ^ r) for ((u,v),r) in zip(edges2, logrates2)]
@@ -25,7 +25,7 @@ function target_acc(logrates, args...)
     ir_acc_pure = ir_acc(wedges1, iedges, cr, dc, on_ind1)
     ir_acc_mix = ir_acc(wedges2, iedges, cr, dc, on_ind2)
 
-    (- ir_acc_mix - beta*ir_acc_pure - gamma*EP, ir_acc_mix, ir_acc_pure, EP)
+    (- ir_acc_mix - beta*ir_acc_pure, ir_acc_mix, ir_acc_pure, EP)
 end
 
 # returns - IR_full_mix - beta * IR_full_pure - gamma * EP
@@ -33,7 +33,7 @@ function target_full(logrates, args...)
     m1, m2, beta, gamma, w = args
     logcw = log10(m1.c) + log10(w)
     kboff, konu, kbon, koffu, kuoff, konb, kuon, koffb = logrates
-    logrates2 = [kuoff, kboff+logcw, kbon+logcw, kuon, konu, kboff, kbon, koffu, kuoff, konb, kuon, koffb, konb, koffb]
+    logrates2 = [kuoff+log10(gamma), kboff+logcw, kbon+logcw, kuon+log10(gamma), konu, kboff, kbon, koffu, kuoff, konb, kuon, koffb, konb, koffb]
 
     for (keyb, val) in enumerate(logrates)
         (u,v,r) = m1.weighted_edges[keyb]
@@ -53,7 +53,7 @@ function target_full(logrates, args...)
     ir_full_pure = m1.llr[end] / sum(m1.rt)
     ir_full_mix = m2.llr[end] / sum(m2.rt)
 
-    (- ir_full_mix - beta*ir_full_pure - gamma*EP, ir_full_mix, ir_full_pure, EP)
+    (- ir_full_mix - beta*ir_full_pure, ir_full_mix, ir_full_pure, EP)
 end
 
 @time let
@@ -90,7 +90,7 @@ end
 
     # GCMAES params
     maxiters_acc = 20000
-    maxiters_full = 5000
+    maxiters_full = 500
     xinit1 = (lub1 .+ llb1) ./ 2
     xinit2 = (lub2 .+ llb2) ./ 2
     we1 = [(u,v,r) for ((u,v),r) in zip(edges1, xinit1)]
@@ -121,8 +121,8 @@ end
     init!(m2)
 
     betas = vcat(range(1e-1, stop=1, length=5), range(1, stop=1e1, length=5))
-    gammas = [0]  # for now
-    wvals = [3]
+    gammas = [1, 10]
+    wvals = [0.2, 1, 5]
 
     results_acc = Dict{Int64, Dict{Int64, Dict{Int64, Vector{Float32}}}}()
     results_full = Dict{Int64, Dict{Int64, Dict{Int64, Vector{Float32}}}}()

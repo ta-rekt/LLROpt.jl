@@ -138,7 +138,7 @@ end
     )
     init!(m)
 
-    betas = vcat(range(3e-4, stop=5e-5, length=5), 10 .^ range(-4.3, stop=-8, length=5))
+    betas = vcat(range(3e-4, stop=5e-5, length=10), 10 .^ range(-4.3, stop=-8, length=10))
     # betas = [1e-8]
     results_acc = Dict{Int64, Vector{Float32}}()
     results_full = Dict{Int64, Vector{Float32}}()

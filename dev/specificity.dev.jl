@@ -33,7 +33,10 @@ using LLROpt
     ir_full_mix = Vector{Float32}(undef, nvals)
     ir_acc_mix = Vector{Float32}(undef, nvals)
     ep_mix = Vector{Float32}(undef, nvals)
-    wvals = range(0.0001, stop=1, length=nvals)
+
+    # wvals = range(0.0001, stop=1, length=nvals)
+    wvals = [1]
+    gammas = 10 .^ range(0, 4, nvals)
 
     wedges2 = [(1,3,kboff), 
                 (1,2,konu), 
@@ -59,48 +62,49 @@ using LLROpt
     )
     init!(m2)
 
-    for (key, w) in enumerate(wvals)
+    for (keyw, w) in enumerate(wvals)
+        for (keyg, gamma) in enumerate(gammas)
 
-        cw = w*cr
-        wedges1 = [(5,1,kuoff),
-                  (1,5,cw*kboff),
-                  (2,6,cw*kbon),
-                  (6,2,kuon),
-                  (1,2,konu), 
-                  (1,3,kboff), 
-                  (2,4,kbon), 
-                  (2,1,koffu), 
-                  (3,1,kuoff), 
-                  (3,4,konb), 
-                  (4,2,kuon), 
-                  (4,3,koffb),
-                  (5,6,konb),
-                  (6,5,koffb)]
+            cw = w*cr
+            wedges1 = [(5,1,gamma*kuoff),
+                        (1,5,cw*kboff),
+                        (2,6,cw*kbon),
+                        (6,2,gamma*kuon),
+                        (1,2,konu), 
+                        (1,3,kboff), 
+                        (2,4,kbon), 
+                        (2,1,koffu), 
+                        (3,1,kuoff), 
+                        (3,4,konb), 
+                        (4,2,kuon), 
+                        (4,3,koffb),
+                        (5,6,konb),
+                        (6,5,koffb)]
 
-        m1 = LLROptModel(;
-            weighted_edges = wedges1,
-            input_edges = iedges,
-            on_ind = on_ind1,
-            c = cr,
-            dc = dc,
-            n = n,
-            idist = ones(6) ./ 6,
-        )
+            m1 = LLROptModel(;
+                weighted_edges = wedges1,
+                input_edges = iedges,
+                on_ind = on_ind1,
+                c = cr,
+                dc = dc,
+                n = n,
+                idist = ones(6) ./ 6,
+            )
 
-        init!(m1)
-        ir_full!(m1)
-        ir_full!(m2)
-        ir_full_mix[key] = m1.llr[end] / sum(m1.rt)
-        ir_full_pure[key] = m2.llr[end] / sum(m2.rt)
+            init!(m1)
+            ir_full!(m1)
+            ir_full!(m2)
+            ir_full_mix[keyg] = m1.llr[end] / sum(m1.rt)
+            ir_full_pure[keyg] = m2.llr[end] / sum(m2.rt)
 
-        Q1 = build_mat(wedges1, iedges, cr)
-        Q2 = build_mat(wedges2, iedges, cr)
-        ep_mix[key] = EP_ss(Q1)
-        ep_pure[key] = EP_ss(Q2)
+            Q1 = build_mat(wedges1, iedges, cr)
+            Q2 = build_mat(wedges2, iedges, cr)
+            ep_mix[keyg] = EP_ss(Q1)
+            ep_pure[keyg] = EP_ss(Q2)
 
-        ir_acc_mix[key] = ir_acc(wedges1, iedges, cr, dc, on_ind1)
-        ir_acc_pure[key] = ir_acc(wedges2, iedges, cr, dc, on_ind2)
-
+            ir_acc_mix[keyg] = ir_acc(wedges1, iedges, cr, dc, on_ind1)
+            ir_acc_pure[keyg] = ir_acc(wedges2, iedges, cr, dc, on_ind2)
+        end
     end
 
     output = Dict([("ir_full_mix", ir_full_mix),
