@@ -115,7 +115,7 @@ using LLROpt
                     ("ir_acc_pure", ir_acc_pure),
                     ("wvals", wvals)])
 
-    file1 = "data/specificity_output_20240725.json"
+    file1 = "data/specificity_output_20240730.json"
 
     open(file1, "w") do f
         JSON.print(f, output, 4)

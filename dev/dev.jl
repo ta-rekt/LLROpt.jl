@@ -8,50 +8,178 @@
     using StatsBase
     using Random
     using Base.Threads
+    using JSON
+end
+
+
+## . - -- .- .-.- . .- .-- -.- .- .- --.-.... - -.-
+# DOING: testing estimators for the mean of gaussian increments with equal mean and variance
+# dX = Vdt + sqrt(2Vdt)*eta_t
+
+@time let
+    date = 20240822
+    nruns = 10000
+    est1 = Vector{Float32}(undef, nruns)
+    est2 = Vector{Float32}(undef, nruns)
+    est3 = Vector{Float32}(undef, nruns)
+    c = 5.6
+    kb = 0.0888
+    kon = 5
+    ku = 5
+    koff = 5
+    n = 1000000
+    k = 10000
+    dt = (1/(c*kb) + 1/kon + 1/ku + 1/koff) * (n/k) / 2
+    mu = 0.0017
+    e = Normal(mu*dt, sqrt(2*mu*dt))
+
+    for i in 1:nruns
+        dx = rand(e, k)
+        x = sum(dx)
+        est1[i] = x / (dt*k)        # estimator 1: empirical mean
+        est2[i] = var(dx) / (2*dt)  # estimator 2: empirical variance
+        map!(y -> y^2, dx, dx)
+        est3[i] = (-1 + sqrt(1 + sum(dx))) / (sqrt(k)*dt)      # estimator 3: MLE given V=D
+    end
+
+    path = "data/$(date)/"
+    Base.Filesystem.mkpath(path)
+    file1 = string(path, "empirical_mean_estimator.json")
+    file2 = string(path, "empirical_variance_estimator.json")
+    file3 = string(path, "maximum_likelihood_estimator.json")
+
+    open(file1, "w") do f
+        JSON.print(f, est1, 4)
+    end
+    open(file2, "w") do f
+        JSON.print(f, est2, 4)
+    end
+    open(file3, "w") do f
+        JSON.print(f, est3, 4)
+    end
 end
 
 ## . - -- .- .-.- . .- .-- -.- .- .- --.-.... - -.-
-# DOING: testing ir_full
+# DOING: How gaussian are LLR increments?
+
 @time let
-    # Random.seed!(123)
+    date = 20240822
+    c = 5.6
+    kb = 0.0888
+    kon = 5
+    ku = 5
+    koff = 5
+    n = 10000000
+    k = 5000000
+    dt = (1/(c*kb) + 1/kon + 1/ku + 1/koff) * (n/k) / 2
+
+    llr_incrs = Vector{Float32}(undef, n)
+    llr_incrs_sub = Vector{Float32}(undef, k)
 
     global m0 = LLROptModel(;
-        weighted_edges = [(1,3,8.87533829e-02), 
-                          (1,2,1.44048849e-04), 
-                          (2,4,8.46399804e-04), 
-                          (2,1,2.73183156e+00), 
-                          (3,1,2.27367035e-05), 
-                          (3,4,4.99957560e+00), 
-                          (4,2,4.72051807e+00), 
-                          (4,3,1.59700801e-03)],
+        weighted_edges = [(1,3,kb), 
+                          (1,2,1e-5), 
+                          (2,4,1e-5), 
+                          (2,1,koff), 
+                          (3,1,1e-5), 
+                          (3,4,kon), 
+                          (4,2,ku), 
+                          (4,3,1e-5)],
         input_edges = [(1,3), (2,4)],
         on_ind = BitArray([0,1,0,1]),
-        c = 5.6,
-        dc = 0.56,
-        n = 1000000,
+        c = c,
+        dc = c / 10,
+        n = n,
         idist = ones(4) ./ 4,
     )
     init!(m0)
-    # models = [deepcopy(m0) for t in 1:nthreads()]
-    # lk = ReentrantLock()
-    # N = 1000
-    acc = 0
-    # @threads :static for it in 1:N
-    # for it in 1:N
-    # t = threadid()
-    # m = models[t]
-    
+    UDU = eigen(m0.Q_c)
+    dLLRs = Vector{Float32}(undef, n)
+    dXs = Vector{Float32}(undef, k)
+    nskip = Int(n/k)
+
     ir_full!(m0)
+    llr_incrs = diff(m0.llr)
+    llr_incrs_sub = diff(m0.llr[1:nskip:end])
+    
+    path = "data/$(date)/"
+    Base.Filesystem.mkpath(path)
+    file1 = string(path, "llr_incrs.json")
+    file2 = string(path, "llr_incrs_sub.json")
 
-    # lock(lk) do
-    acc += m0.llr[end] / (sum(m0.rt))
-    # end
+    open(file1, "w") do f
+        JSON.print(f, llr_incrs, 4)
+    end
 
-    # end
-    # @show acc/N
-    @show acc
-    # N == 100 && @assert acc == 0.20647115491313528
-    # N == 1000 && @assert acc == 1.7704159503081027
+    open(file2, "w") do f
+        JSON.print(f, llr_incrs_sub, 4)
+    end
+
+    nothing
+end
+
+## . - -- .- .-.- . .- .-- -.- .- .- --.-.... - -.-
+# DOING: testing mean and variance estimators with our LLR process
+
+@time let
+
+    date = 20240822
+    c = 5.6
+    kb = 0.0888
+    kon = 5
+    ku = 5
+    koff = 5
+    n = 100000
+    k = 20000
+    nruns = 1000
+    dt = (1/(c*kb) + 1/kon + 1/ku + 1/koff) * (n/k) / 2
+
+    ir_full_mean = Vector{Float32}(undef, nruns)
+    ir_full_var = Vector{Float32}(undef, nruns)
+
+    global m0 = LLROptModel(;
+        weighted_edges = [(1,3,kb), 
+                          (1,2,1e-5), 
+                          (2,4,1e-5), 
+                          (2,1,koff), 
+                          (3,1,1e-5), 
+                          (3,4,kon), 
+                          (4,2,ku), 
+                          (4,3,1e-5)],
+        input_edges = [(1,3), (2,4)],
+        on_ind = BitArray([0,1,0,1]),
+        c = c,
+        dc = c / 10,
+        n = n,
+        idist = ones(4) ./ 4,
+    )
+    init!(m0)
+    UDU = eigen(m0.Q_c)
+    dXs = Vector{Float32}(undef, k)
+    nskip = Int(n/k)
+
+    for i in 1:nruns
+        ir_full!(m0)
+        dXs = diff(m0.llr[1:nskip:end-1])
+        time = 2 .* cumsum(m0.rt)
+        sq_deltat = map(x->sqrt(x), diff(time[1:nskip:end]))
+        ir_full_mean[i] = m0.llr[end] / sum(m0.rt)
+        ir_full_var[i] = var(dXs ./ sq_deltat)
+    end
+
+    path = "data/$(date)/"
+    Base.Filesystem.mkpath(path)
+    file1 = string(path, "ir_full_mean_estimator.json")
+    file2 = string(path, "ir_full_variance_estimator.json")
+
+    open(file1, "w") do f
+        JSON.print(f, ir_full_mean, 4)
+    end
+
+    open(file2, "w") do f
+        JSON.print(f, ir_full_var, 4)
+    end
+
     nothing
 end
 
@@ -80,18 +208,29 @@ let
     ncol = 2
     data = rand(nrow,ncol)
     dict = Dict(i => data[i:nrow:nrow*ncol] for i = 1:nrow)
+
+    date = 20240730
+    key = 1
     
-    file = "test.json"
+    path = "data/$(date)/"
+    Base.Filesystem.mkpath(path)
+    file = string(path, "test$(key).json")
 
     open(file, "w") do f
         JSON.print(f, dict, 4)
-
     end
 end
 
 ## . - -- .- .-.- . .- .-- -.- .- .- --.-.... - -.-
-# DOING: testing command-line input
+# DOING: sandbox
 
-let
-    s = readline(stdin)
+let 
+    a = true
+
+    if a
+        println("yo")
+    else
+        println("mama")
+
+    end
 end
