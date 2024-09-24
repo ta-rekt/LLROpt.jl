@@ -1,4 +1,4 @@
-# contant memmory objects
+# constant memory objects
 export LLROptModel
 Base.@kwdef mutable struct LLROptModel
     # input params
@@ -9,6 +9,7 @@ Base.@kwdef mutable struct LLROptModel
     on_ind
     idist
     n
+    # k::Int = 1
     
     # build_mat
     Q_c = nothing; # to initialize

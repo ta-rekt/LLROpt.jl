@@ -28,7 +28,7 @@ function target_acc(logrates, args...)
     ir_acc_pure = ir_acc(wedges1, iedges, cr, dc, on_ind1)
     ir_acc_mix = ir_acc(wedges2, iedges, cr, dc, on_ind2)
 
-    (- ir_acc_mix - beta*ir_acc_pure, ir_acc_mix, ir_acc_pure, EP)
+    (- ir_acc_pure - beta*ir_acc_mix, ir_acc_mix, ir_acc_pure, EP)
 end
 
 # returns - IR_full_mix - beta * IR_full_pure - gamma * EP
@@ -54,15 +54,29 @@ function target_full(logrates, args...)
     EP = EP_ss(m1.Q_c)
     ir_full!(m1)
     ir_full!(m2)
-    ir_full_pure = m1.llr[end] / sum(m1.rt)
-    ir_full_mix = m2.llr[end] / sum(m2.rt)
+    nskip = 5
 
-    (- ir_full_mix - beta*ir_full_pure, ir_full_mix, ir_full_pure, EP)
+    # empirical mean estimator
+    # ir_full_pure = m1.llr[end] / sum(m1.rt)
+    # ir_full_mix = m2.llr[end] / sum(m2.rt)
+
+    # variance estimator
+    dXs1 = diff(m1.llr[1:nskip:end-1])
+    time1 = 2 .* cumsum(m1.rt)
+    sq_deltat1 = map(x->sqrt(x), diff(time1[1:nskip:end]))
+    ir_full_pure = var(dXs1 ./ sq_deltat1)
+
+    dXs2 = diff(m2.llr[1:nskip:end-1])
+    time2 = 2 .* cumsum(m2.rt)
+    sq_deltat2 = map(x->sqrt(x), diff(time2[1:nskip:end]))
+    ir_full_mix = var(dXs2 ./ sq_deltat2)
+
+    (- ir_full_pure - beta*ir_full_mix, ir_full_mix, ir_full_pure, EP)
 end
 
 let
-    # keyb = parse(Int32, ARGS[1])
-    fname = ARGS[1]
+    keyb = parse(Int32, ARGS[1])
+    fname = ARGS[2]
 
     a = 3e-3        # um
     D_tf = 7.4      # um^2/s
@@ -98,7 +112,7 @@ let
 
     # GCMAES params
     maxiters_acc = 20000
-    maxiters_full = 2000
+    maxiters_full = 5000
     xinit1 = (lub1 .+ llb1) ./ 2
     xinit2 = (lub2 .+ llb2) ./ 2
     we1 = [(u,v,r) for ((u,v),r) in zip(edges1, xinit1)]
@@ -128,103 +142,101 @@ let
     init!(m1)
     init!(m2)
 
-    betas = vcat(10 .^ range(1e-12, stop=1e-1, length=20), 
-                 range(1e-1, stop=1e1, length=20), 
-                 10 .^ range(1e1, stop=1e12, length=20))
+    betas = 10 .^ range(-1.5, stop=1.5, length=15)
     # betas = map(x -> parse(Float64, x), ARGS)
-    gammas = [1, 10, 100]
-    wvals = [0.1, 1, 10]
-
-    # beta = betas[keyb]
+    # gammas = [2.5, 5, 10, 50, 500, 5000, 50000]
+    gammas = [5, 50]
+    wvals = [10]
+    beta = betas[keyb]
 
     results_acc = Dict{Int64, Dict{Int64, Dict{Int64, Vector{Float32}}}}()
     results_full = Dict{Int64, Dict{Int64, Dict{Int64, Vector{Float32}}}}()
 
-    for (keyb, beta) in enumerate(betas)
+    # for (keyb, beta) in enumerate(betas)
 
-        results_acc[keyb] = Dict{Int64, Dict{Int64, Vector{Float32}}}()
-        results_full[keyb] = Dict{Int64, Dict{Int64, Vector{Float32}}}()
+    results_acc[keyb] = Dict{Int64, Dict{Int64, Vector{Float32}}}()
+    results_full[keyb] = Dict{Int64, Dict{Int64, Vector{Float32}}}()
 
-        for (keyg, gamma) in enumerate(gammas)
-            results_acc[keyb][keyg] = Dict{Int64, Vector{Float32}}()
-            results_full[keyb][keyg] = Dict{Int64, Vector{Float32}}()
+    for (keyg, gamma) in enumerate(gammas)
+        results_acc[keyb][keyg] = Dict{Int64, Vector{Float32}}()
+        results_full[keyb][keyg] = Dict{Int64, Vector{Float32}}()
 
-            for (keyw, w) in enumerate(wvals)
+        for (keyw, w) in enumerate(wvals)
 
-                # ACC
-                args_acc = [edges1, edges2, input_edges, cr, dc, on_ind1, on_ind2, 
-                    beta, gamma, w]
-                targetfun_acc(x, p) = target_acc(x, args_acc...)[1]
-                ir_acc_mix(x) = target_acc(x, args_acc...)[2]
-                ir_acc_pure(x) = target_acc(x, args_acc...)[3]
-                ep_acc(x) = target_acc(x, args_acc...)[4]
+            # ACC
+            args_acc = [edges1, edges2, input_edges, cr, dc, on_ind1, on_ind2, 
+                beta, gamma, w]
+            targetfun_acc(x, p) = target_acc(x, args_acc...)[1]
+            ir_acc_mix(x) = target_acc(x, args_acc...)[2]
+            ir_acc_pure(x) = target_acc(x, args_acc...)[3]
+            ep_acc(x) = target_acc(x, args_acc...)[4]
 
-                optf_acc = Optimization.OptimizationFunction(targetfun_acc)
-                prob_acc = Optimization.OptimizationProblem(optf_acc, 
-                            xinit1, lb=llb1, ub=lub1, maxiters=maxiters_acc)
-                sol_acc = solve(prob_acc, BBO_adaptive_de_rand_1_bin_radiuslimited())
+            optf_acc = Optimization.OptimizationFunction(targetfun_acc)
+            prob_acc = Optimization.OptimizationProblem(optf_acc, 
+                        xinit1, lb=llb1, ub=lub1, maxiters=maxiters_acc)
+            sol_acc = solve(prob_acc, BBO_adaptive_de_rand_1_bin_radiuslimited())
 
-                # FULL
-                # args_full = [m1, m2, beta, gamma, w]
-                # targetfun_full(x, p) = target_full(x, args_full...)[1]
-                # ir_full_mix(x) = target_full(x, args_full...)[2]
-                # ir_full_pure(x) = target_full(x, args_full...)[3]
-                # ep_full(x) = target_full(x, args_full...)[4]
+            # FULL
+            args_full = [m1, m2, beta, gamma, w]
+            targetfun_full(x, p) = target_full(x, args_full...)[1]
+            ir_full_mix(x) = target_full(x, args_full...)[2]
+            ir_full_pure(x) = target_full(x, args_full...)[3]
+            ep_full(x) = target_full(x, args_full...)[4]
 
-                # optf_full = Optimization.OptimizationFunction(targetfun_full)
-                # prob_full = Optimization.OptimizationProblem(optf_full, 
-                #     xinit1, lb=llb1, ub=lub1, maxiters=maxiters_full)
-                # sol_full = solve(prob_full, BBO_adaptive_de_rand_1_bin_radiuslimited())
+            optf_full = Optimization.OptimizationFunction(targetfun_full)
+            prob_full = Optimization.OptimizationProblem(optf_full, 
+                xinit1, lb=llb1, ub=lub1, maxiters=maxiters_full)
+            sol_full = solve(prob_full, BBO_adaptive_de_rand_1_bin_radiuslimited())
 
-                # RESULTS
-                # results_acc[keyb][keyg][keyw] = vcat(sol_acc.u, ir_acc_mix(sol_acc.u), 
-                    # ir_acc_pure(sol_acc.u), ep_acc(sol_acc.u), beta, gamma, w)
-                # results_full[keyb][keyg][keyw] = vcat(sol_full.u, 0, 0, 0, 0, 
-                    # ep_full(sol_full.u), beta, gamma, w)
-            end
+            # RESULTS
+            results_acc[keyb][keyg][keyw] = vcat(sol_acc.u, ir_acc_mix(sol_acc.u), 
+                ir_acc_pure(sol_acc.u), ep_acc(sol_acc.u), beta, gamma, w)
+            results_full[keyb][keyg][keyw] = vcat(sol_full.u, 0, 0, 0, 0, 
+                ep_full(sol_full.u), beta, gamma, w)
         end
     end
+    # end
 
     N = 100
 
     # results_full = JSON.parsefile(file2)
 
-    # for (keyg, gamma) in enumerate(gammas) 
-    #     for (keyw, w) in enumerate(wvals)
-    #         irvals_mix = Vector{Float32}(undef, N)
-    #         irvals_pure = Vector{Float32}(undef, N)
-    #         args_full = [m1, m2, beta, gamma, w]
-    #         ir_full_mix(x) = target_full(x, args_full...)[2]
-    #         ir_full_pure(x) = target_full(x, args_full...)[3]
-    #         xopt = results_full[keyb][keyg][keyw][1:8]
+    for (keyg, gamma) in enumerate(gammas) 
+        for (keyw, w) in enumerate(wvals)
+            irvals_mix = Vector{Float32}(undef, N)
+            irvals_pure = Vector{Float32}(undef, N)
+            args_full = [m1, m2, beta, gamma, w]
+            ir_full_mix(x) = target_full(x, args_full...)[2]
+            ir_full_pure(x) = target_full(x, args_full...)[3]
+            xopt = results_full[keyb][keyg][keyw][1:8]
         
-    #         for i in 1:N
-    #             irvals_mix[i] = ir_full_mix(xopt)
-    #             irvals_pure[i] = ir_full_pure(xopt)
-    #         end
+            for i in 1:N
+                irvals_mix[i] = ir_full_mix(xopt)
+                irvals_pure[i] = ir_full_pure(xopt)
+            end
 
-    #         results_full[keyb][keyg][keyw][9] = Statistics.mean(irvals_mix)
-    #         results_full[keyb][keyg][keyw][10] = Statistics.mean(irvals_pure)
-    #         results_full[keyb][keyg][keyw][11] = Statistics.std(irvals_mix)
-    #         results_full[keyb][keyg][keyw][12] = Statistics.std(irvals_pure)
-    #     end
-    # end
+            results_full[keyb][keyg][keyw][9] = Statistics.mean(irvals_mix)
+            results_full[keyb][keyg][keyw][10] = Statistics.mean(irvals_pure)
+            results_full[keyb][keyg][keyw][11] = Statistics.std(irvals_mix)
+            results_full[keyb][keyg][keyw][12] = Statistics.std(irvals_pure)
+        end
+    end
 
     path = "data/$(fname)/"
     Base.Filesystem.mkpath(path)
-    # file1 = string(path, "ir_acc_mix_vs_pure_pareto_more_betas_beta$(keyb).json")
-    # file2 = string(path, "ir_full_mix_vs_pure_pareto_more_betas_beta$(keyb).json")
+    file1 = string(path, "ir_acc_mix_vs_pure_pareto_beta$(keyb).json")
+    file2 = string(path, "ir_full_mix_vs_pure_pareto_beta$(keyb).json")
 
-    file1 = string(path, "ir_acc_mix_vs_pure_pareto_more_betas.json")
-    file2 = string(path, "ir_full_mix_vs_pure_pareto_more_betas.json")
+    # file1 = string(path, "ir_acc_mix_vs_pure_pareto_more_betas.json")
+    # file2 = string(path, "ir_full_mix_vs_pure_pareto_more_betas.json")
 
     open(file1, "w") do f
         JSON.print(f, results_acc, 4)
     end
 
-    # open(file2, "w") do f
-    #     JSON.print(f, results_full, 4)
-    # end
+    open(file2, "w") do f
+        JSON.print(f, results_full, 4)
+    end
 
 end
 
