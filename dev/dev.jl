@@ -281,98 +281,202 @@ end
 ## . - -- .- .-.- . .- .-- -.- .- .- --.-.... - -.-
 # DOING: implementing the RMC algorithm from J. Vanneste PHYSICAL REVIEW E 81, 036701 (2010)
 
-function ll_full_rmc(Q, ind_set, t_set, t_comp, idist_set)
-    # @assert length(t_set) == length(t_comp)
-    ind_comp = ones(Int, length(ind_set)) .- ind_set
-    _set = findall(isone, ind_set)
-    _comp = findall(isone, ind_comp)
+function generate_rmc!(m::LLROptModel)
 
-    w_set = zeros(1, length(_set))
-    w_comp = zeros(1, length(_comp))
-    w_set .= idist_set' # first init
-    wv = zeros(length(t_set) + length(t_comp) + 1)
-    wv[1] = log(sum(idist_set))
-    i = 2
+    m.s, m.t = zeros(Int, m.k, m.n), zeros(Float64, m.k, m.n)
+    _DD = _ddist(m.Q_c)
 
-    # Q_h_comp (fpt)
-    Q_h_comp = Q .* 1.0
-    for ri in _comp
-        Q_h_comp[ri, :] .= 0.0
+    for j in 1:m.k
+        m.s[j,1] = sample(eachindex(m.idist), Weights(m.idist))
     end
-    UDU_comp = eigen(Q_h_comp)
-    W_comp = UDU_comp.vectors
-    W_comp_inv = inv(W_comp)
-    D_comp = Diagonal(UDU_comp.values)
-    aux_comp = zeros(size(D_comp)...)
-    P_comp = zeros(size(Q)...)
-    exp_tD_comp = zeros(size(Q)...)
+    
+    for i in 1:m.n-1
+        for j in 1:m.k
+            
+            si = m.s[j,i]
+            q = -m.Q_c[si, si]
 
-    # Q_h_set (fpt)
-    Q_h_set = Q .* 1.0
-    for ri in _set
-        Q_h_set[ri, :] .= 0.0
+            # t
+            e = Exponential(1/q)
+            m.t[j,i] = rand(e)
+
+            # s        
+            _dd = _DD[si, :]
+            m.s[j,i+1] = sample(eachindex(_dd), Weights(_dd))
+        end
     end
-    UDU_set = eigen(Q_h_set)
-    W_set = UDU_set.vectors
-    W_set_inv = inv(W_set)
-    D_set = Diagonal(UDU_set.values)
-    aux_set = zeros(size(D_comp)...)
-    P_set = zeros(size(Q)...)
-    exp_tD_set = zeros(size(Q)...)
+
+    for j in 1:m.k
+        # t
+        si = m.s[j,end]
+        q = -m.Q_c[si, si]
+        e = Exponential(1/q)
+        m.t[j,end] = rand(e)
+    end
+end
+
+function get_residence_time_rmc!(m::LLROptModel)
+
+    m.rt = zeros(Float64, m.k, m.n)    # residence times
+    m.t_set = zeros(Float64, m.k, m.n)  # set residence times
+    m.t_comp = zeros(Float64, m.k, m.n) # complement set residence times
+    m.s_in_on = zeros(Int, m.k)        # start in on indicator
+    m.jc = zeros(Int, m.k)             # jump counts
+    
+    # loop across trajectories
+    for j in 1:m.k
+        sj = view(m.s, j, :)
+        tj = view(m.t, j, :)
+        t_setj = view(m.t_set, j, :)
+        t_compj = view(m.t_comp, j, :)
+        jc = _jump_count(sj, m.on_ind)
+
+        _last_is_on = m.on_ind[sj[1]]
+        i_jump = 1 # jump index
+
+        # loop across timesteps of each trajectory
+        for (sij, tij) in zip(sj, tj)
+
+            if (m.on_ind[sij] ⊻ _last_is_on)
+                _last_is_on = m.on_ind[sij]
+                i_jump += 1
+            end
+            m.rt[j, i_jump] += tij
+        end
+
+        # postprocess
+        m.s_in_on[j] = m.on_ind[sj[1]]
+        t_setj[1:jc] = m.rt[j, 1:2:2*jc]
+        t_compj[1:jc] = m.rt[j, 2:2:2*jc+1]
+        m.jc[j] = jc
+    end
+end
+
+
+function ll_full_rmc(Q, on_ind, idist, s_in_on, jc, t_set, t_comp)
+
+    #### array initialization ####
+
+    off_ind = on_ind .⊻ true
+    _on = findall(isone, on_ind)
+    _off = findall(isone, off_ind)
+    _idist_on = _idist0(idist, on_ind)
+    _idist_off = _idist0(idist, off_ind)
+
+    # Q_h_off (fpt)
+    Q_h_off = Q .* 1.0
+    for ri in _off
+        Q_h_off[ri, :] .= 0.0
+    end
+    UDU_off = eigen(Q_h_off)
+    W_off = UDU_off.vectors
+    W_off_inv = inv(W_off)
+    D_off = Diagonal(UDU_off.values)
+    aux_off = zeros(size(D_off)...)
+    P_off = zeros(size(Q)...)
+
+    # Q_h_on (fpt)
+    Q_h_on = Q .* 1.0
+    for ri in _on
+        Q_h_on[ri, :] .= 0.0
+    end
+    UDU_on = eigen(Q_h_on)
+    W_on = UDU_on.vectors
+    W_on_inv = inv(W_on)
+    D_on = Diagonal(UDU_on.values)
+    aux_on = zeros(size(D_off)...)
+    P_on = zeros(size(Q)...)
 
     R = zeros(size(Q)...)
     S = zeros(size(Q)...)
-    _R = zeros(eltype(Q), length(_set), length(_comp))
-    _S = zeros(eltype(Q), length(_comp), length(_set))
+    _R = zeros(eltype(Q), length(_on), length(_off))
+    _S = zeros(eltype(Q), length(_off), length(_on))
 
-    for (ts, tc) in zip(t_set, t_comp)
-        # P = W * exp(t * D) * inv(W)
-        # R = Q_h_comp * P(UDU_comp, ts)
-        mul!(aux_comp, W_comp, exp(ts * D_comp))
-        mul!(P_comp, aux_comp, W_comp_inv)
-        mul!(R, Q_h_comp, P_comp)
+    min_jc = minimum(jc)  # length of shortest trajectory
+    n = min_jc*2 + 1
+    k = size(t_set)[1]   # number of trajectories
 
-        # P = W * exp(t * D) * inv(W)
-        # S = Q_h_set * P(UDU_set, tc)
-        
-        # mul!(exp_tD_set, tc, D_set)
-        # exp!(exp_tD_set)
-        # mul!(aux_set, W_set, exp_tD_set)
-        # mul!(aux_set, W_set, exp(exp_tD_set))
+    w_on = zeros(1, length(_on))
+    w_off = zeros(1, length(_off))
+    w_on .= idist_on'   # first init
+    w_off .= idist_off'   # first init
+    wv = zeros(Float64, k, n)    # log vector norms
+    # vecs = zeros(Float64, )
+    alphas = zeros(Float64, k)
+    t_on, t_off = 0.0, 0.0
 
-        mul!(aux_set, W_set, exp(tc * D_set))
-        mul!(P_set, aux_set, W_set_inv)
-        mul!(S, Q_h_set, P_set)
-        
-        _select!(R, _R, _set, _comp)
-        _select!(S, _S, _comp, _set)
+    #### trajectory-dependent operations ####
 
-        # TODO: do it inline
-        w_set ./= sum(w_set)
-        # w_comp = (w_set' * _R)'
-        mul!(w_comp, w_set, _R)
-        wv[i] = log(sum(w_comp)); i+=1
-
-        w_comp ./= sum(w_comp)
-        mul!(w_set, w_comp, _S)
-        # w_set = ((w_comp ./ sum(w_comp))' * _S)'
-        wv[i] = log(sum(w_set)); i+=1
+    for j in 1:k
+        if s_in_on[j]
+            wv[j,1] = sum(w_on)
+        else
+            wv[j,1] = sum(w_off)
+        end
     end
-    wv
+
+    for i in 1:min_jc
+        jmp = 2
+
+        for j in 1:k
+            
+            if s_in_on[j]
+                t_on, t_off = t_set[j,i], t_comp[j,i]
+            else
+                t_off, t_on = t_set[j,i], t_comp[j,i]
+            end
+
+            mul!(aux_off, W_off, exp(t_on * D_off))
+            mul!(P_off, aux_off, W_off_inv)
+            mul!(R, Q_h_off, P_off)
+
+            mul!(aux_on, W_on, exp(t_off * D_on))
+            mul!(P_on, aux_on, W_on_inv)
+            mul!(S, Q_h_on, P_on)
+            
+            _select!(R, _R, _on, _off)
+            _select!(S, _S, _off, _on)
+
+            if s_in_on[j]
+                w_on ./= sum(w_on)
+                mul!(w_off, w_on, _R)
+                wv[j,jmp] = log(sum(w_off)); jmp += 1
+
+                w_off ./= sum(w_off)
+                mul!(w_on, w_off, _S)
+                wv[j,jmp] = log(sum(w_on)); jmp += 1
+            else
+                w_off ./= sum(w_off)
+                mul!(w_on, w_off, _S)
+                wv[j,jmp] = log(sum(w_on)); jmp += 1
+
+                w_on ./= sum(w_on)
+                mul!(w_off, w_on, _R)
+                wv[j,jmp] = log(sum(w_off)); jmp += 1
+            end
+        end
+        wv
+    end
 end
 
 function llr_rmc!(m::LLROptModel)
     # select based on m.s_in_on
-    m.ind_set = m.s_in_on ? m.on_ind : m.off_ind
-    m.t_set = m.s_in_on ? m.onrt : m.offrt
-    m.t_comp = m.s_in_on ? m.offrt : m.onrt
+    m.on_ind = m.s_in_on ? m.on_ind : m.off_ind
+    m.t_set = m.s_in_on ? m.t_set : m.t_comp
+    m.t_comp = m.s_in_on ? m.t_comp : m.t_set
     m.idist_set = m.s_in_on ? m._idist0_on : m._idist0_off
     
     # TODO: inline
-    m.ll_c = ll_full_rmc(m.Q_c, m.ind_set, m.t_set, m.t_comp, m.idist_set)
-    m.ll_cdc = ll_full_rmc(m.Q_cdc, m.ind_set, m.t_set, m.t_comp, m.idist_set)
+    m.ll_c = ll_full_rmc(m.Q_c, m.on_ind, m.t_set, m.t_comp, m.idist_set)
+    m.ll_cdc = ll_full_rmc(m.Q_cdc, m.on_ind, m.t_set, m.t_comp, m.idist_set)
     m.llr = cumsum(m.ll_c .- m.ll_cdc)
     return m
+end
+
+function ir_full_rmc!(m::LLROptModel)
+    generate_rmc!(m)
+    get_residence_time_rmc!(m)
+    llr_rmc!(m::LLROptModel)
 end
 
 let 

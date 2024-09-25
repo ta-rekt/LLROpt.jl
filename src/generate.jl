@@ -1,42 +1,40 @@
 # . - -- .- .-.- . .- .-- -.- .- .- --.-.... - -.-
 # TODO: Finish this shit
-export generate
-function generate(n, Q, idist)
+export generate!
+function generate!(m::LLROptModel)
 
-    s, t = zeros(Int, n), zeros(n)
+    m.s, m.t = zeros(Int, m.n), zeros(m.n)
     
-    s[1] = sample(eachindex(idist), Weights(idist))
-    q = -Q[s[1], s[1]]
+    m.s[1] = sample(eachindex(m.idist), Weights(m.idist))
+    q = -m.Q_c[m.s[1], m.s[1]]
 
-    _DD = _ddist(Q)
+    _DD = _ddist(m.Q_c)
 
-    for i in 1:n-1
-        si = s[i]
-        q = -Q[si, si]
+    for i in 1:m.n-1
+        si = m.s[i]
+        q = -m.Q_c[si, si]
 
         # t
         e = Exponential(1/q)
-        t[i] = rand(e)
+        m.t[i] = rand(e)
 
         # s        
         _dd = _DD[si, :]
-        s[i+1] = sample(eachindex(_dd), Weights(_dd))
+        m.s[i+1] = sample(eachindex(_dd), Weights(_dd))
     end
 
     # t
-    si = s[end]
-    q = -Q[si, si]
+    si = m.s[end]
+    q = -m.Q_c[si, si]
     e = Exponential(1/q)
-    t[end] = rand(e)
-
-    return s, t
+    m.t[end] = rand(e)
 end
 
-function generate!(m::LLROptModel)
-    # TODO: inline
-    s, t = generate(m.n, m.Q_c, m.idist)
+# function generate!(m::LLROptModel)
+#     # TODO: inline
+#     s, t = generate(m.n, m.Q_c, m.idist)
     
-    m.s = s
-    m.t = t
-    return m
-end
+#     m.s = s
+#     m.t = t
+#     return m
+# end
