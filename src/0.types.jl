@@ -9,7 +9,7 @@ Base.@kwdef mutable struct LLROptModel
     on_ind
     idist
     n
-    k::Int = 1
+    k
     
     # build_mat
     Q_c = nothing; # to initialize
@@ -25,6 +25,7 @@ Base.@kwdef mutable struct LLROptModel
     onrt = nothing; # to initialize
     offrt = nothing; # to initialize
     jc = nothing; # to initialize
+    bc = nothing; # to initialize
 
     # indicators
     off_ind = nothing; # to initialize

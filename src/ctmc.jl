@@ -121,6 +121,7 @@ function _select(M, _set, _comp)
     _M
 end
 
+export _select!
 function _select!(Msrc, Mdest, _set, _comp)
     # TODO: check views
     for (i, I) in enumerate(_set), (j, J) in enumerate(_comp)
@@ -130,6 +131,7 @@ function _select!(Msrc, Mdest, _set, _comp)
 end
 
 ## . - -- .- .-.- . .- .-- -.- .- .- --.-.... - -.-
+export _ddist
 function _ddist(Q)
     k = size(Q, 1)
     _DD = zeros(k, k)
@@ -141,8 +143,9 @@ function _ddist(Q)
 end
 
 ## . - -- .- .-.- . .- .-- -.- .- .- --.-.... - -.-
+export  _jump_count
 function _jump_count(s, on_ind)
-    _jump_count = 1
+    _jump_count = 0
     _last_is_on = on_ind[s[1]]
     for si in s
         (on_ind[si] ⊻ _last_is_on) || continue

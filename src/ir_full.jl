@@ -1,4 +1,5 @@
 ## . - -- .- .-.- . .- .-- -.- .- .- --.-.... - -.-
+export _idist0
 function _idist0(idist, set_ind)
     idist0 = idist[findall(set_ind)]
     idist0 ./= sum(idist0)

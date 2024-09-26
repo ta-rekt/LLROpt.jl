@@ -129,8 +129,8 @@ end
     kon = 5
     ku = 5
     koff = 5
-    n = 100000
-    k = 20000
+    n = 10000
+    k = 2000
     nruns = 1000
     dt = (1/(c*kb) + 1/kon + 1/ku + 1/koff) * (n/k) / 2
 
@@ -152,6 +152,7 @@ end
         dc = c / 10,
         n = n,
         idist = ones(4) ./ 4,
+        k = 1
     )
     init!(m0)
     UDU = eigen(m0.Q_c)
@@ -286,6 +287,8 @@ function generate_rmc!(m::LLROptModel)
     m.s, m.t = zeros(Int, m.k, m.n), zeros(Float64, m.k, m.n)
     _DD = _ddist(m.Q_c)
 
+    @assert size(_DD) == size(m.Q_c)
+
     for j in 1:m.k
         m.s[j,1] = sample(eachindex(m.idist), Weights(m.idist))
     end
@@ -322,6 +325,7 @@ function get_residence_time_rmc!(m::LLROptModel)
     m.t_comp = zeros(Float64, m.k, m.n) # complement set residence times
     m.s_in_on = zeros(Int, m.k)        # start in on indicator
     m.jc = zeros(Int, m.k)             # jump counts
+    m.bc = zeros(Int, m.k)             # burst counts
     
     # loop across trajectories
     for j in 1:m.k
@@ -330,13 +334,13 @@ function get_residence_time_rmc!(m::LLROptModel)
         t_setj = view(m.t_set, j, :)
         t_compj = view(m.t_comp, j, :)
         jc = _jump_count(sj, m.on_ind)
+        bc = floor(Int32, jc / 2)    # burst count
 
         _last_is_on = m.on_ind[sj[1]]
         i_jump = 1 # jump index
 
         # loop across timesteps of each trajectory
         for (sij, tij) in zip(sj, tj)
-
             if (m.on_ind[sij] ⊻ _last_is_on)
                 _last_is_on = m.on_ind[sij]
                 i_jump += 1
@@ -345,15 +349,18 @@ function get_residence_time_rmc!(m::LLROptModel)
         end
 
         # postprocess
-        m.s_in_on[j] = m.on_ind[sj[1]]
-        t_setj[1:jc] = m.rt[j, 1:2:2*jc]
-        t_compj[1:jc] = m.rt[j, 2:2:2*jc+1]
         m.jc[j] = jc
+        m.bc[j] = bc
+        m.s_in_on[j] = m.on_ind[sj[1]]
+        t_setj[1:bc] = m.rt[j, 1:2:2*bc]
+        t_compj[1:bc] = m.rt[j, 2:2:2*bc+1]
     end
 end
 
-# assumes the chain always starts in the ON partition
-function ll_full_rmc(Q, on_ind, idist, s_in_on, jc, t_set, t_comp)
+# assumes all trajectories start in the same partition
+function ll_full_rmc(Q, on_ind, idist, bc, t_set, t_comp)
+
+    @assert length(t_set) == length(t_comp)
 
     #### array initialization ####
 
@@ -391,8 +398,8 @@ function ll_full_rmc(Q, on_ind, idist, s_in_on, jc, t_set, t_comp)
     _R = zeros(eltype(Q), length(_on), length(_off))
     _S = zeros(eltype(Q), length(_off), length(_on))
 
-    min_jc = minimum(jc)  # length of shortest trajectory
-    n = min_jc*2 + 1
+    min_bc = minimum(bc)  # length of shortest trajectory
+    n = min_bc*2 + 1
     k = size(t_set)[1]   # number of trajectories
 
     w_on = zeros(1, length(_on))
@@ -402,7 +409,7 @@ function ll_full_rmc(Q, on_ind, idist, s_in_on, jc, t_set, t_comp)
     vec = zeros(Float64, k, length(w_on))
     vec_sampled = zeros(Float64, k, length(w_on))
     alpha = zeros(Float64, k)
-    beta = zeros(Float64, min_jc)
+    logbeta = zeros(Float64, min_bc)
     t_on, t_off = 0.0, 0.0
 
     #### trajectory-dependent operations ####
@@ -412,7 +419,7 @@ function ll_full_rmc(Q, on_ind, idist, s_in_on, jc, t_set, t_comp)
         vec[j,:] = w_on
     end
 
-    for i in 1:min_jc
+    for i in 1:min_bc
         jmp = 2
         betasum = 0
         jsampl = 0
@@ -431,22 +438,22 @@ function ll_full_rmc(Q, on_ind, idist, s_in_on, jc, t_set, t_comp)
             _select!(R, _R, _on, _off)
             _select!(S, _S, _off, _on)
 
-            w_on = vec_sampled[j,:]
-
+            w_on = vec_sampled[j,:]'
             alpha[j] = sum(w_on)
             w_on ./= alpha[j]
             mul!(w_off, w_on, _R)
             wv[j,jmp] = log(sum(w_off)); jmp += 1
 
             w_off ./= sum(w_off)
-            mul!(vec[j,:], w_off, _S)
-            wv[j,jmp] = log(sum(vec[j,:])); jmp += 1
+            mul!(w_on, w_off, _S)
+            wv[j,jmp] = log(sum(w_on)); jmp += 1
+            vec[j,:] = w_on'
 
             betasum += alpha[j]
         end
 
-        beta[i] = betasum
         alpha ./= betasum
+        logbeta[i] = log(betasum)
 
         for j in 1:k
             jsampl = sample(eachindex(alpha), Weights(alpha))
@@ -455,19 +462,14 @@ function ll_full_rmc(Q, on_ind, idist, s_in_on, jc, t_set, t_comp)
     end
 
     # return log sum of betas - logK
+    sum(logbeta) / min_bc - log(k)
 end
 
 function llr_rmc!(m::LLROptModel)
-    # select based on m.s_in_on
-    m.on_ind = m.s_in_on ? m.on_ind : m.off_ind
-    m.t_set = m.s_in_on ? m.t_set : m.t_comp
-    m.t_comp = m.s_in_on ? m.t_comp : m.t_set
-    m.idist_set = m.s_in_on ? m._idist0_on : m._idist0_off
-    
     # TODO: inline
-    m.ll_c = ll_full_rmc(m.Q_c, m.on_ind, m.t_set, m.t_comp, m.idist_set)
-    m.ll_cdc = ll_full_rmc(m.Q_cdc, m.on_ind, m.t_set, m.t_comp, m.idist_set)
-    m.llr = cumsum(m.ll_c .- m.ll_cdc)
+    m.ll_c = ll_full_rmc(m.Q_c, m.on_ind, m.idist, m.bc, m.t_set, m.t_comp)
+    m.ll_cdc = ll_full_rmc(m.Q_cdc, m.on_ind, m.idist, m.bc, m.t_set, m.t_comp)
+    m.llr = m.ll_c .- m.ll_cdc
     return m
 end
 
@@ -477,7 +479,36 @@ function ir_full_rmc!(m::LLROptModel)
     llr_rmc!(m::LLROptModel)
 end
 
-let 
-    
+@time let 
+    date = 20240913
+    c = 5.6
+    kb = 0.0888
+    kon = 5
+    ku = 5
+    koff = 5
+    n = 10
+    k = 5
+    dt = (1/(c*kb) + 1/kon + 1/ku + 1/koff)
 
+    global m = LLROptModel(;
+        weighted_edges = [(1,3,kb), 
+                          (1,2,1e0), 
+                          (2,4,1e0), 
+                          (2,1,koff), 
+                          (3,1,1e0), 
+                          (3,4,kon), 
+                          (4,2,ku), 
+                          (4,3,1e0)],
+        input_edges = [(1,3), (2,4)],
+        on_ind = BitArray([0,1,0,1]),
+        c = c,
+        dc = c / 10,
+        n = n,
+        k = k,
+        idist = [0, 0.5, 0, 0.5]
+    )
+    init!(m)
+    generate_rmc!(m)
+    get_residence_time_rmc!(m)
+    ll_full_rmc(m.Q_c, m.on_ind, m.idist, m.bc, m.t_set, m.t_comp)
 end
