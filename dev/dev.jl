@@ -352,7 +352,7 @@ function get_residence_time_rmc!(m::LLROptModel)
     end
 end
 
-
+# assumes the chain always starts in the ON partition
 function ll_full_rmc(Q, on_ind, idist, s_in_on, jc, t_set, t_comp)
 
     #### array initialization ####
@@ -361,7 +361,6 @@ function ll_full_rmc(Q, on_ind, idist, s_in_on, jc, t_set, t_comp)
     _on = findall(isone, on_ind)
     _off = findall(isone, off_ind)
     _idist_on = _idist0(idist, on_ind)
-    _idist_off = _idist0(idist, off_ind)
 
     # Q_h_off (fpt)
     Q_h_off = Q .* 1.0
@@ -398,33 +397,28 @@ function ll_full_rmc(Q, on_ind, idist, s_in_on, jc, t_set, t_comp)
 
     w_on = zeros(1, length(_on))
     w_off = zeros(1, length(_off))
-    w_on .= idist_on'   # first init
-    w_off .= idist_off'   # first init
+    w_on .= _idist_on'   # first init
     wv = zeros(Float64, k, n)    # log vector norms
-    # vecs = zeros(Float64, )
-    alphas = zeros(Float64, k)
+    vec = zeros(Float64, k, length(w_on))
+    vec_sampled = zeros(Float64, k, length(w_on))
+    alpha = zeros(Float64, k)
+    beta = zeros(Float64, min_jc)
     t_on, t_off = 0.0, 0.0
 
     #### trajectory-dependent operations ####
 
     for j in 1:k
-        if s_in_on[j]
-            wv[j,1] = sum(w_on)
-        else
-            wv[j,1] = sum(w_off)
-        end
+        wv[j,1] = sum(w_on)
+        vec[j,:] = w_on
     end
 
     for i in 1:min_jc
         jmp = 2
+        betasum = 0
+        jsampl = 0
 
         for j in 1:k
-            
-            if s_in_on[j]
-                t_on, t_off = t_set[j,i], t_comp[j,i]
-            else
-                t_off, t_on = t_set[j,i], t_comp[j,i]
-            end
+            t_on, t_off = t_set[j,i], t_comp[j,i]
 
             mul!(aux_off, W_off, exp(t_on * D_off))
             mul!(P_off, aux_off, W_off_inv)
@@ -437,26 +431,30 @@ function ll_full_rmc(Q, on_ind, idist, s_in_on, jc, t_set, t_comp)
             _select!(R, _R, _on, _off)
             _select!(S, _S, _off, _on)
 
-            if s_in_on[j]
-                w_on ./= sum(w_on)
-                mul!(w_off, w_on, _R)
-                wv[j,jmp] = log(sum(w_off)); jmp += 1
+            w_on = vec_sampled[j,:]
 
-                w_off ./= sum(w_off)
-                mul!(w_on, w_off, _S)
-                wv[j,jmp] = log(sum(w_on)); jmp += 1
-            else
-                w_off ./= sum(w_off)
-                mul!(w_on, w_off, _S)
-                wv[j,jmp] = log(sum(w_on)); jmp += 1
+            alpha[j] = sum(w_on)
+            w_on ./= alpha[j]
+            mul!(w_off, w_on, _R)
+            wv[j,jmp] = log(sum(w_off)); jmp += 1
 
-                w_on ./= sum(w_on)
-                mul!(w_off, w_on, _R)
-                wv[j,jmp] = log(sum(w_off)); jmp += 1
-            end
+            w_off ./= sum(w_off)
+            mul!(vec[j,:], w_off, _S)
+            wv[j,jmp] = log(sum(vec[j,:])); jmp += 1
+
+            betasum += alpha[j]
         end
-        wv
+
+        beta[i] = betasum
+        alpha ./= betasum
+
+        for j in 1:k
+            jsampl = sample(eachindex(alpha), Weights(alpha))
+            vec_sampled[j,:] = vec[jsampl,:]
+        end
     end
+
+    # return log sum of betas - logK
 end
 
 function llr_rmc!(m::LLROptModel)
