@@ -398,18 +398,18 @@ function ll_full_rmc(Q, on_ind, idist, bc, t_set, t_comp)
     _R = zeros(eltype(Q), length(_on), length(_off))
     _S = zeros(eltype(Q), length(_off), length(_on))
 
-    min_bc = minimum(bc)  # length of shortest trajectory
-    n = min_bc*2 + 1
+    n = minimum(bc)      # smallest number of on-off cycles
     k = size(t_set)[1]   # number of trajectories
 
     w_on = zeros(1, length(_on))
     w_off = zeros(1, length(_off))
     w_on .= _idist_on'   # first init
-    wv = zeros(Float64, k, n)    # log vector norms
+    wv = zeros(Float64, k, 2*n+1)    # log vector norms
     vec = zeros(Float64, k, length(w_on))
     vec_sampled = zeros(Float64, k, length(w_on))
     alpha = zeros(Float64, k)
-    logbeta = zeros(Float64, min_bc)
+    logbeta = zeros(Float64, n)
+    jsampl = zeros(Int32, k)
     t_on, t_off = 0.0, 0.0
 
     #### trajectory-dependent operations ####
@@ -417,10 +417,13 @@ function ll_full_rmc(Q, on_ind, idist, bc, t_set, t_comp)
     for j in 1:k
         wv[j,1] = sum(w_on)
         vec[j,:] = w_on
+        vec_sampled[j,:] = w_on
     end
 
-    for i in 1:min_bc
-        jmp = 2
+    i = 1
+    jmp = 2
+
+    while i <= n
         betasum = 0
         jsampl = 0
 
@@ -442,11 +445,11 @@ function ll_full_rmc(Q, on_ind, idist, bc, t_set, t_comp)
             alpha[j] = sum(w_on)
             w_on ./= alpha[j]
             mul!(w_off, w_on, _R)
-            wv[j,jmp] = log(sum(w_off)); jmp += 1
+            wv[j,jmp] = log(sum(w_off));
 
             w_off ./= sum(w_off)
             mul!(w_on, w_off, _S)
-            wv[j,jmp] = log(sum(w_on)); jmp += 1
+            wv[j,jmp+1] = log(sum(w_on));
             vec[j,:] = w_on'
 
             betasum += alpha[j]
@@ -454,15 +457,18 @@ function ll_full_rmc(Q, on_ind, idist, bc, t_set, t_comp)
 
         alpha ./= betasum
         logbeta[i] = log(betasum)
+        jsampl = sample(eachindex(alpha), Weights(alpha), k)
 
         for j in 1:k
-            jsampl = sample(eachindex(alpha), Weights(alpha))
-            vec_sampled[j,:] = vec[jsampl,:]
+            vec_sampled[j,:] = vec[jsampl[j],:]
         end
+
+        i += 1
+        jmp += 2
     end
 
     # return log sum of betas - logK
-    sum(logbeta) / min_bc - log(k)
+    sum(logbeta)
 end
 
 function llr_rmc!(m::LLROptModel)
@@ -486,19 +492,19 @@ end
     kon = 5
     ku = 5
     koff = 5
-    n = 10
-    k = 5
+    n = 100
+    k = 1000
     dt = (1/(c*kb) + 1/kon + 1/ku + 1/koff)
 
     global m = LLROptModel(;
         weighted_edges = [(1,3,kb), 
-                          (1,2,1e0), 
-                          (2,4,1e0), 
+                          (1,2,1e-5), 
+                          (2,4,1e-5), 
                           (2,1,koff), 
-                          (3,1,1e0), 
+                          (3,1,1e-5), 
                           (3,4,kon), 
                           (4,2,ku), 
-                          (4,3,1e0)],
+                          (4,3,1e-5)],
         input_edges = [(1,3), (2,4)],
         on_ind = BitArray([0,1,0,1]),
         c = c,
@@ -508,7 +514,15 @@ end
         idist = [0, 0.5, 0, 0.5]
     )
     init!(m)
+
+    #### RMC
     generate_rmc!(m)
-    get_residence_time_rmc!(m)
-    ll_full_rmc(m.Q_c, m.on_ind, m.idist, m.bc, m.t_set, m.t_comp)
+    # get_residence_time_rmc!(m)
+    # ll_c = ll_full_rmc(m.Q_c, m.on_ind, m.idist, m.bc, m.t_set, m.t_comp)
+    # ll_cdc = ll_full_rmc(m.Q_cdc, m.on_ind, m.idist, m.bc, m.t_set, m.t_comp)
+    # (ll_c - ll_cdc) * m.k / sum(m.rt)
+
+    #### Brute-force
+    # ir_full!(m)
+    # m.llr[end] / sum(m.rt)
 end

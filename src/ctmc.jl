@@ -145,7 +145,7 @@ end
 ## . - -- .- .-.- . .- .-- -.- .- .- --.-.... - -.-
 export  _jump_count
 function _jump_count(s, on_ind)
-    _jump_count = 0
+    _jump_count = 1
     _last_is_on = on_ind[s[1]]
     for si in s
         (on_ind[si] ⊻ _last_is_on) || continue

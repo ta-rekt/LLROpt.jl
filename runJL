@@ -1,15 +1,15 @@
 #!/bin/bash
 
-# run julia script $1 in parallel for parameter i ranging from 1 to $2 - 1, 
-# store output in folder $3
+# run julia script $1 in parallel on $2 CPUs, store output in folder $3
+# and use options $4
 
 cmd=""
 
 for ((i=1; i<$2; i++))
 do
-	cmd=$cmd"julia "$1" "$i" "$3" | "
+	cmd=$cmd"julia "$1" "$i" "$3" "$4" | "
 done
 
-cmd=$cmd"julia "$1" "$i" "$3
+cmd=$cmd"julia "$1" "$i" "$3" "$4
 
 eval $cmd

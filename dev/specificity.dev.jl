@@ -67,19 +67,19 @@ using LLROpt
 
             cw = w*cr
             wedges1 = [(5,1,gamma*kuoff),
-                        (1,5,cw*kboff),
-                        (2,6,cw*kbon),
-                        (6,2,gamma*kuon),
-                        (1,2,konu), 
-                        (1,3,kboff), 
-                        (2,4,kbon), 
-                        (2,1,koffu), 
-                        (3,1,kuoff), 
-                        (3,4,konb), 
-                        (4,2,kuon), 
-                        (4,3,koffb),
-                        (5,6,konb),
-                        (6,5,koffb)]
+                       (1,5,cw*kboff),
+                       (2,6,cw*kbon),
+                       (6,2,gamma*kuon),
+                       (1,2,konu), 
+                       (1,3,kboff), 
+                       (2,4,kbon), 
+                       (2,1,koffu), 
+                       (3,1,kuoff), 
+                       (3,4,konb), 
+                       (4,2,kuon), 
+                       (4,3,koffb),
+                       (5,6,konb),
+                       (6,5,koffb)]
 
             m1 = LLROptModel(;
                 weighted_edges = wedges1,
