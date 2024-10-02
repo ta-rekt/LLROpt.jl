@@ -30,25 +30,40 @@ function ir_acc_log(logrates, args...)
         wedges[i] = (w1, w2, w3)
     end
 
+    # wedges = [(u,v,10 ^ r) for ((u,v),r) in zip(edges, logrates)]
+
     Q = build_mat(wedges, iedges, c)
     EP = EP_ss(Q)
+    
+    # clockwise bias
+    Jplus = 0
+    # pi = P_ss(Q)
+    # J = pi[1] * Q[1,2] - pi[2] * Q[2,1]
+    # Jplus = J + abs(J)
+
     IR = ir_acc(wedges, iedges, c, dc, on_ind)
 
-    (- IR + beta*EP, IR, EP)
+    (- IR + beta*EP + Jplus, IR, EP)
 end
 
 # IR FULL
 function ir_full_log(logrates, args...)
-
     m, beta, use_mean = args
 
-    for (key, val) in enumerate(logrates)
-        (u,v,r) = m.weighted_edges[key]
-        m.weighted_edges[key] = (u,v,10 ^ val)
+    for (betakey, val) in enumerate(logrates)
+        (u,v,r) = m.weighted_edges[betakey]
+        m.weighted_edges[betakey] = (u,v,10 ^ val)
     end
 
     init!(m)
     EP = EP_ss(m.Q_c)
+    
+    # clockwise bias
+    Jplus = 0
+    # pi = P_ss(Q)
+    # J = pi[1] * Q[1,2] - pi[2] * Q[2,1]
+    # Jplus = J + abs(J)
+
     ir_full!(m)
 
     # mean estimator
@@ -64,45 +79,20 @@ function ir_full_log(logrates, args...)
         IR = var(dXs ./ sq_deltat)
     end
 
-    (- IR + beta*EP, IR, EP)
+    (- IR + beta*EP + Jplus, IR, EP)
 end
 
 let
-    key = parse(Int32, ARGS[1])
-    fname = ARGS[2]
+    specfile = ARGS[1]
+    cpukey = parse(Int32, ARGS[2])
+    ncpus = parse(Int32, ARGS[3])
+    outdir = ARGS[4]
 
-    # rate bounds
-    a = 3e-3        # ums
-    D_tf = 7.4      # um^2/s
-    D_cplx = 0.1    # um^2/s
-    c = 5.6         # um^-3
-    dc = 0.1 * c
-    dl_tf = 4*a*D_tf
-    ub = 5
-    lb = 1e-5
-    max_ir_full = 0.5 * (dc/c)^2 * c*4*a*D_tf
+    specpath = string("../spec/", specfile)
+    outpath = "data/$(outdir)/"
+    Base.Filesystem.mkpath(outpath)
 
-    llb = ones(8) .* log10(lb)
-    lub = ones(8) .* log10(ub)
-    lub[1] = log10(dl_tf)
-    lub[3] = log10(dl_tf)
-
-    # 2-state circuit
-    # edges = [(1,2),(2,1)]
-    # input_edges = [(1,2)]
-    # on_ind = BitArray([0,1])
-
-    # 4-state circuit
-    edges = [(1,3), (1,2), (2,4), (2,1), (3,1), (3,4), (4,2), (4,3)]
-    input_edges = [(1,3), (2,4)]
-    on_ind = BitArray([0,1,0,1])
-
-    # Optimization params
-    maxiters_acc = 20000
-    maxiters_full = 5000
-    sigma0 = log10(ub) / 4
-    x0 = (lub .+ llb) ./ 2
-    we = [(u,v,r) for ((u,v),r) in zip(edges, x0)]
+    include(specpath)
 
     m = LLROptModel(;
         weighted_edges = we,
@@ -110,69 +100,75 @@ let
         on_ind = on_ind,
         c = c,
         dc = dc,
-        n = 1000000,
-        idist = ones(4) ./ 4,
+        n = n,
+        k = k,
+        idist = idist,
     )
     init!(m)
+    nparams_per_cpu = div(nparams, ncpus)
 
-    betas = vcat(range(3e-4, stop=1e-5, length=10), 10 .^ range(-4.8, stop=-8, length=5))
-    # betas = [0]
-    # betas = range(2e-4, stop=1e-5, length=5)
     results_acc = Dict{Int64, Vector{Float32}}()
     results_full = Dict{Int64, Vector{Float32}}()
     
-    beta = betas[key]
+    for k in 1:nparams_per_cpu
+        betakey = (cpukey - 1) * nparams_per_cpu + k
+        beta = betas[betakey]
 
-    # ACC
-    args_acc = [edges, m.input_edges, c, dc, on_ind, beta]
-    targetfun_acc(x, p) = ir_acc_log(x, args_acc...)[1]
-    ir_acc(x) = ir_acc_log(x, args_acc...)[2]
-    ep_acc(x) = ir_acc_log(x, args_acc...)[3]
+        if whichf == "acc" || whichf == "both"
+            # ACC
+            args_acc = [edges, m.input_edges, c, dc, on_ind, beta]
+            targetfun_acc(x, p) = ir_acc_log(x, args_acc...)[1]
+            ir_acc(x) = ir_acc_log(x, args_acc...)[2]
+            ep_acc(x) = ir_acc_log(x, args_acc...)[3]
 
-    optf_acc = Optimization.OptimizationFunction(targetfun_acc)
-    prob_acc = Optimization.OptimizationProblem(optf_acc, x0, lb=llb, ub=lub, maxiters=maxiters_acc)
-    sol_acc = solve(prob_acc, BBO_adaptive_de_rand_1_bin_radiuslimited())
+            optf_acc = Optimization.OptimizationFunction(targetfun_acc)
+            prob_acc = Optimization.OptimizationProblem(optf_acc, x0, lb=llb, ub=lub, maxiters=maxiters_acc)
+            sol_acc = solve(prob_acc, BBO_adaptive_de_rand_1_bin_radiuslimited())
 
-    # FULL
-    args_full = [m, beta, false]  # use variance estimator in optimization
-    targetfun_full(x, p) = ir_full_log(x, args_full...)[1]
-    _ir_full(x) = ir_full_log(x, args_full...)[2]
-    ep_full(x) = ir_full_log(x, args_full...)[3]
+            # RESULTS
+            results_acc[betakey] = vcat(sol_acc.u, ir_acc(sol_acc.u), ep_acc(sol_acc.u))
+        end
 
-    optf_full = Optimization.OptimizationFunction(targetfun_full)
-    prob_full = Optimization.OptimizationProblem(optf_full, x0, lb=llb, ub=lub, maxiters=maxiters_full)
-    sol_full = solve(prob_full, BBO_adaptive_de_rand_1_bin_radiuslimited())
+        if whichf == "full" || whichf == "both"
+            # FULL
+            args_full = [m, beta, false]  # use variance estimator in optimization
+            targetfun_full(x, p) = ir_full_log(x, args_full...)[1]
+            _ir_full(x) = ir_full_log(x, args_full...)[2]
+            ep_full(x) = ir_full_log(x, args_full...)[3]
 
-    # RESULTS
-    results_acc[key] = vcat(sol_acc.u, ir_acc(sol_acc.u), ep_acc(sol_acc.u))
-    results_full[key] = vcat(sol_full.u, 0, ep_full(sol_full.u), 0)
+            optf_full = Optimization.OptimizationFunction(targetfun_full)
+            prob_full = Optimization.OptimizationProblem(optf_full, x0, lb=llb, ub=lub, maxiters=maxiters_full)
+            sol_full = solve(prob_full, BBO_adaptive_de_rand_1_bin_radiuslimited())
 
-    N = 2000
-    
-    irvals = Vector{Float32}(undef, N)
-    args_full = [m, beta, true]   # use mean estimator for final output
-    _ir_full(x) = ir_full_log(x, args_full...)[2]
-    xopt = results_full[key][1:8]
-    # xopt = [dl_tf, ub]
+            results_full[betakey] = vcat(sol_full.u, 0, ep_full(sol_full.u), 0)
 
-    for i in 1:N
-        irvals[i] = _ir_full(xopt)
+            irvals = Vector{Float32}(undef, N)
+            args_full = [m, beta, true]   # use mean estimator for final output
+            _ir_full_mean(x) = ir_full_log(x, args_full...)[2]
+            xopt = results_full[betakey][1:8]
+
+            for i in 1:N
+                irvals[i] = _ir_full_mean(xopt)
+            end
+
+            results_full[betakey][9] = Statistics.mean(irvals)
+            results_full[betakey][11] = Statistics.std(irvals)
+        end
     end
 
-    results_full[key][9] = Statistics.mean(irvals)
-    results_full[key][11] = Statistics.std(irvals)
-
-    path = "data/$(fname)/"
-    Base.Filesystem.mkpath(path)
-    file1 = string(path, "ir_acc_vs_ep_pareto_4s_beta$(key).json")
-    file2 = string(path, "ir_full_vs_ep_pareto_4s_beta$(key).json")
-
-    open(file1, "w") do f
-        JSON.print(f, results_acc, 4)
+    if whichf == "acc" || whichf == "both"
+        file1 = string(outpath, "ir_acc_vs_ep_pareto_pid$(cpukey).json")
+            
+        open(file1, "w") do f
+            JSON.print(f, results_acc, 4)
+        end
     end
 
-    open(file2, "w") do f
-        JSON.print(f, results_full, 4)
+    if whichf == "full" || whichf == "both"
+        file2 = string(outpath, "ir_full_vs_ep_pareto_pid$(cpukey).json")
+
+        open(file2, "w") do f
+            JSON.print(f, results_full, 4)
+        end
     end
 end
-
