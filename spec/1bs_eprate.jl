@@ -24,6 +24,7 @@ edges = [(1,3), (1,2), (2,4), (2,1), (3,1), (3,4), (4,2), (4,3)]
 input_edges = [(1,3), (2,4)]
 on_ind = BitArray([0,1,0,1])
 idist = ones(4) ./ 4
+e = (1,2)                   # symmetry-breaking edge
 
 # Optimization params
 maxiters_acc = 30000

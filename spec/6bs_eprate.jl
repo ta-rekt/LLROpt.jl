@@ -32,6 +32,7 @@ input_edges = [(i,i+1) for i in range(1,13) if i != 7]
 on_ind = vcat(zeros(Bool, 7), ones(Bool, 7))
 on_ind = BitArray(on_ind)
 idist = ones(14) ./ 14
+e = (-1,8)                   # symmetry-breaking edge
 
 ### Bounding box on rates
 ub = 5
@@ -41,7 +42,7 @@ lub = ones(38) .* log10(ub)
 lub[1:2:24] .= log10(dl_tf)
 
 ### Optimization parameters
-maxiters_acc = 20000
+maxiters_acc = 30000
 maxiters_full = 5000
 sigma0 = log10(ub) / 4
 x0 = (lub .+ llb) ./ 2

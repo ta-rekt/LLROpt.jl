@@ -17,7 +17,7 @@ using Statistics
 
 # IR ACC
 function ir_acc_log(logrates, args...)
-    edges, iedges, c, dc, on_ind, beta = args
+    edges, iedges, c, dc, on_ind, beta, e = args
     nrates = length(edges)
     rates = 10 .^ logrates
     wedges = Vector{Tuple{Int64, Int64, Float32}}(undef, nrates)
@@ -35,11 +35,14 @@ function ir_acc_log(logrates, args...)
     Q = build_mat(wedges, iedges, c)
     EP = EP_ss(Q)
     
-    # clockwise bias
+    # clockwise bias by forcing flow along edge e
     Jplus = 0
-    # pi = P_ss(Q)
-    # J = pi[1] * Q[1,2] - pi[2] * Q[2,1]
-    # Jplus = J + abs(J)
+    m, n = e
+    if m >= 0
+        pi = P_ss(Q)
+        J = pi[m] * Q[m,n] - pi[n] * Q[n,m]
+        Jplus = J + abs(J)
+    end
 
     IR = ir_acc(wedges, iedges, c, dc, on_ind)
 
@@ -48,7 +51,7 @@ end
 
 # IR FULL
 function ir_full_log(logrates, args...)
-    m, beta, use_mean = args
+    m, beta, use_mean, e = args
 
     for (betakey, val) in enumerate(logrates)
         (u,v,r) = m.weighted_edges[betakey]
@@ -60,9 +63,12 @@ function ir_full_log(logrates, args...)
     
     # clockwise bias
     Jplus = 0
-    # pi = P_ss(Q)
-    # J = pi[1] * Q[1,2] - pi[2] * Q[2,1]
-    # Jplus = J + abs(J)
+    m, n = e
+    if m >= 0
+        pi = P_ss(Q)
+        J = pi[m] * Q[m,n] - pi[n] * Q[n,m]
+        Jplus = J + abs(J)
+    end
 
     ir_full!(m)
 
@@ -116,7 +122,7 @@ let
 
         if whichf == "acc" || whichf == "both"
             # ACC
-            args_acc = [edges, m.input_edges, c, dc, on_ind, beta]
+            args_acc = [edges, m.input_edges, c, dc, on_ind, beta, e]
             targetfun_acc(x, p) = ir_acc_log(x, args_acc...)[1]
             ir_acc(x) = ir_acc_log(x, args_acc...)[2]
             ep_acc(x) = ir_acc_log(x, args_acc...)[3]
@@ -131,7 +137,7 @@ let
 
         if whichf == "full" || whichf == "both"
             # FULL
-            args_full = [m, beta, false]  # use variance estimator in optimization
+            args_full = [m, beta, false, e]  # use variance estimator in optimization
             targetfun_full(x, p) = ir_full_log(x, args_full...)[1]
             _ir_full(x) = ir_full_log(x, args_full...)[2]
             ep_full(x) = ir_full_log(x, args_full...)[3]
