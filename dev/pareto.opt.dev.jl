@@ -53,9 +53,9 @@ end
 function ir_full_log(logrates, args...)
     m, beta, use_mean, e = args
 
-    for (betakey, val) in enumerate(logrates)
-        (u,v,r) = m.weighted_edges[betakey]
-        m.weighted_edges[betakey] = (u,v,10 ^ val)
+    for (keyb, val) in enumerate(logrates)
+        (u,v,r) = m.weighted_edges[keyb]
+        m.weighted_edges[keyb] = (u,v,10 ^ val)
     end
 
     init!(m)
@@ -117,8 +117,8 @@ let
     results_full = Dict{Int64, Vector{Float32}}()
     
     for k in 1:nparams_per_cpu
-        betakey = (cpukey - 1) * nparams_per_cpu + k
-        beta = betas[betakey]
+        keyb = (cpukey - 1) * nparams_per_cpu + k
+        beta = betas[keyb]
 
         if whichf == "acc" || whichf == "both"
             # ACC
@@ -132,7 +132,7 @@ let
             sol_acc = solve(prob_acc, BBO_adaptive_de_rand_1_bin_radiuslimited())
 
             # RESULTS
-            results_acc[betakey] = vcat(sol_acc.u, ir_acc(sol_acc.u), ep_acc(sol_acc.u))
+            results_acc[keyb] = vcat(sol_acc.u, ir_acc(sol_acc.u), ep_acc(sol_acc.u))
         end
 
         if whichf == "full" || whichf == "both"
@@ -146,35 +146,67 @@ let
             prob_full = Optimization.OptimizationProblem(optf_full, x0, lb=llb, ub=lub, maxiters=maxiters_full)
             sol_full = solve(prob_full, BBO_adaptive_de_rand_1_bin_radiuslimited())
 
-            results_full[betakey] = vcat(sol_full.u, 0, ep_full(sol_full.u), 0)
+            results_full[keyb] = vcat(sol_full.u, 0, ep_full(sol_full.u), 0)
 
             irvals = Vector{Float32}(undef, N)
             args_full = [m, beta, true]   # use mean estimator for final output
             _ir_full_mean(x) = ir_full_log(x, args_full...)[2]
-            xopt = results_full[betakey][1:8]
+            xopt = results_full[keyb][1:8]
 
             for i in 1:N
                 irvals[i] = _ir_full_mean(xopt)
             end
 
-            results_full[betakey][9] = Statistics.mean(irvals)
-            results_full[betakey][11] = Statistics.std(irvals)
+            results_full[keyb][9] = Statistics.mean(irvals)
+            results_full[keyb][11] = Statistics.std(irvals)
         end
     end
 
+    ######### Write data
+
     if whichf == "acc" || whichf == "both"
-        file1 = string(outpath, "ir_acc_vs_ep_pareto_pid$(cpukey).json")
+        datafile_acc = string(outpath, "ir_acc_vs_ep_pareto_pid$(cpukey).json")
             
-        open(file1, "w") do f
+        open(datafile_acc, "w") do f
             JSON.print(f, results_acc, 4)
         end
     end
 
     if whichf == "full" || whichf == "both"
-        file2 = string(outpath, "ir_full_vs_ep_pareto_pid$(cpukey).json")
+        datafile_full = string(outpath, "ir_full_vs_ep_pareto_pid$(cpukey).json")
 
-        open(file2, "w") do f
+        open(datafile_full, "w") do f
             JSON.print(f, results_full, 4)
+        end
+    end
+
+    ########## Write parameters
+
+    if cpukey == 1
+        if whichf == "acc" || whichf == "both"
+            params_acc = Dict{String, Any}()
+            params_acc["ncpus"] = ncpus
+            params_acc["nparams"] = nparams
+            params_acc["betas"] = betas
+
+            paramfile_acc = string(outpath, "params_acc.json")
+                
+            open(paramfile_acc, "w") do f
+                JSON.print(f, params_acc, 4)
+            end
+        end
+
+        if whichf == "full" || whichf == "both"
+            params_full = Dict{String, Any}()
+            params_full["ncpus"] = ncpus
+            params_full["nparams"] = nparams
+            params_full["betas"] = betas
+
+            paramfile_full = string(outpath, "params_full.json")
+
+            open(paramfile_full, "w") do f
+                JSON.print(f, params_full, 4)
+            end
         end
     end
 end
