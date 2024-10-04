@@ -46,7 +46,9 @@ k = 1
 whichf = "acc"
 
 ### Temperature parameter
-betas = 10 .^ range(-5, stop=3, length=30)
+betas = 10 .^ range(-5, stop=-2, length=60)
+# betas = 10 .^ range(-3, stop=3, length=60)
+# betas = vcat(range1, range2, range3)
 nparams = length(betas)
 
 ### Other parameters

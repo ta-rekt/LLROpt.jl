@@ -23,12 +23,15 @@ function target_acc(logrates, args...)
     wedges2 = [(u,v,10 ^ r) for ((u,v),r) in zip(edges2, logrates2)]
 
     Q1 = build_mat(wedges1, iedges, cr)
+    Q2 = build_mat(wedges2, iedges, cr)
     EP = EP_ss(Q1)
     pi = P_ss(Q1)
+    pi2 = P_ss(Q2)
     J = pi[1] * Q1[1,2] - pi[2] * Q1[2,1]
     Jplus = J + abs(J)   # penalty for counterclockwise flux
     ir_acc_pure = ir_acc(wedges1, iedges, cr, dc, on_ind1)
-    ir_acc_mix = ir_acc(wedges2, iedges, cr, dc, on_ind2)
+    # ir_acc_mix = ir_acc(wedges2, iedges, cr, dc, on_ind2)
+    ir_acc_mix = log2((pi2[4])/(pi2[6]))
 
     (- ir_acc_pure - beta*ir_acc_mix + Jplus, ir_acc_mix, ir_acc_pure, EP)
 end
