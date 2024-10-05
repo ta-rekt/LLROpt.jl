@@ -34,7 +34,7 @@ idist1 = ones(4) ./ 4
 idist2 = ones(6) ./ 6
 
 ### Optimization parameters
-maxiters_acc = 10000
+maxiters_acc = 20000
 maxiters_full = 5000
 xinit1 = (lub1 .+ llb1) ./ 2
 xinit2 = (lub2 .+ llb2) ./ 2
@@ -46,13 +46,14 @@ k = 1
 whichf = "acc"
 
 ### Temperature parameter
-betas = 10 .^ range(-5, stop=-2, length=60)
-# betas = 10 .^ range(-3, stop=3, length=60)
+# betas = 10 .^ range(-5, stop=-2, length=60)
+betas = 10 .^ range(-3, stop=3, length=30)
 # betas = vcat(range1, range2, range3)
 nparams = length(betas)
 
 ### Other parameters
-gammas = [1.5, 2.5, 5, 10, 50, 500, 5000, 50000]
-# gammas = [5, 50, 50000]
+# gammas = [1.5, 2.5, 5, 10, 50, 500, 5000, 50000]
+gammas = [1.5, 2.5, 10]
 # gammas = range(1, stop=4, length=10)
-wvals = [1e-5, 2, 5, 10, 50, 500]
+# wvals = [1e-5, 2, 5, 10, 50, 500]
+wvals = [5, 500]

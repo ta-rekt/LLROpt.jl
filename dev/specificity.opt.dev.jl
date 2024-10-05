@@ -30,8 +30,8 @@ function target_acc(logrates, args...)
     J = pi[1] * Q1[1,2] - pi[2] * Q1[2,1]
     Jplus = J + abs(J)   # penalty for counterclockwise flux
     ir_acc_pure = ir_acc(wedges1, iedges, cr, dc, on_ind1)
-    # ir_acc_mix = ir_acc(wedges2, iedges, cr, dc, on_ind2)
-    ir_acc_mix = log2((pi2[4])/(pi2[6]))
+    ir_acc_mix = ir_acc(wedges2, iedges, cr, dc, on_ind2)
+    # ir_acc_mix = log2((pi2[4])/(pi2[6]))
 
     (- ir_acc_pure - beta*ir_acc_mix + Jplus, ir_acc_mix, ir_acc_pure, EP)
 end
@@ -57,8 +57,8 @@ function target_full(logrates, args...)
     init!(m1)
     init!(m2)
     EP = EP_ss(m1.Q_c)
-    pi = P_ss(m.Q_c)
-    J = pi[1] * m.Q_c[1,2] - pi[2] * m.Q_c[2,1]
+    pi = P_ss(m1.Q_c)
+    J = pi[1] * m1.Q_c[1,2] - pi[2] * m1.Q_c[2,1]
     Jplus = J + abs(J)   # penalty for counterclockwise flux
     ir_full!(m1)
     ir_full!(m2)
@@ -162,7 +162,6 @@ let
             results_full[keyb] = Dict{Int64, Dict{Int64, Vector{Float32}}}()
 
             for (keyg, gamma) in enumerate(gammas)
-                results_acc[keyb][keyg] = Dict{Int64, Vector{Float32}}()
                 results_full[keyb][keyg] = Dict{Int64, Vector{Float32}}()
 
                 for (keyw, w) in enumerate(wvals)
@@ -221,34 +220,21 @@ let
     ########## Write parameters
 
     if cpukey == 1
-        if whichf == "acc" || whichf == "both"
-            params_acc = Dict{String, Any}()
-            params_acc["ncpus"] = ncpus
-            params_acc["nparams"] = nparams
-            params_acc["betas"] = betas
-            params_acc["gammas"] = gammas
-            params_acc["wvals"] = wvals
+        params = Dict{String, Any}()
+        params["ncpus"] = ncpus
+        params["nparams"] = nparams
+        params["betas"] = betas
+        params["gammas"] = gammas
+        params["wvals"] = wvals
+        params["n"] = n
+        params["N"] = N
+        params["maxiters_acc"] = maxiters_acc
+        params["maxiters_full"] = maxiters_full
 
-            paramfile_acc = string(outpath, "params_acc.json")
-                
-            open(paramfile_acc, "w") do f
-                JSON.print(f, params_acc, 4)
-            end
-        end
-
-        if whichf == "full" || whichf == "both"
-            params_full = Dict{String, Any}()
-            params_full["ncpus"] = ncpus
-            params_full["nparams"] = nparams
-            params_full["betas"] = betas
-            params_full["gammas"] = gammas
-            params_full["wvals"] = wvals
-
-            paramfile_full = string(outpath, "params_full.json")
-
-            open(paramfile_full, "w") do f
-                JSON.print(f, params_full, 4)
-            end
+        paramfile = string(outpath, "params.json")
+            
+        open(paramfile, "w") do f
+            JSON.print(f, params, 4)
         end
     end
 end
