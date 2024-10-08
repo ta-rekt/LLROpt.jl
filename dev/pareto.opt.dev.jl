@@ -63,10 +63,10 @@ function ir_full_log(logrates, args...)
     
     # clockwise bias
     Jplus = 0
-    m, n = e
-    if m >= 0
+    u, v = e
+    if u >= 0
         pi = P_ss(Q)
-        J = pi[m] * Q[m,n] - pi[n] * Q[n,m]
+        J = pi[u] * Q[u,v] - pi[v] * Q[v,u]
         Jplus = J + abs(J)
     end
 
@@ -149,7 +149,7 @@ let
             results_full[keyb] = vcat(sol_full.u, 0, ep_full(sol_full.u), 0)
 
             irvals = Vector{Float32}(undef, N)
-            args_full = [m, beta, true]   # use mean estimator for final output
+            args_full = [m, beta, true, e]   # use mean estimator for final output
             _ir_full_mean(x) = ir_full_log(x, args_full...)[2]
             xopt = results_full[keyb][1:8]
 
@@ -183,30 +183,19 @@ let
     ########## Write parameters
 
     if cpukey == 1
-        if whichf == "acc" || whichf == "both"
-            params_acc = Dict{String, Any}()
-            params_acc["ncpus"] = ncpus
-            params_acc["nparams"] = nparams
-            params_acc["betas"] = betas
+        params = Dict{String, Any}()
+        params["ncpus"] = ncpus
+        params["nparams"] = nparams
+        params["betas"] = betas
+        params["n"] = n
+        params["N"] = N
+        params["maxiters_acc"] = maxiters_acc
+        params["maxiters_full"] = maxiters_full
 
-            paramfile_acc = string(outpath, "params_acc.json")
-                
-            open(paramfile_acc, "w") do f
-                JSON.print(f, params_acc, 4)
-            end
-        end
-
-        if whichf == "full" || whichf == "both"
-            params_full = Dict{String, Any}()
-            params_full["ncpus"] = ncpus
-            params_full["nparams"] = nparams
-            params_full["betas"] = betas
-
-            paramfile_full = string(outpath, "params_full.json")
-
-            open(paramfile_full, "w") do f
-                JSON.print(f, params_full, 4)
-            end
+        paramfile = string(outpath, "params.json")
+            
+        open(paramfile, "w") do f
+            JSON.print(f, params, 4)
         end
     end
 end

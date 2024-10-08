@@ -43,15 +43,15 @@ lub[1:2:24] .= log10(dl_tf)
 
 ### Optimization parameters
 maxiters_acc = 30000
-maxiters_full = 5000
+maxiters_full = 8000
 sigma0 = log10(ub) / 4
 x0 = (lub .+ llb) ./ 2
 we = [(u,v,r) for ((u,v),r) in zip(edges, x0)]
 n = 1000000
 k = 1
 N = 2000
-whichf = "acc"
+whichf = "both"
 
 ### temperature parameter
-betas = vcat(range(3e-4, stop=1e-5, length=20), 10 .^ range(-4.8, stop=-9, length=20))
+betas = vcat(range(3e-4, stop=1e-5, length=15), 10 .^ range(-4.8, stop=-9, length=15))
 nparams = length(betas)
