@@ -30,7 +30,7 @@ idist2 = ones(3) ./ 3
 
 ### Optimization parameters
 maxiters_acc = 20000
-maxiters_full = 5000
+maxiters_full = 3000
 xinit1 = (lub1 .+ llb1) ./ 2
 xinit2 = (lub2 .+ llb2) ./ 2
 we1 = [(u,v,r) for ((u,v),r) in zip(edges1, xinit1)]
@@ -51,7 +51,7 @@ nparams = length(betas)
 gammas = [1.5, 2.5, 10]
 # gammas = range(1, stop=4, length=10)
 # wvals = [1e-5, 2, 5, 10, 50, 500]
-wvals = [5, 50]
+wvals = [6]
 
 ### objective functions
 
