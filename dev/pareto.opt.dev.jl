@@ -151,14 +151,14 @@ let
             irvals = Vector{Float32}(undef, N)
             args_full = [m, beta, true, e]   # use mean estimator for final output
             _ir_full_mean(x) = ir_full_log(x, args_full...)[2]
-            xopt = results_full[keyb][1:8]
+            xopt = results_full[keyb][1:length(sol_full.u)]
 
             for i in 1:N
                 irvals[i] = _ir_full_mean(xopt)
             end
 
-            results_full[keyb][9] = Statistics.mean(irvals)
-            results_full[keyb][11] = Statistics.std(irvals)
+            results_full[keyb][end-2] = Statistics.mean(irvals)
+            results_full[keyb][end] = Statistics.std(irvals)
         end
     end
 
