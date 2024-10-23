@@ -89,7 +89,7 @@ end
 
 # returns - IR_full_mix - beta * IR_full_pure - gamma * EP
 function target_full(logrates, args...)
-    m1, m2, beta, gamma, w = args
+    m1, m2, beta, gamma, w, use_mean = args
     logcw = log10(m1.c) + log10(w)
     kboff, konu, kbon, koffu, kuoff, konb, kuon, koffb = logrates
     logrates2 = [kuoff+log10(gamma), kboff+logcw, kbon+logcw, kuon+log10(gamma), 
@@ -118,19 +118,22 @@ function target_full(logrates, args...)
     nskip = 5
 
     # empirical mean estimator
-    # ir_full_pure = m1.llr[end] / sum(m1.rt)
-    # ir_full_mix = m2.llr[end] / sum(m2.rt)
+    if use_mean
+        ir_full_pure = m1.llr[end] / sum(m1.rt)
+        ir_full_mix = m2.llr[end] / sum(m2.rt)
+    else
 
     # variance estimator
-    dXs1 = diff(m1.llr[1:nskip:end-1])
-    time1 = 2 .* cumsum(m1.rt)
-    sq_deltat1 = map(x->sqrt(x), diff(time1[1:nskip:end]))
-    ir_full_pure = var(dXs1 ./ sq_deltat1)
+        dXs1 = diff(m1.llr[1:nskip:end-1])
+        time1 = 2 .* cumsum(m1.rt)
+        sq_deltat1 = map(x->sqrt(x), diff(time1[1:nskip:end]))
+        ir_full_pure = var(dXs1 ./ sq_deltat1)
 
-    dXs2 = diff(m2.llr[1:nskip:end-1])
-    time2 = 2 .* cumsum(m2.rt)
-    sq_deltat2 = map(x->sqrt(x), diff(time2[1:nskip:end]))
-    ir_full_mix = var(dXs2 ./ sq_deltat2)
+        dXs2 = diff(m2.llr[1:nskip:end-1])
+        time2 = 2 .* cumsum(m2.rt)
+        sq_deltat2 = map(x->sqrt(x), diff(time2[1:nskip:end]))
+        ir_full_mix = var(dXs2 ./ sq_deltat2)
+    end
 
     (- ir_full_pure - beta*ir_full_mix + Jplus, ir_full_mix, ir_full_pure, EP)
 end

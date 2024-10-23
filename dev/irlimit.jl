@@ -7,6 +7,8 @@
     using StatsBase
     using Random
     using Base.Threads
+    using Statistics
+    using JSON
 end
 
 ## . - -- .- .-.- . .- .-- -.- .- .- --.-.... - -.-
@@ -62,5 +64,135 @@ end
 
     open(file2, "w") do f
         JSON.print(f, ir_acc_vals, 4)
+    end
+end
+
+## . - -- .- .-.- . .- .-- -.- .- .- --.-.... - -.-
+# DOING: limits of DR for handcrafted circuit
+
+@time let
+
+    outdir = "20241022/dr_limits"
+    fname = "dr_max_full_noac.json"
+    acc = false
+
+    if acc
+        include("../spec/1bs_specificity.jl")
+    else
+        include("../spec/1bs_specificity_noac.jl")
+    end
+
+    outpath = "data/$(outdir)/"
+    Base.Filesystem.mkpath(outpath)
+
+    beta = 0
+    gammas = [1.5, 2.5, 10]
+    wvals = [2,5,100]
+    N = 300
+    keyb = 1
+
+    # ACC = 1
+    if acc
+        # max ir
+        # kboff = log10(0.0888)
+        # konu = -4.95
+        # kbon = -4.95
+        # koffu = log10(5.0)
+        # kuoff = -4.95
+        # konb = log10(5.0)
+        # kuon = log10(5.0)
+        # koffb = -4.95
+
+        # # max dr
+        kboff = log10(0.0888)
+        konu = -4.95
+        kbon = log10(0.0888)
+        koffu = -4.95
+        kuoff = log10(5.0)
+        konb = log10(5.0)
+        kuon = log10(5.0)
+        koffb = log10(5.0)
+
+    # ACC = 0
+    else
+        kb = log10(0.0888)
+        ku = log10(5.0)
+    end
+
+    results_full = Dict{Int64, Dict{Int64, Dict{Int64, Vector{Float32}}}}()
+    results_full[keyb] = Dict{Int64, Dict{Int64, Vector{Float32}}}()
+
+    for (keyg, gamma) in enumerate(gammas)
+        results_full[keyb][keyg] = Dict{Int64, Vector{Float32}}()
+
+        for (keyw, w) in enumerate(wvals)
+
+            if acc
+                logrates = kboff, konu, kbon, koffu, kuoff, konb, kuon, koffb
+                logcw = log10(cr) + log10(w)
+                logrates2 = [kuoff+log10(gamma), kboff+logcw, kbon+logcw, kuon+log10(gamma), 
+                    konu, kboff, kbon, koffu, kuoff, konb, kuon, koffb, konb, koffb]
+            else
+                logrates = kb, ku
+                logcw = log10(cr) + log10(w)
+                logrates2 = [kb, ku, kb + logcw, ku + log10(gamma)]
+            end
+
+            we1 = [(u,v,r) for ((u,v),r) in zip(edges1, logrates)]
+            we2 = [(u,v,r) for ((u,v),r) in zip(edges2, logrates2)]
+
+            irvals_mix = Vector{Float32}(undef, N)
+            irvals_pure = Vector{Float32}(undef, N)
+
+            m1 = LLROptModel(;
+                weighted_edges = we1,
+                input_edges = input_edges,
+                on_ind = on_ind1,
+                c = cr,
+                dc = dc,
+                n = n,
+                k = k,
+                idist = idist1,
+            )
+
+            m2 = LLROptModel(;
+                weighted_edges = we2,
+                input_edges = input_edges,
+                on_ind = on_ind2,
+                c = cr,
+                dc = dc,
+                n = n,
+                k = k,
+                idist = idist2,
+            )
+
+            init!(m1)
+            init!(m2)
+
+            args_full = m1, m2, beta, gamma, w, true
+
+            ir_full_mix(x) = target_full(x, args_full...)[2]
+            ir_full_pure(x) = target_full(x, args_full...)[3]
+            ep_full(x) = target_full(x, args_full...)[4]
+
+            for i in 1:N
+                irvals_mix[i] = ir_full_mix(logrates)
+                irvals_pure[i] = ir_full_pure(logrates)
+            end
+
+            results_full[keyb][keyg][keyw] = vcat([i for i in logrates], 
+                                                  Statistics.mean(irvals_mix), 
+                                                  Statistics.mean(irvals_pure), 
+                                                  Statistics.std(irvals_mix), 
+                                                  Statistics.std(irvals_pure), 
+                                                  ep_full(logrates), beta, gamma, w)
+
+        end
+    end
+
+    file = string(outpath, fname)
+                    
+    open(file, "w") do f
+        JSON.print(f, results_full, 4)
     end
 end
