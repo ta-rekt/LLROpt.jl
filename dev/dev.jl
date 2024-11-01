@@ -185,19 +185,84 @@ end
 end
 
 ## . - -- .- .-.- . .- .-- -.- .- .- --.-.... - -.-
-# DOING: testing text IO
+# DOING: testing V=D across time
 
-let 
-    file = "test.txt"
+@time let
 
-    open(file, "w") do f
-        for i in 1:5
-            line = string(i, i+1)
-            
-            println(f, line)
+    date = 20241101
+    c = 5.6
+    kb = 0.0888
+    kon = 5
+    ku = 5
+    koff = 5
+    taub = (1/(c*kb) + 1/kon + 1/ku + 1/koff)
+
+    n = 5000
+    nruns = 50000
+    ntimes = 200
+    nerrs = 100
+    times = range(taub, stop=n*taub/8, length=ntimes)
+    errs = range(0.5, stop=1e-2, length=nerrs)
+
+    ir_full_samples = Matrix{Float32}(undef, nruns, ntimes)
+    stop_times = Matrix{Float32}(undef, nruns, nerrs)
+
+    global m0 = LLROptModel(;
+        weighted_edges = [(1,3,kb), 
+                          (1,2,1e-5), 
+                          (2,4,1e-5), 
+                          (2,1,koff), 
+                          (3,1,1e-5), 
+                          (3,4,kon), 
+                          (4,2,ku), 
+                          (4,3,1e-5)],
+        input_edges = [(1,3), (2,4)],
+        on_ind = BitArray([0,1,0,1]),
+        c = c,
+        dc = c / 10,
+        n = n,
+        idist = ones(4) ./ 4,
+        k = 1
+    )
+    init!(m0)
+
+    for i in 1:nruns
+        ir_full!(m0)
+        time = cumsum(m0.rt)
+
+        for (j,t) in enumerate(times)
+            k = findfirst(x -> x > t, time)
+            ir_full_samples[i, j] = m0.llr[k] / t
+        end
+
+        for (p,e) in enumerate(errs)
+            K = log((1-e)/e)
+            q = findfirst(x -> x > K || x < (-K), m0.llr[2:end])
+
+            if q === nothing
+                stop_times[i, p] = time[end]
+            else
+                stop_times[i, p] = time[q]
+            end
         end
     end
+
+    path = "data/$(date)/"
+    Base.Filesystem.mkpath(path)
+    file1 = string(path, "ir_full_samples.json")
+    file2 = string(path, "stop_times.json")
+
+    open(file1, "w") do f
+        JSON.print(f, ir_full_samples, 4)
+    end
+
+    open(file2, "w") do f
+        JSON.print(f, stop_times, 4)
+    end
+
+    nothing
 end
+
 
 ## . - -- .- .-.- . .- .-- -.- .- .- --.-.... - -.-
 # DOING: testing JSON
