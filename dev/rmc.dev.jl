@@ -12,82 +12,103 @@
 end
 
 ## . - -- .- .-.- . .- .-- -.- .- .- --.-.... - -.-
-# DOING: implementing the RMC algorithm from J. Vanneste PHYSICAL REVIEW E 81, 036701 (2010)
+# DOING: implementing the RMC algorithm from J. Vanneste PRE 81, 036701 (2010)
 
-function generate_rmc!(m::LLROptModel)
+function generate_rmc(n, k, Q, idist)
 
-    m.s, m.t = zeros(Int, m.k, m.n), zeros(Float64, m.k, m.n)
-    _DD = _ddist(m.Q_c)
-
-    @assert size(_DD) == size(m.Q_c)
-
-    for j in 1:m.k
-        m.s[j,1] = sample(eachindex(m.idist), Weights(m.idist))
-    end
+    s, t = zeros(Int, n, k), zeros(Float32, n, k)
     
-    for i in 1:m.n-1
-        for j in 1:m.k
-            
-            si = m.s[j,i]
-            q = -m.Q_c[si, si]
+    for j in 1:k
+        s[1,j] = sample(eachindex(idist), Weights(idist))
+        q = -Q[s[1,j], s[1,j]]
+
+        _DD = _ddist(Q)
+
+        for i in 1:n-1
+            si = s[i,j]
+            q = -Q[si, si]
 
             # t
             e = Exponential(1/q)
-            m.t[j,i] = rand(e)
+            t[i,j] = rand(e)
 
             # s        
             _dd = _DD[si, :]
-            m.s[j,i+1] = sample(eachindex(_dd), Weights(_dd))
+            s[i+1,j] = sample(eachindex(_dd), Weights(_dd))
+        end
+
+        # t
+        si = s[end,j]
+        q = -Q[si, si]
+        e = Exponential(1/q)
+        t[end,j] = rand(e)
+    end
+
+    return s, t
+end
+
+function generate_rmc!(m::LLROptModel)
+    # TODO: inline
+    s, t = generate_rmc(m.n, m.k, m.Q_c, m.idist)
+    
+    m.s = s
+    m.t = t
+    return m
+end
+
+
+function get_residence_time_rmc(s, t, on_ind)
+    
+    n, k = size(s)
+    jc = _jump_count(s[1:end, 1], on_ind)
+    s_in_on = zeros(Bool, k)
+    rt = zeros(Float32, jc*2, k)
+    onrt = zeros(Float32, jc*2, k)
+    offrt = zeros(Float32, jc*2, k)
+
+    for j in 1:k
+        _last_is_on = on_ind[s[1,j]]
+        s_in_on[j] = _last_is_on
+
+        ji = 1 # jump index
+        bi = 1 # burst index
+        for i in 1:n
+            if (on_ind[s[i,j]] ⊻ _last_is_on)
+                _last_is_on = on_ind[s[i,j]]
+                ji += 1
+            end
+            rt[ji, j] += t[i,j]
+
+            if s_in_on[j]
+                if mod(ji,2) === 1 && ji > 1
+                    onrt[bi,j] += t[i,j]
+                    bi += 1
+                else
+                    offrt[bi,j] += t[i,j]
+                end
+            else
+                if mod(ji,2) === 1
+                    offrt[bi,j] += t[i,j]
+                    bi += 1
+                else
+                    onrt[bi,j] += t[i,j]
+                end
+            end
         end
     end
 
-    for j in 1:m.k
-        # t
-        si = m.s[j,end]
-        q = -m.Q_c[si, si]
-        e = Exponential(1/q)
-        m.t[j,end] = rand(e)
-    end
+    return s_in_on, rt, onrt, offrt
 end
 
 function get_residence_time_rmc!(m::LLROptModel)
-
-    m.rt = zeros(Float64, m.k, m.n)    # residence times
-    m.t_set = zeros(Float64, m.k, m.n)  # set residence times
-    m.t_comp = zeros(Float64, m.k, m.n) # complement set residence times
-    m.s_in_on = zeros(Int, m.k)        # start in on indicator
-    m.jc = zeros(Int, m.k)             # jump counts
-    m.bc = zeros(Int, m.k)             # burst counts
-    
-    # loop across trajectories
-    for j in 1:m.k
-        sj = view(m.s, j, :)
-        tj = view(m.t, j, :)
-        t_setj = view(m.t_set, j, :)
-        t_compj = view(m.t_comp, j, :)
-        jc = _jump_count(sj, m.on_ind)
-        bc = floor(Int32, jc / 2)    # burst count
-
-        _last_is_on = m.on_ind[sj[1]]
-        i_jump = 1 # jump index
-
-        # loop across timesteps of each trajectory
-        for (sij, tij) in zip(sj, tj)
-            if (m.on_ind[sij] ⊻ _last_is_on)
-                _last_is_on = m.on_ind[sij]
-                i_jump += 1
-            end
-            m.rt[j, i_jump] += tij
-        end
-
-        # postprocess
-        m.jc[j] = jc
-        m.bc[j] = bc
-        m.s_in_on[j] = m.on_ind[sj[1]]
-        t_setj[1:bc] = m.rt[j, 1:2:2*bc]
-        t_compj[1:bc] = m.rt[j, 2:2:2*bc+1]
-    end
+    s_in_on, rt, onrt, offrt = get_residence_time_rmc(m.s, m.t, m.on_ind)
+    m.s_in_on = s_in_on
+    m.rt = rt
+    m.onrt = onrt
+    m.offrt = offrt
+    return m
 end
+
 
 # assumes all trajectories start in the same partition
 function ll_full_rmc(Q, on_ind, idist, bc, t_set, t_comp)
@@ -218,13 +239,13 @@ function ir_full_rmc!(m::LLROptModel)
 end
 
 @time let 
-    date = 20240913
+    date = 20241104
     c = 5.6
     kb = 0.0888
     kon = 5
     ku = 5
     koff = 5
-    n = 100
+    n = 1000
     k = 1000
     dt = (1/(c*kb) + 1/kon + 1/ku + 1/koff)
 
@@ -249,12 +270,47 @@ end
 
     #### RMC
     generate_rmc!(m)
-    # get_residence_time_rmc!(m)
-    # ll_c = ll_full_rmc(m.Q_c, m.on_ind, m.idist, m.bc, m.t_set, m.t_comp)
-    # ll_cdc = ll_full_rmc(m.Q_cdc, m.on_ind, m.idist, m.bc, m.t_set, m.t_comp)
-    # (ll_c - ll_cdc) * m.k / sum(m.rt)
+    get_residence_time_rmc!(m)
+    ll_c = ll_full_rmc(m.Q_c, m.on_ind, m.idist, m.bc, m.t_set, m.t_comp)
+    ll_cdc = ll_full_rmc(m.Q_cdc, m.on_ind, m.idist, m.bc, m.t_set, m.t_comp)
+    (ll_c - ll_cdc) * m.k / sum(m.rt)
 
     #### Brute-force
     # ir_full!(m)
     # m.llr[end] / sum(m.rt)
+end
+
+@time let 
+    date = 20241104
+    c = 5.6
+    kb = 0.0888
+    kon = 5
+    ku = 5
+    koff = 5
+    n = 1000000
+    k = 1
+    dt = (1/(c*kb) + 1/kon + 1/ku + 1/koff)
+
+    global m = LLROptModel(;
+        weighted_edges = [(1,3,kb), 
+                          (1,2,1e-5), 
+                          (2,4,1e-5), 
+                          (2,1,koff), 
+                          (3,1,1e-5), 
+                          (3,4,kon), 
+                          (4,2,ku), 
+                          (4,3,1e-5)],
+        input_edges = [(1,3), (2,4)],
+        on_ind = BitArray([0,1,0,1]),
+        c = c,
+        dc = c / 10,
+        n = n,
+        k = k,
+        idist = [0, 0.5, 0, 0.5]
+    )
+    init!(m)
+
+    #### RMC
+    generate!(m)
+    get_residence_time!(m)
 end

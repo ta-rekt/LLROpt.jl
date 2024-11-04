@@ -32,6 +32,7 @@ function generate(n, Q, idist)
     return s, t
 end
 
+export generate!
 function generate!(m::LLROptModel)
     # TODO: inline
     s, t = generate(m.n, m.Q_c, m.idist)

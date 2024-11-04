@@ -123,19 +123,21 @@ end
 
 @time let
 
-    dirname = 20241009
+    dirname = 20241103
     c = 5.6
     kb = 0.0888
     kon = 5
     ku = 5
     koff = 5
-    n = 10000
-    k = 2000
-    nruns = 1000
-    dt = (1/(c*kb) + 1/kon + 1/ku + 1/koff) * (n/k) / 2
+    n = 500
+    ntrajs = 10000
+    nrepeats = 100
+    taub = (1/(c*kb) + 1/kon + 1/ku + 1/koff)
+    tau = 60*taub
 
-    ir_full_mean = Vector{Float32}(undef, nruns)
-    ir_full_var = Vector{Float32}(undef, nruns)
+    ir_full_mean = Vector{Float32}(undef, nrepeats)
+    ir_full_var = Vector{Float32}(undef, nrepeats)
+    samples = Vector{Float32}(undef, ntrajs)
 
     global m0 = LLROptModel(;
         weighted_edges = [(1,3,kb), 
@@ -155,17 +157,25 @@ end
         k = 1
     )
     init!(m0)
-    UDU = eigen(m0.Q_c)
-    dXs = Vector{Float32}(undef, k)
-    nskip = Int(n/k)
+    # UDU = eigen(m0.Q_c)
+    # dXs = Vector{Float32}(undef, k)
 
-    for i in 1:nruns
-        ir_full!(m0)
-        dXs = diff(m0.llr[1:nskip:end-1])
-        time = 2 .* cumsum(m0.rt)
-        sq_deltat = map(x->sqrt(x), diff(time[1:nskip:end]))
-        ir_full_mean[i] = m0.llr[end] / sum(m0.rt)
-        ir_full_var[i] = var(dXs ./ sq_deltat)
+    for i in 1:nrepeats
+        for j in 1:ntrajs
+            ir_full!(m0)
+            time = cumsum(m0.rt)
+            k = findfirst(x -> x > tau, time)
+            samples[j] = m0.llr[k] / tau
+
+            # dXs = diff(m0.llr[1:nskip:end-1])
+            # time = 2 .* cumsum(m0.rt)
+            # sq_deltat = map(x->sqrt(x), diff(time[1:nskip:end]))
+            # ir_full_mean[i] = m0.llr[end] / sum(m0.rt)
+            # ir_full_var[i] = var(dXs ./ sq_deltat)
+        end
+
+        ir_full_mean[i] = mean(samples)
+        ir_full_var[i] = var(samples .* sqrt(tau)) / 2
     end
 
     path = "data/$(dirname)/"
@@ -189,19 +199,19 @@ end
 
 @time let
 
-    dirname = "20241102/max_IR_equilibrium_circuit"
+    dirname = "20241103"
     c = 5.6
 
     ### MGR circuit
-    # kboff = 0.0888
-    # kbon = 1e-5
-    # konu = 1e-5
-    # konb = 5
-    # kuon = 5
-    # kuoff = 1e-5
-    # koffu = 5
-    # koffb = 1e-5
-    # taub = (1/(c*kboff) + 1/konb + 1/kuon + 1/koffu)
+    kboff = 0.0888
+    kbon = 1e-5
+    konu = 1e-5
+    konb = 5
+    kuon = 5
+    kuoff = 1e-5
+    koffu = 5
+    koffb = 1e-5
+    taub = (1/(c*kboff) + 1/konb + 1/kuon + 1/koffu)
 
     ### max-IRacc circuit (with kuoff > 0)
     # kboff = 0.0888
@@ -215,14 +225,14 @@ end
     # koffb = 1e-5
 
     ### max-IR equilibrium circuit
-    kboff = 0.0888
-    kbon = 1e-5
-    konu = 1e-5
-    konb = 5
-    kuon = 1e-5
-    kuoff = 5
-    koffu = 1e-5
-    koffb = 5
+    # kboff = 0.0888
+    # kbon = 1e-5
+    # konu = 1e-5
+    # konb = 5
+    # kuon = 1e-5
+    # kuoff = 5
+    # koffu = 1e-5
+    # koffb = 5
 
     n = 5000
     nruns = 50000
@@ -264,7 +274,7 @@ end
         ### LLR process
         ir_full!(m0)
         time = cumsum(m0.rt)
-        times = range(1, stop=time[end]/2, length=ntimes)
+        times = range(taub, stop=n*taub/8, length=ntimes)
 
         ### True gaussian process with V=D
         dx = rand(e, nsteps)
