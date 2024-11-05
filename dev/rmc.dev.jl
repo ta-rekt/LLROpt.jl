@@ -62,55 +62,55 @@ function get_residence_time_rmc(s, t, on_ind)
     n, k = size(s)
     jc = _jump_count(s[1:end, 1], on_ind)
     s_in_on = zeros(Bool, k)
+    bc = zeros(Int, k)
     rt = zeros(Float32, jc*2, k)
     onrt = zeros(Float32, jc*2, k)
     offrt = zeros(Float32, jc*2, k)
 
     for j in 1:k
         _last_is_on = on_ind[s[1,j]]
-        s_in_on[j] = _last_is_on
+        s_in_on[j] = _last_is_on   # jth trajectory started in on
 
-        ji = 1 # jump index
-        bi = 1 # burst index
+        ji = 1 # jump index (counts ON->OFF and OFF->ON transition)
+        bi = 0 # burst index (counts ON->ON or OFF->OFF cycles)
+
         for i in 1:n
-            if (on_ind[s[i,j]] ⊻ _last_is_on)
+            if (on_ind[s[i,j]] ⊻ _last_is_on)   # partition has changed
                 _last_is_on = on_ind[s[i,j]]
+
+                if _last_is_on
+                    offrt[bi+1,j] = rt[ji, j]
+                else
+                    onrt[bi+1,j] = rt[ji, j]
+                end
+
+                if (_last_is_on === s_in_on[j]) && ji > 1  # a cycle is completed
+                    bi += 1
+                end
+
                 ji += 1
             end
             rt[ji, j] += t[i,j]
-
-            if s_in_on[j]
-                if mod(ji,2) === 1 && ji > 1
-                    onrt[bi,j] += t[i,j]
-                    bi += 1
-                else
-                    offrt[bi,j] += t[i,j]
-                end
-            else
-                if mod(ji,2) === 1
-                    offrt[bi,j] += t[i,j]
-                    bi += 1
-                else
-                    onrt[bi,j] += t[i,j]
-                end
-            end
         end
+
+        bc[j] = bi
     end
 
-    return s_in_on, rt, onrt, offrt
+    return s_in_on, rt, onrt, offrt, bc
 end
 
 function get_residence_time_rmc!(m::LLROptModel)
-    s_in_on, rt, onrt, offrt = get_residence_time_rmc(m.s, m.t, m.on_ind)
+    s_in_on, rt, onrt, offrt, bc = get_residence_time_rmc(m.s, m.t, m.on_ind)
     m.s_in_on = s_in_on
     m.rt = rt
+    m.bc = bc
     m.onrt = onrt
     m.offrt = offrt
     return m
 end
 
 
-# assumes all trajectories start in the same partition
+# assumes all trajectories start in the ON partition
 function ll_full_rmc(Q, on_ind, idist, bc, t_set, t_comp)
 
     @assert length(t_set) == length(t_comp)
@@ -226,8 +226,8 @@ end
 
 function llr_rmc!(m::LLROptModel)
     # TODO: inline
-    m.ll_c = ll_full_rmc(m.Q_c, m.on_ind, m.idist, m.bc, m.t_set, m.t_comp)
-    m.ll_cdc = ll_full_rmc(m.Q_cdc, m.on_ind, m.idist, m.bc, m.t_set, m.t_comp)
+    m.ll_c = ll_full_rmc(m.Q_c, m.on_ind, m.idist, m.bc, m.onrt, m.offrt)
+    m.ll_cdc = ll_full_rmc(m.Q_cdc, m.on_ind, m.idist, m.bc, m.onrt, m.offrt)
     m.llr = m.ll_c .- m.ll_cdc
     return m
 end
@@ -245,8 +245,8 @@ end
     kon = 5
     ku = 5
     koff = 5
-    n = 1000
-    k = 1000
+    n = 8
+    k = 5
     dt = (1/(c*kb) + 1/kon + 1/ku + 1/koff)
 
     global m = LLROptModel(;
@@ -271,13 +271,14 @@ end
     #### RMC
     generate_rmc!(m)
     get_residence_time_rmc!(m)
-    ll_c = ll_full_rmc(m.Q_c, m.on_ind, m.idist, m.bc, m.t_set, m.t_comp)
-    ll_cdc = ll_full_rmc(m.Q_cdc, m.on_ind, m.idist, m.bc, m.t_set, m.t_comp)
-    (ll_c - ll_cdc) * m.k / sum(m.rt)
+    # ll_c = ll_full_rmc(m.Q_c, m.on_ind, m.idist, m.bc, m.t_set, m.t_comp)
+    # ll_cdc = ll_full_rmc(m.Q_cdc, m.on_ind, m.idist, m.bc, m.t_set, m.t_comp)
+    # (ll_c - ll_cdc) * m.k / sum(m.rt)
 
     #### Brute-force
     # ir_full!(m)
     # m.llr[end] / sum(m.rt)
+
 end
 
 @time let 

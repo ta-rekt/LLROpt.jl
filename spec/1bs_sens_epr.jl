@@ -25,20 +25,20 @@ lub[3] = log10(dl_tf)
 
 ### Optimization parameters
 maxiters_acc = 30000
-maxiters_full = 500
+maxiters_full = 2000
 sigma0 = log10(ub) / 4
 x0 = (lub .+ llb) ./ 2
 we = [(u,v,r) for ((u,v),r) in zip(edges, x0)]
 
 k = 1
-N = 1000
+N = 2000
 nepochs = 10
 startexp = 11
 ns = [2^i for i in range(startexp, stop=startexp+nepochs)]
 whichf = "full"
 
 ### temperature parameter
-betas = vcat(range(3e-4, stop=1e-5, length=10), 10 .^ range(-4.8, stop=-9, length=5))
+betas = vcat(range(3e-4, stop=1e-5, length=15), 10 .^ range(-4.8, stop=-9, length=15))
 nparams = length(betas)
 
 # IR ACC

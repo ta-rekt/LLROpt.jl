@@ -96,4 +96,3 @@ function llr!(m::LLROptModel)
     m.llr = cumsum(m.ll_c .- m.ll_cdc)
     return m
 end
-
