@@ -113,7 +113,7 @@ end
 # assumes all trajectories start in the ON partition
 function ll_full_rmc(Q, on_ind, idist, bc, t_set, t_comp)
 
-    @assert length(t_set) == length(t_comp)
+    # @assert length(t_set) == length(t_comp)
 
     #### array initialization ####
 
@@ -152,7 +152,7 @@ function ll_full_rmc(Q, on_ind, idist, bc, t_set, t_comp)
     _S = zeros(eltype(Q), length(_off), length(_on))
 
     n = minimum(bc)      # smallest number of on-off cycles
-    k = size(t_set)[1]   # number of trajectories
+    k = length(bc)   # number of trajectories
 
     w_on = zeros(1, length(_on))
     w_off = zeros(1, length(_off))
@@ -177,11 +177,11 @@ function ll_full_rmc(Q, on_ind, idist, bc, t_set, t_comp)
     jmp = 2
 
     while i <= n
-        betasum = 0
+        beta = 0
         jsampl = 0
 
         for j in 1:k
-            t_on, t_off = t_set[j,i], t_comp[j,i]
+            t_on, t_off = t_set[i,j], t_comp[i,j]
 
             mul!(aux_off, W_off, exp(t_on * D_off))
             mul!(P_off, aux_off, W_off_inv)
@@ -196,7 +196,7 @@ function ll_full_rmc(Q, on_ind, idist, bc, t_set, t_comp)
 
             w_on = vec_sampled[j,:]'
             alpha[j] = sum(w_on)
-            w_on ./= alpha[j]
+            w_on ./= sum(w_on)
             mul!(w_off, w_on, _R)
             wv[j,jmp] = log(sum(w_off));
 
@@ -205,11 +205,11 @@ function ll_full_rmc(Q, on_ind, idist, bc, t_set, t_comp)
             wv[j,jmp+1] = log(sum(w_on));
             vec[j,:] = w_on'
 
-            betasum += alpha[j]
+            beta += alpha[j]
         end
 
-        alpha ./= betasum
-        logbeta[i] = log(betasum)
+        alpha ./= beta
+        logbeta[i] = log(beta)
         jsampl = sample(eachindex(alpha), Weights(alpha), k)
 
         for j in 1:k
@@ -221,7 +221,7 @@ function ll_full_rmc(Q, on_ind, idist, bc, t_set, t_comp)
     end
 
     # return log sum of betas - logK
-    sum(logbeta)
+    sum(logbeta)/n - log(k)
 end
 
 function llr_rmc!(m::LLROptModel)
@@ -245,8 +245,8 @@ end
     kon = 5
     ku = 5
     koff = 5
-    n = 8
-    k = 5
+    n = 1000
+    k = 1000
     dt = (1/(c*kb) + 1/kon + 1/ku + 1/koff)
 
     global m = LLROptModel(;
@@ -271,14 +271,9 @@ end
     #### RMC
     generate_rmc!(m)
     get_residence_time_rmc!(m)
-    # ll_c = ll_full_rmc(m.Q_c, m.on_ind, m.idist, m.bc, m.t_set, m.t_comp)
-    # ll_cdc = ll_full_rmc(m.Q_cdc, m.on_ind, m.idist, m.bc, m.t_set, m.t_comp)
-    # (ll_c - ll_cdc) * m.k / sum(m.rt)
-
-    #### Brute-force
-    # ir_full!(m)
-    # m.llr[end] / sum(m.rt)
-
+    ll_c = ll_full_rmc(m.Q_c, m.on_ind, m.idist, m.bc, m.onrt, m.offrt)
+    ll_cdc = ll_full_rmc(m.Q_cdc, m.on_ind, m.idist, m.bc, m.onrt, m.offrt)
+    (ll_c - ll_cdc)/dt
 end
 
 @time let 
@@ -311,7 +306,7 @@ end
     )
     init!(m)
 
-    #### RMC
-    generate!(m)
-    get_residence_time!(m)
+    #### Brute-force
+    ir_full!(m)
+    m.llr[end] / sum(m.rt)
 end
