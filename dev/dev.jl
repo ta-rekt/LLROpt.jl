@@ -9,6 +9,7 @@
     using Random
     using Base.Threads
     using JSON
+    using Statistics
 end
 
 
@@ -123,24 +124,25 @@ end
 
 @time let
 
-    dirname = 20241103
+    # dirname = 20241103
+    dirname = 20241111
     c = 5.6
     kb = 0.0888
-    kon = 5
-    ku = 5
-    koff = 5
-    n = 500
-    ntrajs = 10000
-    nrepeats = 100
-    taub = (1/(c*kb) + 1/kon + 1/ku + 1/koff)
-    tau = 60*taub
+    kon = 500
+    ku = 500
+    koff = 500
+    n = 1000000
+    ntrajs = 5
+    nrepeats = 1
+    # taub = (1/(c*kb) + 1/kon + 1/ku + 1/koff)
+    # tau = 60*taub
 
     ir_full_mean = Vector{Float32}(undef, nrepeats)
     ir_full_var = Vector{Float32}(undef, nrepeats)
     samples = Vector{Float32}(undef, ntrajs)
 
-    global m0 = LLROptModel(;
-        weighted_edges = [(1,3,kb), 
+    global m1 = LLROptModel(;
+        weighted_edges = [(1,3,2.0*kb), 
                           (1,2,1e-5), 
                           (2,4,1e-5), 
                           (2,1,koff), 
@@ -156,42 +158,59 @@ end
         idist = ones(4) ./ 4,
         k = 1
     )
-    init!(m0)
-    # UDU = eigen(m0.Q_c)
-    # dXs = Vector{Float32}(undef, k)
+    global m2 = LLROptModel(;
+    weighted_edges = [(5,1, 2.0*kb),  # kb
+                      (1,5, 1e-5), 
+                      (2,6, ku),    # ku
+                      (6,2, 1e-5), 
+                      (1,2, kon),   # kon
+                      (1,3, kb),    # kb 
+                      (2,4, 1e-5),
+                      (2,1, 1e-5), 
+                      (3,1, 1e-5), 
+                      (3,4, 2*kon),   # kon
+                      (4,2, 2*ku),  # ku
+                      (4,3, 1e-5), 
+                      (5,6, 1e-5), 
+                      (6,5, koff)], # koff
+        input_edges = [(1,3), (2,4), (5,1), (6,2)],
+        on_ind = BitArray([0,1,0,1,0,1]),
+        c = c,
+        dc = c / 10.0,
+        n = n,
+        idist = ones(6) ./ 6,
+        k = 1
+    )
+    init!(m2)
+    init!(m1)
 
     for i in 1:nrepeats
         for j in 1:ntrajs
-            ir_full!(m0)
-            time = cumsum(m0.rt)
-            k = findfirst(x -> x > tau, time)
-            samples[j] = m0.llr[k] / tau
-
-            # dXs = diff(m0.llr[1:nskip:end-1])
-            # time = 2 .* cumsum(m0.rt)
-            # sq_deltat = map(x->sqrt(x), diff(time[1:nskip:end]))
-            # ir_full_mean[i] = m0.llr[end] / sum(m0.rt)
-            # ir_full_var[i] = var(dXs ./ sq_deltat)
+            ir_full!(m2)
+            time = cumsum(m2.rt)
+            # k = findfirst(x -> x > tau, time)
+            # samples[j] = m2.llr[k] / tau
+            samples[j] = m2.llr[end] / time[end]
         end
 
         ir_full_mean[i] = mean(samples)
-        ir_full_var[i] = var(samples .* sqrt(tau)) / 2
+        # ir_full_var[i] = var(samples .* sqrt(tau)) / 2
     end
 
     path = "data/$(dirname)/"
     Base.Filesystem.mkpath(path)
     file1 = string(path, "ir_full_mean_estimator.json")
-    file2 = string(path, "ir_full_variance_estimator.json")
+    # file2 = string(path, "ir_full_variance_estimator.json")
 
     open(file1, "w") do f
         JSON.print(f, ir_full_mean, 4)
     end
 
-    open(file2, "w") do f
-        JSON.print(f, ir_full_var, 4)
-    end
+    # open(file2, "w") do f
+    #     JSON.print(f, ir_full_var, 4)
+    # end
 
-    nothing
+    Statistics.mean(ir_full_mean)
 end
 
 ## . - -- .- .-.- . .- .-- -.- .- .- --.-.... - -.-
@@ -335,6 +354,8 @@ end
 # DOING: Improving decision time statistics ?
 
 let 
+    dirname = "20241109/test-st"
+
     mu = 0.001728
     n = 50000
     dt = 0.1
@@ -367,8 +388,97 @@ let
         times[j] = (ends[j] - starts[j]) * dt
     end
 
-    @show times
+    path = "data/$(dirname)/"
+    Base.Filesystem.mkpath(path)
+    file2 = string(path, "stop_times_llr.json")
 
+    open(file1, "w") do f
+        JSON.print(f, ir_full_samples, 4)
+    end
+
+end
+
+## . - -- .- .-.- . .- .-- -.- .- .- --.-.... - -.-
+# DOING: Testing decorrelated activation times idea
+
+@time let
+
+    dirname = "20241109/test-decorr-act-times"
+    c = 5.6
+
+    ### MGR circuit
+    kboff = 0.0888
+    kbon = 1e-5
+    konu = 1e-5
+    konb = 5
+    kuon = 5
+    kuoff = 1e-5
+    koffu = 5
+    koffb = 1e-5
+    taub = (1/(c*kboff) + 1/konb + 1/kuon + 1/koffu)
+
+    ### max-IRacc circuit (with kuoff > 0)
+    # kboff = 0.0888
+    # kbon = 1e-5
+    # konu = 1e-5
+    # konb = 5
+    # kuon = 5
+    # kuoff = 5
+    # koffu = 5
+    # taub = 10
+    # koffb = 1e-5
+
+    ### max-IR equilibrium circuit
+    # kboff = 0.0888
+    # kbon = 1e-5
+    # konu = 1e-5
+    # konb = 5
+    # kuon = 1e-5
+    # kuoff = 5
+    # koffu = 1e-5
+    # koffb = 5
+
+    n = 5000
+    nruns = 50000
+
+    #### Estimating D(p||q) where p is activity likelihood, q binding likelihood
+
+    dkl_values = Matrix{Float32}(undef, nruns, ncircuits)
+
+    global m0 = LLROptModel(;
+        weighted_edges = [(1,3,kboff), 
+                          (1,2,konu), 
+                          (2,4,kbon), 
+                          (2,1,koffu), 
+                          (3,1,kuoff), 
+                          (3,4,konb), 
+                          (4,2,kuon), 
+                          (4,3,koffb)],
+        input_edges = [(1,3), (2,4)],
+        on_ind = BitArray([0,1,0,1]),
+        c = c,
+        dc = c / 10,
+        n = n,
+        idist = ones(4) ./ 4,
+        k = 1
+    )
+    init!(m0)
+
+    for i in 1:nruns
+        # get residence times of binding times
+        # use ll_full just like with activation times
+        
+    end
+
+    path = "data/$(dirname)/"
+    Base.Filesystem.mkpath(path)
+    file1 = string(path, "dkl_values.json")
+
+    open(file1, "w") do f
+        JSON.print(f, dkl_values, 4)
+    end
+
+    nothing
 end
 
 ## . - -- .- .-.- . .- .-- -.- .- .- --.-.... - -.-

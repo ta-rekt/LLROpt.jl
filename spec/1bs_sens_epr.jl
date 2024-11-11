@@ -31,14 +31,14 @@ x0 = (lub .+ llb) ./ 2
 we = [(u,v,r) for ((u,v),r) in zip(edges, x0)]
 
 k = 1
-N = 2000
-nepochs = 10
-startexp = 11
+N = 5000
+nepochs = 0
+startexp = 20
 ns = [2^i for i in range(startexp, stop=startexp+nepochs)]
 whichf = "full"
 
 ### temperature parameter
-betas = vcat(range(3e-4, stop=1e-5, length=15), 10 .^ range(-4.8, stop=-9, length=15))
+betas = vcat(range(3e-4, stop=1e-5, length=10), 10 .^ range(-4.8, stop=-9, length=5))
 nparams = length(betas)
 
 # IR ACC

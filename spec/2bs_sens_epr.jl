@@ -2,40 +2,44 @@
 a = 3e-3        # um
 D_tf = 7.4      # um^2/s
 D_cplx = 0.1    # um^2/s
-cr = 5.6        # um^-3
-dc = 0.1 * cr
+c = 5.6        # um^-3
+dc = 0.1 * c
 dl_tf = 4*a*D_tf
 ub = 5
 lb = 1e-5
-max_ir_full = 0.5 * (dc/cr)^2 * (cr*dl_tf*ub)/(cr*dl_tf + ub)
-
-### Upper bounds for2bs circuit
-llb = ones(14) .* log10(lb)
-lub = ones(14) .* log10(ub)
-lub[1] = log10(dl_tf)
-lub[4] = log10(dl_tf)
-lub[6] = log10(dl_tf)
-lub[7] = log10(dl_tf)
+# max_ir_full = 0.5 * (dc/cr)^2 * (cr*dl_tf*ub)/(cr*dl_tf + ub)
 
 ### Circuit descriptions
+nedges = 14
 edges = [(5,1), (1,5), (2,6), (6,2), (1,2), (1,3), (2,4),
          (2,1), (3,1), (3,4), (4,2), (4,3), (5,6), (6,5)]
 input_edges = [(1,3), (2,4), (5,1), (6,2)]
 on_ind = BitArray([0,1,0,1,0,1])
 idist = ones(6) ./ 6
+e = (1,2)                   # symmetry-breaking edge
+
+### Upper bounds for2bs circuit
+llb = ones(nedges) .* log10(lb)
+lub = ones(nedges) .* log10(ub)
+lub[1] = log10(dl_tf)
+lub[4] = log10(dl_tf)
+lub[6] = log10(dl_tf)
+lub[7] = log10(dl_tf)
 
 ### Optimization parameters
 maxiters_acc = 20000
-maxiters_full = 1000
-xinit = (lub .+ llb) ./ 2
-we = [(u,v,r) for ((u,v),r) in zip(edges, xinit)]
-n = 100000
-N = 1000
+maxiters_full = 10
+x0 = (lub .+ llb) ./ 2
+we = [(u,v,r) for ((u,v),r) in zip(edges, x0)]
 k = 1
+N = 100
+nepochs = 5
+startexp = 15
+ns = [2^i for i in range(startexp, stop=startexp+nepochs)]
 whichf = "full"
 
 ### temperature parameter
-betas = vcat(range(3e-4, stop=1e-5, length=20), 10 .^ range(-4.8, stop=-9, length=20))
+betas = vcat(range(2.5e-4, stop=1e-5, length=10), 10 .^ range(-4.8, stop=-9, length=5))
 nparams = length(betas)
 
 
@@ -89,8 +93,8 @@ function ir_full_log(logrates, args...)
     Jplus = 0
     u, v = e
     if u >= 0
-        pi = P_ss(Q)
-        J = pi[u] * Q[u,v] - pi[v] * Q[v,u]
+        pi = P_ss(m.Q_c)
+        J = pi[u] * m.Q_c[u,v] - pi[v] * m.Q_c[v,u]
         Jplus = J + abs(J)
     end
 

@@ -12,7 +12,7 @@ function build_mat(weighted_edges, input_edges, c::T) where T<:Any
     @assert N > 0
     
     # weights matrix
-    Q = zeros(T, N, N)
+    Q = zeros(Float32, N, N)
     for (n1, n2, w) in weighted_edges
         Q[n1, n2] = w
     end
