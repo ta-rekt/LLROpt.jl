@@ -35,26 +35,22 @@ idist2 = ones(6) ./ 6
 
 ### Optimization parameters
 maxiters_acc = 20000
-maxiters_full = 1000
+maxiters_full = 3000
 xinit1 = (lub1 .+ llb1) ./ 2
 xinit2 = (lub2 .+ llb2) ./ 2
 we1 = [(u,v,r) for ((u,v),r) in zip(edges1, xinit1)]
 we2 = [(u,v,r) for ((u,v),r) in zip(edges2, xinit2)]
-n = 500000
-N = 1000
+n = 1000000
+N = 2000
 k = 1
 whichf = "full"
 
 ### Temperature parameter
-# betas = 10 .^ range(-5, stop=-2, length=60)
-betas_ = map(x->tan(x), range(0.0, stop=3.141592/1000, length=31))
-betas = vcat(betas_, [1000])
-# betas = vcat(range1, range2, range3)
+betas = map(x->tan(x), range(0.0, stop=3.141592-0.01, length=32))
 nparams = length(betas)
 
 ### Other parameters
 # gammas = [1.5, 2.5, 5, 10, 50, 500, 5000, 50000]
-# gammas = [1.5, 2.5, 10]
 gammas = [1.5, 2.5, 10]
 # gammas = range(1, stop=4, length=10)
 # wvals = [1e-5, 2, 5, 10, 50, 500]
@@ -113,31 +109,15 @@ function target_full(logrates, args...)
 
     Jplus = 0
     pi = P_ss(m1.Q_c)
-    pi2 = P_ss(m2.Q_c)
     J = pi[1] * m1.Q_c[1,2] - pi[2] * m1.Q_c[2,1]
     Jplus = J + abs(J)   # penalty for counterclockwise flux
     ir_full!(m1)
-    # ir_full!(m2)
+    ir_full!(m2)
     nskip = 5
 
     # empirical mean estimator
-    # if use_mean
     ir_full_pure = m1.llr[end] / sum(m1.rt)
-    # ir_full_mix = m2.llr[end] / sum(m2.rt)
-    ir_full_mix = log2((pi2[4])/(pi2[6]))
-    # else
-
-    # # variance estimator
-    #     dXs1 = diff(m1.llr[1:nskip:end-1])
-    #     time1 = 2 .* cumsum(m1.rt)
-    #     sq_deltat1 = map(x->sqrt(x), diff(time1[1:nskip:end]))
-    #     ir_full_pure = var(dXs1 ./ sq_deltat1)
-
-    #     dXs2 = diff(m2.llr[1:nskip:end-1])
-    #     time2 = 2 .* cumsum(m2.rt)
-    #     sq_deltat2 = map(x->sqrt(x), diff(time2[1:nskip:end]))
-    #     ir_full_mix = var(dXs2 ./ sq_deltat2)
-    # end
+    ir_full_mix = m2.llr[end] / sum(m2.rt)
 
     (- ir_full_pure - beta*ir_full_mix + Jplus, ir_full_mix, ir_full_pure, EP)
 end
