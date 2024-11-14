@@ -34,7 +34,7 @@ idist1 = ones(4) ./ 4
 idist2 = ones(6) ./ 6
 
 ### Optimization parameters
-maxiters_acc = 20000
+maxiters_acc = 40000
 maxiters_full = 3000
 xinit1 = (lub1 .+ llb1) ./ 2
 xinit2 = (lub2 .+ llb2) ./ 2
@@ -43,10 +43,10 @@ we2 = [(u,v,r) for ((u,v),r) in zip(edges2, xinit2)]
 n = 1000000
 N = 2000
 k = 1
-whichf = "full"
+whichf = "acc"
 
 ### Temperature parameter
-betas = map(x->tan(x), range(0.0, stop=3.141592-0.01, length=32))
+betas = map(x->tan(x), range(0.0, stop=3.141592/2000, length=512))
 nparams = length(betas)
 
 ### Other parameters
@@ -71,7 +71,8 @@ function target_acc(logrates, args...)
 
     Q1 = build_mat(wedges1, iedges, cr)
     Q2 = build_mat(wedges2, iedges, cr)
-    EP = EP_ss(Q1)
+    # EP = EP_ss(Q1)
+    EP = EP_ss(Q2)
 
     Jplus = 0
     pi = P_ss(Q1)
@@ -80,9 +81,11 @@ function target_acc(logrates, args...)
     Jplus = J + abs(J)   # penalty for counterclockwise flux
     ir_acc_pure = ir_acc(wedges1, iedges, cr, dc, on_ind1)
     ir_acc_mix = ir_acc(wedges2, iedges, cr, dc, on_ind2)
-    # ir_acc_mix = log2((pi2[4])/(pi2[6]))
+    mlog_epsilon = log2((pi2[4])/(pi2[6]))
 
-    (- ir_acc_pure - beta*ir_acc_mix + Jplus, ir_acc_mix, ir_acc_pure, EP)
+    # (- ir_acc_pure - beta*ir_acc_mix + Jplus, ir_acc_mix, ir_acc_pure, EP)
+    (- ir_acc_mix - beta*mlog_epsilon + Jplus, mlog_epsilon, ir_acc_mix, EP)
+    
 end
 
 # returns - IR_full_mix - beta * IR_full_pure - gamma * EP
@@ -111,12 +114,12 @@ function target_full(logrates, args...)
     pi = P_ss(m1.Q_c)
     J = pi[1] * m1.Q_c[1,2] - pi[2] * m1.Q_c[2,1]
     Jplus = J + abs(J)   # penalty for counterclockwise flux
-    ir_full!(m1)
+    # ir_full!(m1)
     ir_full!(m2)
     nskip = 5
 
     # empirical mean estimator
-    ir_full_pure = m1.llr[end] / sum(m1.rt)
+    # ir_full_pure = m1.llr[end] / sum(m1.rt)
     ir_full_mix = m2.llr[end] / sum(m2.rt)
 
     (- ir_full_pure - beta*ir_full_mix + Jplus, ir_full_mix, ir_full_pure, EP)
