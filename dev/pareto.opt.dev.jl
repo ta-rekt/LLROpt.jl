@@ -1,6 +1,7 @@
 ##. - -- .- .-.- . .- .-- -.- .- .- --.-.... - -.-
 # Optimization MWE with ir_acc and ir_full
 import Pkg
+Pkg.activate("LLROpt")
 Pkg.add("Optimization")
 Pkg.add("OptimizationBBO")
 Pkg.add("OptimizationGCMAES")

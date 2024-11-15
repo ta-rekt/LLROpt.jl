@@ -1,4 +1,5 @@
 import Pkg
+Pkg.activate("LLROpt")
 Pkg.add("JSON")
 Pkg.add("Statistics")
 Pkg.add("Optimization")
@@ -11,169 +12,179 @@ using OptimizationBBO
 using OptimizationCMAEvolutionStrategy
 using LLROpt
 
+let 
+    specfile = ARGS[1]
+    cpukey = parse(Int32, ARGS[2])
+    ncpus = parse(Int32, ARGS[3])
+    outdir = ARGS[4]
 
-specfile = ARGS[1]
-cpukey = parse(Int32, ARGS[2])
-ncpus = parse(Int32, ARGS[3])
-outdir = ARGS[4]
+    # output directory
+    outpath = "data/$(outdir)/"
+    Base.Filesystem.mkpath(outpath)
 
-# input data
-infile = string(inpath, cpukey, ".json")
-results_init = {}
-open(infile, "r") do f
-    results_init = JSON.parse(f, dicttype=Dict{String, 
-                                          Dict{String, 
-                                          Dict{String, 
-                                          Vector{Float32}}}}())
-end
+    # specification file
+    specpath = string("../spec/", specfile)
+    include(specpath)
 
-# output directory
-outpath = "data/$(outdir)/"
-Base.Filesystem.mkpath(outpath)
-
-# specification file
-specpath = string("../spec/", specfile)
-include(specpath)
-
-m1 = LLROptModel(;
-    weighted_edges = we1,
-    input_edges = input_edges,
-    on_ind = on_ind1,
-    c = cr,
-    dc = dc,
-    n = n,
-    k = k,
-    idist = idist1,
-)
-
-m2 = LLROptModel(;
-    weighted_edges = we2,
-    input_edges = input_edges,
-    on_ind = on_ind2,
-    c = cr,
-    dc = dc,
-    n = n,
-    k = k,
-    idist = idist2,
-)
-
-init!(m1)
-init!(m2)
-
-nparams_per_cpu = div(nparams, ncpus)
-
-irvals_mix = Vector{Float32}(undef, N)
-irvals_pure = Vector{Float32}(undef, N)
-results_acc = Dict{Int64, Dict{Int64, Dict{Int64, Vector{Float32}}}}()
-results_full = Dict{Int64, Dict{Int64, Dict{Int64, Vector{Float32}}}}()
-
-for k in 1:nparams_per_cpu
-    keyb = (cpukey - 1) * nparams_per_cpu + k
-    beta = betas[keyb]
-
-    # IR ACC
-    if whichf == "acc" || whichf == "both"
-        results_acc[keyb] = Dict{Int64, Dict{Int64, Vector{Float32}}}()
-
-        for (keyg, gamma) in enumerate(gammas)
-            results_acc[keyb][keyg] = Dict{Int64, Vector{Float32}}()
-    
-            for (keyw, w) in enumerate(wvals)
-                xinit1 = results_init[string(keyb),
-                                      string(keyg), 
-                                      string(keyw)][1:end-6]
-
-                args_acc = [edges1, edges2, input_edges, cr, dc, on_ind1, on_ind2, 
-                    beta, gamma, w]
-                targetfun_acc(x, p) = target_acc(x, args_acc...)[1]
-                ir_acc_mix(x) = target_acc(x, args_acc...)[2]
-                ir_acc_pure(x) = target_acc(x, args_acc...)[3]
-                ep_acc(x) = target_acc(x, args_acc...)[4]
-
-                optf_acc = Optimization.OptimizationFunction(targetfun_acc)
-                prob_acc = Optimization.OptimizationProblem(optf_acc, 
-                            xinit1, lb=llb1, ub=lub1, maxiters=maxiters_acc)
-                sol_acc = solve(prob_acc, BBO_adaptive_de_rand_1_bin_radiuslimited())
-
-                # RESULTS
-                results_acc[keyb][keyg][keyw] = vcat(sol_acc.u, ir_acc_mix(sol_acc.u), 
-                    ir_acc_pure(sol_acc.u), ep_acc(sol_acc.u), beta, gamma, w)
-            end
+    # input data
+    if inpath !== ""
+        infile = string(inpath, cpukey, ".json")
+        results_init = Dict()
+        open(infile, "r") do f
+            results_init = JSON.parse(f)
         end
     end
 
-    # IR FULL
-    if whichf == "full" || whichf == "both"
-        results_full[keyb] = Dict{Int64, Dict{Int64, Vector{Float32}}}()
+    m1 = LLROptModel(;
+        weighted_edges = we1,
+        input_edges = input_edges,
+        on_ind = on_ind1,
+        c = cr,
+        dc = dc,
+        n = n,
+        k = k,
+        idist = idist1,
+    )
 
-        for (keyg, gamma) in enumerate(gammas)
-            results_full[keyb][keyg] = Dict{Int64, Vector{Float32}}()
+    m2 = LLROptModel(;
+        weighted_edges = we2,
+        input_edges = input_edges,
+        on_ind = on_ind2,
+        c = cr,
+        dc = dc,
+        n = n,
+        k = k,
+        idist = idist2,
+    )
 
-            for (keyw, w) in enumerate(wvals)
-                args_full = [m1, m2, beta, gamma, w]
-                targetfun_full(x, p) = target_full(x, args_full...)[1]
-                ir_full_mix(x) = target_full(x, args_full...)[2]
-                ir_full_pure(x) = target_full(x, args_full...)[3]
-                ep_full(x) = target_full(x, args_full...)[4]
+    init!(m1)
+    init!(m2)
 
-                optf_full = Optimization.OptimizationFunction(targetfun_full)
-                prob_full = Optimization.OptimizationProblem(optf_full, 
-                    xinit1, lb=llb1, ub=lub1, maxiters=maxiters_full)
-                sol_full = solve(prob_full, BBO_adaptive_de_rand_1_bin_radiuslimited())
+    nparams_per_cpu = div(nparams, ncpus)
 
-                # RESULTS
-                results_full[keyb][keyg][keyw] = vcat(sol_full.u, 0, 0, 0, 0, 
-                    ep_full(sol_full.u), beta, gamma, w)
-            
-                for i in 1:N
-                    irvals_mix[i] = ir_full_mix(sol_full.u)
-                    irvals_pure[i] = ir_full_pure(sol_full.u)
-                end
+    irvals_mix = Vector{Float32}(undef, N)
+    irvals_pure = Vector{Float32}(undef, N)
+    results_acc = Dict{Int64, Dict{Int64, Dict{Int64, Vector{Float32}}}}()
+    results_full = Dict{Int64, Dict{Int64, Dict{Int64, Vector{Float32}}}}()
 
-                results_full[keyb][keyg][keyw][end-7] = Statistics.mean(irvals_mix)
-                results_full[keyb][keyg][keyw][end-6] = Statistics.mean(irvals_pure)
-                results_full[keyb][keyg][keyw][end-5] = Statistics.std(irvals_mix)
-                results_full[keyb][keyg][keyw][end-4] = Statistics.std(irvals_pure)
-            end
-        end
-    end
-end
+    for k in 1:nparams_per_cpu
+        keyb = (cpukey - 1) * nparams_per_cpu + k
+        beta = betas[keyb]
 
-######### Write data
+        # IR ACC
+        if whichf == "acc" || whichf == "both"
+            results_acc[keyb] = Dict{Int64, Dict{Int64, Vector{Float32}}}()
 
-if whichf == "acc" || whichf == "both"
-    file1 = string(outpath, "ir_acc_mix_vs_pure_pareto_pid$(cpukey).json")
-
-    open(file1, "w") do f
-        JSON.print(f, results_acc, 4)
-    end
-end
-
-if whichf == "full" || whichf == "both"
-    file2 = string(outpath, "ir_full_mix_vs_pure_pareto_pid$(cpukey).json")
-
-    open(file2, "w") do f
-        JSON.print(f, results_full, 4)
-    end
-end
-
-########## Write parameters
-
-if cpukey == 1
-    params = Dict{String, Any}()
-    params["ncpus"] = ncpus
-    params["nparams"] = nparams
-    params["betas"] = betas
-    params["gammas"] = gammas
-    params["wvals"] = wvals
-    params["n"] = n
-    params["N"] = N
-    params["maxiters_acc"] = maxiters_acc
-    params["maxiters_full"] = maxiters_full
-
-    paramfile = string(outpath, "params.json")
+            for (keyg, gamma) in enumerate(gammas)
+                results_acc[keyb][keyg] = Dict{Int64, Vector{Float32}}()
         
-    open(paramfile, "w") do f
-        JSON.print(f, params, 4)
+                for (keyw, w) in enumerate(wvals)
+                    if inpath !== ""
+                        xinit = results_init[string(keyb)][string(keyg)][string(keyw)][1:end-6]
+                        xinit = Vector{Float64}(xinit)
+                    else
+                        xinit = xinit1
+                    end
+
+                    args_acc = [edges1, edges2, input_edges, cr, dc, on_ind1, on_ind2, 
+                        beta, gamma, w]
+                    targetfun_acc(x, p) = target_acc(x, args_acc...)[1]
+                    ir_acc_mix(x) = target_acc(x, args_acc...)[2]
+                    ir_acc_pure(x) = target_acc(x, args_acc...)[3]
+                    ep_acc(x) = target_acc(x, args_acc...)[4]
+
+                    optf_acc = Optimization.OptimizationFunction(targetfun_acc)
+                    prob_acc = Optimization.OptimizationProblem(optf_acc, 
+                                xinit, lb=llb1, ub=lub1, maxiters=maxiters_acc)
+                    sol_acc = solve(prob_acc, BBO_adaptive_de_rand_1_bin_radiuslimited())
+
+                    # RESULTS
+                    results_acc[keyb][keyg][keyw] = vcat(sol_acc.u, ir_acc_mix(sol_acc.u), 
+                        ir_acc_pure(sol_acc.u), ep_acc(sol_acc.u), beta, gamma, w)
+                end
+            end
+        end
+
+        # IR FULL
+        if whichf == "full" || whichf == "both"
+            results_full[keyb] = Dict{Int64, Dict{Int64, Vector{Float32}}}()
+
+            for (keyg, gamma) in enumerate(gammas)
+                results_full[keyb][keyg] = Dict{Int64, Vector{Float32}}()
+
+                for (keyw, w) in enumerate(wvals)
+                    if inpath !== ""
+                        xinit = results_init[string(keyb)][string(keyg)][string(keyw)][1:end-6]
+                        xinit = Vector{Float64}(xinit)
+                    else
+                        xinit = xinit1
+                    end
+
+                    args_full = [m1, m2, beta, gamma, w]
+                    targetfun_full(x, p) = target_full(x, args_full...)[1]
+                    ir_full_mix(x) = target_full(x, args_full...)[2]
+                    ir_full_pure(x) = target_full(x, args_full...)[3]
+                    ep_full(x) = target_full(x, args_full...)[4]
+
+                    optf_full = Optimization.OptimizationFunction(targetfun_full)
+                    prob_full = Optimization.OptimizationProblem(optf_full, 
+                        xinit, lb=llb1, ub=lub1, maxiters=maxiters_full)
+                    sol_full = solve(prob_full, BBO_adaptive_de_rand_1_bin_radiuslimited())
+
+                    # RESULTS
+                    results_full[keyb][keyg][keyw] = vcat(sol_full.u, 0, 0, 0, 0, 
+                        ep_full(sol_full.u), beta, gamma, w)
+                
+                    for i in 1:N
+                        irvals_mix[i] = ir_full_mix(sol_full.u)
+                        irvals_pure[i] = ir_full_pure(sol_full.u)
+                    end
+
+                    results_full[keyb][keyg][keyw][end-7] = Statistics.mean(irvals_mix)
+                    results_full[keyb][keyg][keyw][end-6] = Statistics.mean(irvals_pure)
+                    results_full[keyb][keyg][keyw][end-5] = Statistics.std(irvals_mix)
+                    results_full[keyb][keyg][keyw][end-4] = Statistics.std(irvals_pure)
+                end
+            end
+        end
+    end
+
+    ######### Write data
+
+    if whichf == "acc" || whichf == "both"
+        file1 = string(outpath, "ir_acc_mix_vs_pure_pareto_pid$(cpukey).json")
+
+        open(file1, "w") do f
+            JSON.print(f, results_acc, 4)
+        end
+    end
+
+    if whichf == "full" || whichf == "both"
+        file2 = string(outpath, "ir_full_mix_vs_pure_pareto_pid$(cpukey).json")
+
+        open(file2, "w") do f
+            JSON.print(f, results_full, 4)
+        end
+    end
+
+    ########## Write parameters
+
+    if cpukey == 1
+        params = Dict{String, Any}()
+        params["ncpus"] = ncpus
+        params["nparams"] = nparams
+        params["betas"] = betas
+        params["gammas"] = gammas
+        params["wvals"] = wvals
+        params["n"] = n
+        params["N"] = N
+        params["maxiters_acc"] = maxiters_acc
+        params["maxiters_full"] = maxiters_full
+
+        paramfile = string(outpath, "params.json")
+            
+        open(paramfile, "w") do f
+            JSON.print(f, params, 4)
+        end
     end
 end

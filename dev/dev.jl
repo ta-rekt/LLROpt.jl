@@ -525,6 +525,16 @@ let
     s["1"][1:end-3]
 end
 
+let
+    inpath = "/home/tohme/.julia/dev/LLROpt/data/20241114/ir-epsilon-hernan/gen1/ir_acc_mix_vs_pure_pareto_pid"
+    cpukey = 1
+    infile = string(inpath, cpukey, ".json")
+    results_init = Dict{String, Dict{String, Dict{String, Vector{Float32}}}}()
+    open(infile, "r") do f
+        results_init = JSON.parse(f)
+    end
+end
+
 ## . - -- .- .-.- . .- .-- -.- .- .- --.-.... - -.-
 # DOING: testing P_ss
 

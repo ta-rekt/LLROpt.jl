@@ -34,20 +34,22 @@ idist1 = ones(4) ./ 4
 idist2 = ones(6) ./ 6
 
 ### Optimization parameters
-inpath = "../data/20241114/ir-epsilon-hernan/ir_acc_mix_vs_pure_pareto_pid"
+inpath = "/home/tohme/.julia/dev/LLROpt/data/20241114/ir-epsilon-hernan/gen1/ir_acc_mix_vs_pure_pareto_pid"
+# inpath = ""
 maxiters_acc = 20000
-maxiters_full = 30
+maxiters_full = 200
 xinit1 = (lub1 .+ llb1) ./ 2
 xinit2 = (lub2 .+ llb2) ./ 2
 we1 = [(u,v,r) for ((u,v),r) in zip(edges1, xinit1)]
 we2 = [(u,v,r) for ((u,v),r) in zip(edges2, xinit2)]
-n = 1000
-N = 200
+n = 1000000
+N = 2000
 k = 1
-whichf = "full"
+whichf = "acc"
 
 ### Temperature parameter
-betas = map(x->tan(x), range(0.0, stop=3.141592/500, length=512))
+angle_incr = 3.141592/4e4
+betas = map(x->tan(x), range(3*angle_incr, stop=3.5*angle_incr, length=2))
 nparams = length(betas)
 
 ### Other parameters
