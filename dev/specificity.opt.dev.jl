@@ -17,9 +17,22 @@ cpukey = parse(Int32, ARGS[2])
 ncpus = parse(Int32, ARGS[3])
 outdir = ARGS[4]
 
-specpath = string("../spec/", specfile)
+# input data
+infile = string(inpath, cpukey, ".json")
+results_init = {}
+open(infile, "r") do f
+    results_init = JSON.parse(f, dicttype=Dict{String, 
+                                          Dict{String, 
+                                          Dict{String, 
+                                          Vector{Float32}}}}())
+end
+
+# output directory
 outpath = "data/$(outdir)/"
 Base.Filesystem.mkpath(outpath)
+
+# specification file
+specpath = string("../spec/", specfile)
 include(specpath)
 
 m1 = LLROptModel(;
@@ -66,6 +79,10 @@ for k in 1:nparams_per_cpu
             results_acc[keyb][keyg] = Dict{Int64, Vector{Float32}}()
     
             for (keyw, w) in enumerate(wvals)
+                xinit1 = results_init[string(keyb),
+                                      string(keyg), 
+                                      string(keyw)][1:end-6]
+
                 args_acc = [edges1, edges2, input_edges, cr, dc, on_ind1, on_ind2, 
                     beta, gamma, w]
                 targetfun_acc(x, p) = target_acc(x, args_acc...)[1]

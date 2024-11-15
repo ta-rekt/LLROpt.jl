@@ -34,19 +34,20 @@ idist1 = ones(4) ./ 4
 idist2 = ones(6) ./ 6
 
 ### Optimization parameters
-maxiters_acc = 40000
-maxiters_full = 3000
+inpath = "../data/20241114/ir-epsilon-hernan/ir_acc_mix_vs_pure_pareto_pid"
+maxiters_acc = 20000
+maxiters_full = 30
 xinit1 = (lub1 .+ llb1) ./ 2
 xinit2 = (lub2 .+ llb2) ./ 2
 we1 = [(u,v,r) for ((u,v),r) in zip(edges1, xinit1)]
 we2 = [(u,v,r) for ((u,v),r) in zip(edges2, xinit2)]
-n = 1000000
-N = 2000
+n = 1000
+N = 200
 k = 1
-whichf = "acc"
+whichf = "full"
 
 ### Temperature parameter
-betas = map(x->tan(x), range(0.0, stop=3.141592/2000, length=512))
+betas = map(x->tan(x), range(0.0, stop=3.141592/500, length=512))
 nparams = length(betas)
 
 ### Other parameters
@@ -108,19 +109,21 @@ function target_full(logrates, args...)
 
     init!(m1)
     init!(m2)
-    EP = EP_ss(m1.Q_c)
+    EP = EP_ss(m2.Q_c)
 
     Jplus = 0
     pi = P_ss(m1.Q_c)
+    pi2 = P_ss(m2.Q_c)
     J = pi[1] * m1.Q_c[1,2] - pi[2] * m1.Q_c[2,1]
     Jplus = J + abs(J)   # penalty for counterclockwise flux
     # ir_full!(m1)
     ir_full!(m2)
-    nskip = 5
 
     # empirical mean estimator
     # ir_full_pure = m1.llr[end] / sum(m1.rt)
     ir_full_mix = m2.llr[end] / sum(m2.rt)
+    mlog_epsilon = log2((pi2[4])/(pi2[6]))
 
-    (- ir_full_pure - beta*ir_full_mix + Jplus, ir_full_mix, ir_full_pure, EP)
+    # (- ir_full_pure - beta*ir_full_mix + Jplus, ir_full_mix, ir_full_pure, EP)
+    (- ir_full_mix - beta*mlog_epsilon + Jplus, mlog_epsilon, ir_full_mix, EP)
 end

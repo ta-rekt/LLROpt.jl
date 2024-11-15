@@ -484,24 +484,45 @@ end
 ## . - -- .- .-.- . .- .-- -.- .- .- --.-.... - -.-
 # DOING: testing JSON
 using JSON
+using Random
 
 let 
     Random.seed!(123)
     nrow = 3
-    ncol = 2
-    data = rand(nrow,ncol)
+    ncol = 6
+    data = rand(nrow, ncol)
     dict = Dict(i => data[i:nrow:nrow*ncol] for i = 1:nrow)
 
     dirname = 20240730
     key = 1
     
     path = "data/$(dirname)/"
-    Base.Filesystem.mkpath(path)
+    # path = ""
+    if path !== ""
+        Base.Filesystem.mkpath(path)
+    else
+        @show "pimp"
+    end
     file = string(path, "test$(key).json")
 
     open(file, "w") do f
         JSON.print(f, dict, 4)
     end
+end
+
+let 
+    dirname = 20240730
+    key = 1
+    
+    path = "data/$(dirname)/"
+    Base.Filesystem.mkpath(path)
+    file = string(path, "test$(key).json")
+    s = Dict()
+
+    open(file, "r") do f
+        s = JSON.parse(f, dicttype=Dict{String, Vector{Float32}})
+    end
+    s["1"][1:end-3]
 end
 
 ## . - -- .- .-.- . .- .-- -.- .- .- --.-.... - -.-
