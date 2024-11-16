@@ -1,3 +1,9 @@
+using Optimization
+using OptimizationBBO
+using OptimizationCMAEvolutionStrategy
+using OptimizationEvolutionary
+using OptimizationManopt
+
 ### Biophysical parameters
 a = 3e-3        # um
 D_tf = 7.4      # um^2/s
@@ -34,30 +40,32 @@ idist1 = ones(4) ./ 4
 idist2 = ones(6) ./ 6
 
 ### Optimization parameters
-inpath = "/home/tohme/.julia/dev/LLROpt/data/20241114/ir-epsilon-hernan/gen1/ir_acc_mix_vs_pure_pareto_pid"
+inpath = "/home/tohme/.julia/dev/LLROpt/data/20241113/ir-dr/ir_full_mix_vs_pure_pareto_pid"
 # inpath = ""
+
+# opt_alg = BBO_adaptive_de_rand_1_bin_radiuslimited()
+opt_alg = Evolutionary.CMAES(μ = 5, λ = 10, sigma0 = 0.1)
+
 maxiters_acc = 20000
-maxiters_full = 200
+maxiters_full = 2
 xinit1 = (lub1 .+ llb1) ./ 2
 xinit2 = (lub2 .+ llb2) ./ 2
 we1 = [(u,v,r) for ((u,v),r) in zip(edges1, xinit1)]
 we2 = [(u,v,r) for ((u,v),r) in zip(edges2, xinit2)]
-n = 1000000
-N = 2000
+n = 100000
+N = 100
 k = 1
-whichf = "acc"
+whichf = "full"
 
 ### Temperature parameter
-angle_incr = 3.141592/4e4
-betas = map(x->tan(x), range(3*angle_incr, stop=3.5*angle_incr, length=2))
+angle_incr = 3.141592 - 0.01
+betas = map(x->tan(x), range(0*angle_incr, stop=1*angle_incr, length=16))
 nparams = length(betas)
 
 ### Other parameters
 # gammas = [1.5, 2.5, 5, 10, 50, 500, 5000, 50000]
 gammas = [1.5, 2.5, 10]
-# gammas = range(1, stop=4, length=10)
-# wvals = [1e-5, 2, 5, 10, 50, 500]
-wvals = [2.5, 500]
+wvals = [2.5]
 
 ### objective functions
 
@@ -118,14 +126,14 @@ function target_full(logrates, args...)
     pi2 = P_ss(m2.Q_c)
     J = pi[1] * m1.Q_c[1,2] - pi[2] * m1.Q_c[2,1]
     Jplus = J + abs(J)   # penalty for counterclockwise flux
-    # ir_full!(m1)
+    ir_full!(m1)
     ir_full!(m2)
 
     # empirical mean estimator
-    # ir_full_pure = m1.llr[end] / sum(m1.rt)
+    ir_full_pure = m1.llr[end] / sum(m1.rt)
     ir_full_mix = m2.llr[end] / sum(m2.rt)
-    mlog_epsilon = log2((pi2[4])/(pi2[6]))
+    # mlog_epsilon = log2((pi2[4])/(pi2[6]))
 
-    # (- ir_full_pure - beta*ir_full_mix + Jplus, ir_full_mix, ir_full_pure, EP)
-    (- ir_full_mix - beta*mlog_epsilon + Jplus, mlog_epsilon, ir_full_mix, EP)
+    (- ir_full_pure - beta*ir_full_mix + Jplus, ir_full_mix, ir_full_pure, EP)
+    # (- ir_full_mix - beta*mlog_epsilon + Jplus, mlog_epsilon, ir_full_mix, EP)
 end

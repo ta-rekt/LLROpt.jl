@@ -1,3 +1,8 @@
+using Optimization
+using OptimizationBBO
+using OptimizationGCMAES
+using OptimizationOptimJL
+
 ### biophysical parameters
 a = 3e-3        # ums
 D_tf = 7.4      # um^2/s
@@ -24,11 +29,13 @@ lub[1] = log10(dl_tf)
 lub[3] = log10(dl_tf)
 
 ### Optimization parameters
+# inpath = "/home/tohme/.julia/dev/LLROpt/data/20241113/ir-dr/ir_full_mix_vs_pure_pareto_pid"
+inpath = ""
 maxiters_acc = 30000
 maxiters_full = 2000
 sigma0 = log10(ub) / 4
-x0 = (lub .+ llb) ./ 2
-we = [(u,v,r) for ((u,v),r) in zip(edges, x0)]
+xinit1 = (lub .+ llb) ./ 2
+we = [(u,v,r) for ((u,v),r) in zip(edges, xinit1)]
 
 k = 1
 N = 5000

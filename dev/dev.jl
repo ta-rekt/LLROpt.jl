@@ -349,7 +349,6 @@ end
     nothing
 end
 
-
 ## . - -- .- .-.- . .- .-- -.- .- .- --.-.... - -.-
 # DOING: Improving decision time statistics ?
 

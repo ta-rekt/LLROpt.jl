@@ -1,15 +1,7 @@
 import Pkg
 Pkg.activate("LLROpt")
-Pkg.add("JSON")
-Pkg.add("Statistics")
-Pkg.add("Optimization")
-Pkg.add("OptimizationBBO")
-Pkg.add("OptimizationCMAEvolutionStrategy")
 using JSON
 using Statistics
-using Optimization
-using OptimizationBBO
-using OptimizationCMAEvolutionStrategy
 using LLROpt
 
 let 
@@ -96,7 +88,7 @@ let
                     optf_acc = Optimization.OptimizationFunction(targetfun_acc)
                     prob_acc = Optimization.OptimizationProblem(optf_acc, 
                                 xinit, lb=llb1, ub=lub1, maxiters=maxiters_acc)
-                    sol_acc = solve(prob_acc, BBO_adaptive_de_rand_1_bin_radiuslimited())
+                    sol_acc = solve(prob_acc, opt_alg)
 
                     # RESULTS
                     results_acc[keyb][keyg][keyw] = vcat(sol_acc.u, ir_acc_mix(sol_acc.u), 
@@ -114,7 +106,7 @@ let
 
                 for (keyw, w) in enumerate(wvals)
                     if inpath !== ""
-                        xinit = results_init[string(keyb)][string(keyg)][string(keyw)][1:end-6]
+                        xinit = results_init[string(keyb)][string(keyg)][string(keyw)][1:end-8]
                         xinit = Vector{Float64}(xinit)
                     else
                         xinit = xinit1
@@ -129,7 +121,7 @@ let
                     optf_full = Optimization.OptimizationFunction(targetfun_full)
                     prob_full = Optimization.OptimizationProblem(optf_full, 
                         xinit, lb=llb1, ub=lub1, maxiters=maxiters_full)
-                    sol_full = solve(prob_full, BBO_adaptive_de_rand_1_bin_radiuslimited())
+                    sol_full = solve(prob_full, opt_alg)
 
                     # RESULTS
                     results_full[keyb][keyg][keyw] = vcat(sol_full.u, 0, 0, 0, 0, 
