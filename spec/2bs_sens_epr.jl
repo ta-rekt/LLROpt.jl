@@ -1,3 +1,7 @@
+using Optimization
+using OptimizationBBO
+using OptimizationEvolutionary
+
 ### Biophysical parameters
 a = 3e-3        # um
 D_tf = 7.4      # um^2/s
@@ -27,21 +31,24 @@ lub[6] = log10(dl_tf)
 lub[7] = log10(dl_tf)
 
 ### Optimization parameters
+inpath = "/home/tohme/.julia/dev/LLROpt/data/20241111/2bs-ir-ep/ir_full_vs_ep_pareto_pid"
+# inpath = ""
+
+# opt_alg = BBO_adaptive_de_rand_1_bin_radiuslimited()
+opt_alg = Evolutionary.CMAES(μ = 5, λ = 10, sigma0 = 0.1)
+
 maxiters_acc = 20000
-maxiters_full = 10
+maxiters_full = 5
 x0 = (lub .+ llb) ./ 2
 we = [(u,v,r) for ((u,v),r) in zip(edges, x0)]
 k = 1
-N = 100
-nepochs = 5
-startexp = 15
-ns = [2^i for i in range(startexp, stop=startexp+nepochs)]
+n = 10000
+N = 10
 whichf = "full"
 
 ### temperature parameter
-betas = vcat(range(2.5e-4, stop=1e-5, length=10), 10 .^ range(-4.8, stop=-9, length=5))
+betas = vcat(range(2.5e-4, stop=1e-5, length=10), 10 .^ range(-4.8, stop=-9, length=6))
 nparams = length(betas)
-
 
 # IR ACC
 function ir_acc_log(logrates, args...)
@@ -57,8 +64,6 @@ function ir_acc_log(logrates, args...)
 
         wedges[i] = (w1, w2, w3)
     end
-
-    # wedges = [(u,v,10 ^ r) for ((u,v),r) in zip(edges, logrates)]
 
     Q = build_mat(wedges, iedges, c)
     EP = EP_ss(Q)
@@ -79,7 +84,7 @@ end
 
 # IR FULL
 function ir_full_log(logrates, args...)
-    m, beta, use_mean, e = args
+    m, beta, e = args
 
     for (keyb, val) in enumerate(logrates)
         (u,v,r) = m.weighted_edges[keyb]
@@ -101,17 +106,17 @@ function ir_full_log(logrates, args...)
     ir_full!(m)
 
     # mean estimator
-    if use_mean
-        IR = m.llr[end] / sum(m.rt)
+    # if use_mean
+    IR = m.llr[end] / sum(m.rt)
     
-    # variance estimator
-    else
-        nskip = 5
-        dXs = diff(m.llr[1:nskip:end-1])
-        time = 2 .* cumsum(m.rt)
-        sq_deltat = map(x->sqrt(x), diff(time[1:nskip:end]))
-        IR = var(dXs ./ sq_deltat)
-    end
+    # # variance estimator
+    # else
+    #     nskip = 5
+    #     dXs = diff(m.llr[1:nskip:end-1])
+    #     time = 2 .* cumsum(m.rt)
+    #     sq_deltat = map(x->sqrt(x), diff(time[1:nskip:end]))
+    #     IR = var(dXs ./ sq_deltat)
+    # end
 
     (- IR + beta*EP + Jplus, IR, EP)
 end

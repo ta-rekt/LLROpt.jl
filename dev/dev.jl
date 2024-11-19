@@ -481,6 +481,67 @@ end
 end
 
 ## . - -- .- .-.- . .- .-- -.- .- .- --.-.... - -.-
+# DOING: Random point cloud to find pareto front from probable solutions
+
+@time let 
+
+    include("../spec/1bs_sens_spec.jl")
+
+    dirname = "20241118/test-point-cloud"
+    c = 5.6
+
+    ### MGR circuit
+    kboff = 0.0888
+    kbon = 1e-5
+    konu = 1e-5
+    konb = 5
+    kuon = 5
+    kuoff = 1e-5
+    koffu = 5
+    koffb = 1e-5
+
+    we1 = [(u,v,r) for ((u,v),r) in zip(edges1, xinit1)]
+    we2 = [(u,v,r) for ((u,v),r) in zip(edges2, xinit2)]
+
+    m1 = LLROptModel(;
+        weighted_edges = we1,
+        input_edges = input_edges,
+        on_ind = on_ind1,
+        c = cr,
+        dc = dc,
+        n = n,
+        k = k,
+        idist = idist1,
+    )
+
+    m2 = LLROptModel(;
+        weighted_edges = we2,
+        input_edges = input_edges,
+        on_ind = on_ind2,
+        c = cr,
+        dc = dc,
+        n = n,
+        k = k,
+        idist = idist2,
+    )
+
+    init!(m1)
+    init!(m2)
+
+    npoints = 100
+
+    # generate some random circuits around MGR
+    
+
+    # remove those that violate the boundary constraints
+
+    # slect those that minimize the target
+
+    # repeat for a different beta, starting from the previous beta's solutions
+
+end
+
+## . - -- .- .-.- . .- .-- -.- .- .- --.-.... - -.-
 # DOING: testing JSON
 using JSON
 using Random

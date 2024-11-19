@@ -1,5 +1,3 @@
-##. - -- .- .-.- . .- .-- -.- .- .- --.-.... - -.-
-# Optimization MWE with ir_acc and ir_full
 import Pkg
 Pkg.activate("LLROpt")
 using JSON
@@ -32,6 +30,8 @@ let
     results_acc = Dict{Int64, Vector{Float32}}()
     results_full = Dict{Int64, Vector{Float32}}()
 
+    nparams_per_cpu = div(nparams, ncpus)
+
     ### Main loop
     m = LLROptModel(;
         weighted_edges = we,
@@ -43,17 +43,21 @@ let
         k = k,
         idist = idist,
     )
+
     init!(m)
     
     for k in 1:nparams_per_cpu
-        if inpath !== ""
-            xinit = results_init[string(keyb)][string(keyg)][string(keyw)][1:end-6]
-            xinit = Vector{Float64}(xinit)
-        else
-            xinit = xinit1
-        end
-
+        keyb = (cpukey - 1) * nparams_per_cpu + k
+        beta = betas[keyb]
+        
         if whichf == "acc" || whichf == "both"
+            if inpath !== ""
+                xinit = results_init[string(keyb)][1:end-2]
+                xinit = Vector{Float64}(xinit)
+            else
+                xinit = xinit1
+            end
+
             # ACC
             args_acc = [edges, m.input_edges, c, dc, on_ind, beta, e]
             targetfun_acc(x, p) = ir_acc_log(x, args_acc...)[1]
@@ -69,8 +73,15 @@ let
         end
 
         if whichf == "full" || whichf == "both"
+            if inpath !== ""
+                xinit = results_init[string(keyb)][1:end-3]
+                xinit = Vector{Float64}(xinit)
+            else
+                xinit = xinit1
+            end
+
             # FULL
-            args_full = [m, beta, false, e]  # use variance estimator in optimization
+            args_full = [m, beta, e]
             targetfun_full(x, p) = ir_full_log(x, args_full...)[1]
             _ir_full(x) = ir_full_log(x, args_full...)[2]
             ep_full(x) = ir_full_log(x, args_full...)[3]
@@ -82,10 +93,9 @@ let
             results_full[keyb] = vcat(sol_full.u, 0, ep_full(sol_full.u), 0)
 
             irvals = Vector{Float32}(undef, N)
-            args_full = [m, beta, true, e]   # use mean estimator for final output
+            args_full = [m, beta, e] 
             _ir_full_mean(x) = ir_full_log(x, args_full...)[2]
             xopt = results_full[keyb][1:length(sol_full.u)]
-            # xs[1:end, k] = sol_full.u
 
             for i in 1:N
                 irvals[i] = _ir_full_mean(xopt)

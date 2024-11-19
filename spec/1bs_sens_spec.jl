@@ -39,33 +39,119 @@ on_ind2 = BitArray([0,1,0,1,0,1])
 idist1 = ones(4) ./ 4
 idist2 = ones(6) ./ 6
 
-### Optimization parameters
-inpath = "/home/tohme/.julia/dev/LLROpt/data/20241113/ir-dr/ir_full_mix_vs_pure_pareto_pid"
-# inpath = ""
+### Initialization from stored data
+# inpath = "/home/tohme/.julia/dev/LLROpt/data/20241114/dr-epsilon/ir_full_mix_vs_pure_pareto_pid"
+inpath = ""
 
+### Initialization at midpoint of bounds (trivial)
+# xinit1 = (lub1 .+ llb1) ./ 2
+# xinit2 = (lub2 .+ llb2) ./ 2
+
+### Local search around circuit A
+# xinit1 = [-1.0515872,
+#           -4.9898477,
+#           -1.0515872,
+#           0.69897,
+#           0.2825698,
+#           0.69897,
+#           0.46107602,
+#           -4.999996]
+
+# xinit2 = [1.2825698,
+#           0.09454083567823801,
+#           0.09454083567823801,
+#           1.46107602,
+#           -4.9898477,
+#           -1.0515872,
+#           -1.0515872,
+#           0.69897,
+#           0.2825698,
+#           0.69897,
+#           0.46107602,
+#           -4.999996,
+#           0.69897,
+#           -4.999996]
+
+# llb1[3] = log10(dl_tf) - 0.05
+
+### Local search around circuit B
+# xinit2 = [1.6989699,
+#         0.09454083567823801,
+#         -3.853808964321762,
+#         1.54783356,
+#         -4.989879,
+#         -1.0515872,
+#         -4.999937,
+#         0.69897,
+#         0.6989699,
+#         0.69896984,
+#         0.54783356,
+#         -4.9945397,
+#         0.69896984,
+#         -4.9945397]
+
+# xinit1 = [-1.0515872,
+#         -4.989879,
+#         -4.999937,
+#         0.69897,
+#         0.6989699,
+#         0.69896984,
+#         0.54783356,
+#         -4.9945397]
+
+# lub1[3] = -3
+
+### Local search around circuit C
+xinit1 = [-1.0515921,
+        0.6989517,
+        -4.999785,
+        0.69896877,
+        -0.12840532,
+        -1.9895186,
+        0.69896877,
+        -4.9985023]
+
+xinit2 = [0.2695346886720376,
+        0.09453593567823804,
+        -3.853656964321762,
+        1.0969087786720375,
+        0.6989517,
+        -1.0515921,
+        -4.999785,
+        0.69896877,
+        -0.12840532,
+        -1.9895186,
+        0.69896877,
+        -4.9985023,
+        -1.9895186,
+        -4.9985023]
+
+llb1[2] = -1
+
+we1 = [(u,v,r) for ((u,v),r) in zip(edges1, xinit1)]
+we2 = [(u,v,r) for ((u,v),r) in zip(edges2, xinit2)]
+
+### Optimization parameters
 # opt_alg = BBO_adaptive_de_rand_1_bin_radiuslimited()
 opt_alg = Evolutionary.CMAES(μ = 5, λ = 10, sigma0 = 0.1)
 
 maxiters_acc = 20000
-maxiters_full = 2
-xinit1 = (lub1 .+ llb1) ./ 2
-xinit2 = (lub2 .+ llb2) ./ 2
-we1 = [(u,v,r) for ((u,v),r) in zip(edges1, xinit1)]
-we2 = [(u,v,r) for ((u,v),r) in zip(edges2, xinit2)]
+maxiters_full = 5
 n = 100000
-N = 100
+N = 10
 k = 1
-whichf = "full"
+whichf = "acc"
 
 ### Temperature parameter
-angle_incr = 3.141592 - 0.01
-betas = map(x->tan(x), range(0*angle_incr, stop=1*angle_incr, length=16))
+angle_incr = 3.141592 / 1e3
+betasn = map(x->-tan(x), range(0*angle_incr, stop=0.01*angle_incr, length=64))
+betasp = map(x->tan(x), range(0*angle_incr, stop=0.1*angle_incr, length=128))
+betas = vcat(betasn, betasp)
 nparams = length(betas)
 
 ### Other parameters
-# gammas = [1.5, 2.5, 5, 10, 50, 500, 5000, 50000]
 gammas = [1.5, 2.5, 10]
-wvals = [2.5]
+wvals = [0.01, 2.5, 50]
 
 ### objective functions
 
@@ -126,14 +212,14 @@ function target_full(logrates, args...)
     pi2 = P_ss(m2.Q_c)
     J = pi[1] * m1.Q_c[1,2] - pi[2] * m1.Q_c[2,1]
     Jplus = J + abs(J)   # penalty for counterclockwise flux
-    ir_full!(m1)
+    # ir_full!(m1)
     ir_full!(m2)
 
     # empirical mean estimator
-    ir_full_pure = m1.llr[end] / sum(m1.rt)
+    # ir_full_pure = m1.llr[end] / sum(m1.rt)
     ir_full_mix = m2.llr[end] / sum(m2.rt)
-    # mlog_epsilon = log2((pi2[4])/(pi2[6]))
+    mlog_epsilon = log2((pi2[4])/(pi2[6]))
 
-    (- ir_full_pure - beta*ir_full_mix + Jplus, ir_full_mix, ir_full_pure, EP)
-    # (- ir_full_mix - beta*mlog_epsilon + Jplus, mlog_epsilon, ir_full_mix, EP)
+    # (- ir_full_pure - beta*ir_full_mix + Jplus, ir_full_mix, ir_full_pure, EP)
+    (- ir_full_mix - beta*mlog_epsilon + Jplus, mlog_epsilon, ir_full_mix, EP)
 end

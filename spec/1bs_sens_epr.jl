@@ -29,10 +29,14 @@ lub[1] = log10(dl_tf)
 lub[3] = log10(dl_tf)
 
 ### Optimization parameters
-# inpath = "/home/tohme/.julia/dev/LLROpt/data/20241113/ir-dr/ir_full_mix_vs_pure_pareto_pid"
+# inpath = "/home/tohme/.julia/dev/LLROpt/data/20241111/2bs-ir-ep/ir_full_vs_ep_pareto_pid"
 inpath = ""
+
+# opt_alg = BBO_adaptive_de_rand_1_bin_radiuslimited()
+opt_alg = Evolutionary.CMAES(μ = 5, λ = 10, sigma0 = 0.1)
+
 maxiters_acc = 30000
-maxiters_full = 2000
+maxiters_full = 2
 sigma0 = log10(ub) / 4
 xinit1 = (lub .+ llb) ./ 2
 we = [(u,v,r) for ((u,v),r) in zip(edges, xinit1)]
