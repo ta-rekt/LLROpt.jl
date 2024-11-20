@@ -172,6 +172,7 @@ let
         params["N"] = N
         params["maxiters_acc"] = maxiters_acc
         params["maxiters_full"] = maxiters_full
+        # params["ncalls_full"] = COUNTERS["target_full"]
 
         paramfile = string(outpath, "params.json")
             

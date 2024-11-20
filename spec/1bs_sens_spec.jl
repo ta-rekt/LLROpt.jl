@@ -3,6 +3,7 @@ using OptimizationBBO
 using OptimizationCMAEvolutionStrategy
 using OptimizationEvolutionary
 using OptimizationManopt
+using Distributions
 
 ### Biophysical parameters
 a = 3e-3        # um
@@ -40,7 +41,7 @@ idist1 = ones(4) ./ 4
 idist2 = ones(6) ./ 6
 
 ### Initialization from stored data
-# inpath = "/home/tohme/.julia/dev/LLROpt/data/20241114/dr-epsilon/ir_full_mix_vs_pure_pareto_pid"
+# inpath = "/home/tohme/.julia/dev/LLROpt/data/20241118/dr-epsilon-hernan/bigsweep-cmaes-A-pn-smallw/ir_full_mix_vs_pure_pareto_pid"
 inpath = ""
 
 ### Initialization at midpoint of bounds (trivial)
@@ -75,88 +76,105 @@ inpath = ""
 # llb1[3] = log10(dl_tf) - 0.05
 
 ### Local search around circuit B
-# xinit2 = [1.6989699,
-#         0.09454083567823801,
-#         -3.853808964321762,
-#         1.54783356,
-#         -4.989879,
-#         -1.0515872,
-#         -4.999937,
-#         0.69897,
-#         0.6989699,
-#         0.69896984,
-#         0.54783356,
-#         -4.9945397,
-#         0.69896984,
-#         -4.9945397]
+xinit2 = [1.6989699,
+        0.09454083567823801,
+        -3.853808964321762,
+        1.54783356,
+        -4.989879,
+        -1.0515872,
+        -4.999937,
+        0.69897,
+        0.6989699,
+        0.69896984,
+        0.54783356,
+        -4.9945397,
+        0.69896984,
+        -4.9945397]
 
-# xinit1 = [-1.0515872,
-#         -4.989879,
-#         -4.999937,
-#         0.69897,
-#         0.6989699,
-#         0.69896984,
-#         0.54783356,
-#         -4.9945397]
+xinit1 = [-1.0515872,
+        -4.989879,
+        -4.999937,
+        0.69897,
+        0.6989699,
+        0.69896984,
+        0.54783356,
+        -4.9945397]
 
-# lub1[3] = -3
+lub1[3] = -3
 
 ### Local search around circuit C
-xinit1 = [-1.0515921,
-        0.6989517,
-        -4.999785,
-        0.69896877,
-        -0.12840532,
-        -1.9895186,
-        0.69896877,
-        -4.9985023]
+# xinit1 = [-1.0515921,
+#         0.6989517,
+#         -4.999785,
+#         0.69896877,
+#         -0.12840532,
+#         -1.9895186,
+#         0.69896877,
+#         -4.9985023]
 
-xinit2 = [0.2695346886720376,
-        0.09453593567823804,
-        -3.853656964321762,
-        1.0969087786720375,
-        0.6989517,
-        -1.0515921,
-        -4.999785,
-        0.69896877,
-        -0.12840532,
-        -1.9895186,
-        0.69896877,
-        -4.9985023,
-        -1.9895186,
-        -4.9985023]
+# xinit2 = [0.2695346886720376,
+#         0.09453593567823804,
+#         -3.853656964321762,
+#         1.0969087786720375,
+#         0.6989517,
+#         -1.0515921,
+#         -4.999785,
+#         0.69896877,
+#         -0.12840532,
+#         -1.9895186,
+#         0.69896877,
+#         -4.9985023,
+#         -1.9895186,
+#         -4.9985023]
 
-llb1[2] = -1
+# llb1[2] = log10(ub) - 0.05
+# lub1[3] = -4.95
 
 we1 = [(u,v,r) for ((u,v),r) in zip(edges1, xinit1)]
 we2 = [(u,v,r) for ((u,v),r) in zip(edges2, xinit2)]
 
 ### Optimization parameters
-# opt_alg = BBO_adaptive_de_rand_1_bin_radiuslimited()
-opt_alg = Evolutionary.CMAES(μ = 5, λ = 10, sigma0 = 0.1)
+opt_alg = BBO_adaptive_de_rand_1_bin_radiuslimited()
+# opt_alg = Evolutionary.CMAES(μ = 5, λ = 10, sigma0 = 0.1)
 
-maxiters_acc = 20000
-maxiters_full = 5
+maxiters_acc = 10000
+maxiters_full = 1100
 n = 100000
-N = 10
+N = 100
 k = 1
 whichf = "acc"
 
 ### Temperature parameter
 angle_incr = 3.141592 / 1e3
-betasn = map(x->-tan(x), range(0*angle_incr, stop=0.01*angle_incr, length=64))
-betasp = map(x->tan(x), range(0*angle_incr, stop=0.1*angle_incr, length=128))
+betasn = map(x->-tan(x), range(0*angle_incr, stop=0.5*angle_incr, length=256))
+betasp = map(x->tan(x), range(0*angle_incr, stop=1*angle_incr, length=256))
 betas = vcat(betasn, betasp)
 nparams = length(betas)
 
 ### Other parameters
 gammas = [1.5, 2.5, 10]
-wvals = [0.01, 2.5, 50]
+wvals = [1, 2.5, 50]
 
 ### objective functions
 
+const COUNTERS = Dict{String, Int}()
+
+macro counted(f)
+    name = f.args[1].args[1]
+    name_str = String(name)
+    body = f.args[2]
+    counter_code = quote
+        if !haskey(COUNTERS, $name_str)
+            COUNTERS[$name_str] = 0
+        end
+        COUNTERS[$name_str] += 1
+    end
+    insert!(body.args, 1, counter_code)
+    return f
+end
+
 # returns - IR_acc_mix - beta * IR_acc_pure - gamma * EP
-function target_acc(logrates, args...)
+@counted function target_acc(logrates, args...)
     edges1, edges2, iedges, cr, dc, on_ind1, on_ind2, beta, gamma, w = args
     logcw = log10(cr) + log10(w)
     kboff, konu, kbon, koffu, kuoff, konb, kuon, koffb = logrates
@@ -186,7 +204,7 @@ function target_acc(logrates, args...)
 end
 
 # returns - IR_full_mix - beta * IR_full_pure - gamma * EP
-function target_full(logrates, args...)
+@counted function target_full(logrates, args...)
     m1, m2, beta, gamma, w = args
     logcw = log10(m1.c) + log10(w)
     kboff, konu, kbon, koffu, kuoff, konb, kuon, koffb = logrates
@@ -203,6 +221,9 @@ function target_full(logrates, args...)
         m2.weighted_edges[keyb] = (u,v,10 ^ val)
     end
 
+    # sigma = 5e-10
+    # e = Normal(0, sigma)
+
     init!(m1)
     init!(m2)
     EP = EP_ss(m2.Q_c)
@@ -218,6 +239,7 @@ function target_full(logrates, args...)
     # empirical mean estimator
     # ir_full_pure = m1.llr[end] / sum(m1.rt)
     ir_full_mix = m2.llr[end] / sum(m2.rt)
+    # ir_full_mix = ir_acc(m2.weighted_edges, m2.input_edges, m2.c, m2.dc, m2.on_ind) + rand(e)
     mlog_epsilon = log2((pi2[4])/(pi2[6]))
 
     # (- ir_full_pure - beta*ir_full_mix + Jplus, ir_full_mix, ir_full_pure, EP)
