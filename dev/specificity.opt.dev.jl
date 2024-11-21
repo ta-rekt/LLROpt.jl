@@ -172,7 +172,14 @@ let
         params["N"] = N
         params["maxiters_acc"] = maxiters_acc
         params["maxiters_full"] = maxiters_full
-        # params["ncalls_full"] = COUNTERS["target_full"]
+
+        if whichf == "full" || whichf == "both"
+            params["ncalls_full"] = COUNTERS["target_full"]
+        end
+
+        if whichf == "acc" || whichf == "both"
+            params["ncalls_acc"] = COUNTERS["target_acc"]
+        end
 
         paramfile = string(outpath, "params.json")
             

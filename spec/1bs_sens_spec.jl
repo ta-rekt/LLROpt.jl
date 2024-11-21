@@ -76,76 +76,76 @@ inpath = ""
 # llb1[3] = log10(dl_tf) - 0.05
 
 ### Local search around circuit B
-xinit2 = [1.6989699,
-        0.09454083567823801,
-        -3.853808964321762,
-        1.54783356,
-        -4.989879,
-        -1.0515872,
-        -4.999937,
-        0.69897,
-        0.6989699,
-        0.69896984,
-        0.54783356,
-        -4.9945397,
-        0.69896984,
-        -4.9945397]
+# xinit2 = [1.6989699,
+#         0.09454083567823801,
+#         -3.853808964321762,
+#         1.54783356,
+#         -4.989879,
+#         -1.0515872,
+#         -4.999937,
+#         0.69897,
+#         0.6989699,
+#         0.69896984,
+#         0.54783356,
+#         -4.9945397,
+#         0.69896984,
+#         -4.9945397]
 
-xinit1 = [-1.0515872,
-        -4.989879,
-        -4.999937,
-        0.69897,
-        0.6989699,
-        0.69896984,
-        0.54783356,
-        -4.9945397]
+# xinit1 = [-1.0515872,
+#         -4.989879,
+#         -4.999937,
+#         0.69897,
+#         0.6989699,
+#         0.69896984,
+#         0.54783356,
+#         -4.9945397]
 
-lub1[3] = -3
+# lub1[3] = -3
 
 ### Local search around circuit C
-# xinit1 = [-1.0515921,
-#         0.6989517,
-#         -4.999785,
-#         0.69896877,
-#         -0.12840532,
-#         -1.9895186,
-#         0.69896877,
-#         -4.9985023]
+xinit1 = [-1.0515921,
+        0.6989517,
+        -4.999785,
+        0.69896877,
+        -0.12840532,
+        -1.9895186,
+        0.69896877,
+        -4.9985023]
 
-# xinit2 = [0.2695346886720376,
-#         0.09453593567823804,
-#         -3.853656964321762,
-#         1.0969087786720375,
-#         0.6989517,
-#         -1.0515921,
-#         -4.999785,
-#         0.69896877,
-#         -0.12840532,
-#         -1.9895186,
-#         0.69896877,
-#         -4.9985023,
-#         -1.9895186,
-#         -4.9985023]
+xinit2 = [0.2695346886720376,
+        0.09453593567823804,
+        -3.853656964321762,
+        1.0969087786720375,
+        0.6989517,
+        -1.0515921,
+        -4.999785,
+        0.69896877,
+        -0.12840532,
+        -1.9895186,
+        0.69896877,
+        -4.9985023,
+        -1.9895186,
+        -4.9985023]
 
-# llb1[2] = log10(ub) - 0.05
-# lub1[3] = -4.95
+llb1[2] = log10(ub) - 0.05
+lub1[3] = -4.95
 
 we1 = [(u,v,r) for ((u,v),r) in zip(edges1, xinit1)]
 we2 = [(u,v,r) for ((u,v),r) in zip(edges2, xinit2)]
 
 ### Optimization parameters
-opt_alg = BBO_adaptive_de_rand_1_bin_radiuslimited()
-# opt_alg = Evolutionary.CMAES(μ = 5, λ = 10, sigma0 = 0.1)
+# opt_alg = BBO_adaptive_de_rand_1_bin_radiuslimited()
+opt_alg = Evolutionary.CMAES(μ = 5, λ = 10, sigma0 = 0.05)
 
 maxiters_acc = 10000
 maxiters_full = 1100
 n = 100000
-N = 100
+N = 1
 k = 1
-whichf = "acc"
+whichf = "full"
 
 ### Temperature parameter
-angle_incr = 3.141592 / 1e3
+angle_incr = 3.141592/ 1e3
 betasn = map(x->-tan(x), range(0*angle_incr, stop=0.5*angle_incr, length=256))
 betasp = map(x->tan(x), range(0*angle_incr, stop=1*angle_incr, length=256))
 betas = vcat(betasn, betasp)
@@ -153,7 +153,7 @@ nparams = length(betas)
 
 ### Other parameters
 gammas = [1.5, 2.5, 10]
-wvals = [1, 2.5, 50]
+wvals = [0.01, 2.5, 50]
 
 ### objective functions
 
@@ -196,10 +196,10 @@ end
     Jplus = J + abs(J)   # penalty for counterclockwise flux
     ir_acc_pure = ir_acc(wedges1, iedges, cr, dc, on_ind1)
     ir_acc_mix = ir_acc(wedges2, iedges, cr, dc, on_ind2)
-    mlog_epsilon = log2((pi2[4])/(pi2[6]))
+    # mlog_epsilon = log2((pi2[4])/(pi2[6]))
 
-    # (- ir_acc_pure - beta*ir_acc_mix + Jplus, ir_acc_mix, ir_acc_pure, EP)
-    (- ir_acc_mix - beta*mlog_epsilon + Jplus, mlog_epsilon, ir_acc_mix, EP)
+    (- ir_acc_pure - beta*ir_acc_mix + Jplus, ir_acc_mix, ir_acc_pure, EP)
+    # (- ir_acc_mix - beta*mlog_epsilon + Jplus, mlog_epsilon, ir_acc_mix, EP)
     
 end
 
@@ -221,8 +221,8 @@ end
         m2.weighted_edges[keyb] = (u,v,10 ^ val)
     end
 
-    # sigma = 5e-10
-    # e = Normal(0, sigma)
+    sigma = 5e-8
+    e = Normal(0, sigma)
 
     init!(m1)
     init!(m2)
@@ -234,12 +234,13 @@ end
     J = pi[1] * m1.Q_c[1,2] - pi[2] * m1.Q_c[2,1]
     Jplus = J + abs(J)   # penalty for counterclockwise flux
     # ir_full!(m1)
-    ir_full!(m2)
+    # ir_full!(m2)
 
     # empirical mean estimator
     # ir_full_pure = m1.llr[end] / sum(m1.rt)
-    ir_full_mix = m2.llr[end] / sum(m2.rt)
-    # ir_full_mix = ir_acc(m2.weighted_edges, m2.input_edges, m2.c, m2.dc, m2.on_ind) + rand(e)
+    # ir_full_mix = m2.llr[end] / sum(m2.rt)
+    # ir_full_pure = ir_acc(m1.weighted_edges, m1.input_edges, m1.c, m1.dc, m1.on_ind) + rand(e)
+    ir_full_mix = ir_acc(m2.weighted_edges, m2.input_edges, m2.c, m2.dc, m2.on_ind) + rand(e)
     mlog_epsilon = log2((pi2[4])/(pi2[6]))
 
     # (- ir_full_pure - beta*ir_full_mix + Jplus, ir_full_mix, ir_full_pure, EP)
