@@ -19,7 +19,7 @@ let
     include(specpath)
 
     # input data
-    if inpath !== ""
+    if inpath !== "" && inpath !== "prevbeta"
         infile = string(inpath, cpukey, ".json")
         results_init = Dict()
         open(infile, "r") do f
@@ -71,11 +71,18 @@ let
                 results_acc[keyb][keyg] = Dict{Int64, Vector{Float32}}()
         
                 for (keyw, w) in enumerate(wvals)
-                    if inpath !== ""
+                    if inpath === ""
+                        xinit = xinit1
+                    elseif inpath === "prevbeta"
+                        if keyb == 1
+                            xinit = xinit1
+                        else
+                            xinit = results_acc[keyb-1][keyg][keyw][1:end-6]
+                            xinit = Vector{Float64}(xinit)
+                        end
+                    else
                         xinit = results_init[string(keyb)][string(keyg)][string(keyw)][1:end-6]
                         xinit = Vector{Float64}(xinit)
-                    else
-                        xinit = xinit1
                     end
 
                     args_acc = [edges1, edges2, input_edges, cr, dc, on_ind1, on_ind2, 
@@ -105,11 +112,18 @@ let
                 results_full[keyb][keyg] = Dict{Int64, Vector{Float32}}()
 
                 for (keyw, w) in enumerate(wvals)
-                    if inpath !== ""
+                    if inpath === ""
+                        xinit = xinit1
+                    elseif inpath === "prevbeta"
+                        if keyb == 1
+                            xinit = xinit1
+                        else
+                            xinit = results_full[keyb-1][keyg][keyw][1:end-8]
+                            xinit = Vector{Float64}(xinit)
+                        end
+                    else
                         xinit = results_init[string(keyb)][string(keyg)][string(keyw)][1:end-8]
                         xinit = Vector{Float64}(xinit)
-                    else
-                        xinit = xinit1
                     end
 
                     args_full = [m1, m2, beta, gamma, w]

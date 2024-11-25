@@ -88,7 +88,7 @@ end
 
 # IR FULL
 function ir_full_log(logrates, args...)
-    m, beta, use_mean, e = args
+    m, beta, e = args
 
     for (keyb, val) in enumerate(logrates)
         (u,v,r) = m.weighted_edges[keyb]

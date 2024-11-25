@@ -125,24 +125,25 @@ end
 @time let
 
     # dirname = 20241103
-    dirname = 20241111
+    # dirname = 20241111
+    dirname = 20241125
     c = 5.6
     kb = 0.0888
-    kon = 500
-    ku = 500
-    koff = 500
+    kon = 5
+    ku = 5
+    koff = 5
     n = 1000000
-    ntrajs = 5
-    nrepeats = 1
+    ntrajs = 1
+    nrepeats = 100
     # taub = (1/(c*kb) + 1/kon + 1/ku + 1/koff)
     # tau = 60*taub
 
-    ir_full_mean = Vector{Float32}(undef, nrepeats)
-    ir_full_var = Vector{Float32}(undef, nrepeats)
-    samples = Vector{Float32}(undef, ntrajs)
+    ir_full_mean = Vector{Float64}(undef, nrepeats)
+    ir_full_var = Vector{Float64}(undef, nrepeats)
+    samples = Vector{Float64}(undef, ntrajs)
 
     global m1 = LLROptModel(;
-        weighted_edges = [(1,3,2.0*kb), 
+        weighted_edges = [(1,3,kb), 
                           (1,2,1e-5), 
                           (2,4,1e-5), 
                           (2,1,koff), 
@@ -159,7 +160,7 @@ end
         k = 1
     )
     global m2 = LLROptModel(;
-    weighted_edges = [(5,1, 2.0*kb),  # kb
+    weighted_edges = [(5,1, kb),  # kb
                       (1,5, 1e-5), 
                       (2,6, ku),    # ku
                       (6,2, 1e-5), 
@@ -186,11 +187,11 @@ end
 
     for i in 1:nrepeats
         for j in 1:ntrajs
-            ir_full!(m2)
-            time = cumsum(m2.rt)
+            ir_full!(m1)
+            time = cumsum(m1.rt)
             # k = findfirst(x -> x > tau, time)
             # samples[j] = m2.llr[k] / tau
-            samples[j] = m2.llr[end] / time[end]
+            samples[j] = m1.llr[end] / time[end]
         end
 
         ir_full_mean[i] = mean(samples)
@@ -210,15 +211,16 @@ end
     #     JSON.print(f, ir_full_var, 4)
     # end
 
-    Statistics.mean(ir_full_mean)
+    @show Statistics.mean(ir_full_mean)
+    @show sqrt(Statistics.var(ir_full_mean))
 end
 
 ## . - -- .- .-.- . .- .-- -.- .- .- --.-.... - -.-
-# DOING: testing V=D across time
+# DOING: testing V=D and decision time distribution
 
 @time let
 
-    dirname = "20241103"
+    dirname = "20241125"
     c = 5.6
 
     ### MGR circuit
@@ -483,22 +485,74 @@ end
 ## . - -- .- .-.- . .- .-- -.- .- .- --.-.... - -.-
 # DOING: Random point cloud to find pareto front from probable solutions
 
+let 
+    import Pkg
+    Pkg.activate("LLROpt")
+    using JSON
+    using Statistics
+    using LLROpt
+end
+
 @time let 
 
-    include("../spec/1bs_sens_spec.jl")
+    specfile = "1bs_sens_spec.jl"
+    cpukey = 1
+    ncpus = 1
+    outdir = "20241123/test-point-cloud"
 
-    dirname = "20241118/test-point-cloud"
-    c = 5.6
+    # output directory
+    outpath = "data/$(outdir)/"
+    Base.Filesystem.mkpath(outpath)
+
+    # specification file
+    specpath = string("../spec/", specfile)
+    include(specpath)
+
+    # input data
+    if inpath !== ""
+        infile = string(inpath, cpukey, ".json")
+        results_init = Dict()
+        open(infile, "r") do f
+            results_init = JSON.parse(f)
+        end
+    end
+
+    ### Bounds
+    llb = llb1
+    lub = lub1 .+ 1 .* ones(8)
 
     ### MGR circuit
-    kboff = 0.0888
-    kbon = 1e-5
-    konu = 1e-5
-    konb = 5
-    kuon = 5
-    kuoff = 1e-5
-    koffu = 5
-    koffb = 1e-5
+    kboff = log10(0.0888)
+    kbon = log10(0.0888)
+    konu = -5
+    konb = log10(5)
+    kuon = log10(5)
+    kuoff = -5
+    koffu = log10(5)
+    koffb = -5
+    beta = 0
+    keyb = 1
+
+    npoints = 1000
+    betas = zeros(npoints)
+    nparams = length(betas)
+
+    xinit1 = [kboff, konu, kbon, koffu, kuoff, konb, kuon, koffb]
+    logcw = log10(cr) 
+    kboff, konu, kbon, koffu, kuoff, konb, kuon, koffb = xinit1
+    xinit2 = [kuoff, kboff+logcw, kbon+logcw, kuon, 
+        konu, kboff, kbon, koffu, kuoff, konb, kuon, koffb, konb, koffb]
+
+    nedges1 = 8
+    nedges2 = 14
+
+    sig = 0.01
+
+    irvals_mix = Vector{Float32}(undef, N)
+    irvals_pure = Vector{Float32}(undef, N)
+    results_full = Dict{Int64, Dict{Int64, Dict{Int64, Vector{Float32}}}}()
+    xs = Matrix{Float64}(undef, npoints, nedges1 + 4)  # rates, ir, dr, ep, eps
+    x = Vector{Float64}(undef, nedges1)
 
     we1 = [(u,v,r) for ((u,v),r) in zip(edges1, xinit1)]
     we2 = [(u,v,r) for ((u,v),r) in zip(edges2, xinit2)]
@@ -528,17 +582,111 @@ end
     init!(m1)
     init!(m2)
 
-    npoints = 100
-
     # generate some random circuits around MGR
-    
+    for keyb in 1:npoints
+        results_full[keyb] = Dict{Int64, Dict{Int64, Vector{Float32}}}()
 
-    # remove those that violate the boundary constraints
+        for (keyg, gamma) in enumerate(gammas)
+            results_full[keyb][keyg] = Dict{Int64, Vector{Float32}}()
 
-    # slect those that minimize the target
+            for (keyw, w) in enumerate(wvals)
+                if inpath !== ""
+                    xinit = results_init[string(keyb)][string(keyg)][string(keyw)][1:end-8]
+                    xinit = Vector{Float64}(xinit)
+                else
+                    xinit = xinit1
+                end
 
-    # repeat for a different beta, starting from the previous beta's solutions
+                for i in 1:nedges1
+                    e = Normal(xinit1[i], sig)
 
+                    if keyb == 1
+                        x[i] = xinit1[i]
+                    else
+                        x[i] = rand(truncated(e, llb[i], lub[i]))
+                    end
+                    xs[keyb,i] = x[i]
+                end
+
+                args_full = [m1, m2, beta, gamma, w]
+                targetfun_full(x_, p) = target_full(x_, args_full...)[1]
+                ir_full_mix(x_) = target_full(x_, args_full...)[2]
+                ir_full_pure(x_) = target_full(x_, args_full...)[3]
+                ep_full(x_) = target_full(x_, args_full...)[4]
+
+                # RESULTS
+                inbounds = true
+                
+                for i in 1:nedges1
+                    if x[i] > lub1[i] || x[i] < llb1[i]
+                        inbounds = false
+                    end
+                end
+
+                if inbounds == true
+                    results_full[keyb][keyg][keyw] = vcat(x, 0, 0, 0, 0, 
+                        ep_full(x), beta, gamma, w)
+            
+                    for i in 1:N
+                        irvals_mix[i] = ir_full_mix(x)
+                        irvals_pure[i] = ir_full_pure(x)
+                    end
+
+                    results_full[keyb][keyg][keyw][end-7] = Statistics.mean(irvals_mix)
+                    results_full[keyb][keyg][keyw][end-6] = Statistics.mean(irvals_pure)
+                    results_full[keyb][keyg][keyw][end-5] = Statistics.std(irvals_mix)
+                    results_full[keyb][keyg][keyw][end-4] = Statistics.std(irvals_pure)
+                else
+                    results_full[keyb][keyg][keyw] = zeros(16)
+                end
+            end
+        end
+    end
+
+    minf = 1e6
+    thisf = 1e6
+    minx = zeros(8)
+
+    # put the points loop inside and keep the betas loop outside
+    # for each beta, select the point that minimizes the target for the next beta
+    # keep sampling until your point is within epsilon of the minimum (optional)
+
+    for (keyg, gamma) in enumerate(gammas)
+        for (keyw, w) in enumerate(wvals)
+            for keyb in 1:npoints
+                x = results_full[keyb][keyg][keyw][1:8]
+                thisf = targetfun_full(x)
+
+                if thisf < minf
+                    minf = thisf
+                    minx = x
+                end
+            end
+        end
+    end
+
+    file2 = string(outpath, "ir_full_mix_vs_pure_pareto_pid$(cpukey).json")
+
+    open(file2, "w") do f
+        JSON.print(f, results_full, 4)
+    end
+    params = Dict{String, Any}()
+    params["ncpus"] = ncpus
+    params["nparams"] = nparams
+    params["betas"] = betas
+    params["gammas"] = gammas
+    params["wvals"] = wvals
+    params["n"] = n
+    params["N"] = N
+    params["maxiters_acc"] = maxiters_acc
+    params["maxiters_full"] = maxiters_full
+    params["ncalls_full"] = COUNTERS["target_full"]
+
+    paramfile = string(outpath, "params.json")
+        
+    open(paramfile, "w") do f
+        JSON.print(f, params, 4)
+    end
 end
 
 ## . - -- .- .-.- . .- .-- -.- .- .- --.-.... - -.-

@@ -131,11 +131,10 @@ let
         params["ncpus"] = ncpus
         params["nparams"] = nparams
         params["betas"] = betas
-        params["ns"] = ns
-        params["nepochs"] = nepochs
         params["N"] = N
         params["maxiters_acc"] = maxiters_acc
         params["maxiters_full"] = maxiters_full
+        params["e"] = e
 
         paramfile = string(outpath, "params.json")
             
