@@ -107,7 +107,7 @@ def draw_circuit(
 
     ax = plt.gca()
     ax.set_axis_off()
-    plt.colorbar(pc, ax=ax)
+    plt.colorbar(pc, ax=ax, label="log rates")
     plt.show()
 
     return fig, ax, G

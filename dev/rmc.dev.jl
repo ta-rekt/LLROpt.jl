@@ -310,3 +310,133 @@ end
     ir_full!(m)
     m.llr[end] / sum(m.rt)
 end
+
+## . - -- .- .-.- . .- .-- -.- .- .- --.-.... - -.-
+# DOING: testing the Jensen gap
+
+function l_full(Q, ind_set, t_set, t_comp, idist_set)
+    ind_comp = ones(Int, length(ind_set)) .- ind_set
+    _set = findall(isone, ind_set)
+    _comp = findall(isone, ind_comp)
+
+    w_set = zeros(1, length(_set))
+    w_comp = zeros(1, length(_comp))
+    w_set .= idist_set' # first init
+    wv = zeros(length(t_set) + length(t_comp) + 1)
+    wv[1] = log(sum(idist_set))
+    i = 2
+
+    Q_h_comp = Q .* 1.0
+    for ri in _comp
+        Q_h_comp[ri, :] .= 0.0
+    end
+    UDU_comp = eigen(Q_h_comp)
+    W_comp = UDU_comp.vectors
+    W_comp_inv = inv(W_comp)
+    D_comp = Diagonal(UDU_comp.values)
+    aux_comp = zeros(size(D_comp)...)
+    P_comp = zeros(size(Q)...)
+
+    Q_h_set = Q .* 1.0
+    for ri in _set
+        Q_h_set[ri, :] .= 0.0
+    end
+    UDU_set = eigen(Q_h_set)
+    W_set = UDU_set.vectors
+    W_set_inv = inv(W_set)
+    D_set = Diagonal(UDU_set.values)
+    aux_set = zeros(size(D_comp)...)
+    P_set = zeros(size(Q)...)
+
+    R = zeros(size(Q)...)
+    S = zeros(size(Q)...)
+    _R = zeros(eltype(Q), length(_set), length(_comp))
+    _S = zeros(eltype(Q), length(_comp), length(_set))
+
+    for (ts, tc) in zip(t_set, t_comp)
+        mul!(aux_comp, W_comp, exp(ts * D_comp))
+        mul!(P_comp, aux_comp, W_comp_inv)
+        mul!(R, Q_h_comp, P_comp)
+
+        mul!(aux_set, W_set, exp(tc * D_set))
+        mul!(P_set, aux_set, W_set_inv)
+        mul!(S, Q_h_set, P_set)
+        
+        _select!(R, _R, _set, _comp)
+        _select!(S, _S, _comp, _set)
+
+        w_set ./= sum(w_set)
+        mul!(w_comp, w_set, _R)
+        wv[i] = sum(w_comp); i+=1
+
+        w_comp ./= sum(w_comp)
+        mul!(w_set, w_comp, _S)
+        wv[i] = sum(w_set); i+=1
+    end
+    wv
+    
+end
+
+function lr!(m::LLROptModel)
+    # select based on m.s_in_on
+    m.ind_set = m.s_in_on ? m.on_ind : m.off_ind
+    m.t_set = m.s_in_on ? m.onrt : m.offrt
+    m.t_comp = m.s_in_on ? m.offrt : m.onrt
+    m.idist_set = m.s_in_on ? m._idist0_on : m._idist0_off
+    
+    # TODO: inline
+    m.ll_c = l_full(m.Q_c, m.ind_set, m.t_set, m.t_comp, m.idist_set)
+    m.ll_cdc = l_full(m.Q_cdc, m.ind_set, m.t_set, m.t_comp, m.idist_set)
+    # m.llr = cumsum(m.ll_c .- m.ll_cdc)
+    return m
+end
+
+let 
+    date = 20241104
+    c = 5.6
+    kb = 0.0888
+    kon = 5
+    ku = 5
+    koff = 5
+    n = 1800
+    k = 100
+    dt = (1/(c*kb) + 1/kon + 1/ku + 1/koff)
+
+    global m = LLROptModel(;
+        weighted_edges = [(1,3,kb), 
+                          (1,2,1e-5), 
+                          (2,4,1e-5), 
+                          (2,1,koff), 
+                          (3,1,1e-5), 
+                          (3,4,kon), 
+                          (4,2,ku), 
+                          (4,3,1e-5)],
+        input_edges = [(1,3), (2,4)],
+        on_ind = BitArray([0,1,0,1]),
+        c = c,
+        dc = c / 10,
+        n = n,
+        k = k,
+        idist = [0, 0.5, 0, 0.5]
+    )
+    init!(m)
+
+    l_vals = Vector{Float64}(undef, k)
+    ll_vals = Vector{Float64}(undef, k)
+    
+    for i in 1:k
+        generate!(m)
+        get_residence_time!(m)
+        m.ind_set = m.s_in_on ? m.on_ind : m.off_ind
+        m.t_set = m.s_in_on ? m.onrt : m.offrt
+        m.t_comp = m.s_in_on ? m.offrt : m.onrt
+        m.idist_set = m.s_in_on ? m._idist0_on : m._idist0_off
+        lf = l_full(m.Q_c, m.ind_set, m.t_set, m.t_comp, m.idist_set)
+        llf = ll_full(m.Q_c, m.ind_set, m.t_set, m.t_comp, m.idist_set)
+        l_vals[i] = prod(lf[2:end-1])
+        ll_vals[i] = sum(llf)
+    end
+
+    @show Statistics.mean(ll_vals)
+    @show log(Statistics.mean(l_vals))  ## promising!
+end

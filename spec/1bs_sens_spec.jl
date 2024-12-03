@@ -42,8 +42,8 @@ idist2 = ones(6) ./ 6
 
 ### Initialization from stored data
 # inpath = "/home/tohme/.julia/dev/LLROpt/data/20241125/ir-dr-hernan/coarse-sweep-1-alg=de-start=MGR-lg=global-whichf=simfull-maxiters=3000-sigma=3e-5-N=3000-nparams=1/ir_full_mix_vs_pure_pareto_pid"
-# inpath = ""
-inpath = "prevbeta"
+inpath = ""
+# inpath = "prevbeta"
 
 ### Initialization at midpoint of bounds (trivial)
 # xinit1 = (lub1 .+ llb1) ./ 2
@@ -155,17 +155,17 @@ maxiters_full = 1000
 n = 100000
 N = 1
 k = 1
-whichf = "full"
+whichf = "acc"
 
 ### Temperature parameter
 angle_incr = 3.141592/2 - 0.01
 # betasn = map(x->-tan(x), range(0*angle_incr, stop=0.5*angle_incr, length=64))
-betas = map(x->tan(x), range(0*angle_incr, stop=1*angle_incr, length=32))
+betas = map(x->tan(x), range(0*angle_incr, stop=1*angle_incr, length=64))
 # betas = vcat(betasn, betasp)
 nparams = length(betas)
 
 ### Other parameters
-gammas = [10]
+gammas = [1.5, 2.5, 10]
 wvals = [2.5]
 
 ### objective functions
@@ -234,7 +234,7 @@ end
         m2.weighted_edges[keyb] = (u,v,10 ^ val)
     end
 
-    sigma = 5e-6
+    sigma = 1e-10
     e = Normal(0, sigma)
 
     init!(m1)

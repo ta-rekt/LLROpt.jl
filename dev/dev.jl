@@ -483,7 +483,7 @@ end
 end
 
 ## . - -- .- .-.- . .- .-- -.- .- .- --.-.... - -.-
-# DOING: Random point cloud to find pareto front from probable solutions
+# DOING: Sample & project algorithm for walking along a pareto front
 
 let 
     import Pkg
@@ -533,7 +533,7 @@ end
     beta = 0
     keyb = 1
 
-    npoints = 1000
+    npoints = 100
     betas = zeros(npoints)
     nparams = length(betas)
 
@@ -547,6 +547,7 @@ end
     nedges2 = 14
 
     sig = 0.01
+    project = true
 
     irvals_mix = Vector{Float32}(undef, N)
     irvals_pure = Vector{Float32}(undef, N)
@@ -615,15 +616,17 @@ end
                 ep_full(x_) = target_full(x_, args_full...)[4]
 
                 # RESULTS
-                inbounds = true
-                
-                for i in 1:nedges1
-                    if x[i] > lub1[i] || x[i] < llb1[i]
-                        inbounds = false
+                if project == true
+                    for i in 1:nedges1
+                        if x[i] > lub1[i]
+                            x[i] = lub1[i]
+                        elseif x[i] < llb1[i]
+                            x[i] = llb1[i]
+                        end
                     end
                 end
 
-                if inbounds == true
+                # if inbounds == true
                     results_full[keyb][keyg][keyw] = vcat(x, 0, 0, 0, 0, 
                         ep_full(x), beta, gamma, w)
             
@@ -636,34 +639,34 @@ end
                     results_full[keyb][keyg][keyw][end-6] = Statistics.mean(irvals_pure)
                     results_full[keyb][keyg][keyw][end-5] = Statistics.std(irvals_mix)
                     results_full[keyb][keyg][keyw][end-4] = Statistics.std(irvals_pure)
-                else
-                    results_full[keyb][keyg][keyw] = zeros(16)
-                end
+                # else
+                #     results_full[keyb][keyg][keyw] = zeros(16)
+                # end
             end
         end
     end
 
-    minf = 1e6
-    thisf = 1e6
-    minx = zeros(8)
+    # minf = 1e6
+    # thisf = 1e6
+    # minx = zeros(8)
 
-    # put the points loop inside and keep the betas loop outside
-    # for each beta, select the point that minimizes the target for the next beta
-    # keep sampling until your point is within epsilon of the minimum (optional)
+    # # put the points loop inside and keep the betas loop outside
+    # # for each beta, select the point that minimizes the target for the next beta
+    # # keep sampling until your point is within epsilon of the minimum (optional)
 
-    for (keyg, gamma) in enumerate(gammas)
-        for (keyw, w) in enumerate(wvals)
-            for keyb in 1:npoints
-                x = results_full[keyb][keyg][keyw][1:8]
-                thisf = targetfun_full(x)
+    # for (keyg, gamma) in enumerate(gammas)
+    #     for (keyw, w) in enumerate(wvals)
+    #         for keyb in 1:npoints
+    #             x = results_full[keyb][keyg][keyw][1:8]
+    #             thisf = targetfun_full(x)
 
-                if thisf < minf
-                    minf = thisf
-                    minx = x
-                end
-            end
-        end
-    end
+    #             if thisf < minf
+    #                 minf = thisf
+    #                 minx = x
+    #             end
+    #         end
+    #     end
+    # end
 
     file2 = string(outpath, "ir_full_mix_vs_pure_pareto_pid$(cpukey).json")
 
@@ -687,6 +690,63 @@ end
     open(paramfile, "w") do f
         JSON.print(f, params, 4)
     end
+end
+
+## . - -- .- .-.- . .- .-- -.- .- .- --.-.... - -.-
+# DOING: Is there symmetry-breaking with 2 binding sites? yes there is
+
+let 
+    specfile = "2bs_sens_epr.jl"
+    cpukey = 1
+    ncpus = 1
+
+    # specification file
+    specpath = string("../spec/", specfile)
+    include(specpath)
+
+    m = LLROptModel(;
+        weighted_edges = we,
+        input_edges = input_edges,
+        on_ind = on_ind,
+        c = c,
+        dc = dc,
+        n = n,
+        k = k,
+        idist = idist,
+    )
+
+    edges = [(5,1), (1,5), (2,6), (6,2), (1,2), (1,3), (2,4),
+             (2,1), (3,1), (3,4), (4,2), (4,3), (5,6), (6,5)]
+
+    init!(m)
+    beta = 0
+    e = (-1,0)
+    args_acc = [edges, m.input_edges, c, dc, on_ind, beta, e]
+
+    logrates = [-1.0515876,
+                -3,
+                -1.0515876,
+                0.69896996,
+                -2.9974964,
+                -2.999996,
+                0.6989698,
+                -2.9998689,
+                0.69896996,
+                -2.9999237]
+
+    # logrates = [-1.0515876,
+    #             0.6989699,
+    #             -1.0515876,
+    #             -2.9999237,
+    #             0.6989698,
+    #             -2.999996,
+    #             -2.9974964,
+    #             -2.9998689,
+    #             -2.9996033,
+    #             0.69896996]
+
+    targ, ir, ep = ir_acc_log(logrates, args_acc...)
+
 end
 
 ## . - -- .- .-.- . .- .-- -.- .- .- --.-.... - -.-

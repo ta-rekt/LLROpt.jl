@@ -136,6 +136,12 @@ let
         params["maxiters_full"] = maxiters_full
         params["e"] = e
 
+        if whichf == "acc"
+            params["ncalls"] = COUNTERS["ir_acc_log"]
+        elseif whichf == "full"
+            params["ncalls"] = COUNTERS["ir_full_log"]
+        end
+
         paramfile = string(outpath, "params.json")
             
         open(paramfile, "w") do f

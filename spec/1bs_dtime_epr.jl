@@ -50,14 +50,14 @@ xinit1 = [log10(0.0888)- 0.01,
 we = [(u,v,r) for ((u,v),r) in zip(edges, xinit1)]
 
 ### Optimization parameters
-opt_alg = BBO_adaptive_de_rand_1_bin_radiuslimited()
-# opt_alg = Evolutionary.CMAES(μ = 5, λ = 10, sigma0 = 0.01)
+# opt_alg = BBO_adaptive_de_rand_1_bin_radiuslimited()
+opt_alg = Evolutionary.CMAES(μ = 5, λ = 10, sigma0 = 0.01)
 
 maxiters_acc = 10000
-maxiters_full = 1000
+maxiters_full = 5000
 n = 5000
 N = 1
-k = 100
+k = 300
 whichf = "full"
 
 ### Temperature parameter
@@ -68,7 +68,7 @@ betas = map(x->tan(x), range(0*angle_inc, stop=1*angle_inc, length=16))
 nparams = length(betas)
 
 ### Other parameters
-e = 0.25
+e = 0.37
 
 ### objective functions
 
@@ -123,6 +123,6 @@ end
     mean_dt = Statistics.mean(stop_times)
     # var_dt = Statistics.var(stop_times)
 
-    (mean_dt - beta*EP + Jplus, mean_dt, EP)
+    (mean_dt + beta*EP + Jplus, mean_dt, EP)
 
 end
