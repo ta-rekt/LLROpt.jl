@@ -9,6 +9,7 @@
     using Random
     using Base.Threads
     using JSON
+    using Statistics
 end
 
 ## . - -- .- .-.- . .- .-- -.- .- .- --.-.... - -.-
@@ -377,20 +378,6 @@ function l_full(Q, ind_set, t_set, t_comp, idist_set)
     
 end
 
-function lr!(m::LLROptModel)
-    # select based on m.s_in_on
-    m.ind_set = m.s_in_on ? m.on_ind : m.off_ind
-    m.t_set = m.s_in_on ? m.onrt : m.offrt
-    m.t_comp = m.s_in_on ? m.offrt : m.onrt
-    m.idist_set = m.s_in_on ? m._idist0_on : m._idist0_off
-    
-    # TODO: inline
-    m.ll_c = l_full(m.Q_c, m.ind_set, m.t_set, m.t_comp, m.idist_set)
-    m.ll_cdc = l_full(m.Q_cdc, m.ind_set, m.t_set, m.t_comp, m.idist_set)
-    # m.llr = cumsum(m.ll_c .- m.ll_cdc)
-    return m
-end
-
 let 
     date = 20241104
     c = 5.6
@@ -398,7 +385,7 @@ let
     kon = 5
     ku = 5
     koff = 5
-    n = 1800
+    n = 1500
     k = 100
     dt = (1/(c*kb) + 1/kon + 1/ku + 1/koff)
 

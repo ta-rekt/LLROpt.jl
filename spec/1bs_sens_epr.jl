@@ -1,7 +1,6 @@
 using Optimization
 using OptimizationBBO
-using OptimizationGCMAES
-using OptimizationOptimJL
+using OptimizationEvolutionary
 
 ### biophysical parameters
 a = 3e-3        # ums
@@ -29,31 +28,45 @@ lub[1] = log10(dl_tf)
 lub[3] = log10(dl_tf)
 
 ### Optimization parameters
-# inpath = "/home/tohme/.julia/dev/LLROpt/data/20241111/2bs-ir-ep/ir_full_vs_ep_pareto_pid"
-inpath = ""
+inpath = "/home/tohme/.julia/dev/LLROpt/data/20241107/ir-ep/ir_full_vs_ep_pareto_pid"
+# inpath = ""
 
 # opt_alg = BBO_adaptive_de_rand_1_bin_radiuslimited()
-opt_alg = Evolutionary.CMAES(μ = 5, λ = 10, sigma0 = 0.1)
+opt_alg = Evolutionary.CMAES(μ = 5, λ = 10, sigma0 = 0.05)
 
 maxiters_acc = 30000
-maxiters_full = 2
+maxiters_full = 200
 sigma0 = log10(ub) / 4
 xinit1 = (lub .+ llb) ./ 2
 we = [(u,v,r) for ((u,v),r) in zip(edges, xinit1)]
 
 k = 1
-N = 5000
-nepochs = 0
-startexp = 20
-ns = [2^i for i in range(startexp, stop=startexp+nepochs)]
+N = 10
+n = 80000000
 whichf = "full"
 
 ### temperature parameter
-betas = vcat(range(3e-4, stop=1e-5, length=10), 10 .^ range(-4.8, stop=-9, length=5))
+betas = vcat(range(3e-4, stop=1e-5, length=16), 10 .^ range(-4.8, stop=-9, length=16))
 nparams = length(betas)
 
+const COUNTERS = Dict{String, Int}()
+
+macro counted(f)
+    name = f.args[1].args[1]
+    name_str = String(name)
+    body = f.args[2]
+    counter_code = quote
+        if !haskey(COUNTERS, $name_str)
+            COUNTERS[$name_str] = 0
+        end
+        COUNTERS[$name_str] += 1
+    end
+    insert!(body.args, 1, counter_code)
+    return f
+end
+
 # IR ACC
-function ir_acc_log(logrates, args...)
+@counted function ir_acc_log(logrates, args...)
     edges, iedges, c, dc, on_ind, beta, e = args
     nrates = length(edges)
     rates = 10 .^ logrates
@@ -87,7 +100,7 @@ function ir_acc_log(logrates, args...)
 end
 
 # IR FULL
-function ir_full_log(logrates, args...)
+@counted function ir_full_log(logrates, args...)
     m, beta, e = args
 
     for (keyb, val) in enumerate(logrates)
@@ -110,17 +123,7 @@ function ir_full_log(logrates, args...)
     ir_full!(m)
 
     # mean estimator
-    if use_mean
-        IR = m.llr[end] / sum(m.rt)
-    
-    # variance estimator
-    else
-        nskip = 5
-        dXs = diff(m.llr[1:nskip:end-1])
-        time = 2 .* cumsum(m.rt)
-        sq_deltat = map(x->sqrt(x), diff(time[1:nskip:end]))
-        IR = var(dXs ./ sq_deltat)
-    end
+    IR = m.llr[end] / sum(m.rt)
 
     (- IR + beta*EP + Jplus, IR, EP)
 end

@@ -8,6 +8,7 @@ import networkx as nx
 def draw_circuit(
         weighted_edges, 
         input_edges, 
+        figax = None,
         input_labels=None,
         node_labels=None,
         node_size=2000,
@@ -17,7 +18,11 @@ def draw_circuit(
         edge_cmap=None,
         node_cmap=None,
         node_color="black",
-        align=None
+        align=None,
+        nodefsize=12,
+        arrsize=20,
+        arrwidth=5,
+        edgefsize=12
     ):
 
     # create adjacency matrix
@@ -56,7 +61,10 @@ def draw_circuit(
     if dims is None:
         dims = (5,4)
 
-    fig, ax = plt.subplots(1,1,figsize=dims,layout='constrained')
+    if figax is None:
+        fig, ax = plt.subplots(1,1,figsize=dims,layout='constrained')
+    else:
+        fig, ax = figax
 
     if title is not None:
         ax.set_title(title)
@@ -65,7 +73,7 @@ def draw_circuit(
         G, 
         pos, 
         node_labels, 
-        font_size=18,
+        font_size=nodefsize,
         font_color='white', 
         verticalalignment='center', 
         ax=ax
@@ -87,18 +95,18 @@ def draw_circuit(
         arrows=True,
         node_size=node_size,
         arrowstyle="-|>",
-        connectionstyle='arc3,rad=0.1',
-        arrowsize=20,
+        connectionstyle='arc3,rad=0.15',
+        arrowsize=arrsize,
         edge_color=weights,
         edge_cmap=edge_cmap,
-        width=6,
+        width=arrwidth,
     )
     nx.draw_networkx_edge_labels(
         G, 
         pos, 
         input_labels, 
-        connectionstyle='arc3,rad=0.1', 
-        font_size=12, 
+        connectionstyle='arc3,rad=0.15', 
+        font_size=edgefsize, 
         ax=ax
     )
 
@@ -108,7 +116,7 @@ def draw_circuit(
     ax = plt.gca()
     ax.set_axis_off()
     plt.colorbar(pc, ax=ax, label="log rates")
-    plt.show()
+    # plt.show()
 
     return fig, ax, G
 

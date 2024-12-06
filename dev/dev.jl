@@ -128,10 +128,14 @@ end
     # dirname = 20241111
     dirname = 20241125
     c = 5.6
-    kb = 0.0888
-    kon = 5
-    ku = 5
-    koff = 5
+    kboff = 0.0888
+    konu = 1e-5
+    kbon = 0.0888
+    koffu = 1e-5
+    kuoff = 5
+    konb = 5
+    kuon = 5
+    koffb = 5
     n = 1000000
     ntrajs = 1
     nrepeats = 100
@@ -143,14 +147,14 @@ end
     samples = Vector{Float64}(undef, ntrajs)
 
     global m1 = LLROptModel(;
-        weighted_edges = [(1,3,kb), 
-                          (1,2,1e-5), 
-                          (2,4,1e-5), 
-                          (2,1,koff), 
-                          (3,1,1e-5), 
-                          (3,4,kon), 
-                          (4,2,ku), 
-                          (4,3,1e-5)],
+        weighted_edges = [(1,3,kboff), 
+                          (1,2,konu), 
+                          (2,4,kbon), 
+                          (2,1,koffu), 
+                          (3,1,kuoff), 
+                          (3,4,konb), 
+                          (4,2,kuon), 
+                          (4,3,koffb)],
         input_edges = [(1,3), (2,4)],
         on_ind = BitArray([0,1,0,1]),
         c = c,
@@ -159,30 +163,30 @@ end
         idist = ones(4) ./ 4,
         k = 1
     )
-    global m2 = LLROptModel(;
-    weighted_edges = [(5,1, kb),  # kb
-                      (1,5, 1e-5), 
-                      (2,6, ku),    # ku
-                      (6,2, 1e-5), 
-                      (1,2, kon),   # kon
-                      (1,3, kb),    # kb 
-                      (2,4, 1e-5),
-                      (2,1, 1e-5), 
-                      (3,1, 1e-5), 
-                      (3,4, 2*kon),   # kon
-                      (4,2, 2*ku),  # ku
-                      (4,3, 1e-5), 
-                      (5,6, 1e-5), 
-                      (6,5, koff)], # koff
-        input_edges = [(1,3), (2,4), (5,1), (6,2)],
-        on_ind = BitArray([0,1,0,1,0,1]),
-        c = c,
-        dc = c / 10.0,
-        n = n,
-        idist = ones(6) ./ 6,
-        k = 1
-    )
-    init!(m2)
+    # global m2 = LLROptModel(;
+    # weighted_edges = [(5,1, kb),  # kb
+    #                   (1,5, 1e-5), 
+    #                   (2,6, ku),    # ku
+    #                   (6,2, 1e-5), 
+    #                   (1,2, kon),   # kon
+    #                   (1,3, kb),    # kb 
+    #                   (2,4, 1e-5),
+    #                   (2,1, 1e-5), 
+    #                   (3,1, 1e-5), 
+    #                   (3,4, 2*kon),   # kon
+    #                   (4,2, 2*ku),  # ku
+    #                   (4,3, 1e-5), 
+    #                   (5,6, 1e-5), 
+    #                   (6,5, koff)], # koff
+    #     input_edges = [(1,3), (2,4), (5,1), (6,2)],
+    #     on_ind = BitArray([0,1,0,1,0,1]),
+    #     c = c,
+    #     dc = c / 10.0,
+    #     n = n,
+    #     idist = ones(6) ./ 6,
+    #     k = 1
+    # )
+    # init!(m2)
     init!(m1)
 
     for i in 1:nrepeats
