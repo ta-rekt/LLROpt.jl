@@ -732,7 +732,7 @@ let
                 -1.0515876,
                 0.69896996,
                 -2.9974964,
-                -2.999996,
+                0.69896996,
                 0.6989698,
                 -2.9998689,
                 0.69896996,
@@ -752,6 +752,149 @@ let
     targ, ir, ep = ir_acc_log(logrates, args_acc...)
 
 end
+
+## . - -- .- .-.- . .- .-- -.- .- .- --.-.... - -.-
+# DOING: How close are the V upper and lower bounds?
+
+function ll_lb(Q, ind_set, t_set, t_comp, idist_set)
+    # @assert length(t_set) == length(t_comp)
+    ind_comp = ones(Int, length(ind_set)) .- ind_set
+    _set = findall(isone, ind_set)
+    _comp = findall(isone, ind_comp)
+
+    w_set = zeros(1, length(_set))
+    w_comp = zeros(1, length(_comp))
+    w_set .= idist_set' # first init
+    wv = zeros(length(t_set) + length(t_comp) + 1)
+    wv[1] = log(sum(idist_set))
+    i = 2
+
+    Q_h_comp = Q .* 1.0
+    for ri in _comp
+        Q_h_comp[ri, :] .= 0.0
+    end
+    UDU_comp = eigen(Q_h_comp)
+    W_comp = UDU_comp.vectors
+    W_comp_inv = inv(W_comp)
+    D_comp = Diagonal(UDU_comp.values)
+    aux_comp = zeros(size(D_comp)...)
+    P_comp = zeros(size(Q)...)
+
+    Q_h_set = Q .* 1.0
+    for ri in _set
+        Q_h_set[ri, :] .= 0.0
+    end
+    UDU_set = eigen(Q_h_set)
+    W_set = UDU_set.vectors
+    W_set_inv = inv(W_set)
+    D_set = Diagonal(UDU_set.values)
+    aux_set = zeros(size(D_comp)...)
+    P_set = zeros(size(Q)...)
+
+    R = zeros(size(Q)...)
+    S = zeros(size(Q)...)
+    _R = zeros(eltype(Q), length(_set), length(_comp))
+    _S = zeros(eltype(Q), length(_comp), length(_set))
+
+    for (ts, tc) in zip(t_set, t_comp)
+        mul!(aux_comp, W_comp, exp(ts * D_comp))
+        mul!(P_comp, aux_comp, W_comp_inv)
+        mul!(R, Q_h_comp, P_comp)
+
+        mul!(aux_set, W_set, exp(tc * D_set))
+        mul!(P_set, aux_set, W_set_inv)
+        mul!(S, Q_h_set, P_set)
+        
+        _select!(R, _R, _set, _comp)
+        _select!(S, _S, _comp, _set)
+
+        w_set ./= sum(w_set)
+        mul!(w_comp, w_set, _R)
+        wv[i] = log(sum(w_comp)); i+=1
+
+        w_comp ./= sum(w_comp)
+        mul!(w_set, w_comp, _S)
+        wv[i] = log(sum(w_set)); i+=1
+    end
+    wv
+    
+end
+
+@time let
+
+    dirname = 20241125
+    c = 5.6
+    kboff = 0.0888
+    konu = 1e-5
+    kbon = 0.0888
+    koffu = 1e-5
+    kuoff = 5
+    konb = 5
+    kuon = 5
+    koffb = 5
+    n = 1000000
+    ntrajs = 1
+    nrepeats = 100
+
+    ir_full_mean = Vector{Float64}(undef, nrepeats)
+    ir_full_var = Vector{Float64}(undef, nrepeats)
+    samples = Vector{Float64}(undef, ntrajs)
+
+    global m = LLROptModel(;
+        weighted_edges = [(1,3,kboff), 
+                          (1,2,konu), 
+                          (2,4,kbon), 
+                          (2,1,koffu), 
+                          (3,1,kuoff), 
+                          (3,4,konb), 
+                          (4,2,kuon), 
+                          (4,3,koffb)],
+        input_edges = [(1,3), (2,4)],
+        on_ind = BitArray([0,1,0,1]),
+        c = c,
+        dc = c / 10,
+        n = n,
+        idist = ones(4) ./ 4,
+        k = 1
+    )
+
+    init!(m)
+
+    for i in 1:nrepeats
+        for j in 1:ntrajs
+            generate!(m)
+            get_residence_time!(m)
+
+            m.ind_set = m.s_in_on ? m.on_ind : m.off_ind
+            m.t_set = m.s_in_on ? m.onrt : m.offrt
+            m.t_comp = m.s_in_on ? m.offrt : m.onrt
+            m.idist_set = m.s_in_on ? m._idist0_on : m._idist0_off
+
+            ll_lb_c = ll_lb(m.Q_c, m.ind_set, m.t_set, m.t_comp, m.idist_set)
+            ll_lb_cdc = ll_lb(m.Q_cdc, m.ind_set, m.t_set, m.t_comp, m.idist_set)
+
+            ll_c = ll_full(m.Q_c, m.ind_set, m.t_set, m.t_comp, m.idist_set)
+            ll_cdc = ll_full(m.Q_cdc, m.ind_set, m.t_set, m.t_comp, m.idist_set)
+
+            time = cumsum(m.rt)
+            samples[j] = m.llr[end] / time[end]
+        end
+
+        ir_full_mean[i] = mean(samples)
+    end
+
+    path = "data/$(dirname)/"
+    Base.Filesystem.mkpath(path)
+    file1 = string(path, "ir_full_mean_estimator.json")
+
+    open(file1, "w") do f
+        JSON.print(f, ir_full_mean, 4)
+    end
+
+    @show Statistics.mean(ir_full_mean)
+    @show sqrt(Statistics.var(ir_full_mean))
+end
+
 
 ## . - -- .- .-.- . .- .-- -.- .- .- --.-.... - -.-
 # DOING: testing JSON
