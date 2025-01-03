@@ -46,7 +46,7 @@ n = 80000000
 whichf = "acc"
 
 ### temperature parameter
-betas = 10 .^ range(0, stop=2, length=64)
+betas = 10 .^ range(-2, stop=4, length=64)
 nparams = length(betas)
 
 const COUNTERS = Dict{String, Int}()
@@ -83,7 +83,7 @@ end
     # wedges = [(u,v,10 ^ r) for ((u,v),r) in zip(edges, logrates)]
 
     Q = build_mat(wedges, iedges, c)
-    
+
     # clockwise bias by forcing flow along edge e
     Jplus = 0
     m, n = e
@@ -109,7 +109,7 @@ end
 
     init!(m)
     EP = EP_ss(m.Q_c)
-    
+
     # clockwise bias
     Jplus = 0
     u, v = e
