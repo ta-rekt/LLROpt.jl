@@ -17,12 +17,17 @@ def draw_circuit(
         bottom_set=[1,3],
         edge_cmap=None,
         node_cmap=None,
+        vmin=None,
+        vmax=None,
+        rmin=None,
+        rmax=None,
         node_color="black",
         align=None,
         nodefsize=12,
         arrsize=20,
         arrwidth=5,
-        edgefsize=12
+        edgefsize=12,
+        colorbar=False
     ):
 
     # create adjacency matrix
@@ -84,6 +89,8 @@ def draw_circuit(
         node_size=node_size, 
         node_color=node_color, 
         cmap=node_cmap,
+        vmin=vmin,
+        vmax=vmax,
         linewidths=None,
         ax=ax
     )
@@ -99,6 +106,8 @@ def draw_circuit(
         arrowsize=arrsize,
         edge_color=weights,
         edge_cmap=edge_cmap,
+        edge_vmin=rmin,
+        edge_vmax=rmax,
         width=arrwidth,
     )
     nx.draw_networkx_edge_labels(
@@ -110,13 +119,14 @@ def draw_circuit(
         ax=ax
     )
 
-    pc = mpl.collections.PatchCollection(edges, cmap=edge_cmap)
-    pc.set_array(weights)
-
     ax = plt.gca()
     ax.set_axis_off()
-    plt.colorbar(pc, ax=ax, label="log rates")
-    # plt.show()
+
+    if colorbar:
+        pc = mpl.collections.PatchCollection(edges, cmap=edge_cmap)
+        pc.set_array(weights)
+
+        plt.colorbar(pc, ax=ax, label="log rates", shrink=0.8)
 
     return fig, ax, G
 

@@ -11,7 +11,7 @@ c = 5.6        # um^-3
 dc = 0.1 * c
 dl_tf = 4*a*D_tf
 ub = 5
-lb = 1e-3
+lb = 1e-4
 # max_ir_full = 0.5 * (dc/cr)^2 * (cr*dl_tf*ub)/(cr*dl_tf + ub)
 
 ### Circuit descriptions
@@ -38,7 +38,7 @@ inpath = ""
 opt_alg = BBO_adaptive_de_rand_1_bin_radiuslimited()
 # opt_alg = Evolutionary.CMAES(μ = 5, λ = 10, sigma0 = 2)
 
-maxiters_acc = 20000
+maxiters_acc = 30000
 maxiters_full = 3
 xinit1 = (lub .+ llb) ./ 2
 xinit2 = (lub2 .+ llb2) ./ 2
@@ -49,7 +49,7 @@ N = 10
 whichf = "acc"
 
 ### temperature parameter
-betas = 10 .^ range(-2, stop=4, length=64)
+betas = 10 .^ range(-4, stop=3, length=64)
 nparams = length(betas)
 
 const COUNTERS = Dict{String, Int}()

@@ -93,6 +93,7 @@ end
         Jplus = J + abs(J)
     end
 
+    # beta here is concentration
     IR = ir_acc(wedges, iedges, beta, beta/10, on_ind)
 
     (- IR + Jplus, IR, beta)

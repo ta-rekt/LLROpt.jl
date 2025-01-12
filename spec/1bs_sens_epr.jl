@@ -6,7 +6,7 @@ using OptimizationEvolutionary
 a = 3e-3        # ums
 D_tf = 7.4      # um^2/s
 D_cplx = 0.1    # um^2/s
-c = 5.6         # um^-3
+c = 0.1         # um^-3
 dc = 0.1 * c
 dl_tf = 4*a*D_tf
 ub = 5
@@ -28,8 +28,8 @@ lub[1] = log10(dl_tf)
 lub[3] = log10(dl_tf)
 
 ### Optimization parameters
-inpath = "/home/tohme/.julia/dev/LLROpt/data/20241107/ir-ep/ir_full_vs_ep_pareto_pid"
-# inpath = ""
+# inpath = "/home/tohme/.julia/dev/LLROpt/data/20241107/ir-ep/ir_full_vs_ep_pareto_pid"
+inpath = ""
 
 # opt_alg = BBO_adaptive_de_rand_1_bin_radiuslimited()
 opt_alg = Evolutionary.CMAES(μ = 5, λ = 10, sigma0 = 0.05)
@@ -43,7 +43,7 @@ we = [(u,v,r) for ((u,v),r) in zip(edges, xinit1)]
 k = 1
 N = 10
 n = 80000000
-whichf = "full"
+whichf = "acc"
 
 ### temperature parameter
 betas = vcat(range(3e-4, stop=1e-5, length=16), 10 .^ range(-4.8, stop=-9, length=16))
