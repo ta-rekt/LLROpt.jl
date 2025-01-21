@@ -67,7 +67,7 @@ def draw_circuit(
         dims = (5,4)
 
     if figax is None:
-        fig, ax = plt.subplots(1,1,figsize=dims,layout='constrained')
+        fig, ax = plt.subplots(1,1,figsize=dims,layout='tight')
     else:
         fig, ax = figax
 

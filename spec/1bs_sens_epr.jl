@@ -6,7 +6,7 @@ using OptimizationEvolutionary
 a = 3e-3        # ums
 D_tf = 7.4      # um^2/s
 D_cplx = 0.1    # um^2/s
-c = 0.1         # um^-3
+c = 1         # um^-3
 dc = 0.1 * c
 dl_tf = 4*a*D_tf
 ub = 5

@@ -69,7 +69,7 @@ nparams = length(betas)
 
 ### Other parameters
 gammas = [1.5, 2.5, 10]
-wvals = [2.5, 100]
+wvals = [0.5, 2.5, 100]
 
 ### objective functions
 

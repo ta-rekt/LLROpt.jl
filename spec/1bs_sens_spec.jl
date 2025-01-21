@@ -9,7 +9,7 @@ using Distributions
 a = 3e-3        # um
 D_tf = 7.4      # um^2/s
 D_cplx = 0.1    # um^2/s
-cr = 5.6        # um^-3
+cr = 0.01        # um^-3
 dc = 0.1 * cr
 dl_tf = 4*a*D_tf
 ub = 5
@@ -41,24 +41,11 @@ idist1 = ones(4) ./ 4
 idist2 = ones(6) ./ 6
 
 ### Initialization from stored data
-# inpath = "/home/tohme/.julia/dev/LLROpt/data/20241125/ir-dr-hernan/coarse-sweep-1-alg=de-start=MGR-lg=global-whichf=simfull-maxiters=3000-sigma=3e-5-N=3000-nparams=1/ir_full_mix_vs_pure_pareto_pid"
+# inpath = "/home/tohme/.julia/dev/LLROpt/data/20241118/dr-epsilon-hernan/bigsweep-cmaes-A-pn-smallw/ir_full_mix_vs_pure_pareto_pid"
 inpath = ""
-# inpath = "prevbeta"
 
 ### Initialization at midpoint of bounds (trivial)
-# xinit1 = (lub1 .+ llb1) ./ 2
-# xinit2 = (lub2 .+ llb2) ./ 2
-
-### Local search around MGR circuit
-xinit1 = [log10(0.0888)- 0.01,
-          -5 + 0.01,
-          log10(0.0888)- 0.01,
-          log10(5)- 0.01,
-          -5 + 0.01,
-          log10(5)- 0.01,
-          log10(5) - 0.01,
-          -5 + 0.01]
-
+xinit1 = (lub1 .+ llb1) ./ 2
 xinit2 = (lub2 .+ llb2) ./ 2
 
 ### Local search around circuit A
@@ -148,25 +135,26 @@ we2 = [(u,v,r) for ((u,v),r) in zip(edges2, xinit2)]
 
 ### Optimization parameters
 opt_alg = BBO_adaptive_de_rand_1_bin_radiuslimited()
-# opt_alg = Evolutionary.CMAES(μ = 5, λ = 10, sigma0 = 0.01)
+# opt_alg = Evolutionary.CMAES(μ = 5, λ = 10, sigma0 = 1)
 
-maxiters_acc = 10000
-maxiters_full = 1000
-n = 100000
-N = 1
+maxiters_acc = 30000
+maxiters_full = 7000
+n = 6000000
+N = 100
 k = 1
 whichf = "acc"
 
 ### Temperature parameter
-angle_incr = 3.141592/2 - 0.01
-# betasn = map(x->-tan(x), range(0*angle_incr, stop=0.5*angle_incr, length=64))
-betas = map(x->tan(x), range(0*angle_incr, stop=1*angle_incr, length=64))
+angle_incr = 3.141592 / 1e3
+# betasn = map(x->-tan(x), range(0*angle_incr, stop=0.5*angle_incr, length=128))
+# betasp = map(x->tan(x), range(0*angle_incr, stop=1*angle_incr, length=128))
 # betas = vcat(betasn, betasp)
+betas = 10 .^ range(-2, stop=3, length=32)
 nparams = length(betas)
 
 ### Other parameters
-gammas = [1.5, 2.5, 10]
-wvals = [2.5]
+gammas = [10]
+wvals = [1, 5, 10, 50, 100, 500]
 
 ### objective functions
 
@@ -189,6 +177,8 @@ end
 # returns - IR_acc_mix - beta * IR_acc_pure - gamma * EP
 @counted function target_acc(logrates, args...)
     edges1, edges2, iedges, cr, dc, on_ind1, on_ind2, beta, gamma, w = args
+    cr = beta
+    dc = cr / 10
     logcw = log10(cr) + log10(w)
     kboff, konu, kbon, koffu, kuoff, konb, kuon, koffb = logrates
     logrates2 = [kuoff+log10(gamma), kboff+logcw, kbon+logcw, kuon+log10(gamma), 
@@ -207,12 +197,16 @@ end
     pi2 = P_ss(Q2)
     J = pi[1] * Q1[1,2] - pi[2] * Q1[2,1]
     Jplus = J + abs(J)   # penalty for counterclockwise flux
+    P = 1e-4 - (pi2[4] + pi2[6])
+    Pplus = 10000*(P + abs(P))   # penalty for transcription rate falling below 1e-5
+
     ir_acc_pure = ir_acc(wedges1, iedges, cr, dc, on_ind1)
     ir_acc_mix = ir_acc(wedges2, iedges, cr, dc, on_ind2)
-    # mlog_epsilon = log2((pi2[4])/(pi2[6]))
+    mlog_epsilon = log2(w*pi2[4]/pi2[6])
 
-    (- ir_acc_pure - beta*ir_acc_mix + Jplus, ir_acc_mix, ir_acc_pure, EP)
+    # (- ir_acc_pure - beta*ir_acc_mix + Jplus, ir_acc_mix, ir_acc_pure, EP)
     # (- ir_acc_mix - beta*mlog_epsilon + Jplus, mlog_epsilon, ir_acc_mix, EP)
+    (- ir_acc_mix + Jplus + Pplus, mlog_epsilon, ir_acc_mix, EP)
     
 end
 
@@ -234,7 +228,7 @@ end
         m2.weighted_edges[keyb] = (u,v,10 ^ val)
     end
 
-    sigma = 1e-10
+    sigma = 5e-8
     e = Normal(0, sigma)
 
     init!(m1)
@@ -252,10 +246,9 @@ end
     # empirical mean estimator
     # ir_full_pure = m1.llr[end] / sum(m1.rt)
     # ir_full_mix = m2.llr[end] / sum(m2.rt)
-    ir_full_pure = ir_acc(m1.weighted_edges, m1.input_edges, m1.c, m1.dc, m1.on_ind) + rand(e)
     ir_full_mix = ir_acc(m2.weighted_edges, m2.input_edges, m2.c, m2.dc, m2.on_ind) + rand(e)
-    # mlog_epsilon = log2((pi2[4])/(pi2[6]))
+    mlog_epsilon = log2(w*(pi2[4])/(pi2[6]))
 
-    (- ir_full_pure - beta*ir_full_mix + Jplus, ir_full_mix, ir_full_pure, EP)
-    # (- ir_full_mix - beta*mlog_epsilon + Jplus, mlog_epsilon, ir_full_mix, EP)
+    # (- ir_full_pure - beta*ir_full_mix + Jplus, ir_full_mix, ir_full_pure, EP)
+    (- ir_full_mix - beta*mlog_epsilon + Jplus, mlog_epsilon, ir_full_mix, EP)
 end
