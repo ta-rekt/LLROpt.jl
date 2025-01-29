@@ -6,8 +6,8 @@ using OptimizationEvolutionary
 a = 3e-3        # ums
 D_tf = 7.4      # um^2/s
 D_cplx = 0.1    # um^2/s
-c = 1         # um^-3
-dc = 0.1 * c
+c = 1000         # um^-3
+dc = 0.01 * c
 dl_tf = 4*a*D_tf
 ub = 5
 lb = 1e-5
@@ -31,8 +31,8 @@ lub[3] = log10(dl_tf)
 # inpath = "/home/tohme/.julia/dev/LLROpt/data/20241107/ir-ep/ir_full_vs_ep_pareto_pid"
 inpath = ""
 
-# opt_alg = BBO_adaptive_de_rand_1_bin_radiuslimited()
-opt_alg = Evolutionary.CMAES(μ = 5, λ = 10, sigma0 = 0.05)
+opt_alg = BBO_adaptive_de_rand_1_bin_radiuslimited()
+# opt_alg = Evolutionary.CMAES(μ = 5, λ = 10, sigma0 = 1)
 
 maxiters_acc = 30000
 maxiters_full = 200

@@ -149,12 +149,12 @@ angle_incr = 3.141592 / 1e3
 # betasn = map(x->-tan(x), range(0*angle_incr, stop=0.5*angle_incr, length=128))
 # betasp = map(x->tan(x), range(0*angle_incr, stop=1*angle_incr, length=128))
 # betas = vcat(betasn, betasp)
-betas = 10 .^ range(-2, stop=3, length=32)
+betas = 10 .^ range(-2, stop=4, length=64)
 nparams = length(betas)
 
 ### Other parameters
 gammas = [10]
-wvals = [1, 5, 10, 50, 100, 500]
+wvals = [1, 5, 10, 12, 50, 100, 500]
 
 ### objective functions
 
