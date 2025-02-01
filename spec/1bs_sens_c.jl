@@ -35,18 +35,18 @@ opt_alg = BBO_adaptive_de_rand_1_bin_radiuslimited()
 # opt_alg = Evolutionary.CMAES(μ = 5, λ = 10, sigma0 = 0.05)
 
 maxiters_acc = 30000
-maxiters_full = 200
+maxiters_full = 1500
 sigma0 = log10(ub) / 4
 xinit1 = (lub .+ llb) ./ 2
 we = [(u,v,r) for ((u,v),r) in zip(edges, xinit1)]
 
 k = 1
 N = 10
-n = 80000000
-whichf = "acc"
+n = 40000000
+whichf = "full"
 
 ### temperature parameter
-betas = 10 .^ range(-2, stop=4, length=64)
+betas = 10 .^ range(-2, stop=4, length=16)
 nparams = length(betas)
 
 const COUNTERS = Dict{String, Int}()
@@ -108,8 +108,9 @@ end
         m.weighted_edges[keyb] = (u,v,10 ^ val)
     end
 
+    m.c = beta
+    m.dc = beta / 10
     init!(m)
-    EP = EP_ss(m.Q_c)
 
     # clockwise bias
     Jplus = 0
@@ -125,5 +126,5 @@ end
     # mean estimator
     IR = m.llr[end] / sum(m.rt)
 
-    (- IR + beta*EP + Jplus, IR, EP)
+    (- IR + Jplus, IR, beta)
 end
