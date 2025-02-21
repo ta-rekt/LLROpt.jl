@@ -49,7 +49,7 @@ N = 10
 whichf = "acc"
 
 ### temperature parameter
-betas = 10 .^ range(-4, stop=3, length=64)
+betas = 10 .^ range(-2, stop=4, length=64)
 nparams = length(betas)
 
 const COUNTERS = Dict{String, Int}()

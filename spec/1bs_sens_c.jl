@@ -15,6 +15,7 @@ max_ir_full = 0.5 * (dc/c)^2 * c*4*a*D_tf
 
 ### 1-binding site circuit parameters
 nedges = 8
+#         kboff, konu, kbon, koffu, kuoff, konb, kuon, koffb
 edges = [(1,3), (1,2), (2,4), (2,1), (3,1), (3,4), (4,2), (4,3)]
 input_edges = [(1,3), (2,4)]
 on_ind = BitArray([0,1,0,1])
@@ -26,6 +27,9 @@ llb = ones(nedges) .* log10(lb)
 lub = ones(nedges) .* log10(ub)
 lub[1] = log10(dl_tf)
 lub[3] = log10(dl_tf)
+# lub[4] = log10(2)
+# lub[6] = log10(500)
+# lub[7] = log10(6)
 
 ### Optimization parameters
 # inpath = "/home/tohme/.julia/dev/LLROpt/data/20241107/ir-ep/ir_full_vs_ep_pareto_pid"
@@ -43,10 +47,10 @@ we = [(u,v,r) for ((u,v),r) in zip(edges, xinit1)]
 k = 1
 N = 10
 n = 40000000
-whichf = "full"
+whichf = "acc"
 
 ### temperature parameter
-betas = 10 .^ range(-2, stop=4, length=16)
+betas = 10 .^ range(-2, stop=4, length=64)
 nparams = length(betas)
 
 const COUNTERS = Dict{String, Int}()
@@ -83,20 +87,21 @@ end
     # wedges = [(u,v,10 ^ r) for ((u,v),r) in zip(edges, logrates)]
 
     Q = build_mat(wedges, iedges, c)
+    EP = EP_ss(Q)
 
     # clockwise bias by forcing flow along edge e
     Jplus = 0
     m, n = e
-    if m >= 0
-        pi = P_ss(Q)
-        J = pi[m] * Q[m,n] - pi[n] * Q[n,m]
-        Jplus = J + abs(J)
-    end
+    # if m >= 0
+    #     pi = P_ss(Q)
+    #     J = pi[m] * Q[m,n] - pi[n] * Q[n,m]
+    #     Jplus = J + abs(J)
+    # end
 
     # beta here is concentration
     IR = ir_acc(wedges, iedges, beta, beta/10, on_ind)
 
-    (- IR + Jplus, IR, beta)
+    (- IR + Jplus + 100*EP, IR, beta)
 end
 
 # IR FULL
