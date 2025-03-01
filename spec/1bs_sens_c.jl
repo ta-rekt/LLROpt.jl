@@ -15,7 +15,7 @@ max_ir_full = 0.5 * (dc/c)^2 * c*4*a*D_tf
 
 ### 1-binding site circuit parameters
 nedges = 8
-#         kboff, konu, kbon, koffu, kuoff, konb, kuon, koffb
+#         kboff, konu, kbon,  koffu, kuoff, konb,  kuon,  koffb
 edges = [(1,3), (1,2), (2,4), (2,1), (3,1), (3,4), (4,2), (4,3)]
 input_edges = [(1,3), (2,4)]
 on_ind = BitArray([0,1,0,1])
