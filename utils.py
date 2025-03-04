@@ -150,3 +150,34 @@ def cmaes_output_to_arr(file):
             arr[key-1] = np.array([float(x) for x in val.split(' ')])
 
     return arr
+
+# change this so it can read output of both pareto.opt.dev and specificity.opt.dev
+
+def get_data(dirname, whichf, whicha="pareto", skipkeys=[]):
+    paramfile = "params"
+    path = '{}/.julia/dev/LLROpt/data/'.format(os.environ["HOME"])
+    params = json.load(open(path+'{}/{}.json'.format(dirname, paramfile)))
+
+    data = {}
+    data_proc = {}
+    ncpus = params["ncpus"]
+    nbetas = params["nparams"]
+    nparams_per_cpu = int(nbetas/ncpus)
+
+    if whicha == "pareto":
+        whichalg = "_vs_ep_pareto_pid"
+    elif whicha == "spec":
+        whichalg = "_mix_vs_pure_pareto_pid"
+    else:
+        raise ValueError('argument whicha should be either pareto or spec' )
+
+    # merge data from each process into a single dict
+    for cpukey in range(1, ncpus + 1):
+        if cpukey not in skipkeys:
+            data_proc = json.load(open(path+'{}/ir_{}{}{}.json'.format(dirname, whichf, whichalg, cpukey)))
+
+            for i in range(1, nparams_per_cpu+1):
+                keyb = (cpukey - 1) * nparams_per_cpu + i
+                data[keyb] = data_proc[str(keyb)]
+
+    return data, params
