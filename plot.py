@@ -1,9 +1,11 @@
 import numpy as np
 import matplotlib as mpl
 import matplotlib.pyplot as plt
+from matplotlib.lines import Line2D
 import matplotlib.patches as mpatches
 from matplotlib.colors import Normalize
 import networkx as nx
+
 
 def draw_circuit(
         weighted_edges, 

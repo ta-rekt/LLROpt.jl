@@ -1006,3 +1006,147 @@ let
     Pi = P_ss(m0.Q_c)
     log10(Pi[4]/Pi[6])
 end 
+
+## . - -- .- .-.- . .- .-- -.- .- .- --.-.... - -.-
+# DOING: exact integration of decoy circuit MLE
+using QuadGK
+
+function llr_integrand(t_on, t_off, m)
+    m.ll_c = ll_full(m.Q_c, m.ind_set, [t_on], [t_off], m.idist_set)
+    m.ll_cdc = ll_full(m.Q_cdc, m.ind_set, [t_on], [t_off], m.idist_set)
+
+    return exp(sum(m.ll_c)) * sum(m.ll_c - m.ll_cdc)
+end
+
+function inner_integrand(t_off, m)
+    integral, _ = quadgk(t -> llr_integrand(t, t_off, m), 0, Inf)
+    return integral
+end
+
+function target_mle_exact(logrates, args...)
+    # Builds a decoys model and computes the expected LLR by numerical integration
+
+    _, m2, beta, gamma, w = args
+
+    # m1.c = beta
+    m2.c = beta
+    # m1.dc = beta / 10
+    m2.dc = beta / 10
+
+    logcw = log10(m2.c) + log10(w)
+    kboff, konu, kbon, koffu, kuoff, konb, kuon, koffb = logrates
+    logrates2 = [kuoff+log10(gamma), kboff+logcw, kbon+logcw, kuon+log10(gamma), 
+        konu, kboff, kbon, koffu, kuoff, konb, kuon, koffb, konb, koffb]
+
+    # for (keyb, val) in enumerate(logrates)
+    #     (u,v,r) = m1.weighted_edges[keyb]
+    #     m1.weighted_edges[keyb] = (u,v,10 ^ val)
+    # end
+
+    for (keyb, val) in enumerate(logrates2)
+        (u,v,r) = m2.weighted_edges[keyb]
+        m2.weighted_edges[keyb] = (u,v,10 ^ val)
+    end
+
+    # init!(m1)
+    init!(m2)
+
+    # tauon = 
+    # tauoff = 
+    # tau = tauon + tauoff
+    tau = 1
+
+    ionoff, _ = quadgk(t -> inner_integrand(t, m2), 0, Inf)
+
+    return 0.5 * (m2.dc / m2.c)^2 * ionoff / tau
+end
+
+@time let 
+    edges = [(5,1), (1,5), (2,6), (6,2), (1,2), (1,3), (2,4),
+             (2,1), (3,1), (3,4), (4,2), (4,3), (5,6), (6,5)]
+    input_edges = [(1,3), (2,4)]
+    on_ind = BitArray([0,1,0,1,0,1])
+    off_ind = BitArray([1,0,1,0,1,0])
+    idist = ones(6) ./ 6
+    n = 1
+    k = 1
+    cr = 5.6
+    dc = cr / 10
+    beta = cr
+    gamma = 10
+    w = 2.5
+
+    xinit = [1.2825698,
+             0.09454083567823801,
+             0.09454083567823801,
+             1.46107602,
+             -4.9898477,
+             -1.0515872,
+             -1.0515872,
+             0.69897,
+             0.2825698,
+             0.69897,
+             0.46107602,
+             -4.999996,
+             0.69897,
+             -4.999996]
+
+    we = [(u,v,r) for ((u,v),r) in zip(edges, xinit)]
+
+    global m = LLROptModel(;
+        weighted_edges = we,
+        input_edges = input_edges,
+        on_ind = on_ind,
+        c = cr,
+        dc = dc,
+        n = n,
+        k = k,
+        idist = idist,
+        ind_set = off_ind,
+        idist_set = _idist0(idist, off_ind)
+    )
+
+    logrates = [-1.0515872,
+                -4.9898477,
+                -1.0515872,
+                0.69897,
+                0.2825698,
+                0.69897,
+                0.46107602,
+                -4.999996]
+
+    args = [m, m, beta, gamma, w]
+
+    target_mle_exact(logrates, args...)
+
+end
+
+
+@time let 
+    using QuadGK
+
+    # Our integrand:
+    f(x, y) = exp(-(x^2 + y^2))
+
+    # A helper that integrates f over y from c to d, keeping x fixed:
+    function inner_integral(x, c, d)
+        integral_value, _ = quadgk(y -> f(x, y), c, d)
+        return integral_value
+    end
+
+    # Main function to perform the double integral:
+    function double_integral(a, b, c, d)
+        # We define a function of x that integrates over y:
+        integrand(x) = inner_integral(x, c, d)
+        # Then integrate over x:
+        outer_value, _ = quadgk(integrand, a, b)
+        return outer_value
+    end
+
+    # Example usage: integrate exp(-(x^2 + y^2)) for x ∈ [-2,2] and y ∈ [-1,1]
+    a, b = -Inf, Inf
+    c, d = -Inf, Inf
+    result = double_integral(a, b, c, d)
+    println("Result of the double integral = ", result)
+
+end

@@ -181,3 +181,27 @@ def get_data(dirname, whichf, whicha="pareto", skipkeys=[]):
                 data[keyb] = data_proc[str(keyb)]
 
     return data, params
+
+def find_halfmax(f, target=0.5, lb=-5, ub=5, tol=1e-4, verbose=False):
+    """
+    Binary search for a given value of f, assuming it's monotonically increasing.
+    """
+    c_k = (ub + lb) / 2
+    f_k = f(c_k)
+    
+    while np.abs(f_k - target) > tol:
+        
+        if f_k > target:
+            ub = c_k
+        elif f_k <= target:
+            lb = c_k
+        else:
+            raise ValueError("something's wrong with f")
+            
+        c_k = (ub + lb) / 2
+        f_k = f(c_k)
+        
+        if verbose:
+            print(c_k, f_k)
+        
+    return c_k, f_k
