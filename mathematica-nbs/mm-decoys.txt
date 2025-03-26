@@ -1,0 +1,580 @@
+In[1]:= (* Method of moments estimator *)
+(*Function to generate rate matrix from an edge list and weights*)
+RateMatrix[edges_List, weights_List, n_Integer] := 
+  Module[{Q}, Q = ConstantArray[0, {n, n}];
+   Do[Q[[edges[[i, 1]], edges[[i, 2]]]] = weights[[i]], {i, 
+     Length[edges]}];
+   Do[Q[[i, i]] = -Total[Q[[i, All]]], {i, n}];
+   Q];
+
+(*Function to compute steady-state probabilities*)
+SteadyStateProbabilities[Q_] := Module[{n, A, b, \[Pi]}, n = Length[Q];
+   A = Append[Transpose[Q], ConstantArray[1, n]];
+   b = Append[ConstantArray[0, n], 1];
+   \[Pi] = LinearSolve[A, b];
+   \[Pi]];
+
+(*Function to compute mean first passage times*)
+MeanFirstPassageTimes[Q_] := Module[{n, Z, T}, n = Length[Q];
+   ss = SteadyStateProbabilities[Q];
+   Pss = Table[ss, {i, n}];
+   Z = Inverse[Pss - Q] - Pss;
+   T = Table[(Z[[j, j]] - Z[[i, j]])/ss[[j]], {i, n}, {j, n}];
+   Simplify[T]];
+
+MeanFirstPassageTimes2[Q_] := 
+  Module[{n, T, subIdxs, Qsub, rhs, x}, n = Length[Q];
+   T = ConstantArray[0, {n, n}];(*to hold T_{i->j} for i,j=1..n*)
+   Do[If[i == j,(*If same state,MFPT=0 by definition*)
+     T[[i, j]] = 0,(*Else i!=j,solve the submatrix system:*)
+     subIdxs = Delete[Range[n], j];(*The set of states except j*)
+     Qsub = Q[[subIdxs, subIdxs]];(*Q^(j):remove row j,col j*)
+     rhs = -ConstantArray[1, n - 1];(*-1 vector*)(*Solve Qsub x=-1*)
+     x = LinearSolve[Qsub, rhs];
+     (*x maps subIdxs->T_{(subIdxs)->j}.We want the entry for i.*)
+     T[[i, j]] = x[[First@Position[subIdxs, i]]];], {i, 1, n}, {j, 1, 
+     n}];
+   Return[T];];
+
+VarianceFirstPassageTimes[Q_] := 
+  Module[{n, T, subIdxs, Qsub, rhs, x}, n = Length[Q];
+   m = MeanFirstPassageTimes2[Q];
+   T = ConstantArray[0, {n, n}];(*to hold T_{i->j} for i,j=1..n*)
+   Do[If[i == j,(*If same state,MFPT=0 by definition*)
+     T[[i, j]] = 0,(*Else i!=j,solve the submatrix system:*)
+     subIdxs = Delete[Range[n], j];(*The set of states except j*)
+     Qsub = Q[[subIdxs, subIdxs]];(*Q^(j):remove row j,col j*)
+     rhs = -2*m[[subIdxs, j]];(*-1 vector*)(*Solve Qsub x=-2m*)
+     x = LinearSolve[Qsub, rhs];
+     (*x maps subIdxs->T_{(subIdxs)->j}.We want the entry for i.*)
+     T[[i, j]] = x[[First@Position[subIdxs, i]]] - m[[i, j]]^2;], {i, 
+     1, n}, {j, 1, n}];
+   Return[T];];
+
+LaplaceTransformFPT[Q_, s_] := 
+  Module[{n, T, subIdxs, Qsub, rhs, x}, n = Length[Q];
+   T = ConstantArray[0, {n, n}];
+   (*T[[i,j]] will store phi_{i->j}(s)=E[e^{-s T_{i->j}}].*)
+   Do[If[i == j,(*By definition,time from j to j is 0=>
+     Laplace transform=E[e^{-s*0}]=1*)
+     T[[i, j]] = 1,(*i!=j:solve the submatrix system (Q+sI)_{S' x S'}*
+     phi_{S'}=-Q_{S',j},using the boundary condition phi_j(s)=1.*)
+     subIdxs = Delete[Range[n], j];(*states except j*)
+     Qsub = Q[[subIdxs, subIdxs]] - s*IdentityMatrix[n - 1];
+     (*Build the inhomogeneous RHS=-Q[i,j],for each i in subIdxs*)
+     rhs = Table[-Q[[subIdxs[[row]], j]], {row, 1, n - 1}];
+     x = LinearSolve[Qsub, rhs];
+     (*x gives phi_{k->
+     j}(s) for k in subIdxs.We want the component corresponding to i.*)
+     T[[i, j]] = x[[First@Position[subIdxs, i]]];], {i, 1, n}, {j, 1, 
+     n}];
+   Return[FullSimplify[T]];];
+
+LaplaceTransformToSetByState[Q_, start_, hit_List, s_] := 
+  Module[{n = Length[Q], subStates, m, results, eqMatrix, eqRHS, hj, 
+    sol, iPos},(*If'start' is already in'hit',
+   then the time is 0 with prob=1=>transform=1,
+   but specifically we don't "hit h_j first" if j!=
+   that state.We'll handle it below.*)
+   If[MemberQ[hit, 
+     start],(*Then we trivially return a vector of dimension Length[
+    hit],where the entry for'start' is 1,and all others 0.*)
+    Return[Map[If[# == start, 1, 0] &, hit]]];
+   (*Otherwise,we solve one linear system for each h_j in'hit'.*)
+   subStates = Complement[Range[n], hit];(*non-absorbing set*)
+   m = Length[subStates];
+   results = 
+    Table[((*Build the (Q-sI) submatrix for non-absorbing states.*)
+      eqMatrix = 
+       Table[Q[[subStates[[i]], subStates[[j]]]], {i, m}, {j, m}];
+      Do[eqMatrix[[i, i]] -= s, {i, 1, m}];
+      (*RHS=-Q_{i,h_j},for each i in subStates.*)
+      eqRHS = Table[-Q[[subStates[[i]], hj]], {i, 1, m}];
+      (*Solve and get phi_i^(j)(s).Then extract the'start' component.*)
+      sol = LinearSolve[eqMatrix, eqRHS];
+      iPos = First@Position[subStates, start];
+      sol[[iPos]]), {hj, hit}  (*for each absorbing state in'hit'*)];
+   Return[results];];
+
+LogSpecificity[c_, \[Omega]_, \[Gamma]_, rates_, edges_] := 
+ Module[{n, Q, weights, ss, kboff, konb, kuon, kbon, koffu, kuoff},
+  {kboff, konb, kuon, kbon, koffu, kuoff} = 
+   Table[rates[[i]][[1]] /. rates[[i]], {i, 1, Length[rates]}];
+  weights = {c*kboff, kuoff, \[Omega]*c*kboff, \[Gamma]*kuoff, c*kbon,
+     kuon, \[Omega]*c*kbon, \[Gamma]*kuon, konb, koffu, konb};
+  Q = RateMatrix[edges, weights, 6];
+  ss = SteadyStateProbabilities[Q];
+  Log[ss[[3]]/ss[[5]]] + Log[\[Omega]/\[Gamma]]
+  ]
+
+
+
+In[112]:= 
+(*----------------------------------------------------------------------------------------------------------*)(*** \
+Decoys, 1 binding site ***)
+
+(*Edge lists and weights*)
+edges2 = {{1, 2}, {2, 1}, {1, 6}, {6, 1}, {4, 3}, {3, 4}, {4, 5}, {5, 
+    4}, {6, 5}, {4, 1}, {2, 3}, {1, 4}};
+weights2 = {c*kboff, kuoff, \[Omega]*c*kboff, \[Gamma]*kuoff, c*kbon, 
+   kuon, \[Omega]*c*kbon, \[Gamma]*kuon, konb, koffu, konb, konu};
+nstates2 = 6;
+nedges2 = Length[edges2];
+assum = c >= 0 && \[Omega] >= 0 && \[Gamma] >= 0 && kboff > 0 && 
+   konb > 0 && kuon > 0 && kbon > 0 && koffu > 0 && kuoff > 0 && 
+   konu > 0;
+
+(*Plot the circuit*)
+edgeList = Table[edges2[[i, 1]] -> edges2[[i, 2]], {i, 1, nedges2}];
+g = Graph[edges2, VertexLabels -> "Name", DirectedEdges -> True, 
+  EdgeLabels -> 
+   Table[edgeList[[i]] -> 
+     Placed[(HoldForm /@ weights2)[[i]], 0.55], {i, 1, nedges2}], 
+  ImageSize -> 250, 
+  GraphLayout -> {"MultipartiteEmbedding", 
+    "VertexPartition" -> {{5, 6}, {4, 1}, {3, 2}}}]
+
+Out[118]= \!\(\*
+GraphicsBox[
+NamespaceBox["NetworkGraphics",
+DynamicModuleBox[{Typeset`graph = HoldComplete[
+Graph[{1, 2, 3, 4, 5, 
+       6}, {{{1, 2}, {2, 1}, {1, 6}, {6, 1}, {4, 3}, {3, 4}, {4, 5}, {
+        5, 4}, {6, 5}, {4, 1}, {2, 3}, {1, 4}}, 
+        Null}, {EdgeLabels -> {DirectedEdge[6, 1] -> Placed[
+HoldForm[$CellContext`kuoff $CellContext`\[Gamma]], 0.55], 
+          DirectedEdge[1, 4] -> Placed[
+HoldForm[$CellContext`konu], 0.55], DirectedEdge[4, 5] -> Placed[
+HoldForm[$CellContext`c $CellContext`kbon $CellContext`\[Omega]], 
+            0.55], DirectedEdge[4, 1] -> Placed[
+HoldForm[$CellContext`koffu], 0.55], DirectedEdge[2, 1] -> Placed[
+HoldForm[$CellContext`kuoff], 0.55], DirectedEdge[6, 5] -> Placed[
+HoldForm[$CellContext`konb], 0.55], DirectedEdge[5, 4] -> Placed[
+HoldForm[$CellContext`kuon $CellContext`\[Gamma]], 0.55], 
+          DirectedEdge[1, 2] -> Placed[
+HoldForm[$CellContext`c $CellContext`kboff], 0.55], 
+          DirectedEdge[2, 3] -> Placed[
+HoldForm[$CellContext`konb], 0.55], DirectedEdge[3, 4] -> Placed[
+HoldForm[$CellContext`kuon], 0.55], DirectedEdge[4, 3] -> Placed[
+HoldForm[$CellContext`c $CellContext`kbon], 0.55], 
+          DirectedEdge[1, 6] -> Placed[
+HoldForm[$CellContext`c $CellContext`kboff $CellContext`\[Omega]], 
+            0.55]}, GraphLayout -> {"MultipartiteEmbedding", 
+          "VertexPartition" -> {{5, 6}, {4, 1}, {3, 2}}}, 
+        ImageSize -> 250, VertexLabels -> {"Name"}}]]}, 
+TagBox[GraphicsGroupBox[{
+{Hue[0.6, 0.7, 0.7], Opacity[0.7], CapForm["Round"], Arrowheads[
+         Medium], {
+          ArrowBox[
+           BezierCurveBox[{{1., 0.6430339887498951}, {
+            1.4999999999999958`, 0.8074747359330094}, {2., 
+            0.6430339887498951}}], 0.02261146496815286], InsetBox[
+RowBox[{"c", " ", "kboff"}], 
+           Offset[{0, 2}, {1.5509984362618048, 0.7130339887498953}], 
+           ImageScaled[{0.5, 0}],
+BaseStyle->"Graphics"]}, {
+          ArrowBox[
+           BezierCurveBox[{{1., 0.6430339887498951}, {
+            1.2114819791483458`, 5.594238589412507*^-16}, {
+            1., -0.6430339887498951}}], 0.02261146496815286], 
+          InsetBox["konu", 
+           Offset[{0, 2}, {1.0900247584249856, -0.0655874557788713}], 
+           ImageScaled[{0.5, 0}],
+BaseStyle->"Graphics"]}, {
+          ArrowBox[
+           BezierCurveBox[{{1., 0.6430339887498951}, {
+            0.499999999999997, 0.4785932415667799}, {0., 
+            0.6430339887498951}}], 0.02261146496815286], InsetBox[
+RowBox[{"c", " ", "kboff", " ", "\[Omega]"}], 
+           Offset[{0, 2}, {0.44900156373819516, 0.5730339887498952}], 
+           ImageScaled[{0.5, 0}],
+BaseStyle->"Graphics"]}, {
+          ArrowBox[
+           BezierCurveBox[{{2., 0.6430339887498951}, {
+            1.5000000000000002`, 0.4785932415667768}, {1., 
+            0.6430339887498951}}], 0.02261146496815286], 
+          InsetBox["kuoff", 
+           Offset[{0, 2}, {1.449001563738195, 0.5730339887498952}], 
+           ImageScaled[{0.5, 0}],
+BaseStyle->"Graphics"]}, {
+          ArrowBox[{{2., 0.6430339887498951}, {
+           2., -0.6430339887498951}}, 0.02261146496815286], 
+          InsetBox["konb", Offset[{0, 2}, {2., -0.06430339887498959}],
+            ImageScaled[{0.5, 0}],
+BaseStyle->"Graphics"]}, {
+          ArrowBox[
+           BezierCurveBox[{{2., -0.6430339887498951}, {
+            1.5000000000000038`, -0.8074747359330134}, {
+            1., -0.6430339887498951}}], 0.02261146496815286], 
+          InsetBox["kuon", 
+           Offset[{0, 2}, {1.4490015637381952, -0.7130339887498953}], 
+           ImageScaled[{0.5, 0}],
+BaseStyle->"Graphics"]}, {
+          ArrowBox[
+           BezierCurveBox[{{1., -0.6430339887498951}, {
+            0.7885180208516542, -5.594238589412507*^-16}, {1., 
+            0.6430339887498951}}], 0.02261146496815286], 
+          InsetBox["koffu", 
+           Offset[{0, 2}, {0.9099752415750144, 0.0655874557788713}], 
+           ImageScaled[{0.5, 0}],
+BaseStyle->"Graphics"]}, {
+          ArrowBox[
+           BezierCurveBox[{{1., -0.6430339887498951}, {
+            1.500000000000006, -0.4785932415667747}, {
+            2., -0.6430339887498951}}], 0.02261146496815286], InsetBox[
+RowBox[{"c", " ", "kbon"}], 
+           Offset[{0, 2}, {1.550998436261805, -0.5730339887498952}], 
+           ImageScaled[{0.5, 0}],
+BaseStyle->"Graphics"]}, {
+          ArrowBox[
+           BezierCurveBox[{{1., -0.6430339887498951}, {
+            0.49999999999999917`, -0.8074747359330111}, {
+            0., -0.6430339887498951}}], 0.02261146496815286], InsetBox[
+RowBox[{"c", " ", "kbon", " ", "\[Omega]"}], 
+           Offset[{0, 2}, {0.44900156373819516, -0.7130339887498953}],
+            ImageScaled[{0.5, 0}],
+BaseStyle->"Graphics"]}, {
+          ArrowBox[
+           BezierCurveBox[{{0., -0.6430339887498951}, {
+            0.499999999999997, -0.47859324156677996`}, {
+            1., -0.6430339887498951}}], 0.02261146496815286], InsetBox[
+RowBox[{"\[Gamma]", " ", "kuon"}], 
+           Offset[{0, 2}, {0.5509984362618048, -0.5730339887498952}], 
+           ImageScaled[{0.5, 0}],
+BaseStyle->"Graphics"]}, {
+          ArrowBox[
+           BezierCurveBox[{{0., 0.6430339887498951}, {
+            0.49999999999999867`, 0.8074747359330113}, {1., 
+            0.6430339887498951}}], 0.02261146496815286], InsetBox[
+RowBox[{"\[Gamma]", " ", "kuoff"}], 
+           Offset[{0, 2}, {0.5509984362618049, 0.7130339887498953}], 
+           ImageScaled[{0.5, 0}],
+BaseStyle->"Graphics"]}, {
+          ArrowBox[{{0., 0.6430339887498951}, {
+           0., -0.6430339887498951}}, 0.02261146496815286], 
+          InsetBox["konb", Offset[{0, 2}, {0., -0.06430339887498959}],
+            ImageScaled[{0.5, 0}],
+BaseStyle->"Graphics"]}}, 
+{Hue[0.6, 0.5, 1.], EdgeForm[{GrayLevel[0], Opacity[
+         0.7]}], {
+          DiskBox[{1., 0.6430339887498951}, 0.02261146496815286], 
+          InsetBox["1", 
+           Offset[{2, 2}, {1.0226114649681528, 0.6656454537180481}], 
+           ImageScaled[{0, 0}],
+BaseStyle->"Graphics"]}, {
+          DiskBox[{2., 0.6430339887498951}, 0.02261146496815286], 
+          InsetBox["2", 
+           Offset[{2, 2}, {2.022611464968153, 0.6656454537180481}], 
+           ImageScaled[{0, 0}],
+BaseStyle->"Graphics"]}, {
+          DiskBox[{2., -0.6430339887498951}, 0.02261146496815286], 
+          InsetBox["3", 
+           Offset[{2, 2}, {2.022611464968153, -0.6204225237817422}], 
+           ImageScaled[{0, 0}],
+BaseStyle->"Graphics"]}, {
+          DiskBox[{1., -0.6430339887498951}, 0.02261146496815286], 
+          InsetBox["4", 
+           Offset[{2, 2}, {1.0226114649681528, -0.6204225237817422}], 
+           ImageScaled[{0, 0}],
+BaseStyle->"Graphics"]}, {
+          DiskBox[{0., -0.6430339887498951}, 0.02261146496815286], 
+          InsetBox["5", 
+           Offset[{2, 2}, {0.02261146496815286, -0.6204225237817422}],
+            ImageScaled[{0, 0}],
+BaseStyle->"Graphics"]}, {
+          DiskBox[{0., 0.6430339887498951}, 0.02261146496815286], 
+          InsetBox["6", 
+           Offset[{2, 2}, {0.02261146496815286, 0.6656454537180481}], 
+           ImageScaled[{0, 0}],
+BaseStyle->"Graphics"]}}}],
+MouseAppearanceTag["NetworkGraphics"]],
+AllowKernelInitialization->False]],
+DefaultBaseStyle->"NetworkGraphics",
+FormatType->TraditionalForm,
+FrameTicks->None,
+ImageSize->250]\)
+
+In[119]:= Q2 = RateMatrix[edges2, weights2, nstates2];
+ss2 = SteadyStateProbabilities[Q2];
+
+
+In[121]:= (*Laplace transform of FPTs for individual hitting states*)
+Fon = LaplaceTransformFPT[Q2, s2];
+F31 = Fon[[3, 1]][[1]];
+F41 = Fon[[4, 1]][[1]];
+F51 = Fon[[5, 1]][[1]];
+
+
+In[125]:= (*Laplace for hitting set, joint with the hitting state*)
+offStates = {6, 1, 2};
+onStates = {5, 4, 3};
+F1off = LaplaceTransformToSetByState[Q2, 1, onStates, s1];
+FoffOn = F1off[[3]][[1]]*F31 + F1off[[2]][[1]]*F41 + 
+   F1off[[1]][[1]]*F51; (*F1off[[2]][[1]]*F41 +*)
+
+
+In[129]:= (*Means, \
+variances and covariances of FPTs from the Laplace transforms*)
+partials1 = With[{s1 = 0, s2 = 0}, Evaluate[D[FoffOn, {s1, 1}]]];
+partials2 = With[{s1 = 0, s2 = 0}, Evaluate[D[FoffOn, {s2, 1}]]];
+partials1s1 = With[{s1 = 0, s2 = 0}, Evaluate[D[FoffOn, {s1, 2}]]];
+partials2s2 = With[{s1 = 0, s2 = 0}, Evaluate[D[FoffOn, {s2, 2}]]];
+partials1s2 = 
+  With[{s1 = 0, s2 = 0}, Evaluate[D[D[FoffOn, {s2, 1}], {s1, 1}]]];
+
+
+In[134]:= meanToffLt = -partials1;
+meanTonLt = -partials2;
+varToffLt = partials1s1 - meanToffLt^2;
+varTonLt = partials2s2 - meanTonLt^2;
+covTonToff = partials1s2 - meanToffLt*meanTonLt;
+\[Tau] = Simplify[meanToffLt + meanTonLt, assum];
+
+(*Covariance matrix*)
+Subscript[\[CapitalSigma], x] = 
+  Simplify[{{varToffLt, covTonToff}, {covTonToff, varTonLt}}, assum];
+
+
+In[1091]:= (*Numerical equivalents*)
+meanTonNum[c_, \[Omega]_, \[Gamma]_, kboff_, konb_, kuon_, kbon_, 
+   koffu_, kuoff_, konu_] := Evaluate[meanTonLt];
+meanToffNum[c_, \[Omega]_, \[Gamma]_, kboff_, konb_, kuon_, kbon_, 
+   koffu_, kuoff_, konu_] := Evaluate[meanToffLt];
+varTonNum[c_, \[Omega]_, \[Gamma]_, kboff_, konb_, kuon_, kbon_, 
+   koffu_, kuoff_, konu_] := Evaluate[varTonLt];
+varToffNum[c_, \[Omega]_, \[Gamma]_, kboff_, konb_, kuon_, kbon_, 
+   koffu_, kuoff_, konu_] := Evaluate[varToffLt];
+covTonToffNum[c_, \[Omega]_, \[Gamma]_, kboff_, konb_, kuon_, kbon_, 
+   koffu_, kuoff_, konu_] := Evaluate[covTonToff];
+
+
+In[1143]:= (*MM estimators*)
+cHatOffSym = 
+  Simplify[c /. Solve[meanToffLt == sampleToff, c][[1]], assum];
+cHatOnSym = 
+  FullSimplify[c /. Solve[meanTonLt == sampleTon, c][[1]], assum];
+
+(*Jacobian*)
+dcHatOffSym  = Simplify[D[cHatOffSym, {sampleToff, 1}], assum];
+dcHatOnSym = Simplify[D[cHatOnSym, {sampleTon, 1}], assum];
+
+dcHatOffNum[c_, \[Omega]_, \[Gamma]_, kboff_, konb_, kuon_, kbon_, 
+   koffu_, kuoff_, konu_, sampleToff_] := Evaluate[dcHatOffSym];
+dcHatOnNum[c_, \[Omega]_, \[Gamma]_, kboff_, konb_, kuon_, kbon_, 
+   koffu_, kuoff_, konu_, sampleTon_] := Evaluate[dcHatOnSym];
+
+
+In[1154]:= (*Numeric function for Fisher info rate*)
+Fnum[c_?NumericQ, \[Omega]_?NumericQ, \[Gamma]_?NumericQ, 
+  kboff_?NumericQ, konb_?NumericQ, kuon_?NumericQ, kbon_?NumericQ, 
+  koffu_?NumericQ, kuoff_?NumericQ, konu_?NumericQ] := 
+ Module[{meanTon, meanToff, varTon, varToff, covTonToff, dcHatOn, 
+   dcHatOff, 
+   delf, \[CapitalSigma]x, \[CapitalSigma]y, \[Tau], \[Sigma]2off, \
+\[Sigma]2on, \[Sigma]2, Cov, cHat, Foff, Fon, F},
+  
+  (*Numerical values for mean, variance and cov of FPTs*)
+  meanTon = 
+   meanTonNum[c, \[Omega], \[Gamma], kboff, konb, kuon, kbon, koffu, 
+    kuoff, konu];
+  meanToff = 
+   meanToffNum[c, \[Omega], \[Gamma], kboff, konb, kuon, kbon, koffu, 
+    kuoff, konu];
+  varTon = 
+   varTonNum[c, \[Omega], \[Gamma], kboff, konb, kuon, kbon, koffu, 
+    kuoff, konu];
+  varToff = 
+   varToffNum[c, \[Omega], \[Gamma], kboff, konb, kuon, kbon, koffu, 
+    kuoff, konu];
+  covTonToff = 
+   covTonToffNum[c, \[Omega], \[Gamma], kboff, konb, kuon, kbon, 
+    koffu, kuoff, konu];
+  \[Tau] = meanTon + meanToff;
+  
+  \[CapitalSigma]x = {{varToff, covTonToff}, {covTonToff, varTon}};
+  
+  (*Jacobian*)
+  dcHatOff = 
+   dcHatOffNum[c, \[Omega], \[Gamma], kboff, konb, kuon, kbon, koffu, 
+    kuoff, konu, meanToff];
+  dcHatOn = 
+   dcHatOnNum[c, \[Omega], \[Gamma], kboff, konb, kuon, kbon, koffu, 
+    kuoff, konu, meanTon];
+  delf = {{dcHatOff, 0}, {0, dcHatOn }};
+  
+  (*Covariance matrix of estimators*)
+  \[CapitalSigma]y = delf\[Transpose] . \[CapitalSigma]x . delf;
+  
+  (*Combined estimator and its variance*)
+  \[Sigma]2off = \[CapitalSigma]y[[1, 1]];
+  \[Sigma]2on = \[CapitalSigma]y[[2, 2]];
+  Cov = \[CapitalSigma]y[[1, 2]];
+  
+  (*cHat = (cHatOff*(\[Sigma]2on-Cov) + cHatOn*(\[Sigma]2off-
+  Cov))/(\[Sigma]2off + \[Sigma]2on - 2Cov)*);
+  \[Sigma]2 = (\[Sigma]2on*\[Sigma]2off - 
+    Cov^2)/(\[Sigma]2off + \[Sigma]2on - 2 Cov);
+  
+  (*Concentration-rescaled Fisher information rates*)
+  (*Foff = c^2/ (\[Tau]*\[Sigma]2off);
+  Fon = c^2/ (\[Tau]*\[Sigma]2on);*)
+  F = c^2/ (\[Tau]*\[Sigma]2);
+  
+  Return[F]]
+
+In[1219]:= kmin = 0.00001;
+kmax = 5;
+kdifflim = 0.0888;
+Fnum[1, 0, 10, kdifflim, kmax, kmax, kmin, kmax, kmin, kmin]
+
+Out[1222]= 0.0842713
+
+In[1263]:= (*Validation for \[Omega]=0*)
+kmin = 0.00001;
+kmax = 5;
+kdifflim = 0.0888;
+
+(*Parametrized function*)
+FnumParamd[kboff_, konb_, kuon_, kbon_, koffu_, kuoff_, konu_] := 
+  Fnum[c, \[Omega], \[Gamma], kboff, konb, kuon, kbon, koffu, kuoff, 
+   konu];
+
+rates = NMaximize[{Fnum[c, \[Omega], \[Gamma], kboff, konb, kuon, 
+     kbon, koffu, kuoff, 
+     konu] /. {c -> 50, \[Omega] -> 0.001, \[Gamma] -> 10, 
+     konu -> kmin}, kmin < kboff < kdifflim,
+   kmin < konb < kmax,
+   kmin < kuon < kmax,
+   kmin < kbon < kdifflim,
+   kmin < koffu < kmax,
+   kmin < kuoff < kmax},
+  {kboff, konb, kuon, kbon, koffu, kuoff},
+  Method -> "DifferentialEvolution"]
+
+
+During evaluation of In[1263]:= NMaximize::nnum: The function value Indeterminate is not a number at {kboff,kbon,koffu,konb,kuoff,kuon} = {0.0887998,0.0888,0.0000100286,0.00001,0.0000100687,2.28467}.
+
+Out[1267]= {5.78043*10^16, {kboff -> 0.0888, konb -> 5., 
+  kuon -> 2.23181, kbon -> 0.0887999, koffu -> 0.00001, 
+  kuoff -> 0.0000202181}}
+
+In[1269]:= Fnum[50, 0, 10, kdifflim, kmax, kmax, kdifflim, kmax, \
+kmin, kmin]
+
+Out[1269]= 1.92784*10^10
+
+In[1240]:= dcHatOnNum[1, 0, 10, kdifflim, kmax, kmax, kmin, kmax, \
+kmin, 0.000000001, 0.001]
+
+Out[1240]= 2.5*10^6
+
+In[508]:= (*Maximize Fisher information rate*)
+kmin = 0.00001;
+kmax = 5;
+kdifflim = 0.0888;
+cvals = Table[10.^x, {x, Subdivide[-1.5, 2.5, 1]}];
+wvals = Table[10.^x, {x, Subdivide[-2, 2.5, 1]}];
+results = 
+  Table[NMaximize[{With[{c = x, \[Omega] = y, \[Gamma] = 10}, 
+      Evaluate[F]], kmin < kboff < kdifflim, kmin < konb < kmax, 
+     kmin < kuon < kmax, kmin < kbon < kdifflim, kmin < koffu < kmax, 
+     kmin < kuoff < kmax, kmin < konu < kmax }, {kboff, konb, kuon, 
+     kbon, koffu, kuoff, konu}], {x, cvals}, {y, wvals}];
+
+In[231]:= (*Saving data*)
+file = FileNameJoin[{$HomeDirectory}, 
+  ".julia/dev/LLROpt/mathematica-nbs/data/20250324/max-F-vs-c-vs-w.wl"]
+Save[file, results]
+
+Out[231]= \
+"/home/tohme/.julia/dev/LLROpt/mathematica-nbs/data/20250324/max-F-vs-c\
+-vs-w.wl"
+
+In[440]:= (*----------------------------------------------------------------------------------------------------------*)
+(*** Tests ***)
+
+pathList = {{1, 3}, {3, 1}, {1, 5}, {5, 1}, {4, 5}, {5, 4}};
+
+(*Mean first passage times*)
+M2 = MeanFirstPassageTimes2[Q2];
+meanTs = Table[
+   M2[[pathList[[i, 1]], pathList[[i, 2]]]][[1]], {i, 1, 6}];
+
+(*Variance of first passage times*)
+V2 = VarianceFirstPassageTimes[Q2];
+varTs = Table[
+   V2[[pathList[[i, 1]], pathList[[i, 2]]]][[1]][[1]], {i, 1, 6}];
+
+
+In[445]:= (*Laplace*)
+F2 = LaplaceTransformFPT[Q2, s];
+laplaceTs = 
+  Table[F2[[pathList[[i, 1]], pathList[[i, 2]]]][[1]], {i, 1, 6}];
+
+(*Check that mean Ton and var Ton from both methods agree*)
+dF = Table[With[{s = 0}, Evaluate[D[Fij, {s, 1}]]], {Fij, laplaceTs}];
+d2F = Table[With[{s = 0}, Evaluate[D[Fij, {s, 2}]]], {Fij, laplaceTs}];
+
+In[449]:= varsLt = Table[d2F[[i]] - dF[[i]]^2, {i, 1, 6}];
+
+In[450]:= 
+Do[Assert[FullSimplify[-dF[[i]]] == FullSimplify[meanTs[[i]]]], {i, 
+   1, 6}];
+
+In[451]:= 
+Do[Assert[
+   FullSimplify[Expand[varsLt[[i]]]] == 
+    FullSimplify[Expand[varTs[[i]]]]], {i, 1, 6}];
+
+In[334]:= (*Comparing with built-in functions*)
+mproc1 = ContinuousMarkovProcess[1, Q2];
+mproc3 = ContinuousMarkovProcess[3, Q2];
+mproc5 = ContinuousMarkovProcess[5, Q2];
+
+In[343]:= dist13 = FirstPassageTimeDistribution[mproc1, 3];
+dist15 = FirstPassageTimeDistribution[mproc1, 5];
+dist31 = FirstPassageTimeDistribution[mproc3, 1];
+dist51 = FirstPassageTimeDistribution[mproc5, 1];
+distToff = FirstPassageTimeDistribution[mproc1, {3, 5}];
+
+In[545]:= meanToffBuiltin = FullSimplify[Mean[distToff]]
+
+Out[545]= (1 + ((konb + kuoff) (konb + kuoff \[Gamma]))/(
+ c kboff (konb + kuoff \[Gamma] + (konb + kuoff) \[Omega])))/konb
+
+In[565]:= FullSimplify[meanToffLt]
+
+Out[565]= (1 + ((konb + kuoff) (konb + kuoff \[Gamma]))/(
+ c kboff (konb + kuoff \[Gamma] + (konb + kuoff) \[Omega])))/konb
+
+In[566]:= With[{c = 1, \[Omega] = 1, \[Gamma] = 1, kboff = 1, 
+  konb = 1, kuon = 1, kbon = 0, koffu = 1, kuoff = 0, s1 = 0, s2 = 0},
+  Evaluate[meanToffLt]]
+
+Out[566]= 3/2
+
+In[191]:= FullSimplify[Variance[pdfT135]]
+
+Out[191]= ((konb + kuoff)^2 (konb + kuoff \[Gamma])^2 + 
+   c^2 kboff^2 (konb + kuoff \[Gamma] + (konb + kuoff) \[Omega])^2 + 
+   2 c kboff kuoff ((konb + 
+        kuoff \[Gamma])^2 + (konb + 
+         kuoff)^2 \[Gamma] \[Omega]))/(c^2 kboff^2 konb^2 (konb + 
+     kuoff \[Gamma] + (konb + kuoff) \[Omega])^2)
+
+In[952]:= (*Testing ground*)
+f = a/x;
+g = With[{x = a}, Evaluate[D[f, x]]]
+
+Out[953]= -(1/a)
+
+In[954]:= D[With[{x = a}, Evaluate[f]], x]
+
+Out[954]= 0
+
+In[1080]:= expr =  a*x^2 + b;
+foo[x_, a_, b_] := Evaluate[expr];
+
+In[1082]:= foo[x, 1, 2]
+
+Out[1082]= 2 + x^2
