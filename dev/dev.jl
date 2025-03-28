@@ -10,6 +10,8 @@
     using Base.Threads
     using JSON
     using Statistics
+    using QuadGK
+    using Plots
 end
 
 
@@ -163,7 +165,7 @@ end
         idist = ones(4) ./ 4,
         k = 1
     )
-    # global m2 = LLROptModel(;
+    # global m = LLROptModel(;
     # weighted_edges = [(5,1, kb),  # kb
     #                   (1,5, 1e-5), 
     #                   (2,6, ku),    # ku
@@ -186,7 +188,7 @@ end
     #     idist = ones(6) ./ 6,
     #     k = 1
     # )
-    # init!(m2)
+    # init!(m)
     init!(m1)
 
     for i in 1:nrepeats
@@ -194,7 +196,7 @@ end
             ir_full!(m1)
             time = cumsum(m1.rt)
             # k = findfirst(x -> x > tau, time)
-            # samples[j] = m2.llr[k] / tau
+            # samples[j] = m.llr[k] / tau
             samples[j] = m1.llr[end] / time[end]
         end
 
@@ -573,7 +575,7 @@ end
         idist = idist1,
     )
 
-    m2 = LLROptModel(;
+    m = LLROptModel(;
         weighted_edges = we2,
         input_edges = input_edges,
         on_ind = on_ind2,
@@ -585,7 +587,7 @@ end
     )
 
     init!(m1)
-    init!(m2)
+    init!(m)
 
     # generate some random circuits around MGR
     for keyb in 1:npoints
@@ -613,7 +615,7 @@ end
                     xs[keyb,i] = x[i]
                 end
 
-                args_full = [m1, m2, beta, gamma, w]
+                args_full = [m1, m, beta, gamma, w]
                 targetfun_full(x_, p) = target_full(x_, args_full...)[1]
                 ir_full_mix(x_) = target_full(x_, args_full...)[2]
                 ir_full_pure(x_) = target_full(x_, args_full...)[3]
@@ -769,11 +771,11 @@ function ll_lb(Q, ind_set, t_set, t_comp, idist_set)
     wv[1] = log(sum(idist_set))
     i = 2
 
-    Q_h_comp = Q .* 1.0
+    d.Q_h_comp = Q .* 1.0
     for ri in _comp
-        Q_h_comp[ri, :] .= 0.0
+        d.Q_h_comp[ri, :] .= 0.0
     end
-    UDU_comp = eigen(Q_h_comp)
+    UDU_comp = eigen(d.Q_h_comp)
     W_comp = UDU_comp.vectors
     W_comp_inv = inv(W_comp)
     D_comp = Diagonal(UDU_comp.values)
@@ -799,7 +801,7 @@ function ll_lb(Q, ind_set, t_set, t_comp, idist_set)
     for (ts, tc) in zip(t_set, t_comp)
         mul!(aux_comp, W_comp, exp(ts * D_comp))
         mul!(P_comp, aux_comp, W_comp_inv)
-        mul!(R, Q_h_comp, P_comp)
+        mul!(R, d.Q_h_comp, P_comp)
 
         mul!(aux_set, W_set, exp(tc * D_set))
         mul!(P_set, aux_set, W_set_inv)
@@ -1009,89 +1011,201 @@ end
 
 ## . - -- .- .-.- . .- .-- -.- .- .- --.-.... - -.-
 # DOING: exact integration of decoy circuit MLE
-using QuadGK
 
-function llr_integrand(t_on, t_off, m)
-    m.ll_c = ll_full(m.Q_c, m.ind_set, [t_on], [t_off], m.idist_set)
-    m.ll_cdc = ll_full(m.Q_cdc, m.ind_set, [t_on], [t_off], m.idist_set)
+function tauOn(logrates, args...)
+    cr, cw, gamma = args
+    omega = cw / cr
+    kboff, konb, kuon, kbon, koffu, kuoff, konu = 10 .^ logrates
 
-    return exp(sum(m.ll_c)) * sum(m.ll_c - m.ll_cdc)
+    return ((konu*(konb + kuoff)*kuon*gamma*(konb + kuoff*gamma) 
+            + cr^2*kboff*kbon*konb*(gamma + omega)*(konb*(1 + omega) + kuoff*(gamma + omega)) 
+            + cr*(kbon*konu*(konb + kuoff)*(konb + kuoff*gamma)*(gamma + omega) 
+            + kboff*konb*(konb*kuon*gamma*(1 + omega) + koffu*konb*(gamma + omega) 
+            + kuoff*kuon*gamma*(gamma + omega) + koffu*kuoff*(gamma^2 + omega))))
+            /(koffu*kuon*gamma*(konu*(konb + kuoff)*(konb + kuoff*gamma) 
+            + cr*kboff*konb*(konb*(1 + omega) + kuoff*(gamma + omega)))))
 end
 
-function inner_integrand(t_off, m)
-    integral, _ = quadgk(t -> llr_integrand(t, t_off, m), 0, Inf)
+function tauOff(logrates, args...)
+    cr, cw, gamma = args
+    omega = cw / cr
+    kboff, konb, kuon, kbon, koffu, kuoff, konu = 10 .^ logrates
+
+    numerator = (konb + kuoff)*(konb + kuoff*gamma) + cr*kboff*(konb*(1 + omega) + kuoff*(gamma + omega))
+    denominator = (konu*(konb + kuoff)*(konb + kuoff*gamma) 
+                   + cr*kboff*konb*(konb*(1 + omega) + kuoff*(gamma + omega)))
+     
+    return numerator / denominator
+
+end
+
+
+function initForward!(d::ForwardAlgModel)
+
+    d.ind_comp = ones(Int, length(d.ind_set)) .- d.ind_set
+    d._set = findall(isone, d.ind_set)
+    d._comp = findall(isone, d.ind_comp)
+
+    # d.Q_h_comp (fpt)
+    d.Q_h_comp = d.Q .* 1.0
+    for ri in d._comp
+        d.Q_h_comp[ri, :] .= 0.0
+    end
+    UDU_comp = eigen(d.Q_h_comp)
+    d.W_comp = UDU_comp.vectors
+    d.W_comp_inv = inv(d.W_comp)
+    d.D_comp = Diagonal(UDU_comp.values)
+    d.aux_comp = zeros(size(d.D_comp)...)
+    d.P_comp = zeros(size(d.Q)...)
+    # exp_tD_comp = zeros(size(Q)...)
+
+    # Q_h_set (fpt)
+    d.Q_h_set = d.Q .* 1.0
+    for ri in d._set
+        d.Q_h_set[ri, :] .= 0.0
+    end
+    UDU_set = eigen(d.Q_h_set)
+    d.W_set = UDU_set.vectors
+    d.W_set_inv = inv(d.W_set)
+    d.D_set = Diagonal(UDU_set.values)
+    d.aux_set = zeros(size(d.D_comp)...)
+    d.P_set = zeros(size(d.Q)...)
+    # exp_tD_set = zeros(size(Q)...)
+
+    d.F_set = zeros(size(d.Q)...)
+    d.F_comp = zeros(size(d.Q)...)
+    # _R = zeros(eltype(d.Q), length(_set), length(_comp))
+    # _S = zeros(eltype(d.Q), length(_comp), length(_set))
+
+    return d
+end
+
+# this should be P(ton,toff|c) * d^2/dc^2 log P(ton,toff|c)
+function Pjoint!(t_off, t_on, d)
+
+    s1 = d.set_start
+    s3, s4, s5 = d.comp_arrive
+
+    mul!(d.aux_comp, d.W_comp, exp(t_off * d.D_comp))
+    mul!(d.P_comp, d.aux_comp, d.W_comp_inv)
+    mul!(d.F_comp, d.Q_h_comp, d.P_comp)
+
+    mul!(d.aux_set, d.W_set, exp(t_on * d.D_set))
+    mul!(d.P_set, d.aux_set, d.W_set_inv)
+    mul!(d.F_set, d.Q_h_set, d.P_set)
+
+    d.Pjoint = max((d.F_comp[s1,s3] * d.F_set[s3,s1] 
+                  + d.F_comp[s1,s4] * d.F_set[s4,s1] 
+                  + d.F_comp[s1,s5] * d.F_set[s5,s1]), d.eps)
+
+    return d
+end
+
+function Pjoint(t_off, t_on, d)
+
+    Pjoint!(t_off, t_on, d)
+
+    return max(d.Pjoint, d.eps)
+end
+
+function inner_integrand(t_off, t_on, d_c, d_cdc, m)
+
+    Pjoint!(t_off, t_on, d_c)
+    Pjoint!(t_off, t_on, d_cdc)
+
+    return d_c.Pjoint * (log(d_c.Pjoint) - log(d_cdc.Pjoint))
+end
+
+function outer_integrand(t_on, d_c, d_cdc, m)
+    integral, _ = quadgk(t -> inner_integrand(t, t_on, d_c, d_cdc, m), 0, 8, rtol=1e-8)
     return integral
 end
+
 
 function target_mle_exact(logrates, args...)
     # Builds a decoys model and computes the expected LLR by numerical integration
 
-    _, m2, beta, gamma, w = args
+    d_c, d_cdc, m, cr, gamma, cw = args
+    tau = tauOn(logrates, cr, cw, gamma) + tauOff(logrates, cr, cw, gamma)
 
-    # m1.c = beta
-    m2.c = beta
-    # m1.dc = beta / 10
-    m2.dc = beta / 10
+    m.c = cr
+    m.dc = cr / 10
 
-    logcw = log10(m2.c) + log10(w)
-    kboff, konu, kbon, koffu, kuoff, konb, kuon, koffb = logrates
-    logrates2 = [kuoff+log10(gamma), kboff+logcw, kbon+logcw, kuon+log10(gamma), 
-        konu, kboff, kbon, koffu, kuoff, konb, kuon, koffb, konb, koffb]
+    kboff, konb, kuon, kbon, koffu, kuoff, konu = 10 .^ logrates
 
-    # for (keyb, val) in enumerate(logrates)
-    #     (u,v,r) = m1.weighted_edges[keyb]
-    #     m1.weighted_edges[keyb] = (u,v,10 ^ val)
-    # end
+    ratesFull = [cr*kboff, kuoff,      cw*kboff, gamma*kuoff, cr*kbon, kuon,
+                 cw*kbon,   gamma*kuon, konb,     koffu,       konb,     konu]
 
-    for (keyb, val) in enumerate(logrates2)
-        (u,v,r) = m2.weighted_edges[keyb]
-        m2.weighted_edges[keyb] = (u,v,10 ^ val)
+    for (keyb, val) in enumerate(ratesFull)
+        (u,v,r) = m.weighted_edges[keyb]
+        m.weighted_edges[keyb] = (u,v,val)
     end
 
-    # init!(m1)
-    init!(m2)
+    init!(m)
 
-    # tauon = 
-    # tauoff = 
-    # tau = tauon + tauoff
-    tau = 1
+    d_c.Q = m.Q_c
+    d_cdc.Q = m.Q_cdc
+    d_c.ind_set = m.ind_set
+    d_cdc.ind_set = m.ind_set
 
-    ionoff, _ = quadgk(t -> inner_integrand(t, m2), 0, Inf)
+    initForward!(d_c)
+    initForward!(d_cdc)
 
-    return 0.5 * (m2.dc / m2.c)^2 * ionoff / tau
+    Fonoff, _ = quadgk(t -> outer_integrand(t, d_c, d_cdc, m), 0, 20, rtol=1e-8)
+
+    return 2 * Fonoff * (cr)^2 / (m.dc^2 * tau)
+    # return nothing
+end
+
+
+function outer_integrand_test(t_on, d)
+    integral, _ = quadgk(t -> t* Pjoint(t, t_on, d), 0, 800, rtol=1e-8)
+    return integral
+end
+
+function test_density_integral(logrates, args)
+
+    d, _, m, cr, gamma, cw = args
+
+    m.c = cr
+    m.dc = cr / 10
+
+    kboff, konb, kuon, kbon, koffu, kuoff, konu = 10 .^ logrates
+
+    ratesFull = [cr*kboff, kuoff,      cw*kboff, gamma*kuoff, cr*kbon, kuon,
+                 cw*kbon,   gamma*kuon, konb,     koffu,       konb,     konu]
+
+    for (keyb, val) in enumerate(ratesFull)
+        (u,v,r) = m.weighted_edges[keyb]
+        m.weighted_edges[keyb] = (u,v,val)
+    end
+
+    init!(m)
+
+    d.Q = m.Q_c
+    d.ind_set = m.ind_set
+
+    initForward!(d)
+
+    # integral, _ = quadgk(t -> outer_integrand_test(t, d), 0, 800, rtol=1e-8)
+
 end
 
 @time let 
-    edges = [(5,1), (1,5), (2,6), (6,2), (1,2), (1,3), (2,4),
-             (2,1), (3,1), (3,4), (4,2), (4,3), (5,6), (6,5)]
-    input_edges = [(1,3), (2,4)]
-    on_ind = BitArray([0,1,0,1,0,1])
-    off_ind = BitArray([1,0,1,0,1,0])
+    edges = [(1, 2), (2, 1), (1, 6), (6, 1), (4, 3), (3, 4), 
+             (4, 5), (5, 4), (6, 5), (4, 1), (2, 3), (1, 4)]
+    input_edges = [(1,2), (4,3)]
+    off_ind = BitArray([1,1,0,0,0,1])
+    on_ind = BitArray([0,0,1,1,1,0])
     idist = ones(6) ./ 6
     n = 1
     k = 1
-    cr = 5.6
+    cr = 50
     dc = cr / 10
     beta = cr
-    gamma = 10
-    w = 2.5
-
-    xinit = [1.2825698,
-             0.09454083567823801,
-             0.09454083567823801,
-             1.46107602,
-             -4.9898477,
-             -1.0515872,
-             -1.0515872,
-             0.69897,
-             0.2825698,
-             0.69897,
-             0.46107602,
-             -4.999996,
-             0.69897,
-             -4.999996]
-
-    we = [(u,v,r) for ((u,v),r) in zip(edges, xinit)]
+    gamma = 1
+    cw = 1
+    we = [(u,v,0.) for (u,v) in edges]
 
     global m = LLROptModel(;
         weighted_edges = we,
@@ -1103,23 +1217,45 @@ end
         k = k,
         idist = idist,
         ind_set = off_ind,
-        idist_set = _idist0(idist, off_ind)
+        idist_set = [1,0,0]
     )
 
-    logrates = [-1.0515872,
-                -4.9898477,
-                -1.0515872,
-                0.69897,
-                0.2825698,
-                0.69897,
-                0.46107602,
-                -4.999996]
+    global d_c = ForwardAlgModel(;
+        m = 6,
+        set_start = 1,
+        comp_arrive = [3,4,5],
+        eps = 1e-15
+    )
 
-    args = [m, m, beta, gamma, w]
+    global d_cdc = ForwardAlgModel(;
+        m = 6,
+        set_start = 1,
+        comp_arrive = [3,4,5],
+        eps = 1e-15
+    )
 
-    target_mle_exact(logrates, args...)
+    #                        kboff, konb, kuon, kbon, koffu, kuoff, konu
+    global logrates = log10.([0.05,  5,    1,    1e-1, 5,     1e-5,  1e-5])
 
+    args = [d_c, d_cdc, m, cr, gamma, cw]
+
+    # target_mle_exact(logrates, args...);
+    test_density_integral(logrates, args)
+    print("\n")
+    # show(tauOff(logrates, cr, cw, gamma))
+
+    t_off = 0.01
+    t_on = 100
+
+    Pjoint!(t_off, t_on, d_c)
+
+    # global tvals = range(0,1,length=1000)
+    # global density = [Pjoint(t, t_on, d_c) for t in tvals]
+
+    print("")
 end
+
+
 
 
 @time let 
@@ -1136,8 +1272,10 @@ end
 
     # Main function to perform the double integral:
     function double_integral(a, b, c, d)
+
         # We define a function of x that integrates over y:
         integrand(x) = inner_integral(x, c, d)
+
         # Then integrate over x:
         outer_value, _ = quadgk(integrand, a, b)
         return outer_value
@@ -1147,6 +1285,6 @@ end
     a, b = -Inf, Inf
     c, d = -Inf, Inf
     result = double_integral(a, b, c, d)
-    println("Result of the double integral = ", result)
+    print("Result of the double integral = ", result)
 
 end

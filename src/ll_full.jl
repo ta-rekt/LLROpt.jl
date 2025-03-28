@@ -44,21 +44,11 @@ function ll_full(Q, ind_set, t_set, t_comp, idist_set)
     _R = zeros(eltype(Q), length(_set), length(_comp))
     _S = zeros(eltype(Q), length(_comp), length(_set))
 
-    # for (ts, tc) in zip(t_set, t_comp)
     for (ts, tc) in zip(t_set, t_comp)
-        # P = W * exp(t * D) * inv(W)
-        # R = Q_h_comp * P(UDU_comp, ts)
+
         mul!(aux_comp, W_comp, exp(ts * D_comp))
         mul!(P_comp, aux_comp, W_comp_inv)
         mul!(R, Q_h_comp, P_comp)
-
-        # P = W * exp(t * D) * inv(W)
-        # S = Q_h_set * P(UDU_set, tc)
-        
-        # mul!(exp_tD_set, tc, D_set)
-        # exp!(exp_tD_set)
-        # mul!(aux_set, W_set, exp_tD_set)
-        # mul!(aux_set, W_set, exp(exp_tD_set))
 
         mul!(aux_set, W_set, exp(tc * D_set))
         mul!(P_set, aux_set, W_set_inv)
@@ -69,13 +59,11 @@ function ll_full(Q, ind_set, t_set, t_comp, idist_set)
 
         # TODO: do it inline
         w_set ./= sum(w_set)
-        # w_comp = (w_set' * _R)'
         mul!(w_comp, w_set, _R)
         wv[i] = log(sum(w_comp)); i+=1
 
         w_comp ./= sum(w_comp)
         mul!(w_set, w_comp, _S)
-        # w_set = ((w_comp ./ sum(w_comp))' * _S)'
         wv[i] = log(sum(w_set)); i+=1
     end
     wv

@@ -45,6 +45,49 @@ Base.@kwdef mutable struct LLROptModel
 
 end
 
+export ForwardAlgModel
+Base.@kwdef mutable struct ForwardAlgModel
+    m
+    set_start
+    comp_arrive
+    eps
+
+    # indicator array for set
+    ind_set = nothing;
+    ind_comp = nothing;
+    _set = nothing;
+    _comp = nothing;
+
+    # rate matrix
+    Q = nothing;
+
+    # set
+    D_set = nothing;
+    W_set = nothing;
+    W_set_inv = nothing;
+    aux_set = nothing;
+    P_set = nothing;
+    Q_h_set = nothing;
+    F_set = nothing;
+
+    # comp
+    D_comp = nothing;
+    W_comp = nothing;
+    W_comp_inv = nothing;
+    aux_comp = nothing;
+    P_comp = nothing;
+    Q_h_comp = nothing;
+    F_comp = nothing;
+
+    # likelihood
+    Pjoint = nothing;
+
+    # log-likelihoods
+    logPc = nothing;
+    logPcdc = nothing;
+
+end
+
 import Base.show
 function Base.show(io::IO, m::LLROptModel)
     print(io, "LLROptModel(...)")
