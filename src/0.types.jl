@@ -79,6 +79,12 @@ Base.@kwdef mutable struct ForwardAlgModel
     Q_h_comp = nothing;
     F_comp = nothing;
 
+    # eigenvalues
+    eigvals_set = nothing;
+    eigvals_comp = nothing;
+    maxeigval_set = nothing;
+    maxeigval_comp = nothing;
+
     # likelihood
     Pjoint = nothing;
 

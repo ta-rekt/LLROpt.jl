@@ -2,7 +2,7 @@
 
 julia_version = "1.11.1"
 manifest_format = "2.0"
-project_hash = "8b1998a1584640fd2673e4616904d772017d0409"
+project_hash = "253966e9a094a02d49e27f240a07cd665402bd78"
 
 [[deps.ADTypes]]
 git-tree-sha1 = "30bb95a372787af850addf28ac937f1be7b79173"
@@ -308,6 +308,18 @@ git-tree-sha1 = "439e35b0b36e2e5881738abc8857bd92ad6ff9a8"
 uuid = "d38c429a-6771-53c6-b99e-75d170b6e991"
 version = "0.6.3"
 
+[[deps.Cubature]]
+deps = ["Cubature_jll"]
+git-tree-sha1 = "c3f4b3b38abd7b5c3ccf59adab2568212e7530d3"
+uuid = "667455a9-e2ce-5579-9412-b964f529a492"
+version = "1.5.1"
+
+[[deps.Cubature_jll]]
+deps = ["Artifacts", "JLLWrappers", "Libdl", "Pkg"]
+git-tree-sha1 = "0fe9efb84e3eb7b14f885a95aaa0ed50c7e839c8"
+uuid = "7bc98958-0e37-5d67-a6ac-a3a19030071a"
+version = "1.0.5+0"
+
 [[deps.DSP]]
 deps = ["Compat", "FFTW", "IterTools", "LinearAlgebra", "Polynomials", "Random", "Reexport", "SpecialFunctions", "Statistics"]
 git-tree-sha1 = "0df00546373af8eee1598fb4b2ba480b1ebe895c"
@@ -404,6 +416,12 @@ version = "0.7.14"
     [deps.DomainSets.weakdeps]
     Makie = "ee78f7c6-11fb-53f2-987a-cfe4a2b5a57a"
 
+[[deps.DoubleExponentialFormulas]]
+deps = ["LinearAlgebra", "Printf"]
+git-tree-sha1 = "5a0a853bafeb3915e8a5b48a511d71838c1308c4"
+uuid = "eb426421-6452-4132-80ef-4b100a757ac5"
+version = "0.1.0"
+
 [[deps.Downloads]]
 deps = ["ArgTools", "FileWatching", "LibCURL", "NetworkOptions"]
 uuid = "f43a241f-c20a-4ad4-852c-f6b1247861c6"
@@ -494,6 +512,12 @@ version = "3.3.10+1"
 git-tree-sha1 = "acebe244d53ee1b461970f8910c235b259e772ef"
 uuid = "9aa1b823-49e4-5ca5-8b0f-3971ec8bab6a"
 version = "0.3.2"
+
+[[deps.FastGaussQuadrature]]
+deps = ["LinearAlgebra", "SpecialFunctions", "StaticArrays"]
+git-tree-sha1 = "fd923962364b645f3719855c88f7074413a6ad92"
+uuid = "442a2c76-b920-505d-bb47-c5924d526838"
+version = "1.0.2"
 
 [[deps.FilePathsBase]]
 deps = ["Compat", "Dates"]

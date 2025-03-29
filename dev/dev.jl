@@ -11,6 +11,8 @@
     using JSON
     using Statistics
     using QuadGK
+    using Cubature
+    using DoubleExponentialFormulas
     using Plots
 end
 
@@ -1074,13 +1076,16 @@ function initForward!(d::ForwardAlgModel)
 
     d.F_set = zeros(size(d.Q)...)
     d.F_comp = zeros(size(d.Q)...)
-    # _R = zeros(eltype(d.Q), length(_set), length(_comp))
-    # _S = zeros(eltype(d.Q), length(_comp), length(_set))
+    
+    d.eigvals_set = UDU_set.values
+    d.eigvals_comp = UDU_comp.values
+    d.maxeigval_set = - maximum(x for x in d.eigvals_set if x < 0)
+    d.maxeigval_comp = - maximum(x for x in d.eigvals_comp if x < 0)
 
     return d
 end
 
-# this should be P(ton,toff|c) * d^2/dc^2 log P(ton,toff|c)
+
 function Pjoint!(t_off, t_on, d)
 
     s1 = d.set_start
@@ -1105,7 +1110,14 @@ function Pjoint(t_off, t_on, d)
 
     Pjoint!(t_off, t_on, d)
 
-    return max(d.Pjoint, d.eps)
+    return d.Pjoint
+end
+
+function PjointVec(t, d)
+
+    t_on, t_off = t
+
+    return Pjoint(t_on, t_off, d)
 end
 
 function inner_integrand(t_off, t_on, d_c, d_cdc, m)
@@ -1117,7 +1129,7 @@ function inner_integrand(t_off, t_on, d_c, d_cdc, m)
 end
 
 function outer_integrand(t_on, d_c, d_cdc, m)
-    integral, _ = quadgk(t -> inner_integrand(t, t_on, d_c, d_cdc, m), 0, 8, rtol=1e-8)
+    integral, _ = quadgk(t -> inner_integrand(t, t_on, d_c, d_cdc, m), 0, 40/d_c.maxeigval_comp, rtol=1e-8)
     return integral
 end
 
@@ -1159,20 +1171,32 @@ end
 
 
 function outer_integrand_test(t_on, d)
-    integral, _ = quadgk(t -> t* Pjoint(t, t_on, d), 0, 800, rtol=1e-8)
-    return integral
+
+    lbound = 0
+    neigs = length([x for x in d.eigvals_comp if x < 0])
+    integral = 0
+
+    for i in range(1, stop=neigs)
+        if i == neigs
+            rbound = -20/d_c.eigvals_set[i]
+        else
+            rbound = -5/d_c.eigvals_set[i]
+        end
+        piece, _ = quadde(t -> Pjoint(t, t_on, d), lbound, rbound, rtol=1e-10)
+        integral = integral + piece
+        lbound = rbound
+    end
+
+    return t_on*integral
 end
 
-function test_density_integral(logrates, args)
+function initForwardRates!(logrates, args)
 
-    d, _, m, cr, gamma, cw = args
-
-    m.c = cr
-    m.dc = cr / 10
+    d_c, d_cdc, m, cr, gamma, cw = args
 
     kboff, konb, kuon, kbon, koffu, kuoff, konu = 10 .^ logrates
 
-    ratesFull = [cr*kboff, kuoff,      cw*kboff, gamma*kuoff, cr*kbon, kuon,
+    ratesFull = [kboff,     kuoff,      cw*kboff, gamma*kuoff, kbon,     kuon,
                  cw*kbon,   gamma*kuon, konb,     koffu,       konb,     konu]
 
     for (keyb, val) in enumerate(ratesFull)
@@ -1180,14 +1204,15 @@ function test_density_integral(logrates, args)
         m.weighted_edges[keyb] = (u,v,val)
     end
 
-    init!(m)
+    init!(m)  # which calls build_mat
 
-    d.Q = m.Q_c
-    d.ind_set = m.ind_set
+    d_cdc.Q = m.Q_cdc
+    d_c.Q = m.Q_c
+    d_cdc.ind_set = m.ind_set
+    d_c.ind_set = m.ind_set
 
-    initForward!(d)
-
-    # integral, _ = quadgk(t -> outer_integrand_test(t, d), 0, 800, rtol=1e-8)
+    initForward!(d_c)
+    initForward!(d_cdc)
 
 end
 
@@ -1200,10 +1225,10 @@ end
     idist = ones(6) ./ 6
     n = 1
     k = 1
-    cr = 50
+    cr = 1e4
     dc = cr / 10
     beta = cr
-    gamma = 1
+    gamma = 10  # integral blows up when this is smaller than 0.4 and cw=0...
     cw = 1
     we = [(u,v,0.) for (u,v) in edges]
 
@@ -1224,38 +1249,88 @@ end
         m = 6,
         set_start = 1,
         comp_arrive = [3,4,5],
-        eps = 1e-15
+        eps = 1e-30
     )
 
     global d_cdc = ForwardAlgModel(;
         m = 6,
         set_start = 1,
         comp_arrive = [3,4,5],
-        eps = 1e-15
+        eps = 1e-30
     )
 
     #                        kboff, konb, kuon, kbon, koffu, kuoff, konu
-    global logrates = log10.([0.05,  5,    1,    1e-1, 5,     1e-5,  1e-5])
+    global logrates = log10.([1,    1,    1,    1e-4,  1,    0,     0])
 
     args = [d_c, d_cdc, m, cr, gamma, cw]
 
     # target_mle_exact(logrates, args...);
-    test_density_integral(logrates, args)
-    print("\n")
+    initForwardRates!(logrates, args)
+    # print("\n")
     # show(tauOff(logrates, cr, cw, gamma))
 
-    t_off = 0.01
-    t_on = 100
+    # t_off = 1
+    # t_on = 0.0001
 
-    Pjoint!(t_off, t_on, d_c)
+    # Pjoint!(t_off, t_on, d_c)
 
-    # global tvals = range(0,1,length=1000)
-    # global density = [Pjoint(t, t_on, d_c) for t in tvals]
+    # plotting 
+    # global tvals = range(0,20/d_c.maxeigval_set,length=1000)
+    # global density = [outer_integrand(t, d_c, d_cdc, m) for t in tvals]
 
-    print("")
+    ## toff = 1
+    # @assert isapprox(d_c.F_comp[1,3], 0.11652126742756937, atol=1e-8) 
+    # @assert isapprox(d_c.F_comp[1,4], 0.13483690631630374, atol=1e-8) 
+    # @assert isapprox(d_c.F_comp[1,5], 0.11652126742756937, atol=1e-8) 
+
+    ## t_on = 1
+    # @assert isapprox(d_c.F_set[3,1], 0.21390913026027933, atol=1e-8) 
+    # @assert isapprox(d_c.F_set[4,1], 0.18053603312097147, atol=1e-8) 
+    # @assert isapprox(d_c.F_set[5,1], 0.21390913026027933, atol=1e-8) 
+
+    ## pure density function
+    # @assert isapprox(outer_integrand_test(1, d_c), 0.3678794411714421, atol=1e-8) 
+    # @assert isapprox(outer_integrand_test(4, d_c), 0.018315638888734224, atol=1e-8) 
+    # @assert isapprox(outer_integrand_test(5, d_c), 0.006737946999085455, atol=1e-8)
+
+    global tauOffVal = tauOff(logrates, cr, cw, gamma)
+    global tauOnVal = tauOn(logrates, cr, cw, gamma)
+
+    # integral, _ = quadde(t -> outer_integrand_test(t, d_c), 0, 20/d_c.maxeigval_set, rtol=1e-10)
+
+    xmin = [0,0]
+    xmax = [30/d_c.maxeigval_comp, 30/d_c.maxeigval_set]
+    integral, err = hcubature(t -> t[2]*PjointVec(t, d_c), xmin, xmax; reltol=1e-10, maxevals=8000000)
+
+    @show integral, err
+    @show tauOnVal
 end
 
+# things to try:
+#     - cubature package
+#     - validate the marginals: test each integral separately with mathematica
 
+
+# reproducing the error
+
+
+function f(t,a,b,c,d)
+    return (((a^2/(a+b))*exp(-a*t[1]) + (b^2/(a+b))*exp(-b*t[1]))
+           *((c^2/(c+d))*exp(-c*t[2]) + (d^2/(c+d))*exp(-d*t[2])))
+end
+
+let
+    # max(20/a, 20/b),max(20/c, 20/d)
+
+    a = 0.1
+    b = 10
+    c = 4
+    d = 1
+
+    int, err = hcubature(t -> t[2]*f(t, a, b, c, d), 
+                        [0,0], [max(20/a, 20/b),max(20/c, 20/d)]; reltol=1e-15, maxevals=20000)
+
+end
 
 
 @time let 
