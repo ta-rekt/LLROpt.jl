@@ -10,9 +10,6 @@
     using Base.Threads
     using JSON
     using Statistics
-    using QuadGK
-    using Cubature
-    using DoubleExponentialFormulas
     using Plots
 end
 
@@ -1014,131 +1011,17 @@ end
 ## . - -- .- .-.- . .- .-- -.- .- .- --.-.... - -.-
 # DOING: exact integration of decoy circuit MLE
 
-function tauOn(logrates, args...)
-    cr, cw, gamma = args
-    omega = cw / cr
-    kboff, konb, kuon, kbon, koffu, kuoff, konu = 10 .^ logrates
-
-    return ((konu*(konb + kuoff)*kuon*gamma*(konb + kuoff*gamma) 
-            + cr^2*kboff*kbon*konb*(gamma + omega)*(konb*(1 + omega) + kuoff*(gamma + omega)) 
-            + cr*(kbon*konu*(konb + kuoff)*(konb + kuoff*gamma)*(gamma + omega) 
-            + kboff*konb*(konb*kuon*gamma*(1 + omega) + koffu*konb*(gamma + omega) 
-            + kuoff*kuon*gamma*(gamma + omega) + koffu*kuoff*(gamma^2 + omega))))
-            /(koffu*kuon*gamma*(konu*(konb + kuoff)*(konb + kuoff*gamma) 
-            + cr*kboff*konb*(konb*(1 + omega) + kuoff*(gamma + omega)))))
-end
-
-function tauOff(logrates, args...)
-    cr, cw, gamma = args
-    omega = cw / cr
-    kboff, konb, kuon, kbon, koffu, kuoff, konu = 10 .^ logrates
-
-    numerator = (konb + kuoff)*(konb + kuoff*gamma) + cr*kboff*(konb*(1 + omega) + kuoff*(gamma + omega))
-    denominator = (konu*(konb + kuoff)*(konb + kuoff*gamma) 
-                   + cr*kboff*konb*(konb*(1 + omega) + kuoff*(gamma + omega)))
-     
-    return numerator / denominator
-
-end
-
-
-function initForward!(d::ForwardAlgModel)
-
-    d.ind_comp = ones(Int, length(d.ind_set)) .- d.ind_set
-    d._set = findall(isone, d.ind_set)
-    d._comp = findall(isone, d.ind_comp)
-
-    # d.Q_h_comp (fpt)
-    d.Q_h_comp = d.Q .* 1.0
-    for ri in d._comp
-        d.Q_h_comp[ri, :] .= 0.0
-    end
-    UDU_comp = eigen(d.Q_h_comp)
-    d.W_comp = UDU_comp.vectors
-    d.W_comp_inv = inv(d.W_comp)
-    d.D_comp = Diagonal(UDU_comp.values)
-    d.aux_comp = zeros(size(d.D_comp)...)
-    d.P_comp = zeros(size(d.Q)...)
-    # exp_tD_comp = zeros(size(Q)...)
-
-    # Q_h_set (fpt)
-    d.Q_h_set = d.Q .* 1.0
-    for ri in d._set
-        d.Q_h_set[ri, :] .= 0.0
-    end
-    UDU_set = eigen(d.Q_h_set)
-    d.W_set = UDU_set.vectors
-    d.W_set_inv = inv(d.W_set)
-    d.D_set = Diagonal(UDU_set.values)
-    d.aux_set = zeros(size(d.D_comp)...)
-    d.P_set = zeros(size(d.Q)...)
-    # exp_tD_set = zeros(size(Q)...)
-
-    d.F_set = zeros(size(d.Q)...)
-    d.F_comp = zeros(size(d.Q)...)
-    
-    d.eigvals_set = UDU_set.values
-    d.eigvals_comp = UDU_comp.values
-    d.maxeigval_set = - maximum(x for x in d.eigvals_set if x < 0)
-    d.maxeigval_comp = - maximum(x for x in d.eigvals_comp if x < 0)
-
-    return d
-end
-
-
-function Pjoint!(t_off, t_on, d)
-
-    s1 = d.set_start
-    s3, s4, s5 = d.comp_arrive
-
-    mul!(d.aux_comp, d.W_comp, exp(t_off * d.D_comp))
-    mul!(d.P_comp, d.aux_comp, d.W_comp_inv)
-    mul!(d.F_comp, d.Q_h_comp, d.P_comp)
-
-    mul!(d.aux_set, d.W_set, exp(t_on * d.D_set))
-    mul!(d.P_set, d.aux_set, d.W_set_inv)
-    mul!(d.F_set, d.Q_h_set, d.P_set)
-
-    d.Pjoint = max((d.F_comp[s1,s3] * d.F_set[s3,s1] 
-                  + d.F_comp[s1,s4] * d.F_set[s4,s1] 
-                  + d.F_comp[s1,s5] * d.F_set[s5,s1]), d.eps)
-
-    return d
-end
-
-function Pjoint(t_off, t_on, d)
-
-    Pjoint!(t_off, t_on, d)
-
-    return d.Pjoint
-end
-
-function PjointVec(t, d)
-
-    t_on, t_off = t
-
-    return Pjoint(t_on, t_off, d)
-end
-
-function inner_integrand(t_off, t_on, d_c, d_cdc, m)
-
-    Pjoint!(t_off, t_on, d_c)
-    Pjoint!(t_off, t_on, d_cdc)
-
-    return d_c.Pjoint * (log(d_c.Pjoint) - log(d_cdc.Pjoint))
-end
-
 function outer_integrand(t_on, d_c, d_cdc, m)
-    integral, _ = quadgk(t -> inner_integrand(t, t_on, d_c, d_cdc, m), 0, 40/d_c.maxeigval_comp, rtol=1e-8)
+    integral, _ = quadgk(t -> inner_integrand(t, t_on, d_c, d_cdc, m), 
+                         0, 30/d_c.maxeigval_comp, rtol=1e-10, maxevals=8000000)
     return integral
 end
-
 
 function target_mle_exact(logrates, args...)
     # Builds a decoys model and computes the expected LLR by numerical integration
 
     d_c, d_cdc, m, cr, gamma, cw = args
-    tau = tauOn(logrates, cr, cw, gamma) + tauOff(logrates, cr, cw, gamma)
+    tau = tauOn(d_c) + tauOff(d_c)
 
     m.c = cr
     m.dc = cr / 10
@@ -1168,7 +1051,6 @@ function target_mle_exact(logrates, args...)
     return 2 * Fonoff * (cr)^2 / (m.dc^2 * tau)
     # return nothing
 end
-
 
 function outer_integrand_test(t_on, d)
 
@@ -1217,118 +1099,58 @@ function initForwardRates!(logrates, args)
 end
 
 @time let 
+    nstates = 6
     edges = [(1, 2), (2, 1), (1, 6), (6, 1), (4, 3), (3, 4), 
              (4, 5), (5, 4), (6, 5), (4, 1), (2, 3), (1, 4)]
     input_edges = [(1,2), (4,3)]
     off_ind = BitArray([1,1,0,0,0,1])
-    on_ind = BitArray([0,0,1,1,1,0])
-    idist = ones(6) ./ 6
     n = 1
     k = 1
-    cr = 1e4
-    dc = cr / 10
+    cr = 50
+    dc = cr / 100
     beta = cr
-    gamma = 10  # integral blows up when this is smaller than 0.4 and cw=0...
-    cw = 1
-    we = [(u,v,0.) for (u,v) in edges]
+    gamma = 1 
+    cw = 1e-5
 
-    global m = LLROptModel(;
-        weighted_edges = we,
+    maxevals = 10000
+    reltol = 1e-8
+    eps = 1e-30
+
+    #                        kboff,   konb,    kuon,   kbon, koffu, kuoff, konu
+    global logrates = log10.([0.0502,  0.2,    0.05,     1e-5,  5,     0,     0])
+
+    global d_c = OneBurstDecoyModel(;
+        nstates = nstates,
+        edges = edges,
         input_edges = input_edges,
-        on_ind = on_ind,
-        c = cr,
-        dc = dc,
-        n = n,
-        k = k,
-        idist = idist,
+        logrates = logrates,
+        cr = cr,
+        cw = cw,
+        gamma = gamma,
         ind_set = off_ind,
-        idist_set = [1,0,0]
+        eps = eps,
+        reltol = reltol,
+        maxevals = maxevals,
     )
 
-    global d_c = ForwardAlgModel(;
-        m = 6,
-        set_start = 1,
-        comp_arrive = [3,4,5],
-        eps = 1e-30
+    global d_cdc = OneBurstDecoyModel(;
+        nstates = nstates,
+        edges = edges,
+        input_edges = input_edges,
+        logrates = logrates,
+        cr = cr + dc,
+        cw = cw,
+        gamma = gamma,
+        ind_set = off_ind,
+        eps = eps,
+        reltol = reltol,
+        maxevals = maxevals,
     )
 
-    global d_cdc = ForwardAlgModel(;
-        m = 6,
-        set_start = 1,
-        comp_arrive = [3,4,5],
-        eps = 1e-30
-    )
+    initOneBurst!(d_c)
+    initOneBurst!(d_cdc)
 
-    #                        kboff, konb, kuon, kbon, koffu, kuoff, konu
-    global logrates = log10.([1,    1,    1,    1e-4,  1,    0,     0])
-
-    args = [d_c, d_cdc, m, cr, gamma, cw]
-
-    # target_mle_exact(logrates, args...);
-    initForwardRates!(logrates, args)
-    # print("\n")
-    # show(tauOff(logrates, cr, cw, gamma))
-
-    # t_off = 1
-    # t_on = 0.0001
-
-    # Pjoint!(t_off, t_on, d_c)
-
-    # plotting 
-    # global tvals = range(0,20/d_c.maxeigval_set,length=1000)
-    # global density = [outer_integrand(t, d_c, d_cdc, m) for t in tvals]
-
-    ## toff = 1
-    # @assert isapprox(d_c.F_comp[1,3], 0.11652126742756937, atol=1e-8) 
-    # @assert isapprox(d_c.F_comp[1,4], 0.13483690631630374, atol=1e-8) 
-    # @assert isapprox(d_c.F_comp[1,5], 0.11652126742756937, atol=1e-8) 
-
-    ## t_on = 1
-    # @assert isapprox(d_c.F_set[3,1], 0.21390913026027933, atol=1e-8) 
-    # @assert isapprox(d_c.F_set[4,1], 0.18053603312097147, atol=1e-8) 
-    # @assert isapprox(d_c.F_set[5,1], 0.21390913026027933, atol=1e-8) 
-
-    ## pure density function
-    # @assert isapprox(outer_integrand_test(1, d_c), 0.3678794411714421, atol=1e-8) 
-    # @assert isapprox(outer_integrand_test(4, d_c), 0.018315638888734224, atol=1e-8) 
-    # @assert isapprox(outer_integrand_test(5, d_c), 0.006737946999085455, atol=1e-8)
-
-    global tauOffVal = tauOff(logrates, cr, cw, gamma)
-    global tauOnVal = tauOn(logrates, cr, cw, gamma)
-
-    # integral, _ = quadde(t -> outer_integrand_test(t, d_c), 0, 20/d_c.maxeigval_set, rtol=1e-10)
-
-    xmin = [0,0]
-    xmax = [30/d_c.maxeigval_comp, 30/d_c.maxeigval_set]
-    integral, err = hcubature(t -> t[2]*PjointVec(t, d_c), xmin, xmax; reltol=1e-10, maxevals=8000000)
-
-    @show integral, err
-    @show tauOnVal
-end
-
-# things to try:
-#     - cubature package
-#     - validate the marginals: test each integral separately with mathematica
-
-
-# reproducing the error
-
-
-function f(t,a,b,c,d)
-    return (((a^2/(a+b))*exp(-a*t[1]) + (b^2/(a+b))*exp(-b*t[1]))
-           *((c^2/(c+d))*exp(-c*t[2]) + (d^2/(c+d))*exp(-d*t[2])))
-end
-
-let
-    # max(20/a, 20/b),max(20/c, 20/d)
-
-    a = 0.1
-    b = 10
-    c = 4
-    d = 1
-
-    int, err = hcubature(t -> t[2]*f(t, a, b, c, d), 
-                        [0,0], [max(20/a, 20/b),max(20/c, 20/d)]; reltol=1e-15, maxevals=20000)
+    FisherRate(d_c, d_cdc)
 
 end
 
@@ -1363,3 +1185,43 @@ end
     print("Result of the double integral = ", result)
 
 end
+
+
+# old
+
+
+    # print("\n")
+    # show(tauOff(d_c))
+
+    # args = [d_c, d_cdc, m, cr, gamma, cw]
+
+    # plotting 
+    # global tvals = range(0,20/d_c.maxeigval_set,length=1000)
+    # global density = [outer_integrand(t, d_c, d_cdc, m) for t in tvals]
+
+    ## toff = 1
+    # @assert isapprox(d_c.F_comp[1,3], 0.11652126742756937, atol=1e-8) 
+    # @assert isapprox(d_c.F_comp[1,4], 0.13483690631630374, atol=1e-8) 
+    # @assert isapprox(d_c.F_comp[1,5], 0.11652126742756937, atol=1e-8) 
+
+    ## t_on = 1
+    # @assert isapprox(d_c.F_set[3,1], 0.21390913026027933, atol=1e-8) 
+    # @assert isapprox(d_c.F_set[4,1], 0.18053603312097147, atol=1e-8) 
+    # @assert isapprox(d_c.F_set[5,1], 0.21390913026027933, atol=1e-8) 
+
+    ## pure density function
+    # @assert isapprox(outer_integrand_test(1, d_c), 0.3678794411714421, atol=1e-8) 
+    # @assert isapprox(outer_integrand_test(4, d_c), 0.018315638888734224, atol=1e-8) 
+    # @assert isapprox(outer_integrand_test(5, d_c), 0.006737946999085455, atol=1e-8)
+
+    # integral, err = hcubature(t -> inner_integrand_vec(t, d_c, d_cdc, m), 
+    #             [0,0], [30/d_c.maxeigval_comp, 30/d_c.maxeigval_set]; reltol=1e-8, maxevals=10000)
+
+    # xmin = [0,0]
+    # xmax = [30/d_c.maxeigval_comp, 30/d_c.maxeigval_set]
+    # integral, err = hcubature(t -> t[1]*PjointVec(t, d_c), xmin, xmax; reltol=1e-10, maxevals=8000000)
+
+    # @show integral, err
+    # @show tauOffVal
+
+    # @show 2 * integral * (cr/dc)^2 / tau

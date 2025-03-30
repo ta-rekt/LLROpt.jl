@@ -7,10 +7,13 @@ module LLROpt
     using Distributions
     using ExtractMacro
     using Base.Threads
+    using Cubature
 
 
     include("0.types.jl")
     include("ctmc.jl")
+    include("fpt.jl")
+    include("fisher.jl")
     include("ir_full.jl")
     include("ll_full.jl")
     include("generate.jl")

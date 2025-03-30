@@ -45,15 +45,21 @@ Base.@kwdef mutable struct LLROptModel
 
 end
 
-export ForwardAlgModel
-Base.@kwdef mutable struct ForwardAlgModel
-    m
-    set_start
-    comp_arrive
+export OneBurstDecoyModel
+Base.@kwdef mutable struct OneBurstDecoyModel
+    nstates
+    edges
+    input_edges
+    logrates
+    cr
+    cw
+    gamma
+    ind_set
     eps
+    reltol
+    maxevals
 
     # indicator array for set
-    ind_set = nothing;
     ind_comp = nothing;
     _set = nothing;
     _comp = nothing;
