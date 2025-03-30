@@ -236,6 +236,9 @@ using Test
         beta = cr
         gamma = 1  # integral blows up when this is smaller than 0.4 and cw=0...
         cw = 1e-5
+        eps = 1e-30
+        reltol = 1e-8
+        maxevals = 10000
 
         d = OneBurstDecoyModel(;
             nstates = 6,
@@ -246,15 +249,126 @@ using Test
             cw = cw,
             gamma = gamma,
             ind_set = off_ind,
-            eps = 1e-30,
-            reltol = 1e-8,
-            maxevals = 10000,
+            eps = eps,
+            reltol = reltol,
+            maxevals = maxevals,
+        )
+
+        ddc = OneBurstDecoyModel(;
+            nstates = 6,
+            edges = edges,
+            input_edges = input_edges,
+            logrates = logrates,
+            cr = cr + dc,
+            cw = cw,
+            gamma = gamma,
+            ind_set = off_ind,
+            eps = eps,
+            reltol = reltol,
+            maxevals = maxevals,
         )
 
         initOneBurst!(d)
 
         @test isapprox(tauOn(d), 20.2020000004, rtol=1e-8)
         @test isapprox(tauOff(d), 5.398406294820733, rtol=1e-8)
+
+    end
+
+
+    # Fisher information rate
+    let 
+        nstates = 6
+        edges = [(1, 2), (2, 1), (1, 6), (6, 1), (4, 3), (3, 4), 
+                 (4, 5), (5, 4), (6, 5), (4, 1), (2, 3), (1, 4)]
+        input_edges = [(1,2), (4,3)]
+        off_ind = BitArray([1,1,0,0,0,1])
+        n = 1
+        k = 1
+        cr = 50
+        dc = cr / 100
+        beta = cr
+        gamma = 1 
+        cw = 1e-3
+    
+        maxevals = 10000
+        reltol = 1e-10
+        eps = 1e-30
+    
+        #                        kboff,   konb,    kuon,   kbon, koffu, kuoff, konu
+        global logrates = log10.([0.0502,  0.2,    0.05,   1e-5,  5,     0,     0])
+    
+        global d_c = OneBurstDecoyModel(;
+            nstates = nstates,
+            edges = edges,
+            input_edges = input_edges,
+            logrates = logrates,
+            cr = cr,
+            cw = cw,
+            gamma = gamma,
+            ind_set = off_ind,
+            eps = eps,
+            reltol = reltol,
+            maxevals = maxevals,
+        )
+    
+        global d_cdc = OneBurstDecoyModel(;
+            nstates = nstates,
+            edges = edges,
+            input_edges = input_edges,
+            logrates = logrates,
+            cr = cr + dc,
+            cw = cw,
+            gamma = gamma,
+            ind_set = off_ind,
+            eps = eps,
+            reltol = reltol,
+            maxevals = maxevals,
+        )
+    
+        initOneBurst!(d_c)
+        initOneBurst!(d_cdc)
+    
+        @test isapprox(FisherRate(d_c, d_cdc), 0.0012884521978649768, rtol = 0.05)
+    
+        # ---.-.-.-.-.-.-.-.------.---.-...-.-.-.-.-.-.-.-..-----.-..-.-.-.....
+    
+        #                      kboff,   konb,    kuon,   kbon, koffu, kuoff, konu
+        d_c.logrates = log10.([0.1,     5,        4,     1e-2,  1e-1,     0,   0])
+        d_c.cr = 5
+        d_cdc.logrates = d_c.logrates
+        d_cdc.cr = d_c.cr * 1.01
+    
+        initOneBurst!(d_c)
+        initOneBurst!(d_cdc)
+    
+        @test isapprox(FisherRate(d_c, d_cdc), 0.07876075503682617, rtol = 0.05)
+    
+        # ---.-.-.-.-.-.-.-.------.---.-...-.-.-.-.-.-.-.-..-----.-..-.-.-.....
+    
+        #                      kboff,   konb,    kuon,   kbon, koffu, kuoff, konu
+        d_c.logrates = log10.([0.0005,   5,       5,     1e-5,  5,     0,   0])
+        d_c.cr = 5000
+        d_cdc.logrates = d_c.logrates
+        d_cdc.cr = d_c.cr * 1.01
+    
+        initOneBurst!(d_c)
+        initOneBurst!(d_cdc)
+    
+        @test isapprox(FisherRate(d_c, d_cdc), 0.806693810766622, rtol = 0.05)
+    
+        # ---.-.-.-.-.-.-.-.------.---.-...-.-.-.-.-.-.-.-..-----.-..-.-.-.....
+    
+        #                      kboff,   konb,    kuon,   kbon, koffu, kuoff, konu
+        d_c.logrates = log10.([0.0005,   1e-5,       1e-5,     1e-5,  1e-5,     0,   0])
+        d_c.cr = 5000
+        d_cdc.logrates = d_c.logrates
+        d_cdc.cr = d_c.cr * 1.01
+    
+        initOneBurst!(d_c)
+        initOneBurst!(d_cdc)
+    
+        @test isapprox(FisherRate(d_c, d_cdc), 1.9973865408615845e-09, rtol = 0.05)
 
     end
 end

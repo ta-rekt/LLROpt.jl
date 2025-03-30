@@ -1110,14 +1110,14 @@ end
     dc = cr / 100
     beta = cr
     gamma = 1 
-    cw = 1e-5
+    cw = 1e-3
 
     maxevals = 10000
-    reltol = 1e-8
+    reltol = 1e-10
     eps = 1e-30
 
     #                        kboff,   konb,    kuon,   kbon, koffu, kuoff, konu
-    global logrates = log10.([0.0502,  0.2,    0.05,     1e-5,  5,     0,     0])
+    global logrates = log10.([0.0502,  0.2,    0.05,   1e-5,  5,     0,     0])
 
     global d_c = OneBurstDecoyModel(;
         nstates = nstates,
@@ -1150,7 +1150,50 @@ end
     initOneBurst!(d_c)
     initOneBurst!(d_cdc)
 
-    FisherRate(d_c, d_cdc)
+    @show FisherRate(d_c, d_cdc)
+    @assert isapprox(FisherRate(d_c, d_cdc), 0.0012884521978649768, rtol = 0.05)
+
+    # ---.-.-.-.-.-.-.-.------.---.-...-.-.-.-.-.-.-.-..-----.-..-.-.-.....
+
+    #                      kboff,   konb,    kuon,   kbon, koffu, kuoff, konu
+    d_c.logrates = log10.([0.1,     5,        4,     1e-2,  1e-1,     0,   0])
+    d_c.cr = 5
+    d_cdc.logrates = d_c.logrates
+    d_cdc.cr = d_c.cr * 1.01
+
+    initOneBurst!(d_c)
+    initOneBurst!(d_cdc)
+
+    @show FisherRate(d_c, d_cdc)
+    @assert isapprox(FisherRate(d_c, d_cdc), 0.07876075503682617, rtol = 0.05)
+
+    # ---.-.-.-.-.-.-.-.------.---.-...-.-.-.-.-.-.-.-..-----.-..-.-.-.....
+
+    #                      kboff,   konb,    kuon,   kbon, koffu, kuoff, konu
+    d_c.logrates = log10.([0.0005,   5,       5,     1e-5,  5,     0,   0])
+    d_c.cr = 5000
+    d_cdc.logrates = d_c.logrates
+    d_cdc.cr = d_c.cr * 1.01
+
+    initOneBurst!(d_c)
+    initOneBurst!(d_cdc)
+
+    @show FisherRate(d_c, d_cdc)
+    @assert isapprox(FisherRate(d_c, d_cdc), 0.806693810766622, rtol = 0.05)
+
+    # ---.-.-.-.-.-.-.-.------.---.-...-.-.-.-.-.-.-.-..-----.-..-.-.-.....
+
+    #                      kboff,   konb,    kuon,   kbon, koffu, kuoff, konu
+    d_c.logrates = log10.([0.0005,   1e-5,       1e-5,     1e-5,  1e-5,     0,   0])
+    d_c.cr = 5000
+    d_cdc.logrates = d_c.logrates
+    d_cdc.cr = d_c.cr * 1.01
+
+    initOneBurst!(d_c)
+    initOneBurst!(d_cdc)
+
+    @show FisherRate(d_c, d_cdc)
+    @assert isapprox(FisherRate(d_c, d_cdc), 1.9973865408615845e-09, rtol = 0.05)
 
 end
 
@@ -1186,9 +1229,7 @@ end
 
 end
 
-
 # old
-
 
     # print("\n")
     # show(tauOff(d_c))
