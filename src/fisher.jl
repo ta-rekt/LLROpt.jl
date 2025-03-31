@@ -53,7 +53,7 @@ function FisherRate(d_c::OneBurstDecoyModel, d_cdc::OneBurstDecoyModel)
     #     return nothing
 
     # else
-    if err > 1e-3
+    if err > 5e-3
         throw("Integral precision not met")
         return nothing
 

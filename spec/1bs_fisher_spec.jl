@@ -12,7 +12,7 @@ D_tf = 7.4      # um^2/s
 D_cplx = 0.1    # um^2/s
 dl_tf = 4*a*D_tf
 ub = 5
-lb = 1e-5
+lb = 1e-4
 
 ### Upper bounds for mixed ligands circuit
 #   kboff,   konb,    kuon,   kbon,   koffu,   kuoff,   konu
@@ -32,7 +32,7 @@ off_ind = BitArray([1,1,0,0,0,1])
 # beta = cr
 # cw = 1e-3
 gamma = 1 
-maxevals = 10000
+maxevals = 50000
 reltol = 1e-10
 eps = 1e-30
 N = 1   # legacy parameter, number of samples once optima have been found
@@ -83,19 +83,20 @@ opt_alg = BBO_adaptive_de_rand_1_bin_radiuslimited()
 maxiters_acc = 30000
 maxiters_full = 1500
 whichf = "full"
+fixed_conc = false   # is concentration fixed, or are we sweeping over it?
 
 ### Temperature parameter
 # angle_incr = 3.141592 / 1e3
 # betasn = map(x->-tan(x), range(0*angle_incr, stop=0.5*angle_incr, length=128))
 # betasp = map(x->tan(x), range(0*angle_incr, stop=1*angle_incr, length=128))
 # betas = vcat(betasn, betasp)
-# betas = 10 .^ range(-2, stop=4, length=16)
-betas = [50]
+betas = 10 .^ range(-1, stop=3, length=16)
+# betas = [50]
 nparams = length(betas)
 
 ### Other parameters
 gammas = [10]
-wvals = [1e-3]
+wvals = [1e-2]
 
 
 ### objective functions
@@ -129,7 +130,7 @@ end
     m1.gamma = gamma
     m1.logrates = logrates
 
-    m2.cr = 1.01*cr
+    m2.cr = 1.1*cr
     m2.cw = cw
     m2.gamma = gamma
     m2.logrates = logrates
@@ -148,6 +149,5 @@ end
     logSpecificity = log2((cw/(cr*gamma))*(pi_[3])/(pi_[5]))
 
     (- FisherInfoRate + Jplus, logSpecificity, FisherInfoRate, EP)
-    # return m1
 end
 
