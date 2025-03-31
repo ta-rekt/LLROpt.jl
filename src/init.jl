@@ -17,8 +17,8 @@ function initOneBurst!(d::OneBurstDecoyModel)
     # transition rates
     kboff, konb, kuon, kbon, koffu, kuoff, konu = 10 .^ d.logrates
 
-    ratesFull = [kboff,     kuoff,      d.cw*kboff, d.gamma*kuoff, kbon,     kuon,
-                 d.cw*kbon,   d.gamma*kuon, konb,     koffu,       konb,     konu]
+    ratesFull = [kboff,     kuoff,        d.cw*kboff, d.gamma*kuoff, kbon, kuon,
+                 d.cw*kbon, d.gamma*kuon, konb,       koffu,         konb, konu]
 
     # building weighted adjacency matrix (rate matrix Q)
     weighted_edges = [(u,v,0.) for (u,v) in d.edges]

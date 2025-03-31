@@ -50,6 +50,32 @@ xinit2 = (lub2 .+ llb2) ./ 2
 we1 = [(u,v,r) for ((u,v),r) in zip(edges1, xinit1)]
 we2 = [(u,v,r) for ((u,v),r) in zip(edges2, xinit2)]
 
+## data models
+m1 = LLROptModel(;
+    weighted_edges = we1,
+    input_edges = input_edges,
+    on_ind = on_ind1,
+    c = cr,
+    dc = dc,
+    n = n,
+    k = k,
+    idist = idist1,
+)
+
+m2 = LLROptModel(;
+    weighted_edges = we2,
+    input_edges = input_edges,
+    on_ind = on_ind2,
+    c = cr,
+    dc = dc,
+    n = n,
+    k = k,
+    idist = idist2,
+)
+
+init!(m1)
+init!(m2)
+
 ### Optimization parameters
 opt_alg = BBO_adaptive_de_rand_1_bin_radiuslimited()
 # opt_alg = Evolutionary.CMAES(μ = 5, λ = 10, sigma0 = 1)
@@ -72,6 +98,7 @@ nparams = length(betas)
 ### Other parameters
 gammas = [10]
 wvals = [1, 10, 100]
+
 
 ### objective functions
 

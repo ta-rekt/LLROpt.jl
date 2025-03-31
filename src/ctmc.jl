@@ -45,7 +45,7 @@ function P_ss(Q)
     A[:, end] .= 1.0
     b = zeros(size(A, 1))
     b[end] = 1.0
-    return A' \ b
+    return clamp.(A' \ b, 1e-10, 1)
 end
 
 ## . - -- .- .-.- . .- .-- -.- .- .- --.-.... - -.-

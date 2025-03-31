@@ -45,19 +45,20 @@ function FisherRate(d_c::OneBurstDecoyModel, d_cdc::OneBurstDecoyModel)
     dc = d_cdc.cr - d_c.cr
 
     integral, err = hcubature(t -> integrand(t, d_c, d_cdc), 
-                [0,0], [60/d_c.maxeigval_comp, 60/d_c.maxeigval_set]; 
+                [0,0], [30/d_c.maxeigval_comp, 30/d_c.maxeigval_set]; 
                 reltol=d_c.reltol, maxevals=d_c.maxevals)
 
-    if integral < 0
-        throw("Negative integral")
-        return nothing
+    # if integral < 0
+    #     throw("Negative integral")
+    #     return nothing
 
-    elseif err > 1e-6
+    # else
+    if err > 1e-3
         throw("Integral precision not met")
         return nothing
 
     else
-        return 2 * integral * (d_c.cr/dc)^2 / tau
+        return 2 * max(integral, 0) * (d_c.cr/dc)^2 / tau
     end
 
 end

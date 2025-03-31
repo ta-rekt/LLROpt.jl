@@ -27,31 +27,6 @@ let
         end
     end
 
-    m1 = LLROptModel(;
-        weighted_edges = we1,
-        input_edges = input_edges,
-        on_ind = on_ind1,
-        c = cr,
-        dc = dc,
-        n = n,
-        k = k,
-        idist = idist1,
-    )
-
-    m2 = LLROptModel(;
-        weighted_edges = we2,
-        input_edges = input_edges,
-        on_ind = on_ind2,
-        c = cr,
-        dc = dc,
-        n = n,
-        k = k,
-        idist = idist2,
-    )
-
-    init!(m1)
-    init!(m2)
-
     nparams_per_cpu = div(nparams, ncpus)
 
     irvals_mix = Vector{Float32}(undef, N)
