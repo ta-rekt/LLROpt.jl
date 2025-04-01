@@ -6,9 +6,9 @@ cmd=""
 
 for ((i=1; i<$3; i++))
 do
-	cmd=$cmd"julia "$1" "$2" "$i" "$3" "$4" | "
+	cmd=$cmd"julia --project=@. "$1" "$2" "$i" "$3" "$4" | "
 done
 
-cmd=$cmd"julia "$1" "$2" "$i" "$3" "$4
+cmd=$cmd"julia --project=@. "$1" "$2" "$i" "$3" "$4
 
 eval $cmd

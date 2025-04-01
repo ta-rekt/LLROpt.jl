@@ -32,7 +32,7 @@ off_ind = BitArray([1,1,0,0,0,1])
 # beta = cr
 # cw = 1e-3
 gamma = 1 
-maxevals = 50000
+maxevals = 1000
 reltol = 1e-10
 eps = 1e-30
 N = 1   # legacy parameter, number of samples once optima have been found
@@ -90,13 +90,13 @@ fixed_conc = false   # is concentration fixed, or are we sweeping over it?
 # betasn = map(x->-tan(x), range(0*angle_incr, stop=0.5*angle_incr, length=128))
 # betasp = map(x->tan(x), range(0*angle_incr, stop=1*angle_incr, length=128))
 # betas = vcat(betasn, betasp)
-betas = 10 .^ range(-1, stop=3, length=16)
-# betas = [50]
+# betas = 10 .^ range(-1, stop=2, length=16)
+betas = [50]
 nparams = length(betas)
 
 ### Other parameters
 gammas = [10]
-wvals = [1e-2]
+wvals = [100]
 
 
 ### objective functions

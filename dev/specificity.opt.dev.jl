@@ -1,5 +1,5 @@
 import Pkg
-Pkg.activate("LLROpt")
+# Pkg.activate("LLROpt")
 using JSON
 using Statistics
 using LLROpt
