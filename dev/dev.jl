@@ -11,6 +11,7 @@
     using JSON
     using Statistics
     using Plots
+    using Cubature
 end
 
 
@@ -770,11 +771,11 @@ function ll_lb(Q, ind_set, t_set, t_comp, idist_set)
     wv[1] = log(sum(idist_set))
     i = 2
 
-    d.Q_h_comp = Q .* 1.0
+    d_c.Q_h_comp = Q .* 1.0
     for ri in _comp
-        d.Q_h_comp[ri, :] .= 0.0
+        d_c.Q_h_comp[ri, :] .= 0.0
     end
-    UDU_comp = eigen(d.Q_h_comp)
+    UDU_comp = eigen(d_c.Q_h_comp)
     W_comp = UDU_comp.vectors
     W_comp_inv = inv(W_comp)
     D_comp = Diagonal(UDU_comp.values)
@@ -800,7 +801,7 @@ function ll_lb(Q, ind_set, t_set, t_comp, idist_set)
     for (ts, tc) in zip(t_set, t_comp)
         mul!(aux_comp, W_comp, exp(ts * D_comp))
         mul!(P_comp, aux_comp, W_comp_inv)
-        mul!(R, d.Q_h_comp, P_comp)
+        mul!(R, d_c.Q_h_comp, P_comp)
 
         mul!(aux_set, W_set, exp(tc * D_set))
         mul!(P_set, aux_set, W_set_inv)
@@ -1055,7 +1056,7 @@ end
 function outer_integrand_test(t_on, d)
 
     lbound = 0
-    neigs = length([x for x in d.eigvals_comp if x < 0])
+    neigs = length([x for x in d_c.eigvals_comp if x < 0])
     integral = 0
 
     for i in range(1, stop=neigs)
@@ -1104,17 +1105,17 @@ end
              (4, 5), (5, 4), (6, 5), (4, 1), (2, 3), (1, 4)]
     input_edges = [(1,2), (4,3)]
     off_ind = BitArray([1,1,0,0,0,1])
-    cr = 50
+    cr = 5
     dc = cr / 100
     beta = cr
-    gamma = 1 
-    cw = 1e-3
-    maxevals = 10000
-    reltol = 1e-10
+    gamma = 1  # integral blows up when this is smaller than 0.4 and cw=0...
+    cw = 1e-2
+    maxevals = 100000
+    reltol = 1e-12
     eps = 1e-30
 
     #                        kboff,   konb,    kuon,   kbon, koffu, kuoff, konu
-    global logrates = log10.([0.0502,  0.2,    0.05,   1e-5,  5,     0,     0])
+    logrates = log10.([0.0502,  0.2,  0.05,  1e-5, 5,     1e-5,     1e-5])
 
     global d_c = OneBurstDecoyModel(;
         nstates = nstates,
@@ -1147,7 +1148,22 @@ end
     initOneBurst!(d_c)
     initOneBurst!(d_cdc)
 
-    # testing optimization
+    #                      kboff,   konb,    kuon,   kbon, koffu, kuoff, konu
+    d_c.logrates = log10.([0.0005,   1e-5,       1e-5,     1e-5,  1e-5,     0,   0])
+    d_c.cr = 5
+    d_c.cw = 1e-4
+    d_c.gamma = 1
+
+    initOneBurst!(d_c)
+
+    # testing Pon, Poff, and the partial Fishers
+    integralOn, err = hquadrature(t -> t*Pon(t, d_c), 
+        0, 1000/d_c.maxeigval_set; reltol=d_c.reltol, maxevals=d_c.maxevals)
+
+    @assert isapprox(integralOn, tauOn(d_c), rtol=1e-6)
+    @show integralOn
+    @show tauOn(d_c)
+    # Pon(0, d_c)
 
 end
 

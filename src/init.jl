@@ -59,6 +59,7 @@ function initOneBurst!(d::OneBurstDecoyModel)
     d.D_set = Diagonal(UDU_set.values)
     d.aux_set = zeros(size(d.D_comp)...)
     d.P_set = zeros(size(d.Q)...)
+    d.D_aux = zeros(size(d.D_comp)...)
     # exp_tD_set = zeros(size(Q)...)
 
     d.F_set = zeros(size(d.Q)...)

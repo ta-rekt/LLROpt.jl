@@ -1,5 +1,6 @@
 using LLROpt
 using Test
+using Cubature
 
 @testset "LLROpt.jl" begin
 
@@ -218,7 +219,7 @@ using Test
     end
 
     ## ----.-.-.--....-.---.-..-.-.-.-.-.--.-.-.-----.--
-    # mean first passage times
+    # On, Off first passage times and means
     let 
         #                 kboff,   konb,  kuon,  kbon, koffu, kuoff, konu
         logrates = log10.([0.0502,  0.2,  0.05,  1e-5, 5,     0,     0])
@@ -237,8 +238,8 @@ using Test
         gamma = 1  # integral blows up when this is smaller than 0.4 and cw=0...
         cw = 1e-5
         eps = 1e-30
-        reltol = 1e-8
-        maxevals = 10000
+        reltol = 1e-12
+        maxevals = 100000
 
         d = OneBurstDecoyModel(;
             nstates = 6,
@@ -272,6 +273,56 @@ using Test
 
         @test isapprox(tauOn(d), 20.2020000004, rtol=1e-8)
         @test isapprox(tauOff(d), 5.398406294820733, rtol=1e-8)
+
+        # testing Pon, Poff, and the partial Fishers
+        integralOn, err = hquadrature(t -> t*Pon(t, d), 
+            0, 30/d.maxeigval_set; reltol=d.reltol, maxevals=d.maxevals)
+        integralOff, err = hquadrature(t -> t*Poff(t, d), 
+            0, 30/d.maxeigval_comp; reltol=d.reltol, maxevals=d.maxevals)
+
+        @test isapprox(integralOn, tauOn(d), rtol=1e-6)
+        @test isapprox(integralOff, tauOff(d), rtol=1e-6)
+
+        # ---.-.-.-.-.-.-.-.------.---.-...-.-.-.-.-.-.-.-..-----.-..-.-.-.....
+    
+        #                      kboff,   konb,    kuon,   kbon, koffu, kuoff, konu
+        d.logrates = log10.([0.1,     5,        4,     1e-2,  1e-1,     0,   0])
+        d.cr = 1e-2
+        d.cw = 10
+        d.gamma = 1e-3
+
+        initOneBurst!(d)
+
+        # testing Pon, Poff, and the partial Fishers
+        integralOn, err = hquadrature(t -> t*Pon(t, d), 
+            0, 100/d.maxeigval_set; reltol=d.reltol, maxevals=d.maxevals)
+        integralOff, err = hquadrature(t -> t*Poff(t, d), 
+            0, 100/d.maxeigval_comp; reltol=d.reltol, maxevals=d.maxevals)
+
+        @test isapprox(tauOn(d), 509.7507495004995, rtol=1e-8) 
+        @test isapprox(tauOff(d), 1.1990009990009989, rtol=1e-8) 
+        @test isapprox(integralOn, tauOn(d), rtol=1e-6)
+        @test isapprox(integralOff, tauOff(d), rtol=1e-6)
+
+        
+        # ---.-.-.-.-.-.-.-.------.---.-...-.-.-.-.-.-.-.-..-----.-..-.-.-.....
+    
+        #                      kboff,   konb,    kuon,   kbon, koffu, kuoff, konu
+        d.logrates = log10.([0.0005,   1e-5,       1e-5,     1e-5,  1e-5,     0,   0])
+        d.cr = 5
+        d.cw = 1e-4
+        d.gamma = 1
+
+        initOneBurst!(d)
+
+        # testing Pon, Poff, and the partial Fishers
+        integralOn, err = hquadrature(t -> t*Pon(t, d), 
+            0, 1000/d.maxeigval_set; reltol=d.reltol, maxevals=d.maxevals)
+        integralOff, err = hquadrature(t -> t*Poff(t, d), 
+            0, 100/d.maxeigval_comp; reltol=d.reltol, maxevals=d.maxevals)
+
+        @test isapprox(integralOn, tauOn(d), rtol=1e-6)
+        @test isapprox(integralOff, tauOff(d), rtol=1e-6)
 
     end
 

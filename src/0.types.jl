@@ -78,6 +78,7 @@ Base.@kwdef mutable struct OneBurstDecoyModel
 
     # comp
     D_comp = nothing;
+    D_aux = nothing;
     W_comp = nothing;
     W_comp_inv = nothing;
     aux_comp = nothing;
@@ -92,6 +93,8 @@ Base.@kwdef mutable struct OneBurstDecoyModel
     maxeigval_comp = nothing;
 
     # likelihood
+    Poff = nothing;
+    Pon = nothing;
     Pjoint = nothing;
 
     # log-likelihoods
