@@ -8,22 +8,43 @@ function init!(m::LLROptModel)
     m.off_ind = m.on_ind .⊻ true
     m._idist0_on = _idist0(m.idist, m.on_ind)
     m._idist0_off = _idist0(m.idist, m.off_ind)
+end
 
+export initDecoyWeights!
+function initDecoyWeights!(d::OneBurstDecoyModel)
+    # transition rates
+    kboff, konb, kuon, kbon, koffu, kuoff, konu = 10 .^ d.logrates
+
+    # edges = [(1, 2),    (2, 1),        (1, 6),    (6, 1),        (4, 3), (3, 4), 
+    #          (4, 5),    (5, 4),        (6, 5),    (4, 1),        (2, 3), (1, 4)]
+    d.weights = [kboff,     kuoff,        d.cw*kboff, d.gamma*kuoff, kbon, kuon,
+                 d.cw*kbon, d.gamma*kuon, konb,       koffu,         konb, konu]
+
+    return d
+end
+
+export init2bsWeights!
+function init2bsWeights!(d::OneBurstDecoyModel)
+    # transition rates
+    kboff,   kuoff,  kbon,  kuon,  konu,  koffu, kon1b, kon2b = 10 .^ d.logrates
+
+    # edges =  [(1, 2),    (2, 1),    (2, 3),    (3, 2),    (3, 4),    (4, 5), 
+    #           (5, 4),    (5, 6),    (6, 5),    (6, 1),    (1, 6),    (2, 5)]
+    d.weights = [2*kboff,  kuoff,     kboff,     2*kuoff,   kon2b,     2*kuon,
+                 kbon,     kuon,      2*kbon,    koffu,     konu,      kon1b]
+
+    return d
 end
 
 export initOneBurst!
 function initOneBurst!(d::OneBurstDecoyModel)
 
-    # transition rates
-    kboff, konb, kuon, kbon, koffu, kuoff, konu = 10 .^ d.logrates
-
-    ratesFull = [kboff,     kuoff,        d.cw*kboff, d.gamma*kuoff, kbon, kuon,
-                 d.cw*kbon, d.gamma*kuon, konb,       koffu,         konb, konu]
+    @assert length(d.weights) == length(d.edges)
 
     # building weighted adjacency matrix (rate matrix Q)
     weighted_edges = [(u,v,0.) for (u,v) in d.edges]
 
-    for (keyb, val) in enumerate(ratesFull)
+    for (keyb, val) in enumerate(d.weights)
         (u,v,r) = weighted_edges[keyb]
         weighted_edges[keyb] = (u,v,val)
     end
@@ -69,6 +90,24 @@ function initOneBurst!(d::OneBurstDecoyModel)
     d.eigvals_comp = UDU_comp.values
     d.maxeigval_set = - maximum(x for x in d.eigvals_set if x < 0)
     d.maxeigval_comp = - maximum(x for x in d.eigvals_comp if x < 0)
+
+    return d
+end
+
+export initDecoys!
+function initDecoys!(d::OneBurstDecoyModel)
+
+    initDecoyWeights!(d)
+    initOneBurst!(d)
+
+    return d
+end
+
+export init2bs!
+function init2bs!(d::OneBurstDecoyModel)
+
+    init2bsWeights!(d)
+    initOneBurst!(d)
 
     return d
 end

@@ -127,7 +127,7 @@ let
                     # RESULTS
                     results_full[keyb][keyg][keyw] = vcat(sol_full.u, 0, 0, 0, 0, 
                         ep_full(sol_full.u), beta, gamma, w)
-                
+
                     for i in 1:N
                         irvals_mix[i] = ir_full_mix(sol_full.u)
                         irvals_pure[i] = ir_full_pure(sol_full.u)

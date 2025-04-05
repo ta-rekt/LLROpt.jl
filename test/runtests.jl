@@ -250,6 +250,8 @@ using Cubature
             cw = cw,
             gamma = gamma,
             ind_set = off_ind,
+            start_state = 1,
+            hitting_set = [3,4,5],
             eps = eps,
             reltol = reltol,
             maxevals = maxevals,
@@ -264,12 +266,14 @@ using Cubature
             cw = cw,
             gamma = gamma,
             ind_set = off_ind,
+            start_state = 1,
+            hitting_set = [3,4,5],
             eps = eps,
             reltol = reltol,
             maxevals = maxevals,
         )
 
-        initOneBurst!(d)
+        initDecoys!(d)
 
         @test isapprox(tauOn(d), 20.2020000004, rtol=1e-8)
         @test isapprox(tauOff(d), 5.398406294820733, rtol=1e-8)
@@ -291,7 +295,7 @@ using Cubature
         d.cw = 10
         d.gamma = 1e-3
 
-        initOneBurst!(d)
+        initDecoys!(d)
 
         # testing Pon, Poff, and the partial Fishers
         integralOn, err = hquadrature(t -> t*Pon(t, d), 
@@ -313,7 +317,7 @@ using Cubature
         d.cw = 1e-4
         d.gamma = 1
 
-        initOneBurst!(d)
+        initDecoys!(d)
 
         # testing Pon, Poff, and the partial Fishers
         integralOn, err = hquadrature(t -> t*Pon(t, d), 
@@ -358,6 +362,8 @@ using Cubature
             cw = cw,
             gamma = gamma,
             ind_set = off_ind,
+            start_state = 1,
+            hitting_set = [3,4,5],
             eps = eps,
             reltol = reltol,
             maxevals = maxevals,
@@ -372,13 +378,15 @@ using Cubature
             cw = cw,
             gamma = gamma,
             ind_set = off_ind,
+            start_state = 1,
+            hitting_set = [3,4,5],
             eps = eps,
             reltol = reltol,
             maxevals = maxevals,
         )
     
-        initOneBurst!(d_c)
-        initOneBurst!(d_cdc)
+        initDecoys!(d_c)
+        initDecoys!(d_cdc)
     
         @test isapprox(FisherRate(d_c, d_cdc), 0.0012884521978649768, rtol = 0.05)
     
@@ -390,8 +398,8 @@ using Cubature
         d_cdc.logrates = d_c.logrates
         d_cdc.cr = d_c.cr * 1.01
     
-        initOneBurst!(d_c)
-        initOneBurst!(d_cdc)
+        initDecoys!(d_c)
+        initDecoys!(d_cdc)
     
         @test isapprox(FisherRate(d_c, d_cdc), 0.07876075503682617, rtol = 0.05)
     
@@ -403,8 +411,8 @@ using Cubature
         d_cdc.logrates = d_c.logrates
         d_cdc.cr = d_c.cr * 1.01
     
-        initOneBurst!(d_c)
-        initOneBurst!(d_cdc)
+        initDecoys!(d_c)
+        initDecoys!(d_cdc)
     
         @test isapprox(FisherRate(d_c, d_cdc), 0.806693810766622, rtol = 0.05)
     
@@ -416,8 +424,8 @@ using Cubature
         d_cdc.logrates = d_c.logrates
         d_cdc.cr = d_c.cr * 1.01
     
-        initOneBurst!(d_c)
-        initOneBurst!(d_cdc)
+        initDecoys!(d_c)
+        initDecoys!(d_cdc)
     
         @test isapprox(FisherRate(d_c, d_cdc), 1.9973865408615845e-09, rtol = 0.05)
 

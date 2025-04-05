@@ -55,6 +55,8 @@ Base.@kwdef mutable struct OneBurstDecoyModel
     cw
     gamma
     ind_set
+    start_state
+    hitting_set
     eps
     reltol
     maxevals
@@ -65,6 +67,7 @@ Base.@kwdef mutable struct OneBurstDecoyModel
     _comp = nothing;
 
     # rate matrix
+    weights = nothing;
     Q = nothing;
 
     # set

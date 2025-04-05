@@ -1,0 +1,2566 @@
+<?xml version="1.0" encoding="utf-8" standalone="no"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN"
+  "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<svg xmlns:xlink="http://www.w3.org/1999/xlink" width="324pt" height="216pt" viewBox="0 0 324 216" xmlns="http://www.w3.org/2000/svg" version="1.1">
+ <metadata>
+  <rdf:RDF xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:cc="http://creativecommons.org/ns#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
+   <cc:Work>
+    <dc:type rdf:resource="http://purl.org/dc/dcmitype/StillImage"/>
+    <dc:date>2025-04-01T22:53:40.941889</dc:date>
+    <dc:format>image/svg+xml</dc:format>
+    <dc:creator>
+     <cc:Agent>
+      <dc:title>Matplotlib v3.8.0, https://matplotlib.org/</dc:title>
+     </cc:Agent>
+    </dc:creator>
+   </cc:Work>
+  </rdf:RDF>
+ </metadata>
+ <defs>
+  <style type="text/css">*{stroke-linejoin: round; stroke-linecap: butt}</style>
+ </defs>
+ <g id="figure_1">
+  <g id="patch_1">
+   <path d="M 0 216 
+L 324 216 
+L 324 0 
+L 0 0 
+z
+" style="fill: #ffffff"/>
+  </g>
+  <g id="axes_1">
+   <g id="patch_2">
+    <path d="M 42.999859 191.1594 
+L 311.191272 191.1594 
+L 311.191272 18.686116 
+L 42.999859 18.686116 
+z
+" style="fill: #ffffff"/>
+   </g>
+   <g id="matplotlib.axis_1">
+    <g id="xtick_1">
+     <g id="line2d_1">
+      <defs>
+       <path id="m70dc44fab6" d="M 0 0 
+L 0 3.5 
+" style="stroke: #000000; stroke-width: 0.8"/>
+      </defs>
+      <g>
+       <use xlink:href="#m70dc44fab6" x="57.46715" y="191.1594" style="stroke: #000000; stroke-width: 0.8"/>
+      </g>
+     </g>
+     <g id="text_1">
+      <!-- $\log \gamma/\omega$ -->
+      <g transform="translate(35.897121 208.620172) scale(0.14 -0.14)">
+       <defs>
+        <path id="CMR17-6c" d="M 979 4416 
+L 218 4345 
+L 218 4179 
+C 595 4179 653 4141 653 3835 
+L 653 439 
+C 653 198 627 166 218 166 
+L 218 0 
+C 371 12 653 12 813 12 
+C 979 12 1261 12 1414 0 
+L 1414 166 
+C 1005 166 979 191 979 439 
+L 979 4416 
+z
+" transform="scale(0.015625)"/>
+        <path id="CMR17-6f" d="M 2758 1356 
+C 2758 2176 2163 2816 1466 2816 
+C 768 2816 173 2176 173 1356 
+C 173 550 768 -64 1466 -64 
+C 2163 -64 2758 550 2758 1356 
+z
+M 1466 51 
+C 1165 51 909 230 762 480 
+C 602 768 582 1126 582 1408 
+C 582 1676 595 2009 762 2297 
+C 890 2508 1139 2713 1466 2713 
+C 1754 2713 1997 2553 2150 2329 
+C 2349 2028 2349 1606 2349 1408 
+C 2349 1158 2336 774 2163 467 
+C 1984 172 1709 51 1466 51 
+z
+" transform="scale(0.015625)"/>
+        <path id="CMR17-67" d="M 710 1165 
+C 832 1068 1043 960 1299 960 
+C 1805 960 2240 1359 2240 1895 
+C 2240 2063 2189 2321 1997 2521 
+C 2176 2713 2438 2777 2586 2777 
+C 2611 2777 2650 2777 2682 2758 
+C 2656 2751 2598 2726 2598 2623 
+C 2598 2540 2656 2483 2739 2483 
+C 2835 2483 2886 2547 2886 2630 
+C 2886 2751 2790 2880 2586 2880 
+C 2330 2880 2106 2758 1926 2591 
+C 1734 2764 1504 2828 1299 2828 
+C 794 2828 358 2431 358 1895 
+C 358 1527 570 1294 634 1230 
+C 442 1004 442 742 442 710 
+C 442 544 506 300 723 166 
+C 390 82 128 -184 128 -517 
+C 128 -996 736 -1344 1466 -1344 
+C 2170 -1344 2803 -1009 2803 -510 
+C 2803 384 1856 384 1363 384 
+C 1216 384 954 384 922 390 
+C 723 422 589 601 589 825 
+C 589 883 589 1024 710 1165 
+z
+M 1299 1068 
+C 736 1068 736 1766 736 1895 
+C 736 2024 736 2719 1299 2719 
+C 1862 2719 1862 2024 1862 1895 
+C 1862 1766 1862 1068 1299 1068 
+z
+M 1466 -1236 
+C 826 -1236 384 -883 384 -517 
+C 384 -311 493 -118 634 -11 
+C 794 102 858 102 1293 102 
+C 1818 102 2547 102 2547 -517 
+C 2547 -883 2106 -1236 1466 -1236 
+z
+" transform="scale(0.015625)"/>
+        <path id="CMMI12-d" d="M 2419 785 
+C 2406 1097 2394 1586 2150 2158 
+C 2022 2476 1805 2816 1338 2816 
+C 550 2816 122 1815 122 1649 
+C 122 1592 166 1592 186 1592 
+C 243 1592 243 1605 275 1688 
+C 410 2081 819 2393 1261 2393 
+C 2150 2393 2278 1408 2278 779 
+C 2278 378 2234 245 2195 118 
+C 2074 -276 1862 -1064 1862 -1242 
+C 1862 -1293 1882 -1351 1933 -1351 
+C 2029 -1351 2086 -1140 2157 -886 
+C 2310 -327 2349 -47 2381 207 
+C 2400 360 2765 1409 3270 2407 
+C 3315 2509 3405 2681 3405 2700 
+C 3405 2707 3398 2752 3341 2752 
+C 3328 2752 3296 2752 3283 2726 
+C 3270 2713 3046 2280 2854 1848 
+C 2758 1630 2630 1344 2419 785 
+z
+" transform="scale(0.015625)"/>
+        <path id="CMMI12-3d" d="M 2746 4563 
+C 2746 4569 2784 4665 2784 4678 
+C 2784 4755 2720 4800 2669 4800 
+C 2637 4800 2579 4800 2528 4659 
+L 384 -1364 
+C 384 -1370 346 -1466 346 -1479 
+C 346 -1556 410 -1600 461 -1600 
+C 499 -1600 557 -1594 602 -1460 
+L 2746 4563 
+z
+" transform="scale(0.015625)"/>
+        <path id="CMMI12-21" d="M 3802 2406 
+C 3802 2592 3750 2828 3526 2828 
+C 3398 2828 3251 2668 3251 2540 
+C 3251 2483 3277 2444 3328 2387 
+C 3424 2278 3546 2105 3546 1804 
+C 3546 1574 3405 1209 3302 1011 
+C 3123 659 2829 358 2496 358 
+C 2093 358 1939 614 1869 972 
+C 1939 1139 2086 1555 2086 1721 
+C 2086 1792 2061 1849 1978 1849 
+C 1933 1849 1882 1824 1850 1772 
+C 1760 1632 1677 1126 1683 992 
+C 1562 755 1216 358 806 358 
+C 378 358 262 736 262 1100 
+C 262 1766 678 2348 794 2508 
+C 858 2604 902 2668 902 2681 
+C 902 2726 877 2796 819 2796 
+C 717 2796 685 2713 634 2636 
+C 307 2131 77 1420 77 806 
+C 77 409 224 -64 704 -64 
+C 1235 -64 1568 390 1702 633 
+C 1754 275 1946 -64 2413 -64 
+C 2899 -64 3206 364 3437 883 
+C 3603 1254 3802 2054 3802 2406 
+z
+" transform="scale(0.015625)"/>
+       </defs>
+       <use xlink:href="#CMR17-6c" transform="scale(0.996264)"/>
+       <use xlink:href="#CMR17-6f" transform="translate(24.871058 0) scale(0.996264)"/>
+       <use xlink:href="#CMR17-67" transform="translate(70.561536 0) scale(0.996264)"/>
+       <use xlink:href="#CMMI12-d" transform="translate(134.157584 0) scale(0.996264)"/>
+       <use xlink:href="#CMMI12-3d" transform="translate(190.176152 0) scale(0.996264)"/>
+       <use xlink:href="#CMMI12-21" transform="translate(238.951071 0) scale(0.996264)"/>
+      </g>
+     </g>
+    </g>
+    <g id="xtick_2">
+     <g id="line2d_2">
+      <g>
+       <use xlink:href="#m70dc44fab6" x="296.672051" y="191.1594" style="stroke: #000000; stroke-width: 0.8"/>
+      </g>
+     </g>
+     <g id="text_2">
+      <!-- $\log \gamma^2/\omega$ -->
+      <g transform="translate(272.344342 209.512836) scale(0.14 -0.14)">
+       <defs>
+        <path id="CMR17-32" d="M 2669 990 
+L 2554 990 
+C 2490 537 2438 460 2413 422 
+C 2381 371 1920 371 1830 371 
+L 602 371 
+C 832 620 1280 1073 1824 1596 
+C 2214 1966 2669 2400 2669 3033 
+C 2669 3788 2067 4224 1395 4224 
+C 691 4224 262 3603 262 3027 
+C 262 2777 448 2745 525 2745 
+C 589 2745 781 2783 781 3007 
+C 781 3206 614 3264 525 3264 
+C 486 3264 448 3257 422 3244 
+C 544 3788 915 4057 1306 4057 
+C 1862 4057 2227 3616 2227 3033 
+C 2227 2477 1901 1998 1536 1583 
+L 262 147 
+L 262 0 
+L 2515 0 
+L 2669 990 
+z
+" transform="scale(0.015625)"/>
+       </defs>
+       <use xlink:href="#CMR17-6c" transform="scale(0.996264)"/>
+       <use xlink:href="#CMR17-6f" transform="translate(24.871058 0) scale(0.996264)"/>
+       <use xlink:href="#CMR17-67" transform="translate(70.561536 0) scale(0.996264)"/>
+       <use xlink:href="#CMMI12-d" transform="translate(134.157584 0) scale(0.996264)"/>
+       <use xlink:href="#CMR17-32" transform="translate(190.176152 36.153639) scale(0.697382)"/>
+       <use xlink:href="#CMMI12-3d" transform="translate(222.657466 0) scale(0.996264)"/>
+       <use xlink:href="#CMMI12-21" transform="translate(271.432385 0) scale(0.996264)"/>
+      </g>
+     </g>
+    </g>
+   </g>
+   <g id="matplotlib.axis_2">
+    <g id="ytick_1">
+     <g id="line2d_3">
+      <defs>
+       <path id="me14c4c833d" d="M 0 0 
+L -3.5 0 
+" style="stroke: #000000; stroke-width: 0.8"/>
+      </defs>
+      <g>
+       <use xlink:href="#me14c4c833d" x="42.999859" y="186.368475" style="stroke: #000000; stroke-width: 0.8"/>
+      </g>
+     </g>
+     <g id="text_3">
+      <!-- $0$ -->
+      <g transform="translate(31.018524 189.827725) scale(0.1 -0.1)">
+       <defs>
+        <path id="CMR17-30" d="M 2688 2038 
+C 2688 2430 2682 3099 2413 3613 
+C 2176 4063 1798 4224 1466 4224 
+C 1158 4224 768 4082 525 3620 
+C 269 3137 243 2539 243 2038 
+C 243 1671 250 1112 448 623 
+C 723 -39 1216 -128 1466 -128 
+C 1760 -128 2208 -7 2470 604 
+C 2662 1048 2688 1568 2688 2038 
+z
+M 1466 -26 
+C 1056 -26 813 328 723 816 
+C 653 1196 653 1749 653 2109 
+C 653 2604 653 3015 736 3407 
+C 858 3954 1216 4121 1466 4121 
+C 1728 4121 2067 3947 2189 3420 
+C 2272 3054 2278 2623 2278 2109 
+C 2278 1691 2278 1176 2202 797 
+C 2067 96 1690 -26 1466 -26 
+z
+" transform="scale(0.015625)"/>
+       </defs>
+       <use xlink:href="#CMR17-30" transform="scale(0.996264)"/>
+      </g>
+     </g>
+    </g>
+    <g id="ytick_2">
+     <g id="line2d_4">
+      <g>
+       <use xlink:href="#me14c4c833d" x="42.999859" y="138.45923" style="stroke: #000000; stroke-width: 0.8"/>
+      </g>
+     </g>
+     <g id="text_4">
+      <!-- $0.1$ -->
+      <g transform="translate(23.26978 141.918479) scale(0.1 -0.1)">
+       <defs>
+        <path id="CMMI12-3a" d="M 1178 307 
+C 1178 492 1024 620 870 620 
+C 685 620 557 467 557 313 
+C 557 128 710 0 864 0 
+C 1050 0 1178 153 1178 307 
+z
+" transform="scale(0.015625)"/>
+        <path id="CMR17-31" d="M 1702 4083 
+C 1702 4217 1696 4224 1606 4224 
+C 1357 3927 979 3833 621 3820 
+C 602 3820 570 3820 563 3808 
+C 557 3795 557 3782 557 3648 
+C 755 3648 1088 3686 1344 3839 
+L 1344 467 
+C 1344 243 1331 166 781 166 
+L 589 166 
+L 589 0 
+C 896 6 1216 12 1523 12 
+C 1830 12 2150 6 2458 0 
+L 2458 166 
+L 2266 166 
+C 1715 166 1702 236 1702 467 
+L 1702 4083 
+z
+" transform="scale(0.015625)"/>
+       </defs>
+       <use xlink:href="#CMR17-30" transform="scale(0.996264)"/>
+       <use xlink:href="#CMMI12-3a" transform="translate(45.690477 0) scale(0.996264)"/>
+       <use xlink:href="#CMR17-31" transform="translate(72.787654 0) scale(0.996264)"/>
+      </g>
+     </g>
+    </g>
+    <g id="ytick_3">
+     <g id="line2d_5">
+      <g>
+       <use xlink:href="#me14c4c833d" x="42.999859" y="90.549985" style="stroke: #000000; stroke-width: 0.8"/>
+      </g>
+     </g>
+     <g id="text_5">
+      <!-- $0.2$ -->
+      <g transform="translate(23.26978 94.009234) scale(0.1 -0.1)">
+       <use xlink:href="#CMR17-30" transform="scale(0.996264)"/>
+       <use xlink:href="#CMMI12-3a" transform="translate(45.690477 0) scale(0.996264)"/>
+       <use xlink:href="#CMR17-32" transform="translate(72.787654 0) scale(0.996264)"/>
+      </g>
+     </g>
+    </g>
+    <g id="ytick_4">
+     <g id="line2d_6">
+      <g>
+       <use xlink:href="#me14c4c833d" x="42.999859" y="42.640739" style="stroke: #000000; stroke-width: 0.8"/>
+      </g>
+     </g>
+     <g id="text_6">
+      <!-- $0.3$ -->
+      <g transform="translate(23.26978 46.099988) scale(0.1 -0.1)">
+       <defs>
+        <path id="CMR17-33" d="M 1414 2176 
+C 1984 2176 2234 1673 2234 1094 
+C 2234 322 1824 25 1453 25 
+C 1114 25 563 193 390 691 
+C 422 678 454 678 486 678 
+C 640 678 755 780 755 947 
+C 755 1132 614 1216 486 1216 
+C 378 1216 211 1164 211 927 
+C 211 335 787 -128 1466 -128 
+C 2176 -128 2720 432 2720 1087 
+C 2720 1718 2208 2176 1600 2246 
+C 2086 2347 2554 2776 2554 3353 
+C 2554 3856 2048 4224 1472 4224 
+C 890 4224 378 3862 378 3347 
+C 378 3123 544 3084 627 3084 
+C 762 3084 877 3167 877 3334 
+C 877 3500 762 3584 627 3584 
+C 602 3584 570 3584 544 3571 
+C 730 3999 1235 4076 1459 4076 
+C 1683 4076 2106 3966 2106 3347 
+C 2106 3167 2080 2851 1862 2574 
+C 1670 2329 1453 2316 1242 2297 
+C 1210 2297 1062 2284 1037 2284 
+C 992 2278 966 2272 966 2227 
+C 966 2182 973 2176 1101 2176 
+L 1414 2176 
+z
+" transform="scale(0.015625)"/>
+       </defs>
+       <use xlink:href="#CMR17-30" transform="scale(0.996264)"/>
+       <use xlink:href="#CMMI12-3a" transform="translate(45.690477 0) scale(0.996264)"/>
+       <use xlink:href="#CMR17-33" transform="translate(72.787654 0) scale(0.996264)"/>
+      </g>
+     </g>
+    </g>
+    <g id="text_7">
+     <!-- $\dot{\cal F}/4aDc_0$ -->
+     <g transform="translate(15.782856 132.347488) rotate(-90) scale(0.14 -0.14)">
+      <defs>
+       <path id="CMR17-5f" d="M 1056 3961 
+C 1056 4115 934 4224 800 4224 
+C 646 4224 538 4102 538 3961 
+C 538 3807 659 3699 794 3699 
+C 947 3699 1056 3820 1056 3961 
+z
+" transform="scale(0.015625)"/>
+       <path id="CMSY10-46" d="M 5312 4102 
+C 5312 4396 4819 4352 4621 4352 
+L 2208 4352 
+C 1888 4352 1318 4166 1216 3820 
+C 1229 3782 1242 3775 1280 3775 
+C 1421 3775 1613 3891 1702 3987 
+C 1901 3987 2093 3999 2291 3999 
+L 2688 3999 
+C 2688 3999 2662 3884 2662 3878 
+C 2413 2707 2035 1721 1754 1112 
+C 1715 1031 1370 243 1280 166 
+C 998 166 787 320 672 569 
+C 653 608 653 633 608 633 
+C 461 633 109 428 109 320 
+C 109 307 115 294 122 281 
+C 237 -20 525 -192 838 -192 
+C 1165 -192 1542 44 1747 281 
+C 1958 524 2381 1547 2547 1920 
+L 3782 1920 
+C 3776 1913 3770 1907 3770 1900 
+C 3770 1876 3808 1857 3834 1857 
+C 3974 1857 4339 2035 4339 2233 
+C 4339 2278 4294 2272 4218 2272 
+L 2682 2272 
+C 2848 2847 3066 3411 3181 3999 
+L 4026 3999 
+C 4186 3999 4634 4031 4749 3891 
+C 4762 3852 4742 3788 4762 3756 
+C 4774 3743 4794 3737 4813 3737 
+C 4966 3737 5312 3929 5312 4102 
+z
+" transform="scale(0.015625)"/>
+       <path id="CMR17-34" d="M 2150 4147 
+C 2150 4281 2144 4288 2029 4288 
+L 128 1254 
+L 128 1088 
+L 1779 1088 
+L 1779 460 
+C 1779 230 1766 166 1318 166 
+L 1197 166 
+L 1197 0 
+C 1402 12 1747 12 1965 12 
+C 2182 12 2528 12 2733 0 
+L 2733 166 
+L 2611 166 
+C 2163 166 2150 230 2150 460 
+L 2150 1088 
+L 2803 1088 
+L 2803 1254 
+L 2150 1254 
+L 2150 4147 
+z
+M 1798 3723 
+L 1798 1254 
+L 256 1254 
+L 1798 3723 
+z
+" transform="scale(0.015625)"/>
+       <path id="CMMI12-61" d="M 1926 759 
+C 1894 651 1894 638 1805 517 
+C 1664 338 1382 64 1082 64 
+C 819 64 672 300 672 676 
+C 672 1028 870 1743 992 2011 
+C 1210 2458 1510 2687 1760 2687 
+C 2182 2687 2266 2164 2266 2113 
+C 2266 2107 2246 2024 2240 2011 
+L 1926 759 
+z
+M 2336 2394 
+C 2266 2560 2093 2816 1760 2816 
+C 1037 2816 256 1883 256 938 
+C 256 306 627 -64 1062 -64 
+C 1414 -64 1715 210 1894 421 
+C 1958 44 2259 -64 2451 -64 
+C 2643 -64 2797 51 2912 280 
+C 3014 496 3104 885 3104 910 
+C 3104 942 3078 968 3040 968 
+C 2982 968 2976 936 2950 840 
+C 2854 465 2733 64 2470 64 
+C 2285 64 2272 229 2272 356 
+C 2272 503 2291 573 2349 821 
+C 2394 980 2426 1120 2477 1305 
+C 2714 2260 2771 2489 2771 2528 
+C 2771 2617 2701 2688 2605 2688 
+C 2400 2688 2349 2464 2336 2388 
+L 2336 2394 
+z
+" transform="scale(0.015625)"/>
+       <path id="CMMI12-44" d="M 1005 472 
+C 947 249 934 185 486 185 
+C 365 185 301 185 301 70 
+C 301 0 339 0 467 0 
+L 2496 0 
+C 3789 0 5050 1332 5050 2752 
+C 5050 3669 4499 4352 3584 4352 
+L 1530 4352 
+C 1408 4352 1350 4352 1350 4230 
+C 1350 4166 1408 4166 1504 4166 
+C 1894 4166 1894 4115 1894 4045 
+C 1894 4032 1894 3994 1869 3898 
+L 1005 472 
+z
+M 2355 3917 
+C 2413 4153 2438 4166 2688 4166 
+L 3392 4166 
+C 3994 4166 4544 3841 4544 2962 
+C 4544 2644 4416 1535 3795 835 
+C 3616 625 3130 185 2394 185 
+L 1664 185 
+C 1574 185 1562 185 1523 191 
+C 1453 198 1446 211 1446 262 
+C 1446 306 1459 344 1472 402 
+L 2355 3917 
+z
+" transform="scale(0.015625)"/>
+       <path id="CMMI12-63" d="M 2502 2432 
+C 2381 2432 2323 2432 2234 2355 
+C 2195 2323 2125 2227 2125 2124 
+C 2125 1996 2221 1919 2342 1919 
+C 2496 1919 2669 2047 2669 2303 
+C 2669 2591 2374 2816 1933 2816 
+C 1094 2816 256 1932 256 1011 
+C 256 446 602 -64 1254 -64 
+C 2125 -64 2675 622 2675 706 
+C 2675 745 2637 777 2611 777 
+C 2592 777 2586 771 2528 712 
+C 2118 161 1510 64 1267 64 
+C 826 64 685 453 685 777 
+C 685 1004 794 1634 1024 2073 
+C 1190 2374 1536 2687 1939 2687 
+C 2022 2687 2374 2676 2502 2432 
+z
+" transform="scale(0.015625)"/>
+      </defs>
+      <use xlink:href="#CMR17-5f" transform="translate(39.384307 25.189642) scale(0.996264)"/>
+      <use xlink:href="#CMSY10-46" transform="scale(0.996264)"/>
+      <use xlink:href="#CMMI12-3d" transform="translate(81.49978 0) scale(0.996264)"/>
+      <use xlink:href="#CMR17-34" transform="translate(130.274699 0) scale(0.996264)"/>
+      <use xlink:href="#CMMI12-61" transform="translate(175.965176 0) scale(0.996264)"/>
+      <use xlink:href="#CMMI12-44" transform="translate(227.173034 0) scale(0.996264)"/>
+      <use xlink:href="#CMMI12-63" transform="translate(310.876982 0) scale(0.996264)"/>
+      <use xlink:href="#CMR17-30" transform="translate(352.860215 -14.943915) scale(0.697382)"/>
+     </g>
+    </g>
+   </g>
+   <g id="line2d_7"/>
+   <g id="line2d_8"/>
+   <g id="line2d_9"/>
+   <g id="line2d_10"/>
+   <g id="line2d_11"/>
+   <g id="line2d_12"/>
+   <g id="line2d_13"/>
+   <g id="line2d_14"/>
+   <g id="line2d_15"/>
+   <g id="line2d_16"/>
+   <g id="line2d_17"/>
+   <g id="line2d_18"/>
+   <g id="line2d_19"/>
+   <g id="line2d_20"/>
+   <g id="line2d_21"/>
+   <g id="line2d_22"/>
+   <g id="line2d_23"/>
+   <g id="line2d_24"/>
+   <g id="line2d_25"/>
+   <g id="line2d_26"/>
+   <g id="line2d_27"/>
+   <g id="line2d_28"/>
+   <g id="line2d_29"/>
+   <g id="line2d_30"/>
+   <g id="line2d_31"/>
+   <g id="line2d_32"/>
+   <g id="line2d_33"/>
+   <g id="line2d_34"/>
+   <g id="line2d_35"/>
+   <g id="line2d_36"/>
+   <g id="line2d_37"/>
+   <g id="line2d_38"/>
+   <g id="line2d_39"/>
+   <g id="line2d_40"/>
+   <g id="line2d_41"/>
+   <g id="line2d_42"/>
+   <g id="line2d_43"/>
+   <g id="line2d_44"/>
+   <g id="line2d_45"/>
+   <g id="line2d_46"/>
+   <g id="line2d_47"/>
+   <g id="line2d_48"/>
+   <g id="line2d_49"/>
+   <g id="line2d_50"/>
+   <g id="line2d_51"/>
+   <g id="line2d_52"/>
+   <g id="line2d_53"/>
+   <g id="line2d_54"/>
+   <g id="line2d_55"/>
+   <g id="line2d_56"/>
+   <g id="line2d_57"/>
+   <g id="line2d_58"/>
+   <g id="line2d_59"/>
+   <g id="line2d_60"/>
+   <g id="line2d_61"/>
+   <g id="line2d_62"/>
+   <g id="line2d_63"/>
+   <g id="line2d_64"/>
+   <g id="line2d_65"/>
+   <g id="line2d_66"/>
+   <g id="line2d_67"/>
+   <g id="line2d_68"/>
+   <g id="line2d_69"/>
+   <g id="line2d_70"/>
+   <g id="line2d_71"/>
+   <g id="line2d_72"/>
+   <g id="line2d_73"/>
+   <g id="line2d_74"/>
+   <g id="line2d_75"/>
+   <g id="line2d_76"/>
+   <g id="line2d_77"/>
+   <g id="line2d_78"/>
+   <g id="line2d_79"/>
+   <g id="line2d_80"/>
+   <g id="line2d_81"/>
+   <g id="line2d_82"/>
+   <g id="line2d_83"/>
+   <g id="line2d_84"/>
+   <g id="line2d_85"/>
+   <g id="line2d_86"/>
+   <g id="line2d_87"/>
+   <g id="line2d_88"/>
+   <g id="line2d_89"/>
+   <g id="line2d_90"/>
+   <g id="line2d_91"/>
+   <g id="line2d_92"/>
+   <g id="line2d_93"/>
+   <g id="line2d_94"/>
+   <g id="line2d_95"/>
+   <g id="line2d_96"/>
+   <g id="line2d_97"/>
+   <g id="line2d_98"/>
+   <g id="line2d_99"/>
+   <g id="line2d_100"/>
+   <g id="line2d_101"/>
+   <g id="line2d_102"/>
+   <g id="line2d_103"/>
+   <g id="line2d_104"/>
+   <g id="line2d_105"/>
+   <g id="line2d_106"/>
+   <g id="line2d_107"/>
+   <g id="line2d_108"/>
+   <g id="line2d_109"/>
+   <g id="line2d_110"/>
+   <g id="line2d_111"/>
+   <g id="line2d_112"/>
+   <g id="line2d_113"/>
+   <g id="line2d_114"/>
+   <g id="line2d_115"/>
+   <g id="line2d_116"/>
+   <g id="line2d_117"/>
+   <g id="line2d_118"/>
+   <g id="line2d_119"/>
+   <g id="line2d_120"/>
+   <g id="line2d_121"/>
+   <g id="line2d_122"/>
+   <g id="line2d_123"/>
+   <g id="line2d_124"/>
+   <g id="line2d_125"/>
+   <g id="line2d_126"/>
+   <g id="line2d_127"/>
+   <g id="line2d_128"/>
+   <g id="line2d_129"/>
+   <g id="line2d_130"/>
+   <g id="line2d_131"/>
+   <g id="line2d_132"/>
+   <g id="line2d_133"/>
+   <g id="line2d_134"/>
+   <g id="line2d_135"/>
+   <g id="line2d_136"/>
+   <g id="line2d_137"/>
+   <g id="line2d_138"/>
+   <g id="line2d_139"/>
+   <g id="line2d_140"/>
+   <g id="line2d_141"/>
+   <g id="line2d_142"/>
+   <g id="line2d_143"/>
+   <g id="line2d_144"/>
+   <g id="line2d_145"/>
+   <g id="line2d_146"/>
+   <g id="line2d_147"/>
+   <g id="line2d_148"/>
+   <g id="line2d_149"/>
+   <g id="line2d_150"/>
+   <g id="line2d_151"/>
+   <g id="line2d_152"/>
+   <g id="line2d_153"/>
+   <g id="line2d_154"/>
+   <g id="line2d_155"/>
+   <g id="line2d_156"/>
+   <g id="line2d_157"/>
+   <g id="line2d_158"/>
+   <g id="line2d_159"/>
+   <g id="line2d_160"/>
+   <g id="line2d_161"/>
+   <g id="line2d_162"/>
+   <g id="line2d_163"/>
+   <g id="line2d_164"/>
+   <g id="line2d_165"/>
+   <g id="line2d_166"/>
+   <g id="line2d_167"/>
+   <g id="line2d_168"/>
+   <g id="line2d_169"/>
+   <g id="line2d_170"/>
+   <g id="line2d_171"/>
+   <g id="line2d_172"/>
+   <g id="line2d_173"/>
+   <g id="line2d_174"/>
+   <g id="line2d_175"/>
+   <g id="line2d_176"/>
+   <g id="line2d_177"/>
+   <g id="line2d_178"/>
+   <g id="line2d_179"/>
+   <g id="line2d_180"/>
+   <g id="line2d_181"/>
+   <g id="line2d_182"/>
+   <g id="line2d_183"/>
+   <g id="line2d_184"/>
+   <g id="line2d_185"/>
+   <g id="line2d_186"/>
+   <g id="line2d_187"/>
+   <g id="line2d_188"/>
+   <g id="line2d_189"/>
+   <g id="line2d_190"/>
+   <g id="line2d_191"/>
+   <g id="line2d_192"/>
+   <g id="line2d_193"/>
+   <g id="line2d_194"/>
+   <g id="line2d_195"/>
+   <g id="line2d_196"/>
+   <g id="line2d_197"/>
+   <g id="line2d_198"/>
+   <g id="line2d_199"/>
+   <g id="line2d_200"/>
+   <g id="line2d_201"/>
+   <g id="line2d_202"/>
+   <g id="line2d_203"/>
+   <g id="line2d_204"/>
+   <g id="line2d_205"/>
+   <g id="line2d_206"/>
+   <g id="line2d_207"/>
+   <g id="line2d_208"/>
+   <g id="line2d_209"/>
+   <g id="line2d_210"/>
+   <g id="line2d_211"/>
+   <g id="line2d_212"/>
+   <g id="line2d_213"/>
+   <g id="line2d_214"/>
+   <g id="line2d_215"/>
+   <g id="line2d_216"/>
+   <g id="line2d_217"/>
+   <g id="line2d_218"/>
+   <g id="line2d_219"/>
+   <g id="line2d_220"/>
+   <g id="line2d_221"/>
+   <g id="line2d_222"/>
+   <g id="line2d_223"/>
+   <g id="line2d_224"/>
+   <g id="line2d_225"/>
+   <g id="line2d_226"/>
+   <g id="line2d_227"/>
+   <g id="line2d_228"/>
+   <g id="line2d_229"/>
+   <g id="line2d_230"/>
+   <g id="line2d_231"/>
+   <g id="line2d_232"/>
+   <g id="line2d_233"/>
+   <g id="line2d_234"/>
+   <g id="line2d_235"/>
+   <g id="line2d_236"/>
+   <g id="line2d_237"/>
+   <g id="line2d_238"/>
+   <g id="line2d_239"/>
+   <g id="line2d_240"/>
+   <g id="line2d_241"/>
+   <g id="line2d_242"/>
+   <g id="line2d_243"/>
+   <g id="line2d_244"/>
+   <g id="line2d_245"/>
+   <g id="line2d_246"/>
+   <g id="line2d_247"/>
+   <g id="line2d_248"/>
+   <g id="line2d_249"/>
+   <g id="line2d_250"/>
+   <g id="line2d_251"/>
+   <g id="line2d_252"/>
+   <g id="line2d_253"/>
+   <g id="line2d_254"/>
+   <g id="line2d_255"/>
+   <g id="line2d_256"/>
+   <g id="line2d_257"/>
+   <g id="line2d_258"/>
+   <g id="line2d_259"/>
+   <g id="line2d_260"/>
+   <g id="line2d_261"/>
+   <g id="line2d_262"/>
+   <g id="line2d_263"/>
+   <g id="line2d_264"/>
+   <g id="line2d_265"/>
+   <g id="line2d_266"/>
+   <g id="line2d_267"/>
+   <g id="line2d_268"/>
+   <g id="line2d_269"/>
+   <g id="line2d_270"/>
+   <g id="line2d_271"/>
+   <g id="line2d_272"/>
+   <g id="line2d_273"/>
+   <g id="line2d_274"/>
+   <g id="line2d_275"/>
+   <g id="line2d_276"/>
+   <g id="line2d_277"/>
+   <g id="line2d_278"/>
+   <g id="line2d_279"/>
+   <g id="line2d_280"/>
+   <g id="line2d_281"/>
+   <g id="line2d_282"/>
+   <g id="line2d_283"/>
+   <g id="line2d_284"/>
+   <g id="line2d_285"/>
+   <g id="line2d_286"/>
+   <g id="line2d_287"/>
+   <g id="line2d_288"/>
+   <g id="line2d_289"/>
+   <g id="line2d_290"/>
+   <g id="line2d_291"/>
+   <g id="line2d_292"/>
+   <g id="line2d_293"/>
+   <g id="line2d_294"/>
+   <g id="line2d_295"/>
+   <g id="line2d_296"/>
+   <g id="line2d_297"/>
+   <g id="line2d_298"/>
+   <g id="line2d_299"/>
+   <g id="line2d_300"/>
+   <g id="line2d_301"/>
+   <g id="line2d_302"/>
+   <g id="line2d_303"/>
+   <g id="line2d_304"/>
+   <g id="line2d_305"/>
+   <g id="line2d_306"/>
+   <g id="line2d_307"/>
+   <g id="line2d_308"/>
+   <g id="line2d_309"/>
+   <g id="line2d_310"/>
+   <g id="line2d_311"/>
+   <g id="line2d_312"/>
+   <g id="line2d_313"/>
+   <g id="line2d_314"/>
+   <g id="line2d_315"/>
+   <g id="line2d_316"/>
+   <g id="line2d_317"/>
+   <g id="line2d_318"/>
+   <g id="line2d_319"/>
+   <g id="line2d_320"/>
+   <g id="line2d_321"/>
+   <g id="line2d_322"/>
+   <g id="line2d_323"/>
+   <g id="line2d_324"/>
+   <g id="line2d_325"/>
+   <g id="line2d_326"/>
+   <g id="line2d_327"/>
+   <g id="line2d_328"/>
+   <g id="line2d_329"/>
+   <g id="line2d_330"/>
+   <g id="line2d_331"/>
+   <g id="line2d_332"/>
+   <g id="line2d_333"/>
+   <g id="line2d_334"/>
+   <g id="line2d_335"/>
+   <g id="line2d_336"/>
+   <g id="line2d_337"/>
+   <g id="line2d_338"/>
+   <g id="line2d_339"/>
+   <g id="line2d_340"/>
+   <g id="line2d_341"/>
+   <g id="line2d_342"/>
+   <g id="line2d_343"/>
+   <g id="line2d_344"/>
+   <g id="line2d_345"/>
+   <g id="line2d_346"/>
+   <g id="line2d_347"/>
+   <g id="line2d_348"/>
+   <g id="line2d_349"/>
+   <g id="line2d_350"/>
+   <g id="line2d_351"/>
+   <g id="line2d_352"/>
+   <g id="line2d_353"/>
+   <g id="line2d_354"/>
+   <g id="line2d_355"/>
+   <g id="line2d_356"/>
+   <g id="line2d_357"/>
+   <g id="line2d_358"/>
+   <g id="line2d_359"/>
+   <g id="line2d_360"/>
+   <g id="line2d_361"/>
+   <g id="line2d_362"/>
+   <g id="line2d_363"/>
+   <g id="line2d_364"/>
+   <g id="line2d_365"/>
+   <g id="line2d_366"/>
+   <g id="line2d_367"/>
+   <g id="line2d_368"/>
+   <g id="line2d_369"/>
+   <g id="line2d_370"/>
+   <g id="line2d_371"/>
+   <g id="line2d_372"/>
+   <g id="line2d_373"/>
+   <g id="line2d_374"/>
+   <g id="line2d_375"/>
+   <g id="line2d_376"/>
+   <g id="line2d_377"/>
+   <g id="line2d_378"/>
+   <g id="line2d_379"/>
+   <g id="line2d_380"/>
+   <g id="line2d_381"/>
+   <g id="line2d_382"/>
+   <g id="line2d_383"/>
+   <g id="line2d_384"/>
+   <g id="line2d_385"/>
+   <g id="line2d_386"/>
+   <g id="line2d_387"/>
+   <g id="line2d_388"/>
+   <g id="line2d_389"/>
+   <g id="line2d_390"/>
+   <g id="line2d_391"/>
+   <g id="line2d_392"/>
+   <g id="line2d_393"/>
+   <g id="line2d_394"/>
+   <g id="line2d_395"/>
+   <g id="line2d_396"/>
+   <g id="line2d_397"/>
+   <g id="line2d_398"/>
+   <g id="line2d_399"/>
+   <g id="line2d_400"/>
+   <g id="line2d_401"/>
+   <g id="line2d_402"/>
+   <g id="line2d_403"/>
+   <g id="line2d_404"/>
+   <g id="line2d_405"/>
+   <g id="line2d_406"/>
+   <g id="line2d_407"/>
+   <g id="line2d_408"/>
+   <g id="line2d_409"/>
+   <g id="line2d_410"/>
+   <g id="line2d_411"/>
+   <g id="line2d_412"/>
+   <g id="line2d_413"/>
+   <g id="line2d_414"/>
+   <g id="line2d_415"/>
+   <g id="line2d_416"/>
+   <g id="line2d_417"/>
+   <g id="line2d_418"/>
+   <g id="line2d_419"/>
+   <g id="line2d_420"/>
+   <g id="line2d_421"/>
+   <g id="line2d_422"/>
+   <g id="line2d_423"/>
+   <g id="line2d_424"/>
+   <g id="line2d_425"/>
+   <g id="line2d_426"/>
+   <g id="line2d_427"/>
+   <g id="line2d_428"/>
+   <g id="line2d_429"/>
+   <g id="line2d_430"/>
+   <g id="line2d_431"/>
+   <g id="line2d_432"/>
+   <g id="line2d_433"/>
+   <g id="line2d_434"/>
+   <g id="line2d_435"/>
+   <g id="line2d_436"/>
+   <g id="line2d_437"/>
+   <g id="line2d_438"/>
+   <g id="line2d_439"/>
+   <g id="line2d_440"/>
+   <g id="line2d_441"/>
+   <g id="line2d_442"/>
+   <g id="line2d_443"/>
+   <g id="line2d_444"/>
+   <g id="line2d_445"/>
+   <g id="line2d_446"/>
+   <g id="line2d_447"/>
+   <g id="line2d_448"/>
+   <g id="line2d_449"/>
+   <g id="line2d_450"/>
+   <g id="line2d_451"/>
+   <g id="line2d_452"/>
+   <g id="line2d_453"/>
+   <g id="line2d_454"/>
+   <g id="line2d_455"/>
+   <g id="line2d_456"/>
+   <g id="line2d_457"/>
+   <g id="line2d_458"/>
+   <g id="line2d_459"/>
+   <g id="line2d_460"/>
+   <g id="line2d_461"/>
+   <g id="line2d_462"/>
+   <g id="line2d_463"/>
+   <g id="line2d_464"/>
+   <g id="line2d_465"/>
+   <g id="line2d_466"/>
+   <g id="line2d_467"/>
+   <g id="line2d_468"/>
+   <g id="line2d_469"/>
+   <g id="line2d_470"/>
+   <g id="line2d_471"/>
+   <g id="line2d_472"/>
+   <g id="line2d_473"/>
+   <g id="line2d_474"/>
+   <g id="line2d_475"/>
+   <g id="line2d_476"/>
+   <g id="line2d_477"/>
+   <g id="line2d_478"/>
+   <g id="line2d_479"/>
+   <g id="line2d_480"/>
+   <g id="line2d_481"/>
+   <g id="line2d_482"/>
+   <g id="line2d_483"/>
+   <g id="line2d_484"/>
+   <g id="line2d_485"/>
+   <g id="line2d_486"/>
+   <g id="line2d_487"/>
+   <g id="line2d_488"/>
+   <g id="line2d_489"/>
+   <g id="line2d_490"/>
+   <g id="line2d_491"/>
+   <g id="line2d_492"/>
+   <g id="line2d_493"/>
+   <g id="line2d_494"/>
+   <g id="line2d_495"/>
+   <g id="line2d_496"/>
+   <g id="line2d_497"/>
+   <g id="line2d_498"/>
+   <g id="line2d_499"/>
+   <g id="line2d_500"/>
+   <g id="line2d_501"/>
+   <g id="line2d_502"/>
+   <g id="line2d_503"/>
+   <g id="line2d_504"/>
+   <g id="line2d_505"/>
+   <g id="line2d_506"/>
+   <g id="line2d_507"/>
+   <g id="line2d_508"/>
+   <g id="line2d_509"/>
+   <g id="line2d_510"/>
+   <g id="line2d_511"/>
+   <g id="line2d_512"/>
+   <g id="line2d_513"/>
+   <g id="line2d_514"/>
+   <g id="line2d_515"/>
+   <g id="line2d_516"/>
+   <g id="line2d_517"/>
+   <g id="line2d_518"/>
+   <g id="line2d_519"/>
+   <g id="line2d_520"/>
+   <g id="line2d_521"/>
+   <g id="line2d_522"/>
+   <g id="line2d_523"/>
+   <g id="line2d_524"/>
+   <g id="line2d_525"/>
+   <g id="line2d_526"/>
+   <g id="line2d_527"/>
+   <g id="line2d_528"/>
+   <g id="line2d_529"/>
+   <g id="line2d_530"/>
+   <g id="line2d_531"/>
+   <g id="line2d_532"/>
+   <g id="line2d_533"/>
+   <g id="line2d_534"/>
+   <g id="line2d_535"/>
+   <g id="line2d_536"/>
+   <g id="line2d_537"/>
+   <g id="line2d_538"/>
+   <g id="line2d_539"/>
+   <g id="line2d_540"/>
+   <g id="line2d_541"/>
+   <g id="line2d_542"/>
+   <g id="line2d_543"/>
+   <g id="line2d_544"/>
+   <g id="line2d_545"/>
+   <g id="line2d_546"/>
+   <g id="line2d_547"/>
+   <g id="line2d_548"/>
+   <g id="line2d_549"/>
+   <g id="line2d_550"/>
+   <g id="line2d_551"/>
+   <g id="line2d_552"/>
+   <g id="line2d_553"/>
+   <g id="line2d_554"/>
+   <g id="line2d_555"/>
+   <g id="line2d_556"/>
+   <g id="line2d_557"/>
+   <g id="line2d_558"/>
+   <g id="line2d_559"/>
+   <g id="line2d_560"/>
+   <g id="line2d_561"/>
+   <g id="line2d_562"/>
+   <g id="line2d_563"/>
+   <g id="line2d_564"/>
+   <g id="line2d_565"/>
+   <g id="line2d_566"/>
+   <g id="line2d_567"/>
+   <g id="line2d_568"/>
+   <g id="line2d_569"/>
+   <g id="line2d_570"/>
+   <g id="line2d_571"/>
+   <g id="line2d_572"/>
+   <g id="line2d_573"/>
+   <g id="line2d_574"/>
+   <g id="line2d_575"/>
+   <g id="line2d_576"/>
+   <g id="line2d_577"/>
+   <g id="line2d_578"/>
+   <g id="line2d_579"/>
+   <g id="line2d_580"/>
+   <g id="line2d_581"/>
+   <g id="line2d_582"/>
+   <g id="line2d_583"/>
+   <g id="line2d_584"/>
+   <g id="line2d_585"/>
+   <g id="line2d_586"/>
+   <g id="line2d_587"/>
+   <g id="line2d_588"/>
+   <g id="line2d_589"/>
+   <g id="line2d_590"/>
+   <g id="line2d_591"/>
+   <g id="line2d_592"/>
+   <g id="line2d_593"/>
+   <g id="line2d_594"/>
+   <g id="line2d_595"/>
+   <g id="line2d_596"/>
+   <g id="line2d_597"/>
+   <g id="line2d_598"/>
+   <g id="line2d_599"/>
+   <g id="line2d_600"/>
+   <g id="line2d_601"/>
+   <g id="line2d_602"/>
+   <g id="line2d_603"/>
+   <g id="line2d_604"/>
+   <g id="line2d_605"/>
+   <g id="line2d_606"/>
+   <g id="line2d_607"/>
+   <g id="line2d_608"/>
+   <g id="line2d_609"/>
+   <g id="line2d_610"/>
+   <g id="line2d_611"/>
+   <g id="line2d_612"/>
+   <g id="line2d_613"/>
+   <g id="line2d_614"/>
+   <g id="line2d_615"/>
+   <g id="line2d_616"/>
+   <g id="line2d_617"/>
+   <g id="line2d_618"/>
+   <g id="line2d_619"/>
+   <g id="line2d_620"/>
+   <g id="line2d_621"/>
+   <g id="line2d_622"/>
+   <g id="line2d_623"/>
+   <g id="line2d_624"/>
+   <g id="line2d_625"/>
+   <g id="line2d_626"/>
+   <g id="line2d_627"/>
+   <g id="line2d_628"/>
+   <g id="line2d_629"/>
+   <g id="line2d_630"/>
+   <g id="line2d_631"/>
+   <g id="line2d_632"/>
+   <g id="line2d_633"/>
+   <g id="line2d_634"/>
+   <g id="line2d_635"/>
+   <g id="line2d_636"/>
+   <g id="line2d_637"/>
+   <g id="line2d_638"/>
+   <g id="line2d_639"/>
+   <g id="line2d_640"/>
+   <g id="line2d_641"/>
+   <g id="line2d_642"/>
+   <g id="line2d_643"/>
+   <g id="line2d_644"/>
+   <g id="line2d_645"/>
+   <g id="line2d_646"/>
+   <g id="line2d_647"/>
+   <g id="line2d_648"/>
+   <g id="line2d_649"/>
+   <g id="line2d_650"/>
+   <g id="line2d_651"/>
+   <g id="line2d_652"/>
+   <g id="line2d_653"/>
+   <g id="line2d_654"/>
+   <g id="line2d_655"/>
+   <g id="line2d_656"/>
+   <g id="line2d_657"/>
+   <g id="line2d_658"/>
+   <g id="line2d_659"/>
+   <g id="line2d_660"/>
+   <g id="line2d_661"/>
+   <g id="line2d_662"/>
+   <g id="line2d_663"/>
+   <g id="line2d_664"/>
+   <g id="line2d_665"/>
+   <g id="line2d_666"/>
+   <g id="line2d_667"/>
+   <g id="line2d_668"/>
+   <g id="line2d_669"/>
+   <g id="line2d_670"/>
+   <g id="line2d_671"/>
+   <g id="line2d_672"/>
+   <g id="line2d_673"/>
+   <g id="line2d_674"/>
+   <g id="line2d_675"/>
+   <g id="line2d_676"/>
+   <g id="line2d_677"/>
+   <g id="line2d_678"/>
+   <g id="line2d_679"/>
+   <g id="line2d_680"/>
+   <g id="line2d_681"/>
+   <g id="line2d_682"/>
+   <g id="line2d_683"/>
+   <g id="line2d_684"/>
+   <g id="line2d_685"/>
+   <g id="line2d_686"/>
+   <g id="line2d_687"/>
+   <g id="line2d_688"/>
+   <g id="line2d_689"/>
+   <g id="line2d_690"/>
+   <g id="line2d_691"/>
+   <g id="line2d_692"/>
+   <g id="line2d_693"/>
+   <g id="line2d_694"/>
+   <g id="line2d_695"/>
+   <g id="line2d_696"/>
+   <g id="line2d_697"/>
+   <g id="line2d_698"/>
+   <g id="line2d_699"/>
+   <g id="line2d_700"/>
+   <g id="line2d_701"/>
+   <g id="line2d_702"/>
+   <g id="line2d_703"/>
+   <g id="line2d_704"/>
+   <g id="line2d_705"/>
+   <g id="line2d_706"/>
+   <g id="line2d_707"/>
+   <g id="line2d_708"/>
+   <g id="line2d_709"/>
+   <g id="line2d_710"/>
+   <g id="line2d_711"/>
+   <g id="line2d_712"/>
+   <g id="line2d_713"/>
+   <g id="line2d_714"/>
+   <g id="line2d_715"/>
+   <g id="line2d_716"/>
+   <g id="line2d_717"/>
+   <g id="line2d_718"/>
+   <g id="line2d_719"/>
+   <g id="line2d_720"/>
+   <g id="line2d_721"/>
+   <g id="line2d_722"/>
+   <g id="line2d_723"/>
+   <g id="line2d_724"/>
+   <g id="line2d_725"/>
+   <g id="line2d_726"/>
+   <g id="line2d_727"/>
+   <g id="line2d_728"/>
+   <g id="line2d_729"/>
+   <g id="line2d_730"/>
+   <g id="line2d_731"/>
+   <g id="line2d_732"/>
+   <g id="line2d_733"/>
+   <g id="line2d_734"/>
+   <g id="line2d_735"/>
+   <g id="line2d_736"/>
+   <g id="line2d_737"/>
+   <g id="line2d_738"/>
+   <g id="line2d_739"/>
+   <g id="line2d_740"/>
+   <g id="line2d_741"/>
+   <g id="line2d_742"/>
+   <g id="line2d_743"/>
+   <g id="line2d_744"/>
+   <g id="line2d_745"/>
+   <g id="line2d_746"/>
+   <g id="line2d_747"/>
+   <g id="line2d_748"/>
+   <g id="line2d_749"/>
+   <g id="line2d_750"/>
+   <g id="line2d_751"/>
+   <g id="line2d_752"/>
+   <g id="line2d_753"/>
+   <g id="line2d_754"/>
+   <g id="line2d_755"/>
+   <g id="line2d_756"/>
+   <g id="line2d_757"/>
+   <g id="line2d_758"/>
+   <g id="line2d_759"/>
+   <g id="line2d_760"/>
+   <g id="line2d_761"/>
+   <g id="line2d_762"/>
+   <g id="line2d_763"/>
+   <g id="line2d_764"/>
+   <g id="line2d_765"/>
+   <g id="line2d_766"/>
+   <g id="line2d_767"/>
+   <g id="line2d_768"/>
+   <g id="line2d_769"/>
+   <g id="line2d_770"/>
+   <g id="line2d_771"/>
+   <g id="line2d_772"/>
+   <g id="line2d_773"/>
+   <g id="line2d_774"/>
+   <g id="line2d_775"/>
+   <g id="line2d_776"/>
+   <g id="line2d_777"/>
+   <g id="line2d_778"/>
+   <g id="line2d_779"/>
+   <g id="line2d_780"/>
+   <g id="line2d_781"/>
+   <g id="line2d_782"/>
+   <g id="line2d_783"/>
+   <g id="line2d_784"/>
+   <g id="line2d_785"/>
+   <g id="line2d_786"/>
+   <g id="line2d_787"/>
+   <g id="line2d_788"/>
+   <g id="line2d_789"/>
+   <g id="line2d_790"/>
+   <g id="line2d_791"/>
+   <g id="line2d_792"/>
+   <g id="line2d_793"/>
+   <g id="line2d_794"/>
+   <g id="line2d_795"/>
+   <g id="line2d_796"/>
+   <g id="line2d_797"/>
+   <g id="line2d_798"/>
+   <g id="line2d_799"/>
+   <g id="line2d_800"/>
+   <g id="line2d_801"/>
+   <g id="line2d_802"/>
+   <g id="line2d_803"/>
+   <g id="line2d_804"/>
+   <g id="line2d_805"/>
+   <g id="line2d_806"/>
+   <g id="line2d_807"/>
+   <g id="line2d_808"/>
+   <g id="line2d_809"/>
+   <g id="line2d_810"/>
+   <g id="line2d_811"/>
+   <g id="line2d_812"/>
+   <g id="line2d_813"/>
+   <g id="line2d_814"/>
+   <g id="line2d_815"/>
+   <g id="line2d_816"/>
+   <g id="line2d_817"/>
+   <g id="line2d_818"/>
+   <g id="line2d_819"/>
+   <g id="line2d_820"/>
+   <g id="line2d_821"/>
+   <g id="line2d_822"/>
+   <g id="line2d_823"/>
+   <g id="line2d_824"/>
+   <g id="line2d_825"/>
+   <g id="line2d_826"/>
+   <g id="line2d_827"/>
+   <g id="line2d_828"/>
+   <g id="line2d_829"/>
+   <g id="line2d_830"/>
+   <g id="line2d_831"/>
+   <g id="line2d_832"/>
+   <g id="line2d_833"/>
+   <g id="line2d_834"/>
+   <g id="line2d_835"/>
+   <g id="line2d_836"/>
+   <g id="line2d_837"/>
+   <g id="line2d_838"/>
+   <g id="line2d_839"/>
+   <g id="line2d_840"/>
+   <g id="line2d_841"/>
+   <g id="line2d_842"/>
+   <g id="line2d_843"/>
+   <g id="line2d_844"/>
+   <g id="line2d_845"/>
+   <g id="line2d_846"/>
+   <g id="line2d_847"/>
+   <g id="line2d_848"/>
+   <g id="line2d_849"/>
+   <g id="line2d_850"/>
+   <g id="line2d_851"/>
+   <g id="line2d_852"/>
+   <g id="line2d_853"/>
+   <g id="line2d_854"/>
+   <g id="line2d_855"/>
+   <g id="line2d_856"/>
+   <g id="line2d_857"/>
+   <g id="line2d_858"/>
+   <g id="line2d_859"/>
+   <g id="line2d_860"/>
+   <g id="line2d_861"/>
+   <g id="line2d_862"/>
+   <g id="line2d_863"/>
+   <g id="line2d_864"/>
+   <g id="line2d_865"/>
+   <g id="line2d_866"/>
+   <g id="line2d_867"/>
+   <g id="line2d_868"/>
+   <g id="line2d_869"/>
+   <g id="line2d_870"/>
+   <g id="line2d_871"/>
+   <g id="line2d_872"/>
+   <g id="line2d_873"/>
+   <g id="line2d_874"/>
+   <g id="line2d_875"/>
+   <g id="line2d_876"/>
+   <g id="line2d_877"/>
+   <g id="line2d_878"/>
+   <g id="line2d_879"/>
+   <g id="line2d_880"/>
+   <g id="line2d_881"/>
+   <g id="line2d_882"/>
+   <g id="line2d_883"/>
+   <g id="line2d_884"/>
+   <g id="line2d_885"/>
+   <g id="line2d_886"/>
+   <g id="line2d_887"/>
+   <g id="line2d_888"/>
+   <g id="line2d_889"/>
+   <g id="line2d_890"/>
+   <g id="line2d_891"/>
+   <g id="line2d_892"/>
+   <g id="line2d_893"/>
+   <g id="line2d_894"/>
+   <g id="line2d_895"/>
+   <g id="line2d_896"/>
+   <g id="line2d_897"/>
+   <g id="line2d_898"/>
+   <g id="line2d_899"/>
+   <g id="line2d_900"/>
+   <g id="line2d_901"/>
+   <g id="line2d_902"/>
+   <g id="line2d_903"/>
+   <g id="line2d_904"/>
+   <g id="line2d_905"/>
+   <g id="line2d_906"/>
+   <g id="line2d_907"/>
+   <g id="line2d_908"/>
+   <g id="line2d_909"/>
+   <g id="line2d_910"/>
+   <g id="line2d_911"/>
+   <g id="line2d_912"/>
+   <g id="line2d_913"/>
+   <g id="line2d_914"/>
+   <g id="line2d_915"/>
+   <g id="line2d_916"/>
+   <g id="line2d_917"/>
+   <g id="line2d_918"/>
+   <g id="line2d_919"/>
+   <g id="line2d_920"/>
+   <g id="line2d_921"/>
+   <g id="line2d_922"/>
+   <g id="line2d_923"/>
+   <g id="line2d_924"/>
+   <g id="line2d_925"/>
+   <g id="line2d_926"/>
+   <g id="line2d_927"/>
+   <g id="line2d_928"/>
+   <g id="line2d_929"/>
+   <g id="line2d_930"/>
+   <g id="line2d_931"/>
+   <g id="line2d_932"/>
+   <g id="line2d_933"/>
+   <g id="line2d_934"/>
+   <g id="line2d_935"/>
+   <g id="line2d_936"/>
+   <g id="line2d_937"/>
+   <g id="line2d_938"/>
+   <g id="line2d_939"/>
+   <g id="line2d_940"/>
+   <g id="line2d_941"/>
+   <g id="line2d_942"/>
+   <g id="line2d_943"/>
+   <g id="line2d_944"/>
+   <g id="line2d_945"/>
+   <g id="line2d_946"/>
+   <g id="line2d_947"/>
+   <g id="line2d_948"/>
+   <g id="line2d_949"/>
+   <g id="line2d_950"/>
+   <g id="line2d_951"/>
+   <g id="line2d_952"/>
+   <g id="line2d_953"/>
+   <g id="line2d_954"/>
+   <g id="line2d_955"/>
+   <g id="line2d_956"/>
+   <g id="line2d_957"/>
+   <g id="line2d_958"/>
+   <g id="line2d_959"/>
+   <g id="line2d_960"/>
+   <g id="line2d_961"/>
+   <g id="line2d_962"/>
+   <g id="line2d_963"/>
+   <g id="line2d_964"/>
+   <g id="line2d_965"/>
+   <g id="line2d_966"/>
+   <g id="line2d_967"/>
+   <g id="line2d_968"/>
+   <g id="line2d_969"/>
+   <g id="line2d_970"/>
+   <g id="line2d_971"/>
+   <g id="line2d_972"/>
+   <g id="line2d_973"/>
+   <g id="line2d_974"/>
+   <g id="line2d_975"/>
+   <g id="line2d_976"/>
+   <g id="line2d_977"/>
+   <g id="line2d_978"/>
+   <g id="line2d_979"/>
+   <g id="line2d_980"/>
+   <g id="line2d_981"/>
+   <g id="line2d_982"/>
+   <g id="line2d_983"/>
+   <g id="line2d_984"/>
+   <g id="line2d_985"/>
+   <g id="line2d_986"/>
+   <g id="line2d_987"/>
+   <g id="line2d_988"/>
+   <g id="line2d_989"/>
+   <g id="line2d_990"/>
+   <g id="line2d_991"/>
+   <g id="line2d_992"/>
+   <g id="line2d_993"/>
+   <g id="line2d_994"/>
+   <g id="line2d_995"/>
+   <g id="line2d_996"/>
+   <g id="line2d_997"/>
+   <g id="line2d_998"/>
+   <g id="line2d_999"/>
+   <g id="line2d_1000"/>
+   <g id="line2d_1001"/>
+   <g id="line2d_1002"/>
+   <g id="line2d_1003"/>
+   <g id="line2d_1004"/>
+   <g id="line2d_1005"/>
+   <g id="line2d_1006"/>
+   <g id="line2d_1007"/>
+   <g id="line2d_1008"/>
+   <g id="line2d_1009"/>
+   <g id="line2d_1010"/>
+   <g id="line2d_1011"/>
+   <g id="line2d_1012"/>
+   <g id="line2d_1013"/>
+   <g id="line2d_1014"/>
+   <g id="line2d_1015"/>
+   <g id="line2d_1016"/>
+   <g id="line2d_1017"/>
+   <g id="line2d_1018"/>
+   <g id="line2d_1019"/>
+   <g id="line2d_1020"/>
+   <g id="line2d_1021"/>
+   <g id="line2d_1022"/>
+   <g id="line2d_1023"/>
+   <g id="line2d_1024"/>
+   <g id="line2d_1025"/>
+   <g id="line2d_1026"/>
+   <g id="line2d_1027"/>
+   <g id="line2d_1028"/>
+   <g id="line2d_1029"/>
+   <g id="line2d_1030"/>
+   <g id="line2d_1031"/>
+   <g id="line2d_1032"/>
+   <g id="line2d_1033"/>
+   <g id="line2d_1034"/>
+   <g id="line2d_1035"/>
+   <g id="line2d_1036"/>
+   <g id="line2d_1037"/>
+   <g id="line2d_1038"/>
+   <g id="line2d_1039"/>
+   <g id="line2d_1040"/>
+   <g id="line2d_1041"/>
+   <g id="line2d_1042"/>
+   <g id="line2d_1043"/>
+   <g id="line2d_1044"/>
+   <g id="line2d_1045"/>
+   <g id="line2d_1046"/>
+   <g id="line2d_1047"/>
+   <g id="line2d_1048"/>
+   <g id="line2d_1049"/>
+   <g id="line2d_1050"/>
+   <g id="line2d_1051"/>
+   <g id="line2d_1052"/>
+   <g id="line2d_1053"/>
+   <g id="line2d_1054"/>
+   <g id="line2d_1055"/>
+   <g id="line2d_1056"/>
+   <g id="line2d_1057"/>
+   <g id="line2d_1058"/>
+   <g id="line2d_1059"/>
+   <g id="line2d_1060"/>
+   <g id="line2d_1061"/>
+   <g id="line2d_1062"/>
+   <g id="line2d_1063"/>
+   <g id="line2d_1064"/>
+   <g id="line2d_1065"/>
+   <g id="line2d_1066"/>
+   <g id="line2d_1067"/>
+   <g id="line2d_1068"/>
+   <g id="line2d_1069"/>
+   <g id="line2d_1070"/>
+   <g id="line2d_1071"/>
+   <g id="line2d_1072"/>
+   <g id="line2d_1073"/>
+   <g id="line2d_1074"/>
+   <g id="line2d_1075"/>
+   <g id="line2d_1076"/>
+   <g id="line2d_1077"/>
+   <g id="line2d_1078"/>
+   <g id="line2d_1079"/>
+   <g id="line2d_1080"/>
+   <g id="line2d_1081"/>
+   <g id="line2d_1082"/>
+   <g id="line2d_1083"/>
+   <g id="line2d_1084"/>
+   <g id="line2d_1085"/>
+   <g id="line2d_1086"/>
+   <g id="line2d_1087"/>
+   <g id="line2d_1088"/>
+   <g id="line2d_1089"/>
+   <g id="line2d_1090"/>
+   <g id="line2d_1091"/>
+   <g id="line2d_1092"/>
+   <g id="line2d_1093"/>
+   <g id="line2d_1094"/>
+   <g id="line2d_1095"/>
+   <g id="line2d_1096"/>
+   <g id="line2d_1097"/>
+   <g id="line2d_1098"/>
+   <g id="line2d_1099"/>
+   <g id="line2d_1100"/>
+   <g id="line2d_1101"/>
+   <g id="line2d_1102"/>
+   <g id="line2d_1103"/>
+   <g id="line2d_1104"/>
+   <g id="line2d_1105"/>
+   <g id="line2d_1106"/>
+   <g id="line2d_1107"/>
+   <g id="line2d_1108"/>
+   <g id="line2d_1109"/>
+   <g id="line2d_1110"/>
+   <g id="line2d_1111"/>
+   <g id="line2d_1112"/>
+   <g id="line2d_1113"/>
+   <g id="line2d_1114"/>
+   <g id="line2d_1115"/>
+   <g id="line2d_1116"/>
+   <g id="line2d_1117"/>
+   <g id="line2d_1118"/>
+   <g id="line2d_1119"/>
+   <g id="line2d_1120"/>
+   <g id="line2d_1121"/>
+   <g id="line2d_1122"/>
+   <g id="line2d_1123"/>
+   <g id="line2d_1124"/>
+   <g id="line2d_1125"/>
+   <g id="line2d_1126"/>
+   <g id="line2d_1127"/>
+   <g id="line2d_1128"/>
+   <g id="line2d_1129"/>
+   <g id="line2d_1130"/>
+   <g id="line2d_1131"/>
+   <g id="line2d_1132"/>
+   <g id="line2d_1133"/>
+   <g id="line2d_1134"/>
+   <g id="line2d_1135"/>
+   <g id="line2d_1136"/>
+   <g id="line2d_1137"/>
+   <g id="line2d_1138"/>
+   <g id="line2d_1139"/>
+   <g id="line2d_1140"/>
+   <g id="line2d_1141"/>
+   <g id="line2d_1142"/>
+   <g id="line2d_1143"/>
+   <g id="line2d_1144"/>
+   <g id="line2d_1145"/>
+   <g id="line2d_1146"/>
+   <g id="line2d_1147"/>
+   <g id="line2d_1148"/>
+   <g id="line2d_1149"/>
+   <g id="line2d_1150"/>
+   <g id="line2d_1151"/>
+   <g id="line2d_1152"/>
+   <g id="line2d_1153"/>
+   <g id="line2d_1154"/>
+   <g id="line2d_1155"/>
+   <g id="line2d_1156"/>
+   <g id="line2d_1157"/>
+   <g id="line2d_1158"/>
+   <g id="line2d_1159"/>
+   <g id="line2d_1160"/>
+   <g id="line2d_1161"/>
+   <g id="line2d_1162"/>
+   <g id="line2d_1163"/>
+   <g id="line2d_1164"/>
+   <g id="line2d_1165"/>
+   <g id="line2d_1166"/>
+   <g id="line2d_1167"/>
+   <g id="line2d_1168"/>
+   <g id="line2d_1169"/>
+   <g id="line2d_1170"/>
+   <g id="line2d_1171"/>
+   <g id="line2d_1172"/>
+   <g id="line2d_1173"/>
+   <g id="line2d_1174"/>
+   <g id="line2d_1175"/>
+   <g id="line2d_1176"/>
+   <g id="line2d_1177"/>
+   <g id="line2d_1178"/>
+   <g id="line2d_1179"/>
+   <g id="line2d_1180"/>
+   <g id="line2d_1181"/>
+   <g id="line2d_1182"/>
+   <g id="line2d_1183"/>
+   <g id="line2d_1184"/>
+   <g id="line2d_1185"/>
+   <g id="line2d_1186"/>
+   <g id="line2d_1187"/>
+   <g id="line2d_1188"/>
+   <g id="line2d_1189"/>
+   <g id="line2d_1190"/>
+   <g id="line2d_1191"/>
+   <g id="line2d_1192"/>
+   <g id="line2d_1193"/>
+   <g id="line2d_1194"/>
+   <g id="line2d_1195"/>
+   <g id="line2d_1196"/>
+   <g id="line2d_1197"/>
+   <g id="line2d_1198"/>
+   <g id="line2d_1199"/>
+   <g id="line2d_1200"/>
+   <g id="line2d_1201"/>
+   <g id="line2d_1202"/>
+   <g id="line2d_1203"/>
+   <g id="line2d_1204"/>
+   <g id="line2d_1205"/>
+   <g id="line2d_1206"/>
+   <g id="line2d_1207"/>
+   <g id="line2d_1208"/>
+   <g id="line2d_1209"/>
+   <g id="line2d_1210"/>
+   <g id="line2d_1211"/>
+   <g id="line2d_1212"/>
+   <g id="line2d_1213"/>
+   <g id="line2d_1214"/>
+   <g id="line2d_1215"/>
+   <g id="line2d_1216"/>
+   <g id="line2d_1217"/>
+   <g id="line2d_1218"/>
+   <g id="line2d_1219"/>
+   <g id="line2d_1220"/>
+   <g id="line2d_1221"/>
+   <g id="line2d_1222"/>
+   <g id="line2d_1223"/>
+   <g id="line2d_1224"/>
+   <g id="line2d_1225"/>
+   <g id="line2d_1226"/>
+   <g id="line2d_1227"/>
+   <g id="line2d_1228"/>
+   <g id="line2d_1229"/>
+   <g id="line2d_1230"/>
+   <g id="line2d_1231"/>
+   <g id="line2d_1232"/>
+   <g id="line2d_1233"/>
+   <g id="line2d_1234"/>
+   <g id="line2d_1235"/>
+   <g id="line2d_1236"/>
+   <g id="line2d_1237"/>
+   <g id="line2d_1238"/>
+   <g id="line2d_1239"/>
+   <g id="line2d_1240"/>
+   <g id="line2d_1241"/>
+   <g id="line2d_1242"/>
+   <g id="line2d_1243"/>
+   <g id="line2d_1244"/>
+   <g id="line2d_1245"/>
+   <g id="line2d_1246"/>
+   <g id="line2d_1247"/>
+   <g id="line2d_1248"/>
+   <g id="line2d_1249"/>
+   <g id="line2d_1250"/>
+   <g id="line2d_1251"/>
+   <g id="line2d_1252"/>
+   <g id="line2d_1253"/>
+   <g id="line2d_1254"/>
+   <g id="line2d_1255"/>
+   <g id="line2d_1256"/>
+   <g id="line2d_1257"/>
+   <g id="line2d_1258"/>
+   <g id="line2d_1259"/>
+   <g id="line2d_1260"/>
+   <g id="line2d_1261"/>
+   <g id="line2d_1262"/>
+   <g id="line2d_1263"/>
+   <g id="line2d_1264"/>
+   <g id="line2d_1265"/>
+   <g id="line2d_1266"/>
+   <g id="line2d_1267"/>
+   <g id="line2d_1268"/>
+   <g id="line2d_1269"/>
+   <g id="line2d_1270"/>
+   <g id="line2d_1271"/>
+   <g id="line2d_1272"/>
+   <g id="line2d_1273"/>
+   <g id="line2d_1274"/>
+   <g id="line2d_1275"/>
+   <g id="line2d_1276"/>
+   <g id="line2d_1277"/>
+   <g id="line2d_1278"/>
+   <g id="line2d_1279"/>
+   <g id="line2d_1280"/>
+   <g id="line2d_1281"/>
+   <g id="line2d_1282"/>
+   <g id="line2d_1283"/>
+   <g id="line2d_1284"/>
+   <g id="line2d_1285"/>
+   <g id="line2d_1286"/>
+   <g id="line2d_1287"/>
+   <g id="line2d_1288"/>
+   <g id="line2d_1289"/>
+   <g id="line2d_1290"/>
+   <g id="line2d_1291"/>
+   <g id="line2d_1292"/>
+   <g id="line2d_1293"/>
+   <g id="line2d_1294"/>
+   <g id="line2d_1295"/>
+   <g id="line2d_1296"/>
+   <g id="line2d_1297"/>
+   <g id="line2d_1298"/>
+   <g id="line2d_1299"/>
+   <g id="line2d_1300"/>
+   <g id="line2d_1301"/>
+   <g id="line2d_1302"/>
+   <g id="line2d_1303"/>
+   <g id="line2d_1304"/>
+   <g id="line2d_1305"/>
+   <g id="line2d_1306"/>
+   <g id="line2d_1307"/>
+   <g id="line2d_1308"/>
+   <g id="line2d_1309"/>
+   <g id="line2d_1310"/>
+   <g id="line2d_1311"/>
+   <g id="line2d_1312"/>
+   <g id="line2d_1313"/>
+   <g id="line2d_1314"/>
+   <g id="line2d_1315"/>
+   <g id="line2d_1316"/>
+   <g id="line2d_1317"/>
+   <g id="line2d_1318"/>
+   <g id="line2d_1319"/>
+   <g id="line2d_1320"/>
+   <g id="line2d_1321"/>
+   <g id="line2d_1322"/>
+   <g id="line2d_1323"/>
+   <g id="line2d_1324"/>
+   <g id="line2d_1325"/>
+   <g id="line2d_1326"/>
+   <g id="line2d_1327"/>
+   <g id="line2d_1328"/>
+   <g id="line2d_1329"/>
+   <g id="line2d_1330"/>
+   <g id="line2d_1331"/>
+   <g id="line2d_1332"/>
+   <g id="line2d_1333"/>
+   <g id="line2d_1334"/>
+   <g id="line2d_1335"/>
+   <g id="line2d_1336"/>
+   <g id="line2d_1337"/>
+   <g id="line2d_1338"/>
+   <g id="line2d_1339"/>
+   <g id="line2d_1340"/>
+   <g id="line2d_1341"/>
+   <g id="line2d_1342"/>
+   <g id="line2d_1343"/>
+   <g id="line2d_1344"/>
+   <g id="line2d_1345"/>
+   <g id="line2d_1346"/>
+   <g id="line2d_1347"/>
+   <g id="line2d_1348"/>
+   <g id="line2d_1349"/>
+   <g id="line2d_1350"/>
+   <g id="line2d_1351"/>
+   <g id="line2d_1352"/>
+   <g id="line2d_1353"/>
+   <g id="line2d_1354"/>
+   <g id="line2d_1355"/>
+   <g id="line2d_1356"/>
+   <g id="line2d_1357"/>
+   <g id="line2d_1358"/>
+   <g id="line2d_1359"/>
+   <g id="line2d_1360"/>
+   <g id="line2d_1361"/>
+   <g id="line2d_1362"/>
+   <g id="line2d_1363"/>
+   <g id="line2d_1364"/>
+   <g id="line2d_1365"/>
+   <g id="line2d_1366"/>
+   <g id="line2d_1367"/>
+   <g id="line2d_1368"/>
+   <g id="line2d_1369"/>
+   <g id="line2d_1370"/>
+   <g id="line2d_1371"/>
+   <g id="line2d_1372"/>
+   <g id="line2d_1373"/>
+   <g id="line2d_1374"/>
+   <g id="line2d_1375"/>
+   <g id="line2d_1376"/>
+   <g id="line2d_1377"/>
+   <g id="line2d_1378"/>
+   <g id="line2d_1379"/>
+   <g id="line2d_1380"/>
+   <g id="line2d_1381"/>
+   <g id="line2d_1382"/>
+   <g id="line2d_1383"/>
+   <g id="line2d_1384"/>
+   <g id="line2d_1385"/>
+   <g id="line2d_1386"/>
+   <g id="line2d_1387"/>
+   <g id="line2d_1388"/>
+   <g id="line2d_1389"/>
+   <g id="line2d_1390"/>
+   <g id="line2d_1391"/>
+   <g id="line2d_1392"/>
+   <g id="line2d_1393"/>
+   <g id="line2d_1394"/>
+   <g id="line2d_1395"/>
+   <g id="line2d_1396"/>
+   <g id="line2d_1397"/>
+   <g id="line2d_1398"/>
+   <g id="line2d_1399"/>
+   <g id="line2d_1400"/>
+   <g id="line2d_1401"/>
+   <g id="line2d_1402"/>
+   <g id="line2d_1403"/>
+   <g id="line2d_1404"/>
+   <g id="line2d_1405"/>
+   <g id="line2d_1406"/>
+   <g id="line2d_1407"/>
+   <g id="line2d_1408"/>
+   <g id="line2d_1409"/>
+   <g id="line2d_1410"/>
+   <g id="line2d_1411"/>
+   <g id="line2d_1412"/>
+   <g id="line2d_1413"/>
+   <g id="line2d_1414"/>
+   <g id="line2d_1415"/>
+   <g id="line2d_1416"/>
+   <g id="line2d_1417"/>
+   <g id="line2d_1418"/>
+   <g id="line2d_1419"/>
+   <g id="line2d_1420"/>
+   <g id="line2d_1421"/>
+   <g id="line2d_1422"/>
+   <g id="line2d_1423"/>
+   <g id="line2d_1424"/>
+   <g id="line2d_1425"/>
+   <g id="line2d_1426"/>
+   <g id="line2d_1427"/>
+   <g id="line2d_1428"/>
+   <g id="line2d_1429"/>
+   <g id="line2d_1430"/>
+   <g id="line2d_1431"/>
+   <g id="line2d_1432"/>
+   <g id="line2d_1433"/>
+   <g id="line2d_1434"/>
+   <g id="line2d_1435"/>
+   <g id="line2d_1436"/>
+   <g id="line2d_1437"/>
+   <g id="line2d_1438"/>
+   <g id="line2d_1439"/>
+   <g id="line2d_1440"/>
+   <g id="line2d_1441"/>
+   <g id="line2d_1442"/>
+   <g id="line2d_1443"/>
+   <g id="line2d_1444"/>
+   <g id="line2d_1445"/>
+   <g id="line2d_1446"/>
+   <g id="line2d_1447"/>
+   <g id="line2d_1448"/>
+   <g id="line2d_1449"/>
+   <g id="line2d_1450"/>
+   <g id="line2d_1451"/>
+   <g id="line2d_1452"/>
+   <g id="line2d_1453"/>
+   <g id="line2d_1454"/>
+   <g id="line2d_1455"/>
+   <g id="line2d_1456"/>
+   <g id="line2d_1457"/>
+   <g id="line2d_1458"/>
+   <g id="line2d_1459"/>
+   <g id="line2d_1460"/>
+   <g id="line2d_1461"/>
+   <g id="line2d_1462"/>
+   <g id="line2d_1463"/>
+   <g id="line2d_1464"/>
+   <g id="line2d_1465"/>
+   <g id="line2d_1466"/>
+   <g id="line2d_1467"/>
+   <g id="line2d_1468"/>
+   <g id="line2d_1469"/>
+   <g id="line2d_1470"/>
+   <g id="line2d_1471"/>
+   <g id="line2d_1472"/>
+   <g id="line2d_1473"/>
+   <g id="line2d_1474"/>
+   <g id="line2d_1475"/>
+   <g id="line2d_1476"/>
+   <g id="line2d_1477"/>
+   <g id="line2d_1478"/>
+   <g id="line2d_1479"/>
+   <g id="line2d_1480"/>
+   <g id="line2d_1481"/>
+   <g id="line2d_1482"/>
+   <g id="line2d_1483"/>
+   <g id="line2d_1484"/>
+   <g id="line2d_1485"/>
+   <g id="line2d_1486"/>
+   <g id="line2d_1487"/>
+   <g id="line2d_1488"/>
+   <g id="line2d_1489"/>
+   <g id="line2d_1490"/>
+   <g id="line2d_1491"/>
+   <g id="line2d_1492"/>
+   <g id="line2d_1493"/>
+   <g id="line2d_1494"/>
+   <g id="line2d_1495"/>
+   <g id="line2d_1496"/>
+   <g id="line2d_1497"/>
+   <g id="line2d_1498"/>
+   <g id="line2d_1499"/>
+   <g id="line2d_1500"/>
+   <g id="line2d_1501"/>
+   <g id="line2d_1502"/>
+   <g id="line2d_1503"/>
+   <g id="line2d_1504"/>
+   <g id="line2d_1505"/>
+   <g id="line2d_1506"/>
+   <g id="line2d_1507"/>
+   <g id="line2d_1508"/>
+   <g id="line2d_1509"/>
+   <g id="line2d_1510"/>
+   <g id="line2d_1511"/>
+   <g id="line2d_1512"/>
+   <g id="line2d_1513"/>
+   <g id="line2d_1514"/>
+   <g id="line2d_1515"/>
+   <g id="line2d_1516"/>
+   <g id="line2d_1517"/>
+   <g id="line2d_1518"/>
+   <g id="line2d_1519"/>
+   <g id="line2d_1520"/>
+   <g id="line2d_1521"/>
+   <g id="line2d_1522"/>
+   <g id="line2d_1523"/>
+   <g id="line2d_1524"/>
+   <g id="line2d_1525"/>
+   <g id="line2d_1526"/>
+   <g id="line2d_1527"/>
+   <g id="line2d_1528"/>
+   <g id="line2d_1529"/>
+   <g id="line2d_1530"/>
+   <g id="line2d_1531"/>
+   <g id="line2d_1532"/>
+   <g id="line2d_1533"/>
+   <g id="line2d_1534"/>
+   <g id="line2d_1535"/>
+   <g id="line2d_1536"/>
+   <g id="line2d_1537"/>
+   <g id="line2d_1538"/>
+   <g id="line2d_1539"/>
+   <g id="line2d_1540">
+    <path d="M 229.723847 185.558543 
+L 229.710504 185.248168 
+L 229.652494 184.837242 
+L 229.467081 183.918289 
+L 228.727741 180.714376 
+L 228.009419 177.730901 
+L 226.38017 171.28915 
+L 223.887481 161.704898 
+L 221.911118 154.483873 
+L 219.576407 146.360119 
+L 218.406064 142.527296 
+L 216.250941 135.649231 
+L 214.413552 130.167162 
+L 211.372841 121.490087 
+L 208.100466 112.665919 
+L 206.272813 107.786272 
+L 202.931793 99.779239 
+L 201.385474 96.301516 
+L 195.316314 83.712281 
+L 191.945253 77.442024 
+L 191.487153 76.634692 
+L 186.309954 71.079002 
+L 178.557913 65.397438 
+L 165.076013 56.314335 
+L 152.029746 51.674906 
+L 143.587207 50.156271 
+L 138.981513 50.117857 
+L 129.442691 50.09169 
+L 105.16119 54.323146 
+L 101.598674 54.978383 
+L 92.72025 57.224337 
+L 83.780165 59.84648 
+L 68.889064 64.859607 
+L 62.608108 67.019314 
+L 58.952255 68.287812 
+L 57.677341 68.761182 
+L 57.529697 68.830876 
+" clip-path="url(#p64cfd15587)" style="fill: none; stroke-dasharray: 7.4,3.2; stroke-dashoffset: 0; stroke: #ff0000; stroke-width: 2"/>
+   </g>
+   <g id="line2d_1541">
+    <path d="M 296.644033 186.15199 
+L 291.410841 175.230589 
+L 287.320673 166.913326 
+L 276.03157 145.354512 
+L 268.848139 132.926641 
+L 266.972795 129.709502 
+L 263.91864 124.849812 
+L 256.938573 113.996863 
+L 254.694513 110.725627 
+L 241.465462 93.301735 
+L 239.67027 91.074281 
+L 237.341572 88.286512 
+L 234.559009 85.136436 
+L 230.056142 81.98934 
+L 221.784456 76.974696 
+L 211.494138 72.062862 
+L 195.043167 67.577093 
+L 185.841125 65.402255 
+L 183.543103 64.869808 
+L 175.270647 64.462458 
+L 165.452247 64.017708 
+L 155.110227 64.380012 
+L 134.24601 67.312236 
+L 129.117266 68.394213 
+L 110.823592 72.571262 
+L 93.910849 77.430293 
+L 84.146995 80.548789 
+L 78.51444 82.389247 
+L 76.462461 83.073761 
+L 74.380498 83.768738 
+L 63.542345 87.422511 
+L 61.123954 88.250915 
+L 57.541679 89.497469 
+L 57.493916 89.609783 
+L 57.528249 90.37573 
+L 57.66901 91.667067 
+" clip-path="url(#p64cfd15587)" style="fill: none; stroke-dasharray: 7.4,3.2; stroke-dashoffset: 0; stroke: #0000ff; stroke-width: 2"/>
+   </g>
+   <g id="line2d_1542">
+    <path d="M 290.65411 146.049107 
+L 290.8215 145.307616 
+L 290.845428 144.791151 
+L 290.847214 143.57064 
+L 290.848207 142.814836 
+L 290.848726 142.313074 
+L 290.838357 142.216794 
+L 290.832639 142.169216 
+L 290.820024 142.140203 
+L 290.724052 141.958819 
+L 290.358785 141.57667 
+L 289.979166 141.431875 
+L 289.507407 141.337696 
+L 288.156756 141.093375 
+L 281.38675 140.832366 
+L 69.306393 140.547639 
+L 67.813238 140.705806 
+L 67.255718 140.823972 
+L 66.300065 141.421981 
+L 65.974482 141.65743 
+L 65.347423 142.335145 
+L 64.414446 143.901506 
+L 63.893275 145.173877 
+L 63.812684 145.392733 
+" clip-path="url(#p64cfd15587)" style="fill: none; stroke-dasharray: 7.4,3.2; stroke-dashoffset: 0; stroke: #008000; stroke-width: 2"/>
+   </g>
+   <g id="line2d_1543"/>
+   <g id="line2d_1544"/>
+   <g id="line2d_1545"/>
+   <g id="line2d_1546"/>
+   <g id="line2d_1547"/>
+   <g id="line2d_1548"/>
+   <g id="line2d_1549"/>
+   <g id="line2d_1550"/>
+   <g id="line2d_1551"/>
+   <g id="line2d_1552"/>
+   <g id="line2d_1553"/>
+   <g id="line2d_1554"/>
+   <g id="line2d_1555"/>
+   <g id="line2d_1556"/>
+   <g id="line2d_1557"/>
+   <g id="line2d_1558"/>
+   <g id="line2d_1559"/>
+   <g id="line2d_1560"/>
+   <g id="line2d_1561"/>
+   <g id="line2d_1562"/>
+   <g id="line2d_1563"/>
+   <g id="line2d_1564"/>
+   <g id="line2d_1565"/>
+   <g id="line2d_1566"/>
+   <g id="line2d_1567"/>
+   <g id="line2d_1568"/>
+   <g id="line2d_1569"/>
+   <g id="line2d_1570"/>
+   <g id="line2d_1571"/>
+   <g id="line2d_1572"/>
+   <g id="line2d_1573"/>
+   <g id="line2d_1574"/>
+   <g id="line2d_1575"/>
+   <g id="line2d_1576"/>
+   <g id="line2d_1577"/>
+   <g id="line2d_1578"/>
+   <g id="line2d_1579"/>
+   <g id="line2d_1580"/>
+   <g id="line2d_1581"/>
+   <g id="line2d_1582"/>
+   <g id="line2d_1583"/>
+   <g id="line2d_1584"/>
+   <g id="line2d_1585"/>
+   <g id="line2d_1586"/>
+   <g id="line2d_1587"/>
+   <g id="line2d_1588"/>
+   <g id="line2d_1589"/>
+   <g id="line2d_1590"/>
+   <g id="line2d_1591"/>
+   <g id="line2d_1592"/>
+   <g id="line2d_1593"/>
+   <g id="line2d_1594"/>
+   <g id="line2d_1595"/>
+   <g id="line2d_1596"/>
+   <g id="line2d_1597"/>
+   <g id="line2d_1598"/>
+   <g id="line2d_1599"/>
+   <g id="line2d_1600"/>
+   <g id="line2d_1601"/>
+   <g id="line2d_1602"/>
+   <g id="line2d_1603"/>
+   <g id="line2d_1604"/>
+   <g id="line2d_1605"/>
+   <g id="line2d_1606"/>
+   <g id="line2d_1607"/>
+   <g id="line2d_1608"/>
+   <g id="line2d_1609"/>
+   <g id="line2d_1610"/>
+   <g id="line2d_1611"/>
+   <g id="line2d_1612"/>
+   <g id="line2d_1613"/>
+   <g id="line2d_1614"/>
+   <g id="line2d_1615"/>
+   <g id="line2d_1616"/>
+   <g id="line2d_1617"/>
+   <g id="line2d_1618"/>
+   <g id="line2d_1619"/>
+   <g id="line2d_1620"/>
+   <g id="line2d_1621"/>
+   <g id="line2d_1622"/>
+   <g id="line2d_1623"/>
+   <g id="line2d_1624"/>
+   <g id="line2d_1625"/>
+   <g id="line2d_1626"/>
+   <g id="line2d_1627"/>
+   <g id="line2d_1628"/>
+   <g id="line2d_1629"/>
+   <g id="line2d_1630"/>
+   <g id="line2d_1631"/>
+   <g id="line2d_1632"/>
+   <g id="line2d_1633"/>
+   <g id="line2d_1634"/>
+   <g id="line2d_1635"/>
+   <g id="line2d_1636">
+    <path d="M 296.672051 191.1594 
+L 296.672051 18.686116 
+" clip-path="url(#p64cfd15587)" style="fill: none; stroke: #808080; stroke-width: 1.5; stroke-linecap: square"/>
+   </g>
+   <g id="line2d_1637">
+    <path d="M 57.46715 191.1594 
+L 57.46715 18.686116 
+" clip-path="url(#p64cfd15587)" style="fill: none; stroke: #808080; stroke-width: 1.5; stroke-linecap: square"/>
+   </g>
+   <g id="line2d_1638">
+    <path d="M 227.311418 174.019521 
+L 225.49106 165.926638 
+L 214.540733 119.223888 
+L 205.562527 92.303314 
+L 194.222242 67.218814 
+L 175.525749 43.398711 
+L 160.894877 42.243702 
+L 133.168866 41.61024 
+L 58.073968 64.599741 
+" clip-path="url(#p64cfd15587)" style="fill: none; stroke: #ff0000; stroke-width: 2; stroke-linecap: square"/>
+   </g>
+   <g id="line2d_1639">
+    <path d="M 296.669884 186.191215 
+L 293.135918 176.710592 
+L 290.170383 169.512865 
+L 273.140527 128.572927 
+L 269.832299 121.105763 
+L 235.350303 60.188651 
+L 220.472077 49.540276 
+L 178.220765 39.862874 
+L 90.088824 63.434837 
+L 70.546995 73.366628 
+L 64.409283 80.505697 
+L 59.650457 96.624058 
+" clip-path="url(#p64cfd15587)" style="fill: none; stroke: #0000ff; stroke-width: 2; stroke-linecap: square"/>
+   </g>
+   <g id="line2d_1640">
+    <path d="M 290.68058 121.20182 
+L 290.630557 111.744791 
+L 289.865718 111.521172 
+L 66.203229 124.463412 
+L 61.811787 142.194644 
+L 58.856211 162.015952 
+" clip-path="url(#p64cfd15587)" style="fill: none; stroke: #008000; stroke-width: 2; stroke-linecap: square"/>
+   </g>
+   <g id="patch_3">
+    <path d="M 42.999859 191.1594 
+L 42.999859 18.686116 
+" style="fill: none; stroke: #000000; stroke-width: 0.8; stroke-linejoin: miter; stroke-linecap: square"/>
+   </g>
+   <g id="patch_4">
+    <path d="M 311.191272 191.1594 
+L 311.191272 18.686116 
+" style="fill: none; stroke: #000000; stroke-width: 0.8; stroke-linejoin: miter; stroke-linecap: square"/>
+   </g>
+   <g id="patch_5">
+    <path d="M 42.999859 191.1594 
+L 311.191272 191.1594 
+" style="fill: none; stroke: #000000; stroke-width: 0.8; stroke-linejoin: miter; stroke-linecap: square"/>
+   </g>
+   <g id="patch_6">
+    <path d="M 42.999859 18.686116 
+L 311.191272 18.686116 
+" style="fill: none; stroke: #000000; stroke-width: 0.8; stroke-linejoin: miter; stroke-linecap: square"/>
+   </g>
+   <g id="text_8">
+    <!-- $\omega = 2.5$ -->
+    <g transform="translate(154.68262 12.686116) scale(0.14 -0.14)">
+     <defs>
+      <path id="CMR17-3d" d="M 4115 2048 
+C 4211 2048 4307 2048 4307 2156 
+C 4307 2272 4198 2272 4090 2272 
+L 512 2272 
+C 403 2272 294 2272 294 2156 
+C 294 2048 390 2048 486 2048 
+L 4115 2048 
+z
+M 4090 927 
+C 4198 927 4307 927 4307 1043 
+C 4307 1152 4211 1152 4115 1152 
+L 486 1152 
+C 390 1152 294 1152 294 1043 
+C 294 927 403 927 512 927 
+L 4090 927 
+z
+" transform="scale(0.015625)"/>
+      <path id="CMR17-35" d="M 730 3750 
+C 794 3724 1056 3641 1325 3641 
+C 1920 3641 2246 3961 2432 4140 
+C 2432 4191 2432 4224 2394 4224 
+C 2387 4224 2374 4224 2323 4198 
+C 2099 4102 1837 4032 1517 4032 
+C 1325 4032 1037 4055 723 4191 
+C 653 4224 640 4224 634 4224 
+C 602 4224 595 4217 595 4090 
+L 595 2231 
+C 595 2113 595 2080 659 2080 
+C 691 2080 704 2093 736 2139 
+C 941 2435 1222 2560 1542 2560 
+C 1766 2560 2246 2415 2246 1293 
+C 2246 1087 2246 716 2054 422 
+C 1894 159 1645 25 1370 25 
+C 947 25 518 319 403 812 
+C 429 806 480 793 506 793 
+C 589 793 749 838 749 1036 
+C 749 1209 627 1280 506 1280 
+C 358 1280 262 1190 262 1011 
+C 262 454 704 -128 1382 -128 
+C 2042 -128 2669 441 2669 1267 
+C 2669 2054 2170 2662 1549 2662 
+C 1222 2662 947 2540 730 2304 
+L 730 3750 
+z
+" transform="scale(0.015625)"/>
+     </defs>
+     <use xlink:href="#CMMI12-21" transform="scale(0.996264)"/>
+     <use xlink:href="#CMR17-3d" transform="translate(91.992355 0) scale(0.996264)"/>
+     <use xlink:href="#CMR17-32" transform="translate(191.381152 0) scale(0.996264)"/>
+     <use xlink:href="#CMMI12-3a" transform="translate(237.071629 0) scale(0.996264)"/>
+     <use xlink:href="#CMR17-35" transform="translate(264.168806 0) scale(0.996264)"/>
+    </g>
+   </g>
+   <g id="legend_1">
+    <g id="patch_7">
+     <path d="M 240.725695 74.450092 
+L 304.191272 74.450092 
+Q 306.191272 74.450092 306.191272 72.450092 
+L 306.191272 25.686116 
+Q 306.191272 23.686116 304.191272 23.686116 
+L 240.725695 23.686116 
+Q 238.725695 23.686116 238.725695 25.686116 
+L 238.725695 72.450092 
+Q 238.725695 74.450092 240.725695 74.450092 
+z
+" style="fill: #ffffff; opacity: 0.8; stroke: #cccccc; stroke-linejoin: miter"/>
+    </g>
+    <g id="line2d_1641">
+     <path d="M 242.725695 31.658097 
+L 252.725695 31.658097 
+L 262.725695 31.658097 
+" style="fill: none; stroke-dasharray: 1.5,2.475; stroke-dashoffset: 0; stroke: #808080; stroke-width: 1.5"/>
+    </g>
+    <g id="text_9">
+     <!-- $\log(\gamma)$ -->
+     <g transform="translate(270.725695 35.158097) scale(0.1 -0.1)">
+      <defs>
+       <path id="CMR17-28" d="M 1958 -1562 
+C 1958 -1556 1958 -1543 1939 -1524 
+C 1645 -1223 858 -403 858 1596 
+C 858 3595 1632 4408 1946 4729 
+C 1946 4735 1958 4748 1958 4767 
+C 1958 4787 1939 4800 1914 4800 
+C 1843 4800 1299 4325 986 3620 
+C 666 2909 576 2218 576 1603 
+C 576 1141 621 360 1005 -467 
+C 1312 -1133 1837 -1600 1914 -1600 
+C 1946 -1600 1958 -1588 1958 -1562 
+z
+" transform="scale(0.015625)"/>
+       <path id="CMR17-29" d="M 1683 1596 
+C 1683 2057 1638 2839 1254 3665 
+C 947 4332 422 4800 346 4800 
+C 326 4800 301 4793 301 4761 
+C 301 4748 307 4742 314 4729 
+C 621 4408 1402 3595 1402 1603 
+C 1402 -396 627 -1210 314 -1530 
+C 307 -1543 301 -1549 301 -1562 
+C 301 -1594 326 -1600 346 -1600 
+C 416 -1600 960 -1127 1274 -422 
+C 1594 289 1683 981 1683 1596 
+z
+" transform="scale(0.015625)"/>
+      </defs>
+      <use xlink:href="#CMR17-6c" transform="scale(0.996264)"/>
+      <use xlink:href="#CMR17-6f" transform="translate(24.871058 0) scale(0.996264)"/>
+      <use xlink:href="#CMR17-67" transform="translate(70.561536 0) scale(0.996264)"/>
+      <use xlink:href="#CMR17-28" transform="translate(117.553179 0) scale(0.996264)"/>
+      <use xlink:href="#CMMI12-d" transform="translate(152.833947 0) scale(0.996264)"/>
+      <use xlink:href="#CMR17-29" transform="translate(208.852515 0) scale(0.996264)"/>
+     </g>
+    </g>
+    <g id="line2d_1642">
+     <path d="M 242.725695 47.258375 
+L 252.725695 47.258375 
+L 262.725695 47.258375 
+" style="fill: none; stroke-dasharray: 5.55,2.4; stroke-dashoffset: 0; stroke: #808080; stroke-width: 1.5"/>
+    </g>
+    <g id="text_10">
+     <!-- $\log(\gamma^2)$ -->
+     <g transform="translate(270.725695 50.758375) scale(0.1 -0.1)">
+      <use xlink:href="#CMR17-6c" transform="scale(0.996264)"/>
+      <use xlink:href="#CMR17-6f" transform="translate(24.871058 0) scale(0.996264)"/>
+      <use xlink:href="#CMR17-67" transform="translate(70.561536 0) scale(0.996264)"/>
+      <use xlink:href="#CMR17-28" transform="translate(117.553179 0) scale(0.996264)"/>
+      <use xlink:href="#CMMI12-d" transform="translate(152.833947 0) scale(0.996264)"/>
+      <use xlink:href="#CMR17-32" transform="translate(208.852515 36.153639) scale(0.697382)"/>
+      <use xlink:href="#CMR17-29" transform="translate(241.333829 0) scale(0.996264)"/>
+     </g>
+    </g>
+    <g id="line2d_1643">
+     <path d="M 242.725695 63.514581 
+L 252.725695 63.514581 
+L 262.725695 63.514581 
+" style="fill: none; stroke: #808080; stroke-width: 1.5; stroke-linecap: square"/>
+    </g>
+    <g id="text_11">
+     <!-- $\frac{1}{4\tau}(\frac{dc}{c})^2$ -->
+     <g transform="translate(270.725695 67.014581) scale(0.1 -0.1)">
+      <defs>
+       <path id="CMMI12-1c" d="M 1837 2406 
+L 2899 2406 
+C 2982 2406 3194 2406 3194 2611 
+C 3194 2752 3072 2752 2957 2752 
+L 1197 2752 
+C 1050 2752 832 2752 538 2438 
+C 371 2253 166 1916 166 1878 
+C 166 1839 198 1827 237 1827 
+C 282 1827 288 1846 320 1884 
+C 653 2406 986 2406 1146 2406 
+L 1677 2406 
+L 1011 223 
+C 979 127 979 114 979 95 
+C 979 25 1024 -64 1152 -64 
+C 1350 -64 1382 108 1402 204 
+L 1837 2406 
+z
+" transform="scale(0.015625)"/>
+       <path id="CMMI12-64" d="M 3219 4255 
+C 3226 4281 3238 4319 3238 4351 
+C 3238 4416 3174 4416 3162 4416 
+C 3155 4416 2842 4390 2810 4383 
+C 2701 4377 2605 4364 2490 4358 
+C 2330 4345 2285 4339 2285 4223 
+C 2285 4159 2336 4159 2426 4159 
+C 2739 4159 2746 4103 2746 4040 
+C 2746 4002 2733 3951 2726 3932 
+L 2336 2394 
+C 2266 2560 2093 2816 1760 2816 
+C 1037 2816 256 1883 256 938 
+C 256 306 627 -64 1062 -64 
+C 1414 -64 1715 210 1894 421 
+C 1958 44 2259 -64 2451 -64 
+C 2643 -64 2797 51 2912 281 
+C 3014 498 3104 887 3104 913 
+C 3104 945 3078 970 3040 970 
+C 2982 970 2976 938 2950 842 
+C 2854 466 2733 64 2470 64 
+C 2285 64 2272 230 2272 357 
+C 2272 383 2272 517 2317 696 
+L 3219 4255 
+z
+M 1926 759 
+C 1894 651 1894 638 1805 517 
+C 1664 338 1382 64 1082 64 
+C 819 64 672 300 672 676 
+C 672 1028 870 1743 992 2011 
+C 1210 2458 1510 2687 1760 2687 
+C 2182 2687 2266 2164 2266 2113 
+C 2266 2107 2246 2024 2240 2011 
+L 1926 759 
+z
+" transform="scale(0.015625)"/>
+      </defs>
+      <use xlink:href="#CMR17-31" transform="translate(18.721831 39.226102) scale(0.697382)"/>
+      <use xlink:href="#CMR17-34" transform="translate(0 -34.355253) scale(0.697382)"/>
+      <use xlink:href="#CMMI12-1c" transform="translate(31.983182 -34.355253) scale(0.697382)"/>
+      <use xlink:href="#CMR17-28" transform="translate(70.622343 0) scale(0.996264)"/>
+      <use xlink:href="#CMMI12-64" transform="translate(107.098624 39.226102) scale(0.697382)"/>
+      <use xlink:href="#CMMI12-63" transform="translate(142.580831 39.226102) scale(0.697382)"/>
+      <use xlink:href="#CMMI12-63" transform="translate(124.839728 -34.355253) scale(0.697382)"/>
+      <use xlink:href="#CMR17-29" transform="translate(173.164476 0) scale(0.996264)"/>
+      <use xlink:href="#CMR17-32" transform="translate(208.445244 36.153639) scale(0.697382)"/>
+      <path d="M 0 22.914133 
+L 69.426829 22.914133 
+L 69.426829 26.899083 
+L 0 26.899083 
+L 0 22.914133 
+z
+"/>
+      <path d="M 107.098624 22.914133 
+L 171.968962 22.914133 
+L 171.968962 26.899083 
+L 107.098624 26.899083 
+L 107.098624 22.914133 
+z
+"/>
+     </g>
+    </g>
+   </g>
+  </g>
+ </g>
+ <defs>
+  <clipPath id="p64cfd15587">
+   <rect x="42.999859" y="18.686116" width="268.191412" height="172.473284"/>
+  </clipPath>
+ </defs>
+</svg>

@@ -33,8 +33,9 @@ end
 export Pjoint!
 function Pjoint!(t_off, t_on, d::OneBurstDecoyModel)
 
-    s1 = 1
-    s3, s4, s5 = [3,4,5]
+    st = d.start_state
+    hs = d.hitting_set
+    sum = 0
 
     # fpt densities
     mul!(d.aux_comp, d.W_comp, exp(t_off * d.D_comp))
@@ -45,9 +46,11 @@ function Pjoint!(t_off, t_on, d::OneBurstDecoyModel)
     mul!(d.P_set, d.aux_set, d.W_set_inv)
     mul!(d.F_set, d.Q_h_set, d.P_set)
 
-    d.Pjoint = max((d.F_comp[s1,s3] * d.F_set[s3,s1] 
-                  + d.F_comp[s1,s4] * d.F_set[s4,s1] 
-                  + d.F_comp[s1,s5] * d.F_set[s5,s1]), d.eps)
+    for s in hs
+        sum = sum + d.F_comp[st,s] * d.F_set[s,st] 
+    end
+
+    d.Pjoint = max(sum, d.eps)
 
     return d
 end
@@ -70,17 +73,20 @@ function Pon!(t_on, d::OneBurstDecoyModel)
     mul!(d.aux_comp, d.W_comp, d.D_aux)
     mul!(d.P_comp, d.aux_comp, d.W_comp_inv)
 
-    s1 = 1
-    s3, s4, s5 = [3,4,5]
+    st = d.start_state
+    hs = d.hitting_set
+    sum = 0
 
     # fpt densities
     mul!(d.aux_set, d.W_set, exp(t_on * d.D_set))
     mul!(d.P_set, d.aux_set, d.W_set_inv)
     mul!(d.F_set, d.Q_h_set, d.P_set)
 
-    d.Pon = max((d.P_comp[s1,s3] * d.F_set[s3,s1] 
-               + d.P_comp[s1,s4] * d.F_set[s4,s1] 
-               + d.P_comp[s1,s5] * d.F_set[s5,s1]), d.eps)
+    for s in hs
+        sum = sum + d.P_comp[st,s] * d.F_set[s,st] 
+    end
+
+    d.Pon = max(sum, d.eps)
 
     return d
 end
@@ -97,15 +103,20 @@ end
 export Poff!
 function Poff!(t_off, d::OneBurstDecoyModel)
 
-    s1 = 1
-    s3, s4, s5 = [3,4,5]
+    st = d.start_state
+    hs = d.hitting_set
+    sum = 0
 
     # fpt densities
     mul!(d.aux_comp, d.W_comp, exp(t_off * d.D_comp))
     mul!(d.P_comp, d.aux_comp, d.W_comp_inv)
     mul!(d.F_comp, d.Q_h_comp, d.P_comp)
 
-    d.Poff = max((d.F_comp[s1,s3] + d.F_comp[s1,s4] + d.F_comp[s1,s5]), d.eps)
+    for s in hs
+        sum = sum + d.F_comp[st,s]
+    end
+
+    d.Poff = max(sum, d.eps)
 
     return d
 end

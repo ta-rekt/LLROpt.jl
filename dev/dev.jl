@@ -1010,7 +1010,7 @@ let
 end 
 
 ## . - -- .- .-.- . .- .-- -.- .- .- --.-.... - -.-
-# DOING: exact integration of decoy circuit MLE
+# DOING: debugging decoy circuit MLE variance numerical integral
 
 function outer_integrand(t_on, d_c, d_cdc, m)
     integral, _ = quadgk(t -> inner_integrand(t, t_on, d_c, d_cdc, m), 
@@ -1126,6 +1126,8 @@ end
         cw = cw,
         gamma = gamma,
         ind_set = off_ind,
+        start_state = 1,
+        hitting_set = [3,4,5],
         eps = eps,
         reltol = reltol,
         maxevals = maxevals,
@@ -1140,21 +1142,23 @@ end
         cw = cw,
         gamma = gamma,
         ind_set = off_ind,
+        start_state = 1,
+        hitting_set = [3,4,5],
         eps = eps,
         reltol = reltol,
         maxevals = maxevals,
     )
 
-    initOneBurst!(d_c)
-    initOneBurst!(d_cdc)
+    initDecoys!(d_c)
+    initDecoys!(d_cdc)
 
     #                      kboff,   konb,    kuon,   kbon, koffu, kuoff, konu
-    d_c.logrates = log10.([0.0005,   1e-5,       1e-5,     1e-5,  1e-5,     0,   0])
+    d_c.logrates = log10.([0.0005,  1e-5,    1e-5,   1e-5, 1e-5,  0,     0])
     d_c.cr = 5
     d_c.cw = 1e-4
     d_c.gamma = 1
 
-    initOneBurst!(d_c)
+    initDecoys!(d_c)
 
     # testing Pon, Poff, and the partial Fishers
     integralOn, err = hquadrature(t -> t*Pon(t, d_c), 
@@ -1188,7 +1192,195 @@ let
 
     P_ss(m.Q)
 end
-# old
+
+## . - -- .- .-.- . .- .-- -.- .- .- --.-.... - -.-
+# DOING: adding EPR and marginal Fisher rates to dataset
+
+let 
+    inpath = "/home/tohme/.julia/dev/LLROpt/data/20250401/fir-cr-cw/ir_full_mix_vs_pure_pareto_pid"
+    outpath = "/home/tohme/.julia/dev/LLROpt/data/20250401/fir-cr-cw-ep-marginals/"
+    results_init = Dict()
+    nparams = 32
+    nstates = 6
+    nrates = 7
+    edges = [(1, 2), (2, 1), (1, 6), (6, 1), (4, 3), (3, 4), 
+             (4, 5), (5, 4), (6, 5), (4, 1), (2, 3), (1, 4)]
+    input_edges = [(1,2), (4,3)]
+    off_ind = BitArray([1,1,0,0,0,1])
+    maxevals = 100000
+    reltol = 1e-12
+    eps = 1e-30
+
+    for cpukey in range(1, stop=nparams)
+        infile = string(inpath, cpukey, ".json")
+        results_init = Dict()
+
+        open(infile, "r") do f
+            results_init = JSON.parse(f)
+        end
+
+        kc = string(cpukey)
+
+        for j in range(1, nparams)
+            kw = string(j)
+
+            logrates = results_init[kc]["1"][kw][1:nrates]
+            cr, gamma, cw = results_init[kc]["1"][kw][end-2:end]
+
+            global d_c = OneBurstDecoyModel(;
+                nstates = nstates,
+                edges = edges,
+                input_edges = input_edges,
+                logrates = logrates,
+                cr = cr,
+                cw = cw,
+                gamma = gamma,
+                ind_set = off_ind,
+                eps = eps,
+                reltol = reltol,
+                maxevals = maxevals,
+            )
+        
+            global d_cdc = OneBurstDecoyModel(;
+                nstates = nstates,
+                edges = edges,
+                input_edges = input_edges,
+                logrates = logrates,
+                cr = cr*1.1,
+                cw = cw,
+                gamma = gamma,
+                ind_set = off_ind,
+                eps = eps,
+                reltol = reltol,
+                maxevals = maxevals,
+            )
+
+            initOneBurst!(d_c)
+            initOneBurst!(d_cdc)
+
+            Foff = FisherRateOff(d_c, d_cdc)
+            Fon = FisherRateOn(d_c, d_cdc)
+
+            results_init[kc]["1"][kw][nrates+3] = Foff
+            results_init[kc]["1"][kw][nrates+4] = Fon
+            results_init[kc]["1"][kw][nrates+5] = EP_ss(d_c.Q)
+        end
+
+        file1 = string(outpath, "ir_acc_mix_vs_pure_pareto_pid$(cpukey).json")
+
+        open(file1, "w") do f
+            JSON.print(f, results_init, 4)
+        end
+    end
+end
+
+## . - -- .- .-.- . .- .-- -.- .- .- --.-.... - -.-
+# DOING: trying out 2 binding sites
+
+let
+    nstates = 6
+    edges = [(1, 2), (2, 1), (2, 3), (3, 2), (3, 4), (4, 5), 
+             (5, 4), (5, 6), (6, 5), (6, 1), (1, 6), (2, 5)]
+    input_edges = [(1,2), (2,3), (6,5), (5,4)]
+    off_ind = BitArray([1,1,1,0,0,0])
+    cr = 5
+    dc = cr / 100
+    beta = cr
+    gamma = 1  # integral blows up when this is smaller than 0.4 and cw=0...
+    cw = 1e-2
+    maxevals = 100000
+    reltol = 1e-12
+    eps = 1e-30
+
+    #                  kboff,   kuoff,  kbon,  kuon,  konu,  koffu, kon1b, kon2b
+    logrates = log10.([0.05,    0.2,    0.5,  1 ,     5,     1 ,    1 ,    1])
+
+    global d_c = OneBurstDecoyModel(;
+        nstates = nstates,
+        edges = edges,
+        input_edges = input_edges,
+        logrates = logrates,
+        cr = cr,
+        cw = cw,
+        gamma = gamma,
+        ind_set = off_ind,
+        start_state = 1,
+        hitting_set = [4,5,6],
+        eps = eps,
+        reltol = reltol,
+        maxevals = maxevals,
+    )
+
+    global d_cdc = OneBurstDecoyModel(;
+        nstates = nstates,
+        edges = edges,
+        input_edges = input_edges,
+        logrates = logrates,
+        cr = cr + dc,
+        cw = cw,
+        gamma = gamma,
+        ind_set = off_ind,
+        start_state = 1,
+        hitting_set = [4,5,6],
+        eps = eps,
+        reltol = reltol,
+        maxevals = maxevals,
+    )
+
+    init2bs!(d_c)
+    init2bs!(d_cdc)
+
+end
+
+
+## . - -- .- .-.- . .- .-- -.- .- .- --.-.... - -.-
+# DOING: generating trajs for figures
+
+let 
+    dirname = 20250404
+    c = 1
+    kmax = 5
+    kmin = 1e-5
+    kdl = 0.0888
+
+    kboff = kdl
+    kuoff = kmin
+    konb = kmax
+    koffb = kmin
+    kbon = kmin
+    kuon = kmax
+    konu = kmin
+    koffu = kmin
+    n = 1000
+    k = 1
+
+    llr_incrs = Vector{Float32}(undef, n)
+    llr_incrs_sub = Vector{Float32}(undef, k)
+
+    global m0 = LLROptModel(;
+        weighted_edges = [(1,3,kb), 
+                          (1,2,1e-5), 
+                          (2,4,1e-5), 
+                          (2,1,koff), 
+                          (3,1,1e-5), 
+                          (3,4,kon), 
+                          (4,2,ku), 
+                          (4,3,1e-5)],
+        input_edges = [(1,3), (2,4)],
+        on_ind = BitArray([0,1,0,1]),
+        c = c,
+        dc = c / 10,
+        n = n,
+        idist = ones(4) ./ 4,
+    )
+    init!(m0)
+
+
+end
+
+
+
+# old tests
 
     # print("\n")
     # show(tauOff(d_c))

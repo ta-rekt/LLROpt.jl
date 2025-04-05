@@ -81,7 +81,7 @@ function FisherRateOff(d_c::OneBurstDecoyModel, d_cdc::OneBurstDecoyModel)
     dc = d_cdc.cr - d_c.cr
 
     integral, err = hquadrature(t -> integrandOff(t, d_c, d_cdc), 
-                0, 30/d_c.maxeigval_set; reltol=d_c.reltol, maxevals=d_c.maxevals)
+                0, 30/d_c.maxeigval_comp; reltol=d_c.reltol, maxevals=d_c.maxevals)
 
     if err > 5e-3
         throw("Integral precision not met")
