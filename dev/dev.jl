@@ -1277,6 +1277,45 @@ end
 ## . - -- .- .-.- . .- .-- -.- .- .- --.-.... - -.-
 # DOING: trying out 2 binding sites
 
+global function tauOff2bs(d::OneBurstDecoyModel)
+    A = d_c.Q .* 1.0
+    b = -1.0 .* ones(d.nstates,1)
+    
+    for k in d._comp
+        A[k,:] .= 0.0
+        A[k,k] = 1.0
+        b[k] = 0.0
+    end
+    
+    return A \ b
+end
+
+global function tauOn2bs(d::OneBurstDecoyModel)
+    A = d_c.Q .* 1.0
+    b = -1.0 .* ones(d.nstates,1)
+    sum = 0
+
+    # hitting probabilities
+    tol = 1e-10
+    d.D_aux = Diagonal(map(x -> x < -tol ? 0.0 : (abs(x) <= tol ? 1.0 : Inf), d.D_comp))
+    mul!(d.aux_comp, d.W_comp, d.D_aux)
+    mul!(d.P_comp, d.aux_comp, d.W_comp_inv)
+    
+    for k in d._set
+        A[k,:] .= 0.0
+        A[k,k] = 1.0
+        b[k] = 0.0
+    end
+
+    mfpt_states = A \ b
+
+    for s in d.hitting_set
+        sum = sum + mfpt_states[s] * d.P_comp[d.start_state, s]
+    end
+    
+    return sum
+end
+
 let
     nstates = 6
     edges = [(1, 2), (2, 1), (2, 3), (3, 2), (3, 4), (4, 5), 
@@ -1286,14 +1325,12 @@ let
     cr = 5
     dc = cr / 100
     beta = cr
-    gamma = 1  # integral blows up when this is smaller than 0.4 and cw=0...
-    cw = 1e-2
     maxevals = 100000
     reltol = 1e-12
     eps = 1e-30
 
-    #                  kboff,   kuoff,  kbon,  kuon,  konu,  koffu, kon1b, kon2b
-    logrates = log10.([0.05,    0.2,    0.5,  1 ,     5,     1 ,    1 ,    1])
+    #                  kboff,  kuoff,  kbon,  kuon,  konu,  koffu, kon1b, kon2b
+    logrates = log10.([0.05,   0.2,    0.5,   1 ,    5,     1 ,    1 ,    1])
 
     global d_c = OneBurstDecoyModel(;
         nstates = nstates,
@@ -1301,8 +1338,8 @@ let
         input_edges = input_edges,
         logrates = logrates,
         cr = cr,
-        cw = cw,
-        gamma = gamma,
+        cw = nothing,
+        gamma = nothing,
         ind_set = off_ind,
         start_state = 1,
         hitting_set = [4,5,6],
@@ -1317,8 +1354,8 @@ let
         input_edges = input_edges,
         logrates = logrates,
         cr = cr + dc,
-        cw = cw,
-        gamma = gamma,
+        cw = nothing,
+        gamma = nothing,
         ind_set = off_ind,
         start_state = 1,
         hitting_set = [4,5,6],
@@ -1329,6 +1366,18 @@ let
 
     init2bs!(d_c)
     init2bs!(d_cdc)
+
+    # testing Pon, Poff, and the partial Fishers
+    integralOff, err = hquadrature(t -> t*Poff(t, d_c), 
+        0, 30/d_c.maxeigval_set; reltol=d_c.reltol, maxevals=d_c.maxevals)
+
+    integralOn, err = hquadrature(t -> t*Pon(t, d_c), 
+        0, 30/d_c.maxeigval_set; reltol=d_c.reltol, maxevals=d_c.maxevals)
+
+    global tauOff_ = tauOff2bs(d_c)[1]
+    global tauOn_ = tauOn2bs(d_c)[1]
+    @assert isapprox(integralOff, tauOff_, rtol=1e-8)
+    @assert isapprox(integralOn, tauOn_, rtol=1e-8)
 
 end
 
