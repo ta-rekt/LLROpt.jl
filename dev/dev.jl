@@ -1277,51 +1277,53 @@ end
 ## . - -- .- .-.- . .- .-- -.- .- .- --.-.... - -.-
 # DOING: trying out 2 binding sites
 
-global function tauOff2bs(d::OneBurstDecoyModel)
-    A = d_c.Q .* 1.0
-    b = -1.0 .* ones(d.nstates,1)
+# global function tauOff2bs(d::OneBurstDecoyModel)
+#     A = d_c.Q .* 1.0
+#     b = -1.0 .* ones(d.nstates,1)
     
-    for k in d._comp
-        A[k,:] .= 0.0
-        A[k,k] = 1.0
-        b[k] = 0.0
-    end
+#     for k in d._comp
+#         A[k,:] .= 0.0
+#         A[k,k] = 1.0
+#         b[k] = 0.0
+#     end
     
-    return A \ b
-end
+#     return A \ b
+# end
 
-global function tauOn2bs(d::OneBurstDecoyModel)
-    A = d_c.Q .* 1.0
-    b = -1.0 .* ones(d.nstates,1)
-    sum = 0
+# global function tauOn2bs(d::OneBurstDecoyModel)
+#     A = d_c.Q .* 1.0
+#     b = -1.0 .* ones(d.nstates,1)
+#     sum = 0
 
-    # hitting probabilities
-    tol = 1e-10
-    d.D_aux = Diagonal(map(x -> x < -tol ? 0.0 : (abs(x) <= tol ? 1.0 : Inf), d.D_comp))
-    mul!(d.aux_comp, d.W_comp, d.D_aux)
-    mul!(d.P_comp, d.aux_comp, d.W_comp_inv)
+#     # hitting probabilities
+#     tol = 1e-10
+#     d.D_aux = Diagonal(map(x -> x < -tol ? 0.0 : (abs(x) <= tol ? 1.0 : Inf), d.D_comp))
+#     mul!(d.aux_comp, d.W_comp, d.D_aux)
+#     mul!(d.P_comp, d.aux_comp, d.W_comp_inv)
     
-    for k in d._set
-        A[k,:] .= 0.0
-        A[k,k] = 1.0
-        b[k] = 0.0
-    end
+#     for k in d._set
+#         A[k,:] .= 0.0
+#         A[k,k] = 1.0
+#         b[k] = 0.0
+#     end
 
-    mfpt_states = A \ b
+#     mfpt_states = A \ b
 
-    for s in d.hitting_set
-        sum = sum + mfpt_states[s] * d.P_comp[d.start_state, s]
-    end
+#     for s in d.hitting_set
+#         sum = sum + mfpt_states[s] * d.P_comp[d.start_state, s]
+#     end
     
-    return sum
-end
+#     return sum
+# end
 
 let
     nstates = 6
-    edges = [(1, 2), (2, 1), (2, 3), (3, 2), (3, 4), (4, 5), 
-             (5, 4), (5, 6), (6, 5), (6, 1), (1, 6), (2, 5)]
-    input_edges = [(1,2), (2,3), (6,5), (5,4)]
-    off_ind = BitArray([1,1,1,0,0,0])
+    # edges = [(1, 2), (2, 1), (2, 3), (3, 2), (3, 4), (4, 5), 
+            #  (5, 4), (5, 6), (6, 5), (6, 1), (1, 6), (2, 5)]
+    edges = [(5, 1), (1, 5), (2, 6), (6, 2), (1, 2), (1, 3), 
+             (2, 4), (3, 1), (3, 4), (4, 2), (6, 5), (5, 6)]
+    input_edges = [(5,1), (1,3), (6,2), (2,4)]
+    off_ind = BitArray([1,0,1,0,1,0])
     cr = 5
     dc = cr / 100
     beta = cr
@@ -1341,8 +1343,8 @@ let
         cw = nothing,
         gamma = nothing,
         ind_set = off_ind,
-        start_state = 1,
-        hitting_set = [4,5,6],
+        start_state = 5,
+        hitting_set = [6,2,4],
         eps = eps,
         reltol = reltol,
         maxevals = maxevals,
@@ -1357,8 +1359,8 @@ let
         cw = nothing,
         gamma = nothing,
         ind_set = off_ind,
-        start_state = 1,
-        hitting_set = [4,5,6],
+        start_state = 5,
+        hitting_set = [6,2,4],
         eps = eps,
         reltol = reltol,
         maxevals = maxevals,
@@ -1374,8 +1376,12 @@ let
     integralOn, err = hquadrature(t -> t*Pon(t, d_c), 
         0, 30/d_c.maxeigval_set; reltol=d_c.reltol, maxevals=d_c.maxevals)
 
-    global tauOff_ = tauOff2bs(d_c)[1]
-    global tauOn_ = tauOn2bs(d_c)[1]
+    @show tauOff_ = tauOff2bs(d_c)[5]
+    @show integralOff
+    @show tauOn_ = tauOn2bs(d_c)
+    @show integralOn
+    @assert isapprox(tauOff_, 0.2630071599045347, rtol=1e-8)
+    @assert isapprox(tauOn_, 12.433174224343679, rtol=1e-8)    
     @assert isapprox(integralOff, tauOff_, rtol=1e-8)
     @assert isapprox(integralOn, tauOn_, rtol=1e-8)
 

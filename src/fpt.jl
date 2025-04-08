@@ -1,33 +1,45 @@
 export tauOn
 function tauOn(d::OneBurstDecoyModel)
-    cr, cw, gamma = (d.cr, d.cw, d.gamma)
-    logrates = d.logrates
-    omega = cw / cr
-    kboff, konb, kuon, kbon, koffu, kuoff, konu = 10 .^ logrates
+    A = d.Q .* 1.0
+    b = -1.0 .* ones(d.nstates,1)
+    sum = 0
 
-    return ((konu*(konb + kuoff)*kuon*gamma*(konb + kuoff*gamma) 
-            + cr^2*kboff*kbon*konb*(gamma + omega)*(konb*(1 + omega) + kuoff*(gamma + omega)) 
-            + cr*(kbon*konu*(konb + kuoff)*(konb + kuoff*gamma)*(gamma + omega) 
-            + kboff*konb*(konb*kuon*gamma*(1 + omega) + koffu*konb*(gamma + omega) 
-            + kuoff*kuon*gamma*(gamma + omega) + koffu*kuoff*(gamma^2 + omega))))
-            /(koffu*kuon*gamma*(konu*(konb + kuoff)*(konb + kuoff*gamma) 
-            + cr*kboff*konb*(konb*(1 + omega) + kuoff*(gamma + omega)))))
+    # hitting probabilities
+    tol = 1e-10
+    d.D_aux = Diagonal(map(x -> x < -tol ? 0.0 : (abs(x) <= tol ? 1.0 : Inf), d.D_comp))
+    mul!(d.aux_comp, d.W_comp, d.D_aux)
+    mul!(d.P_comp, d.aux_comp, d.W_comp_inv)
+    
+    for k in d._set
+        A[k,:] .= 0.0
+        A[k,k] = 1.0
+        b[k] = 0.0
+    end
+
+    mfpt_states = A \ b
+
+    for s in d.hitting_set
+        sum = sum + mfpt_states[s] * d.P_comp[d.start_state, s]
+    end
+    
+    return sum
 end
 
 
 export tauOff
 function tauOff(d::OneBurstDecoyModel)
-    cr, cw, gamma = (d.cr, d.cw, d.gamma)
-    logrates = d.logrates
-    omega = cw / cr
-    kboff, konb, kuon, kbon, koffu, kuoff, konu = 10 .^ logrates
+    A = d.Q .* 1.0
+    b = -1.0 .* ones(d.nstates,1)
+    
+    for k in d._comp
+        A[k,:] .= 0.0
+        A[k,k] = 1.0
+        b[k] = 0.0
+    end
+    
+    mfpt_states =  A \ b
 
-    numerator = (konb + kuoff)*(konb + kuoff*gamma) + cr*kboff*(konb*(1 + omega) + kuoff*(gamma + omega))
-    denominator = (konu*(konb + kuoff)*(konb + kuoff*gamma) 
-                   + cr*kboff*konb*(konb*(1 + omega) + kuoff*(gamma + omega)))
-     
-    return numerator / denominator
-
+    return mfpt_states[d.start_state]
 end
 
 export Pjoint!

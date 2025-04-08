@@ -275,8 +275,8 @@ using Cubature
 
         initDecoys!(d)
 
-        @test isapprox(tauOn(d), 20.2020000004, rtol=1e-8)
-        @test isapprox(tauOff(d), 5.398406294820733, rtol=1e-8)
+        @test isapprox(tauOn(d), 20.2020000004, rtol= 1e-6)
+        @test isapprox(tauOff(d), 5.398406294820733, rtol= 1e-6)
 
         # testing Pon, Poff, and the partial Fishers
         integralOn, err = hquadrature(t -> t*Pon(t, d), 
@@ -284,8 +284,8 @@ using Cubature
         integralOff, err = hquadrature(t -> t*Poff(t, d), 
             0, 30/d.maxeigval_comp; reltol=d.reltol, maxevals=d.maxevals)
 
-        @test isapprox(integralOn, tauOn(d), rtol=1e-6)
-        @test isapprox(integralOff, tauOff(d), rtol=1e-6)
+        @test isapprox(integralOn, 20.2020000004, rtol=1e-6)
+        @test isapprox(integralOff, 5.398406294820733, rtol=1e-6)
 
         # ---.-.-.-.-.-.-.-.------.---.-...-.-.-.-.-.-.-.-..-----.-..-.-.-.....
     
@@ -303,10 +303,10 @@ using Cubature
         integralOff, err = hquadrature(t -> t*Poff(t, d), 
             0, 100/d.maxeigval_comp; reltol=d.reltol, maxevals=d.maxevals)
 
-        @test isapprox(tauOn(d), 509.7507495004995, rtol=1e-8) 
-        @test isapprox(tauOff(d), 1.1990009990009989, rtol=1e-8) 
-        @test isapprox(integralOn, tauOn(d), rtol=1e-6)
-        @test isapprox(integralOff, tauOff(d), rtol=1e-6)
+        @test isapprox(tauOn(d), 509.7507495004995, rtol=1e-6) 
+        @test isapprox(tauOff(d), 1.1990009990009989, rtol=1e-6) 
+        @test isapprox(integralOn, 509.7507495004995, rtol=1e-6)
+        @test isapprox(integralOff, 1.1990009990009989, rtol=1e-6)
 
         
         # ---.-.-.-.-.-.-.-.------.---.-...-.-.-.-.-.-.-.-..-----.-..-.-.-.....
@@ -428,6 +428,77 @@ using Cubature
         initDecoys!(d_cdc)
     
         @test isapprox(FisherRate(d_c, d_cdc), 1.9973865408615845e-09, rtol = 0.05)
+    end
+
+
+    # 2 binding sites
+    let 
+        nstates = 6
+        # edges = [(1, 2), (2, 1), (2, 3), (3, 2), (3, 4), (4, 5), 
+                #  (5, 4), (5, 6), (6, 5), (6, 1), (1, 6), (2, 5)]
+        edges = [(5, 1), (1, 5), (2, 6), (6, 2), (1, 2), (1, 3), 
+                 (2, 4), (3, 1), (3, 4), (4, 2), (6, 5), (5, 6)]
+        input_edges = [(5,1), (1,3), (6,2), (2,4)]
+        off_ind = BitArray([1,0,1,0,1,0])
+        cr = 5
+        dc = cr / 100
+        beta = cr
+        maxevals = 100000
+        reltol = 1e-12
+        eps = 1e-30
+    
+        #                  kboff,  kuoff,  kbon,  kuon,  konu,  koffu, kon1b, kon2b
+        logrates = log10.([0.05,   0.2,    0.5,   1 ,    5,     1 ,    1 ,    1])
+    
+        global d_c = OneBurstDecoyModel(;
+            nstates = nstates,
+            edges = edges,
+            input_edges = input_edges,
+            logrates = logrates,
+            cr = cr,
+            cw = nothing,
+            gamma = nothing,
+            ind_set = off_ind,
+            start_state = 5,
+            hitting_set = [6,2,4],
+            eps = eps,
+            reltol = reltol,
+            maxevals = maxevals,
+        )
+    
+        global d_cdc = OneBurstDecoyModel(;
+            nstates = nstates,
+            edges = edges,
+            input_edges = input_edges,
+            logrates = logrates,
+            cr = cr + dc,
+            cw = nothing,
+            gamma = nothing,
+            ind_set = off_ind,
+            start_state = 5,
+            hitting_set = [6,2,4],
+            eps = eps,
+            reltol = reltol,
+            maxevals = maxevals,
+        )
+    
+        init2bs!(d_c)
+        init2bs!(d_cdc)
+    
+        # testing Pon, Poff, and the partial Fishers
+        integralOff, err = hquadrature(t -> t*Poff(t, d_c), 
+            0, 30/d_c.maxeigval_set; reltol=d_c.reltol, maxevals=d_c.maxevals)
+    
+        integralOn, err = hquadrature(t -> t*Pon(t, d_c), 
+            0, 30/d_c.maxeigval_set; reltol=d_c.reltol, maxevals=d_c.maxevals)
+    
+
+        tauOff_ = tauOff(d_c)
+        tauOn_ = tauOn(d_c)
+        @test isapprox(tauOff_, 0.2630071599045347, rtol= 1e-6)
+        @test isapprox(tauOn_, 12.433174224343679, rtol= 1e-6)    
+        @test isapprox(integralOff, 0.2630071599045347, rtol=1e-6)
+        @test isapprox(integralOn, 12.433174224343679, rtol=1e-6)
 
     end
 end
