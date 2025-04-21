@@ -1105,17 +1105,34 @@ end
              (4, 5), (5, 4), (6, 5), (4, 1), (2, 3), (1, 4)]
     input_edges = [(1,2), (4,3)]
     off_ind = BitArray([1,1,0,0,0,1])
-    cr = 5
-    dc = cr / 100
+    # cr = 0.06309573
+    cr = 0.01
+    dc = 0.1*cr
     beta = cr
-    gamma = 1  # integral blows up when this is smaller than 0.4 and cw=0...
-    cw = 1e-2
+    gamma = 10  # integral blows up when this is smaller than 0.4 and cw=0...
+    omega = 0.1
+    cw = omega * cr
     maxevals = 100000
     reltol = 1e-12
     eps = 1e-30
 
-    #                        kboff,   konb,    kuon,   kbon, koffu, kuoff, konu
-    logrates = log10.([0.0502,  0.2,  0.05,  1e-5, 5,     1e-5,     1e-5])
+    #                 kboff,   konb,    kuon,   kbon, koffu, kuoff, konu
+    # logrates = log10.([0.0502,  0.2,  0.05,  1e-5, 5,     1e-5,     1e-5])
+    logrates = [-1.9100064,
+                -3.9514933,
+                -2.1249847,
+                -1.1175009,
+                -0.3611458,
+                -2.6680863,
+                0.6675018]  # overshooting
+
+    # logrates = [-1.0516309,
+    #             0.4808308,
+    #             -0.018236682,
+    #             -2.2916977,
+    #             0.63700706,
+    #             -3.9988296,
+    #             -3.993806]  # not overshooting
 
     global d_c = OneBurstDecoyModel(;
         nstates = nstates,
@@ -1152,22 +1169,41 @@ end
     initDecoys!(d_c)
     initDecoys!(d_cdc)
 
-    #                      kboff,   konb,    kuon,   kbon, koffu, kuoff, konu
-    d_c.logrates = log10.([0.0005,  1e-5,    1e-5,   1e-5, 1e-5,  0,     0])
-    d_c.cr = 5
-    d_c.cw = 1e-4
-    d_c.gamma = 1
+    t_off, t_on = 1e-6, 100
 
-    initDecoys!(d_c)
+    # Pjoint!(t_off, t_on, d_c)
+    # Pjoint!(t_off, t_on, d_cdc)
 
-    # testing Pon, Poff, and the partial Fishers
-    integralOn, err = hquadrature(t -> t*Pon(t, d_c), 
-        0, 1000/d_c.maxeigval_set; reltol=d_c.reltol, maxevals=d_c.maxevals)
+    # d_c.Pjoint * (log(d_c.Pjoint/d_cdc.Pjoint))
 
-    @assert isapprox(integralOn, tauOn(d_c), rtol=1e-6)
-    @show integralOn
-    @show tauOn(d_c)
-    # Pon(0, d_c)
+    @show FisherRate(d_c, d_cdc)
+    # @show FisherRateOff(d_c, d_cdc)
+    # @show FisherRateOn(d_c, d_cdc)
+    @show 0.0888 * cr
+
+    # global tvals = range(0,10/d_c.maxeigval_comp,length=1000)
+    # global density = [Pjoint(t_off, t, d_c)*log(Pjoint(t_off, t, d_c)/Pjoint(t_off, t, d_cdc)) 
+    #                     for t in tvals]
+
+    tauOffVal = tauOff(d_c)
+    tauOnVal = tauOn(d_c)
+    tau = tauOnVal + tauOffVal
+    # dc = d_cdc.cr - d_c.cr
+
+    integral, err = hcubature(t -> integrand(t, d_c, d_cdc), 
+        [0,0], [2/d_c.maxeigval_comp, 2/d_c.maxeigval_set]; 
+        reltol=d_c.reltol, maxevals=d_c.maxevals)
+
+    @show err
+    @show 2 * max(integral, 0) * (d_c.cr)^2 / tau
+
+    # # testing Pon, Poff, and the partial Fishers
+    # integralOff, err = hquadrature(t -> t*Poff(t, d_c), 
+    #     0, 1000/d_c.maxeigval_set; reltol=d_c.reltol, maxevals=d_c.maxevals)
+
+    # @show integralOff
+    # @show tauOff(d_c)
+    # @assert isapprox(integralOff, tauOff(d_c), rtol=1e-6)
 
 end
 
@@ -1277,62 +1313,32 @@ end
 ## . - -- .- .-.- . .- .-- -.- .- .- --.-.... - -.-
 # DOING: trying out 2 binding sites
 
-# global function tauOff2bs(d::OneBurstDecoyModel)
-#     A = d_c.Q .* 1.0
-#     b = -1.0 .* ones(d.nstates,1)
-    
-#     for k in d._comp
-#         A[k,:] .= 0.0
-#         A[k,k] = 1.0
-#         b[k] = 0.0
-#     end
-    
-#     return A \ b
-# end
-
-# global function tauOn2bs(d::OneBurstDecoyModel)
-#     A = d_c.Q .* 1.0
-#     b = -1.0 .* ones(d.nstates,1)
-#     sum = 0
-
-#     # hitting probabilities
-#     tol = 1e-10
-#     d.D_aux = Diagonal(map(x -> x < -tol ? 0.0 : (abs(x) <= tol ? 1.0 : Inf), d.D_comp))
-#     mul!(d.aux_comp, d.W_comp, d.D_aux)
-#     mul!(d.P_comp, d.aux_comp, d.W_comp_inv)
-    
-#     for k in d._set
-#         A[k,:] .= 0.0
-#         A[k,k] = 1.0
-#         b[k] = 0.0
-#     end
-
-#     mfpt_states = A \ b
-
-#     for s in d.hitting_set
-#         sum = sum + mfpt_states[s] * d.P_comp[d.start_state, s]
-#     end
-    
-#     return sum
-# end
-
 let
     nstates = 6
-    # edges = [(1, 2), (2, 1), (2, 3), (3, 2), (3, 4), (4, 5), 
-            #  (5, 4), (5, 6), (6, 5), (6, 1), (1, 6), (2, 5)]
     edges = [(5, 1), (1, 5), (2, 6), (6, 2), (1, 2), (1, 3), 
              (2, 4), (3, 1), (3, 4), (4, 2), (6, 5), (5, 6)]
     input_edges = [(5,1), (1,3), (6,2), (2,4)]
     off_ind = BitArray([1,0,1,0,1,0])
-    cr = 5
+    cr = 50
     dc = cr / 100
     beta = cr
     maxevals = 100000
     reltol = 1e-12
     eps = 1e-30
+    kmin = 1e-5
+    kmax = 5
+    kdl = 0.0888
 
-    #                  kboff,  kuoff,  kbon,  kuon,  konu,  koffu, kon1b, kon2b
-    logrates = log10.([0.05,   0.2,    0.5,   1 ,    5,     1 ,    1 ,    1])
+    #                  kboff,    kuoff,  kbon,  kuon,  konu,  koffu,  kon1b,  kon2b
+    # logrates = log10.([kmax/80, kmin,   kmin,  kmax , kmin,  kmax,   kmin,   kmax])
+    logrates = [-1.0515946,
+                0.69419923,
+                -3.9978771,
+                0.69,
+                0.6989699,
+                0.69876504,
+                -3.9999611,
+                -3.986354]
 
     global d_c = OneBurstDecoyModel(;
         nstates = nstates,
@@ -1371,68 +1377,23 @@ let
 
     # testing Pon, Poff, and the partial Fishers
     integralOff, err = hquadrature(t -> t*Poff(t, d_c), 
-        0, 30/d_c.maxeigval_set; reltol=d_c.reltol, maxevals=d_c.maxevals)
+        0, 30/d_c.maxeigval_comp; reltol=d_c.reltol, maxevals=d_c.maxevals)
 
     integralOn, err = hquadrature(t -> t*Pon(t, d_c), 
         0, 30/d_c.maxeigval_set; reltol=d_c.reltol, maxevals=d_c.maxevals)
 
-    @show tauOff_ = tauOff2bs(d_c)[5]
-    @show integralOff
-    @show tauOn_ = tauOn2bs(d_c)
-    @show integralOn
-    @assert isapprox(tauOff_, 0.2630071599045347, rtol=1e-8)
-    @assert isapprox(tauOn_, 12.433174224343679, rtol=1e-8)    
-    @assert isapprox(integralOff, tauOff_, rtol=1e-8)
-    @assert isapprox(integralOn, tauOn_, rtol=1e-8)
+    @show tauOff_ = tauOff(d_c)
+    @show integralOff/tauOff_
+    @show tauOn_ = tauOn(d_c)
+    @show integralOn/tauOn_
+    # @assert isapprox(tauOff_, 0.2630071599045347, rtol=1e-8)
+    # @assert isapprox(tauOn_, 12.433174224343679, rtol=1e-8)    
+    @assert isapprox(integralOff/tauOff_, 1.0, rtol=1e-6)
+    @assert isapprox(integralOn/tauOn_, 1.0, rtol=1e-6)
+
+    FisherRate(d_c, d_cdc)
 
 end
-
-
-## . - -- .- .-.- . .- .-- -.- .- .- --.-.... - -.-
-# DOING: generating trajs for figures
-
-let 
-    dirname = 20250404
-    c = 1
-    kmax = 5
-    kmin = 1e-5
-    kdl = 0.0888
-
-    kboff = kdl
-    kuoff = kmin
-    konb = kmax
-    koffb = kmin
-    kbon = kmin
-    kuon = kmax
-    konu = kmin
-    koffu = kmin
-    n = 1000
-    k = 1
-
-    llr_incrs = Vector{Float32}(undef, n)
-    llr_incrs_sub = Vector{Float32}(undef, k)
-
-    global m0 = LLROptModel(;
-        weighted_edges = [(1,3,kb), 
-                          (1,2,1e-5), 
-                          (2,4,1e-5), 
-                          (2,1,koff), 
-                          (3,1,1e-5), 
-                          (3,4,kon), 
-                          (4,2,ku), 
-                          (4,3,1e-5)],
-        input_edges = [(1,3), (2,4)],
-        on_ind = BitArray([0,1,0,1]),
-        c = c,
-        dc = c / 10,
-        n = n,
-        idist = ones(4) ./ 4,
-    )
-    init!(m0)
-
-
-end
-
 
 
 # old tests

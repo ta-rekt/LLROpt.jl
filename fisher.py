@@ -170,7 +170,7 @@ def VMLE(logrates, c, dc):
     """
     Computes the SPRT drift for MLE estimation
     """
-    kboff, kbon, konb, kuon, koffu = 10**logrates
+    kboff, kbon, konb, kuon, koffu = 10**np.array(logrates)
 
     tauon = 1/koffu + 1/kuon + c*kbon/(koffu*kuon)
     tauoff = 1/(c*kboff) + 1/konb
@@ -191,3 +191,46 @@ def VMLE(logrates, c, dc):
 def FisherRate(logrates, c, dc):
 
     return - VMLE(logrates, c, dc) * 2 * (c/dc)**2
+
+
+def VonMLE(logrates, c, dc):
+    """
+    Computes the SPRT drift for MLE estimation
+    """
+    kboff, kbon, konb, kuon, koffu = 10**np.array(logrates)
+
+    tauon = 1/koffu + 1/kuon + c*kbon/(koffu*kuon)
+    tauoff = 1/(c*kboff) + 1/konb
+    tau = tauon + tauoff
+
+    if c < 40:
+        ion = 0
+    else:
+        ion = Ion(c, koffu, kuon, kbon)
+
+    return - 0.5*dc**2*(ion) / tau
+
+def VoffMLE(logrates, c, dc):
+    """
+    Computes the SPRT drift for MLE estimation
+    """
+    kboff, kbon, konb, kuon, koffu = 10**np.array(logrates)
+
+    tauon = 1/koffu + 1/kuon + c*kbon/(koffu*kuon)
+    tauoff = 1/(c*kboff) + 1/konb
+    tau = tauon + tauoff
+
+    if c > 1e4:
+        ioff = 0
+    else:
+        ioff = Ioff(c, kboff, konb)
+
+    return - 0.5*dc**2*(ioff) / tau
+
+
+def FisherRateOn(logrates, c, dc):
+    return - VonMLE(logrates, c, dc) * 2 * (c/dc)**2
+
+
+def FisherRateOff(logrates, c, dc):
+    return - VoffMLE(logrates, c, dc) * 2 * (c/dc)**2

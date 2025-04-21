@@ -32,8 +32,8 @@ off_ind = BitArray([1,1,0,0,0,1])
 # beta = cr
 # cw = 1e-3
 gamma = 1 
-maxevals = 1000
-reltol = 1e-10
+maxevals = 100000
+reltol = 1e-12
 eps = 1e-30
 N = 1   # legacy parameter, number of samples once optima have been found
 n = 1
@@ -53,6 +53,8 @@ m1 = OneBurstDecoyModel(;
     cr = nothing,
     cw = nothing,
     gamma = nothing,
+    start_state = 1,
+    hitting_set = [3,4,5],
     ind_set = off_ind,
     eps = eps,
     reltol = reltol,
@@ -67,6 +69,8 @@ m2 = OneBurstDecoyModel(;
     cr = nothing,
     cw = nothing,
     gamma = nothing,
+    start_state = 1,
+    hitting_set = [3,4,5],
     ind_set = off_ind,
     eps = eps,
     reltol = reltol,
@@ -81,7 +85,7 @@ opt_alg = BBO_adaptive_de_rand_1_bin_radiuslimited()
 # opt_alg = Evolutionary.CMAES(μ = 5, λ = 10, sigma0 = 1)
 
 maxiters_acc = 30000
-maxiters_full = 1500
+maxiters_full = 2000
 whichf = "full"
 fixed_conc = false   # is concentration fixed, or are we sweeping over it?
 
@@ -90,13 +94,13 @@ fixed_conc = false   # is concentration fixed, or are we sweeping over it?
 # betasn = map(x->-tan(x), range(0*angle_incr, stop=0.5*angle_incr, length=128))
 # betasp = map(x->tan(x), range(0*angle_incr, stop=1*angle_incr, length=128))
 # betas = vcat(betasn, betasp)
-# betas = 10 .^ range(-1, stop=2, length=16)
-betas = [50]
+betas = 10 .^ range(-1, stop=2, length=32)
+# betas = [0.05]
 nparams = length(betas)
 
 ### Other parameters
-gammas = [10]
-wvals = [100]
+gammas = [1.5, 5]
+wvals = [0.1, 2, 10]
 
 
 ### objective functions
@@ -135,8 +139,8 @@ end
     m2.gamma = gamma
     m2.logrates = logrates
 
-    initOneBurst!(m1)
-    initOneBurst!(m2)
+    initDecoys!(m1)
+    initDecoys!(m2)
 
     # print(logrates)
     EP = EP_ss(m1.Q)

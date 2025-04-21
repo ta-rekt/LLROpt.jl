@@ -113,7 +113,7 @@ let
                         xinit = Vector{Float64}(xinit)
                     end
 
-                    args_full = [m1, m2, beta, gamma, w]
+                    args_full = [m1, m2, beta, gamma, w*beta]
                     targetfun_full(x, p) = target_full(x, args_full...)[1]
                     ir_full_mix(x) = target_full(x, args_full...)[2]
                     ir_full_pure(x) = target_full(x, args_full...)[3]
