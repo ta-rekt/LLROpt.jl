@@ -219,6 +219,65 @@ using Cubature
     end
 
     ## ----.-.-.--....-.---.-..-.-.-.-.-.--.-.-.-----.--
+    # Pon, Poff, Pjoint
+    let 
+        #                 kboff,   konb,  kuon,  kbon, koffu, kuoff, konu
+        logrates = log10.([0.0502,  0.2,  0.05,  1e-5, 5,     0,     0])
+
+        edges = [(1, 2), (2, 1), (1, 6), (6, 1), (4, 3), (3, 4), 
+                (4, 5), (5, 4), (6, 5), (4, 1), (2, 3), (1, 4)]
+        input_edges = [(1,2), (4,3)]
+        off_ind = BitArray([1,1,0,0,0,1])
+        on_ind = BitArray([0,0,1,1,1,0])
+        idist = ones(6) ./ 6
+        n = 1
+        k = 1
+        cr = 50
+        dc = cr / 100
+        beta = cr
+        gamma = 1  # integral blows up when this is smaller than 0.4 and cw=0...
+        cw = 1e-5
+        eps = 1e-30
+        reltol = 1e-12
+        maxevals = 100000
+
+        d = OneBurstDecoyModel(;
+            nstates = 6,
+            edges = edges,
+            input_edges = input_edges,
+            logrates = logrates,
+            cr = cr,
+            cw = cw,
+            gamma = gamma,
+            ind_set = off_ind,
+            start_state = 1,
+            hitting_set = [3,4,5],
+            eps = eps,
+            reltol = reltol,
+            maxevals = maxevals,
+        )
+
+        ddc = OneBurstDecoyModel(;
+            nstates = 6,
+            edges = edges,
+            input_edges = input_edges,
+            logrates = logrates,
+            cr = cr + dc,
+            cw = cw,
+            gamma = gamma,
+            ind_set = off_ind,
+            start_state = 1,
+            hitting_set = [3,4,5],
+            eps = eps,
+            reltol = reltol,
+            maxevals = maxevals,
+        )
+
+        initDecoys!(d)
+
+    end
+
+    ## ----.-.-.--....-.---.-..-.-.-.-.-.--.-.-.-----.--
     # On, Off first passage times and means
     let 
         #                 kboff,   konb,  kuon,  kbon, koffu, kuoff, konu
@@ -321,7 +380,7 @@ using Cubature
 
         # testing Pon, Poff, and the partial Fishers
         integralOn, err = hquadrature(t -> t*Pon(t, d), 
-            0, 1000/d.maxeigval_set; reltol=d.reltol, maxevals=d.maxevals)
+            0, 100/d.maxeigval_set; reltol=d.reltol, maxevals=d.maxevals)
         integralOff, err = hquadrature(t -> t*Poff(t, d), 
             0, 100/d.maxeigval_comp; reltol=d.reltol, maxevals=d.maxevals)
 

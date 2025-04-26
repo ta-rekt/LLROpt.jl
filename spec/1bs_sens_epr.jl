@@ -6,8 +6,8 @@ using OptimizationEvolutionary
 a = 3e-3        # ums
 D_tf = 7.4      # um^2/s
 D_cplx = 0.1    # um^2/s
-c = 1000         # um^-3
-dc = 0.01 * c
+c = 40         # um^-3
+dc = 0.1 * c
 dl_tf = 4*a*D_tf
 ub = 5
 lb = 1e-5
@@ -46,7 +46,7 @@ n = 80000000
 whichf = "acc"
 
 ### temperature parameter
-betas = vcat(range(3e-4, stop=1e-5, length=16), 10 .^ range(-4.8, stop=-9, length=16))
+betas = vcat(range(3e-3, stop=1e-5, length=48), 10 .^ range(-4.8, stop=-9, length=16))
 nparams = length(betas)
 
 const COUNTERS = Dict{String, Int}()

@@ -1105,12 +1105,12 @@ end
              (4, 5), (5, 4), (6, 5), (4, 1), (2, 3), (1, 4)]
     input_edges = [(1,2), (4,3)]
     off_ind = BitArray([1,1,0,0,0,1])
-    # cr = 0.06309573
-    cr = 0.01
+    cr = 0.304
+    # cr = 0.01
     dc = 0.1*cr
     beta = cr
-    gamma = 10  # integral blows up when this is smaller than 0.4 and cw=0...
-    omega = 0.1
+    gamma = 1.5  # integral blows up when this is smaller than 0.4 and cw=0...
+    omega = 2.0
     cw = omega * cr
     maxevals = 100000
     reltol = 1e-12
@@ -1118,13 +1118,13 @@ end
 
     #                 kboff,   konb,    kuon,   kbon, koffu, kuoff, konu
     # logrates = log10.([0.0502,  0.2,  0.05,  1e-5, 5,     1e-5,     1e-5])
-    logrates = [-1.9100064,
-                -3.9514933,
-                -2.1249847,
-                -1.1175009,
-                -0.3611458,
-                -2.6680863,
-                0.6675018]  # overshooting
+    logrates = [-3.3069441,
+                -3.928958,
+                -0.22749561,
+                -1.1030703,
+                0.056784622,
+                -3.3879418,
+                0.6495624]  # overshooting
 
     # logrates = [-1.0516309,
     #             0.4808308,
@@ -1169,33 +1169,35 @@ end
     initDecoys!(d_c)
     initDecoys!(d_cdc)
 
-    t_off, t_on = 1e-6, 100
+    EP_ss(d_c.Q)
+
+    # t_off, t_on = 1e-6, 100
 
     # Pjoint!(t_off, t_on, d_c)
     # Pjoint!(t_off, t_on, d_cdc)
 
     # d_c.Pjoint * (log(d_c.Pjoint/d_cdc.Pjoint))
 
-    @show FisherRate(d_c, d_cdc)
+    # @show FisherRate(d_c, d_cdc)
     # @show FisherRateOff(d_c, d_cdc)
     # @show FisherRateOn(d_c, d_cdc)
-    @show 0.0888 * cr
+    # @show 0.0888 * cr
 
     # global tvals = range(0,10/d_c.maxeigval_comp,length=1000)
     # global density = [Pjoint(t_off, t, d_c)*log(Pjoint(t_off, t, d_c)/Pjoint(t_off, t, d_cdc)) 
     #                     for t in tvals]
 
-    tauOffVal = tauOff(d_c)
-    tauOnVal = tauOn(d_c)
-    tau = tauOnVal + tauOffVal
+    # tauOffVal = tauOff(d_c)
+    # tauOnVal = tauOn(d_c)
+    # tau = tauOnVal + tauOffVal
     # dc = d_cdc.cr - d_c.cr
 
-    integral, err = hcubature(t -> integrand(t, d_c, d_cdc), 
-        [0,0], [2/d_c.maxeigval_comp, 2/d_c.maxeigval_set]; 
-        reltol=d_c.reltol, maxevals=d_c.maxevals)
+    # integral, err = hcubature(t -> integrand(t, d_c, d_cdc), 
+    #     [0,0], [30/d_c.maxeigval_comp, 30/d_c.maxeigval_set]; 
+    #     reltol=d_c.reltol, maxevals=d_c.maxevals)
 
-    @show err
-    @show 2 * max(integral, 0) * (d_c.cr)^2 / tau
+    # @show err
+    # @show 2 * max(integral, 0) * (d_c.cr)^2 / tau
 
     # # testing Pon, Poff, and the partial Fishers
     # integralOff, err = hquadrature(t -> t*Poff(t, d_c), 
@@ -1233,10 +1235,12 @@ end
 # DOING: adding EPR and marginal Fisher rates to dataset
 
 let 
-    inpath = "/home/tohme/.julia/dev/LLROpt/data/20250401/fir-cr-cw/ir_full_mix_vs_pure_pareto_pid"
-    outpath = "/home/tohme/.julia/dev/LLROpt/data/20250401/fir-cr-cw-ep-marginals/"
+    inpath = "/home/tohme/.julia/dev/LLROpt/data/20250426/fir-c0-cw-multiparam/ir_full_mix_vs_pure_pareto_pid"
+    outpath = "/home/tohme/.julia/dev/LLROpt/data/20250426/fir-c0-cw-multiparam-marginals/"
     results_init = Dict()
-    nparams = 32
+    ncs = 32
+    nws = 5
+    ngs = 3
     nstates = 6
     nrates = 7
     edges = [(1, 2), (2, 1), (1, 6), (6, 1), (4, 3), (3, 4), 
@@ -1247,7 +1251,7 @@ let
     reltol = 1e-12
     eps = 1e-30
 
-    for cpukey in range(1, stop=nparams)
+    for cpukey in range(1, stop=ncs)
         infile = string(inpath, cpukey, ".json")
         results_init = Dict()
 
@@ -1257,49 +1261,57 @@ let
 
         kc = string(cpukey)
 
-        for j in range(1, nparams)
+        for j in range(1, nws)
             kw = string(j)
 
-            logrates = results_init[kc]["1"][kw][1:nrates]
-            cr, gamma, cw = results_init[kc]["1"][kw][end-2:end]
+            for k in range(1, ngs)
+                kg = string(k)
 
-            global d_c = OneBurstDecoyModel(;
-                nstates = nstates,
-                edges = edges,
-                input_edges = input_edges,
-                logrates = logrates,
-                cr = cr,
-                cw = cw,
-                gamma = gamma,
-                ind_set = off_ind,
-                eps = eps,
-                reltol = reltol,
-                maxevals = maxevals,
-            )
-        
-            global d_cdc = OneBurstDecoyModel(;
-                nstates = nstates,
-                edges = edges,
-                input_edges = input_edges,
-                logrates = logrates,
-                cr = cr*1.1,
-                cw = cw,
-                gamma = gamma,
-                ind_set = off_ind,
-                eps = eps,
-                reltol = reltol,
-                maxevals = maxevals,
-            )
+                logrates = results_init[kc]["1"][kw][1:nrates]
+                cr, gamma, cw = results_init[kc]["1"][kw][end-2:end]
 
-            initOneBurst!(d_c)
-            initOneBurst!(d_cdc)
+                global d_c = OneBurstDecoyModel(;
+                    nstates = nstates,
+                    edges = edges,
+                    input_edges = input_edges,
+                    logrates = logrates,
+                    cr = cr,
+                    cw = cw,
+                    gamma = gamma,
+                    ind_set = off_ind,
+                    start_state = 1,
+                    hitting_set = [3,4,5],
+                    eps = eps,
+                    reltol = reltol,
+                    maxevals = maxevals,
+                )
+            
+                global d_cdc = OneBurstDecoyModel(;
+                    nstates = nstates,
+                    edges = edges,
+                    input_edges = input_edges,
+                    logrates = logrates,
+                    cr = cr*1.1,
+                    cw = cw,
+                    gamma = gamma,
+                    ind_set = off_ind,
+                    start_state = 1,
+                    hitting_set = [3,4,5],
+                    eps = eps,
+                    reltol = reltol,
+                    maxevals = maxevals,
+                )
 
-            Foff = FisherRateOff(d_c, d_cdc)
-            Fon = FisherRateOn(d_c, d_cdc)
+                initDecoys!(d_c)
+                initDecoys!(d_cdc)
 
-            results_init[kc]["1"][kw][nrates+3] = Foff
-            results_init[kc]["1"][kw][nrates+4] = Fon
-            results_init[kc]["1"][kw][nrates+5] = EP_ss(d_c.Q)
+                Foff = FisherRateOff(d_c, d_cdc)
+                Fon = FisherRateOn(d_c, d_cdc)
+
+                results_init[kc][kg][kw][nrates+3] = Foff
+                results_init[kc][kg][kw][nrates+4] = Fon
+                results_init[kc][kg][kw][nrates+5] = EP_ss(d_c.Q)
+            end
         end
 
         file1 = string(outpath, "ir_acc_mix_vs_pure_pareto_pid$(cpukey).json")
@@ -1395,6 +1407,92 @@ let
 
 end
 
+## ----.-.-.--....-.---.-..-.-.-.-.-.--.-.-.-----.--
+# testing Pon, Poff, Pjoint
+let 
+    edges = [(1, 2), (2, 1), (1, 6), (6, 1), (4, 3), (3, 4), 
+        (4, 5), (5, 4), (6, 5), (4, 1), (2, 3), (1, 4)]
+    input_edges = [(1,2), (4,3)]
+    off_ind = BitArray([1,1,0,0,0,1])
+    on_ind = BitArray([0,0,1,1,1,0])
+    idist = ones(6) ./ 6
+    n = 1
+    k = 1
+    eps = 1e-30
+    reltol = 1e-12
+    evalrtol = 1e-12
+    maxevals = 100000
+
+    ## ----.-.-.--....-.---.-..-.-.-.-.-.--.-.-.-----.--
+
+    c = 1
+    c2 = 1 
+    kboff = 1 
+    konb = 1 
+    kuon = 1 
+    kbon = 1 
+    koffu = 1 
+    kuoff = 1 
+    konu = 1 
+    gamma = 1 
+    t2 = 1.
+    t1 = 1.
+
+    cr = c
+    cw = c2
+    dc = cr / 100
+    logrates = log10.([kboff, konb, kuon, kbon, koffu, kuoff, konu])
+
+    d = OneBurstDecoyModel(;
+        nstates = 6,
+        edges = edges,
+        input_edges = input_edges,
+        logrates = logrates,
+        cr = cr,
+        cw = cw,
+        gamma = gamma,
+        ind_set = off_ind,
+        start_state = 1,
+        hitting_set = [3,4,5],
+        eps = eps,
+        reltol = reltol,
+        maxevals = maxevals,
+    )
+
+    ddc = OneBurstDecoyModel(;
+        nstates = 6,
+        edges = edges,
+        input_edges = input_edges,
+        logrates = logrates,
+        cr = cr + dc,
+        cw = cw,
+        gamma = gamma,
+        ind_set = off_ind,
+        start_state = 1,
+        hitting_set = [3,4,5],
+        eps = eps,
+        reltol = reltol,
+        maxevals = maxevals,
+    )
+
+    initDecoys!(d)
+    Pon!(t2, d)
+    Poff!(t1, d)
+    Pjoint!(t1, t2, d)
+
+    @assert isapprox(d.F_set[3,1], 0.21390913026027936, rtol= evalrtol)
+    @assert isapprox(d.F_set[4,1], 0.18053603312097147, rtol= evalrtol)
+    @assert isapprox(d.F_set[5,1], 0.21390913026027936, rtol= evalrtol)
+
+    @assert isapprox(d.F_comp[1,3], 0.11652126742757, rtol= evalrtol)
+    @assert isapprox(d.F_comp[1,4], 0.1348369063163023, rtol= evalrtol)
+    @assert isapprox(d.F_comp[1,5], 0.11652126742757, rtol= evalrtol)
+    
+    @assert isapprox(d.Pjoint, 0.07419284612916327, rtol= 1e-12)
+
+    @show d.Pjoint
+
+end
 
 # old tests
 

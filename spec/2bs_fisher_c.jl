@@ -168,8 +168,6 @@ end
     init2bs!(m1)
     init2bs!(m2)
 
-    EP = EP_ss(m1.Q)
-
     # print(logrates)
     EP = EP_ss(m1.Q)
 

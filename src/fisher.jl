@@ -1,4 +1,5 @@
 ### Fisher information rate given joint ON and OFF likelihood
+export integrand
 function integrand(t, d_c::OneBurstDecoyModel, d_cdc::OneBurstDecoyModel)
 
     t_off, t_on = t
@@ -35,6 +36,7 @@ function FisherRate(d_c::OneBurstDecoyModel, d_cdc::OneBurstDecoyModel)
 end
 
 ### Fisher information rate given ON times only 
+export integrandOn
 function integrandOn(t_on, d_c::OneBurstDecoyModel, d_cdc::OneBurstDecoyModel)
 
     Pon!(t_on, d_c)
@@ -64,6 +66,7 @@ function FisherRateOn(d_c::OneBurstDecoyModel, d_cdc::OneBurstDecoyModel)
 end
 
 ### Fisher information rate given OFF times only 
+export integrandOff
 function integrandOff(t_off, d_c::OneBurstDecoyModel, d_cdc::OneBurstDecoyModel)
 
     Poff!(t_off, d_c)
