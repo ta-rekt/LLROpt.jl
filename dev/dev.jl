@@ -1235,8 +1235,8 @@ end
 # DOING: adding EPR and marginal Fisher rates to dataset
 
 let 
-    inpath = "/home/tohme/.julia/dev/LLROpt/data/20250426/fir-c0-cw-multiparam/ir_full_mix_vs_pure_pareto_pid"
-    outpath = "/home/tohme/.julia/dev/LLROpt/data/20250426/fir-c0-cw-multiparam-marginals/"
+    inpath = "/home/tohme/.julia/dev/LLROpt/data/20250426/fir-c0-cw-multiparam-clean/ir_full_mix_vs_pure_pareto_pid"
+    outpath = "/home/tohme/.julia/dev/LLROpt/data/20250426/fir-c0-cw-multiparam-clean-marginals/"
     results_init = Dict()
     ncs = 32
     nws = 5
@@ -1267,8 +1267,8 @@ let
             for k in range(1, ngs)
                 kg = string(k)
 
-                logrates = results_init[kc]["1"][kw][1:nrates]
-                cr, gamma, cw = results_init[kc]["1"][kw][end-2:end]
+                logrates = results_init[kc][kg][kw][1:nrates]
+                cr, gamma, cw = results_init[kc][kg][kw][end-2:end]
 
                 global d_c = OneBurstDecoyModel(;
                     nstates = nstates,
