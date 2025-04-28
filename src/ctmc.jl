@@ -40,8 +40,8 @@ end
 
 ## . - -- .- .-.- . .- .-- -.- .- .- --.-.... - -.-
 export P_ss
-function P_ss(Q)
-    A = Q .* 1.0
+function P_ss(d::OneBurstDecoyModel)
+    A = d.Q .* 1.0
     A[:, end] .= 1.0
     b = zeros(size(A, 1))
     b[end] = 1.0
@@ -50,15 +50,15 @@ end
 
 ## . - -- .- .-.- . .- .-- -.- .- .- --.-.... - -.-
 export EP_ss
-function EP_ss(Q)
-    nstates = size(Q, 1)
-    pi = P_ss(Q)
+function EP_ss(d::OneBurstDecoyModel)
+    nstates = size(d.Q, 1)
+    pss = P_ss(d)
     EP = 0.0
 
     for i in 1:nstates, j in 1:nstates
-        if Q[j, i] != 0 && pi[j] > 0
-            Jij = pi[i] * Q[i,j] - pi[j] * Q[j, i]
-            EP += Jij * log(pi[i] * Q[i,j] / (pi[j] * Q[j, i]))
+        if d.Q[j, i] != 0 && pss[j] > 0
+            Jij = pss[i] * d.Q[i,j] - pss[j] * d.Q[j, i]
+            EP += Jij * log(pss[i] * d.Q[i,j] / (pss[j] * d.Q[j, i]))
         end
     end
     return 0.5 * EP
@@ -66,49 +66,49 @@ end
 
 ## . - -- .- .-.- . .- .-- -.- .- .- --.-.... - -.-
 export Z
-function Z(Q)
-    pi = P_ss(Q)
-    Pi = Q .* 0.0
-    for ri in 1:size(Q, 1)
-        Pi[ri, :] .= pi
+function Z(d::OneBurstDecoyModel)
+    pss = P_ss(d)
+    Pi = d.Q .* 0.0
+    for ri in 1:size(d.Q, 1)
+        Pi[ri, :] .= pss
     end
-    return inv(Pi - Q) - Pi
+    return inv(Pi - d.Q) - Pi
 end 
 
 ## . - -- .- .-.- . .- .-- -.- .- .- --.-.... - -.-
 export pi_on
 # on_ind :: vector
-function pi_on(weighted_edges, input_edges, c, on_ind)
-    Q = build_mat(weighted_edges, input_edges, c)
-    return P_ss(Q)' * on_ind
+function pi_on(d::OneBurstDecoyModel)
+    return P_ss(d)' * d.ind_set
 end
 
 ## . - -- .- .-.- . .- .-- -.- .- .- --.-.... - -.-
 export variance
-function variance(weighted_edges, input_edges, c, on_ind)
-    Q = build_mat(weighted_edges, input_edges, c)
-    Z_ = Z(Q)
-    pi = P_ss(Q)
-    return 2 * (on_ind .* pi)' * (Z_ * on_ind)
+function variance(d::OneBurstDecoyModel)
+    Z_ = Z(d)
+    pss = P_ss(d)
+    return 2 * (d.ind_set .* pss)' * (Z_ * d.ind_set)
 end
 
 ## . - -- .- .-.- . .- .-- -.- .- .- --.-.... - -.-
 export sharpness
-function sharpness(weighted_edges, input_edges, c, on_ind)
-    # using FiniteDiff
-    f = _c -> pi_on(weighted_edges, input_edges, _c, on_ind)
-    # TODO: Check stability of this
-    g = _c -> ForwardDiff.derivative(f, _c);
-    return g(c) * c
+function sharpness(d_c::OneBurstDecoyModel, d_cdc::OneBurstDecoyModel)
+    # # using FiniteDiff
+    # f = _c -> pi_on(d)
+    # # TODO: Check stability of this
+    # g = _c -> ForwardDiff.derivative(f, _c);
+    # return g(c) * c
+
+    return d_c.cr * (pi_on(d_cdc) - pi_on(d_c))/(d_cdc.cr - d_c.cr)
 end
 
-## . - -- .- .-.- . .- .-- -.- .- .- --.-.... - -.-
+## . - -- .- .-.- . .- .-- -.- .- .- - -.-.... - -.-
 export ir_acc
-function ir_acc(weighted_edges, input_edges, c, dc, on_ind)
-    p_c = pi_on(weighted_edges, input_edges, c, on_ind)
-    p_cdc = pi_on(weighted_edges, input_edges, c + dc, on_ind)
-    var_c = variance(weighted_edges, input_edges, c, on_ind)
-    var_cdc = variance(weighted_edges, input_edges, c + dc, on_ind)
+function ir_acc(d_c::OneBurstDecoyModel, d_cdc::OneBurstDecoyModel)
+    p_c = pi_on(d_c)
+    p_cdc = pi_on(d_cdc)
+    var_c = variance(d_c)
+    var_cdc = variance(d_cdc)
 
     return (p_cdc - p_c)^2 * (var_cdc + var_c) / (4 * var_c * var_cdc)
 end

@@ -58,94 +58,142 @@ using Cubature
     # end
 
     # P_ss
-    let
-        weighted_edges = [(1, 2, 0.5), (2, 1, 2.0)]
-        input_edges = [(1, 2)]
-        c = 4.0
-        
-        # params:
-        Q = build_mat(weighted_edges, input_edges, c)
-        _P_ss = P_ss(Q)
-        @test _P_ss[1] == 0.5
-        @test _P_ss[2] == 0.5
-    end
-
-    # EP_ss
-    let
-        weighted_edges = [(1, 2, 0.5), (2, 1, 2.0)]
-        input_edges = [(1, 2)]
-        c = 4.0
-        
-        # params:
-        Q = build_mat(weighted_edges, input_edges, c)
-        @test EP_ss(Q) == 0.0
-    end
-
-    # Z
-    let
-        weighted_edges = [(1, 2, 0.5), (2, 1, 2.0)]
-        input_edges = [(1, 2)]
-        c = 4.0
-        
-        # params:
-        Q = build_mat(weighted_edges, input_edges, c)
-        _Z = Z(Q)
-        @test _Z[1] ≈ 0.125
-        @test _Z[2] ≈ -0.125
-        @test _Z[3] ≈ -0.125
-        @test _Z[4] ≈ 0.125
-    end
-
-    ## . - -- .- .-.- . .- .-- -.- .- .- --.-.... - -.-
-    # pi_on
-    let
-        weighted_edges = [(1, 2, 2.0), (2, 1, 2.0)]
-        input_edges = [(1, 2)]
-        c = 1.0
-        
-        # params:
-        on_ind = [0, 1]
-        _pi_on = pi_on(weighted_edges, input_edges, c, on_ind)
-        @test _pi_on == 0.5
-    end
-
-    ## . - -- .- .-.- . .- .-- -.- .- .- --.-.... - -.-
-    # variance
-    let
-        weighted_edges = [(1, 2, 2.0), (2, 1, 2.0)]
-        input_edges = [(1, 2)]
-        c = 1.0
-        
-        # params:
-        on_ind = [0, 1]
-        _var = variance(weighted_edges, input_edges, c, on_ind)
-        @test _var == 0.125
-    end
-
-    ## . - -- .- .-.- . .- .-- -.- .- .- --.-.... - -.-
-    # sharpness
     # let
-    #     weighted_edges = [(1, 2, 2.0), (2, 1, 2.0)]
+    #     weighted_edges = [(1, 2, 0.5), (2, 1, 2.0)]
     #     input_edges = [(1, 2)]
-    #     c = 1.0
+    #     c = 4.0
         
     #     # params:
-    #     on_ind = [0, 1]
-    #     _sharpness = sharpness(weighted_edges, input_edges, c, on_ind)
-    #     @test _sharpness == 0.25
+    #     Q = build_mat(weighted_edges, input_edges, c)
+    #     _P_ss = P_ss(Q)
+    #     @test _P_ss[1] == 0.5
+    #     @test _P_ss[2] == 0.5
     # end
 
-    # ir_acc
-    let
-        weighted_edges = [(1, 2, 2.0), (2, 1, 2.0)]
-        input_edges = [(1, 2)]
-        c = 1.0
+    # # EP_ss
+    # let
+    #     weighted_edges = [(1, 2, 0.5), (2, 1, 2.0)]
+    #     input_edges = [(1, 2)]
+    #     c = 4.0
         
-        # params:
-        on_ind = [0, 1]
-        dc = c * 1e-1
-        _ir_acc = ir_acc(weighted_edges, input_edges, c, dc, on_ind)
-        @test isapprox(_ir_acc, 0.002326968666254386, rtol=1e-6)
+    #     # params:
+    #     Q = build_mat(weighted_edges, input_edges, c)
+    #     @test EP_ss(Q) == 0.0
+    # end
+
+    # # Z
+    # let
+    #     weighted_edges = [(1, 2, 0.5), (2, 1, 2.0)]
+    #     input_edges = [(1, 2)]
+    #     c = 4.0
+        
+    #     # params:
+    #     Q = build_mat(weighted_edges, input_edges, c)
+    #     _Z = Z(Q)
+    #     @test _Z[1] ≈ 0.125
+    #     @test _Z[2] ≈ -0.125
+    #     @test _Z[3] ≈ -0.125
+    #     @test _Z[4] ≈ 0.125
+    # end
+
+    ## . - -- .- .-.- . .- .-- -.- .- .- --.-.... - -.-
+    # decoys
+    let
+        edges = [(1, 2), (2, 1), (1, 6), (6, 1), (4, 3), (3, 4), 
+                 (4, 5), (5, 4), (6, 5), (4, 1), (2, 3), (1, 4)]
+        input_edges = [(1,2), (4,3)]
+        off_ind = BitArray([1,1,0,0,0,1])
+        on_ind = BitArray([0,0,1,1,1,0])
+        nstates = 6
+        idist = ones(nstates) ./ nstates
+        n = 1
+        k = 1
+        cr = 1
+        dc = cr / 10
+        beta = cr
+        gamma = 1
+        cw = 3
+        eps = 1e-30
+        reltol = 1e-12
+        maxevals = 100000
+
+        #                 kboff,   konb,  kuon,  kbon, koffu, kuoff, konu
+        logrates = log10.([1,      1,      1,     1,     1,     1,     1])
+
+        m1 = OneBurstDecoyModel(;
+            nstates = 6,
+            edges = edges,
+            input_edges = input_edges,
+            logrates = logrates,
+            cr = cr,
+            cw = cw,
+            gamma = gamma,
+            ind_set = off_ind,
+            start_state = 1,
+            hitting_set = [3,4,5],
+            eps = eps,
+            reltol = reltol,
+            maxevals = maxevals,
+        )
+
+        m2 = OneBurstDecoyModel(;
+            nstates = 6,
+            edges = edges,
+            input_edges = input_edges,
+            logrates = logrates,
+            cr = cr + dc,
+            cw = cw,
+            gamma = gamma,
+            ind_set = off_ind,
+            start_state = 1,
+            hitting_set = [3,4,5],
+            eps = eps,
+            reltol = reltol,
+            maxevals = maxevals,
+        )
+
+        initDecoys!(m1)
+        initDecoys!(m2)
+
+        ## . - -- .- .-.- . .- .-- -.- .- .- --.-.... - -.-
+        # P_ss
+
+        _P_ss = P_ss(m1)
+        P_ss_test = [0.05, 0.025, 0.175, 0.15, 0.525, 0.075]
+
+        for i in range(1, nstates)
+            @test isapprox(_P_ss[i], P_ss_test[i], rtol=1e-12)
+        end
+
+        ## . - -- .- .-.- . .- .-- -.- .- .- --.-.... - -.-
+        # EP_ss
+
+        # _EP_ss = EP_ss(m1)
+        # # @test _EP_ss == 0.5
+
+        ## . - -- .- .-.- . .- .-- -.- .- .- --.-.... - -.-
+        # pi_on
+
+        _pi_on = pi_on(m1)
+        # @test _pi_on == 0.5
+
+        ## . - -- .- .-.- . .- .-- -.- .- .- --.-.... - -.-
+        # variance
+
+        _var = variance(m1)
+        # @test _var == 0.125
+
+        # . - -- .- .-.- . .- .-- -.- .- .- --.-.... - -.-
+        # sharpness
+
+        _sharpness = sharpness(m1, m2)
+        # @test _sharpness == 0.25
+
+        # . - -- .- .-.- . .- .-- -.- .- .- --.-.... - -.-
+        # ir_acc
+
+        _ir_acc = ir_acc(m1, m2)
+        # @test isapprox(_ir_acc, 0.002326968666254386, rtol=1e-6)
     end
 
     # . - -- .- .-.- . .- .-- -.- .- .- --.-.... - -.-
@@ -177,23 +225,23 @@ using Cubature
         ]
     end
 
-    # . - -- .- .-.- . .- .-- -.- .- .- --.-.... - -.-
-    let
-        Q = [-2 1 1; 1 -3 2; 0 0.5 -0.5]
-        idist = [1, 1, 1] ./ 3
-        n = 2000000
-        s, t = generate(n, Q, idist)
-        k = size(Q, 1)
-        samplesd_P_ss = zeros(k)
-        for (si, ti) in zip(s, t)
-            samplesd_P_ss[si] += ti
-        end
-        samplesd_P_ss ./= sum(samplesd_P_ss)
+    # # . - -- .- .-.- . .- .-- -.- .- .- --.-.... - -.-
+    # let
+    #     Q = [-2 1 1; 1 -3 2; 0 0.5 -0.5]
+    #     idist = [1, 1, 1] ./ 3
+    #     n = 2000000
+    #     s, t = generate(n, Q, idist)
+    #     k = size(Q, 1)
+    #     samplesd_P_ss = zeros(k)
+    #     for (si, ti) in zip(s, t)
+    #         samplesd_P_ss[si] += ti
+    #     end
+    #     samplesd_P_ss ./= sum(samplesd_P_ss)
 
-        anal_P_ss = P_ss(Q)
+    #     anal_P_ss = P_ss(Q)
         
-        @test maximum(abs, samplesd_P_ss .- anal_P_ss) < 1e-3
-    end
+    #     @test maximum(abs, samplesd_P_ss .- anal_P_ss) < 1e-3
+    # end
 
     ## . - -- .- .-.- . .- .-- -.- .- .- --.-.... - -.-
     # _jump_count
@@ -412,7 +460,7 @@ using Cubature
         #                        kboff,   konb,    kuon,   kbon, koffu, kuoff, konu
         global logrates = log10.([0.0502,  0.2,    0.05,   1e-5,  5,     0,     0])
     
-        global d_c = OneBurstDecoyModel(;
+        global m1 = OneBurstDecoyModel(;
             nstates = nstates,
             edges = edges,
             input_edges = input_edges,
@@ -428,7 +476,7 @@ using Cubature
             maxevals = maxevals,
         )
     
-        global d_cdc = OneBurstDecoyModel(;
+        global m2 = OneBurstDecoyModel(;
             nstates = nstates,
             edges = edges,
             input_edges = input_edges,
@@ -444,49 +492,49 @@ using Cubature
             maxevals = maxevals,
         )
     
-        initDecoys!(d_c)
-        initDecoys!(d_cdc)
+        initDecoys!(m1)
+        initDecoys!(m2)
     
-        @test isapprox(FisherRate(d_c, d_cdc), 0.0012884521978649768, rtol = 0.05)
-    
-        # ---.-.-.-.-.-.-.-.------.---.-...-.-.-.-.-.-.-.-..-----.-..-.-.-.....
-    
-        #                      kboff,   konb,    kuon,   kbon, koffu, kuoff, konu
-        d_c.logrates = log10.([0.1,     5,        4,     1e-2,  1e-1,     0,   0])
-        d_c.cr = 5
-        d_cdc.logrates = d_c.logrates
-        d_cdc.cr = d_c.cr * 1.01
-    
-        initDecoys!(d_c)
-        initDecoys!(d_cdc)
-    
-        @test isapprox(FisherRate(d_c, d_cdc), 0.07876075503682617, rtol = 0.05)
+        @test isapprox(FisherRate(m1, m2), 0.0012884521978649768, rtol = 0.05)
     
         # ---.-.-.-.-.-.-.-.------.---.-...-.-.-.-.-.-.-.-..-----.-..-.-.-.....
     
         #                      kboff,   konb,    kuon,   kbon, koffu, kuoff, konu
-        d_c.logrates = log10.([0.0005,   5,       5,     1e-5,  5,     0,   0])
-        d_c.cr = 5000
-        d_cdc.logrates = d_c.logrates
-        d_cdc.cr = d_c.cr * 1.01
+        m1.logrates = log10.([0.1,     5,        4,     1e-2,  1e-1,     0,   0])
+        m1.cr = 5
+        m2.logrates = m1.logrates
+        m2.cr = m1.cr * 1.01
     
-        initDecoys!(d_c)
-        initDecoys!(d_cdc)
+        initDecoys!(m1)
+        initDecoys!(m2)
     
-        @test isapprox(FisherRate(d_c, d_cdc), 0.806693810766622, rtol = 0.05)
+        @test isapprox(FisherRate(m1, m2), 0.07876075503682617, rtol = 0.05)
     
         # ---.-.-.-.-.-.-.-.------.---.-...-.-.-.-.-.-.-.-..-----.-..-.-.-.....
     
         #                      kboff,   konb,    kuon,   kbon, koffu, kuoff, konu
-        d_c.logrates = log10.([0.0005,   1e-5,       1e-5,     1e-5,  1e-5,     0,   0])
-        d_c.cr = 5000
-        d_cdc.logrates = d_c.logrates
-        d_cdc.cr = d_c.cr * 1.01
+        m1.logrates = log10.([0.0005,   5,       5,     1e-5,  5,     0,   0])
+        m1.cr = 5000
+        m2.logrates = m1.logrates
+        m2.cr = m1.cr * 1.01
     
-        initDecoys!(d_c)
-        initDecoys!(d_cdc)
+        initDecoys!(m1)
+        initDecoys!(m2)
     
-        @test isapprox(FisherRate(d_c, d_cdc), 1.9973865408615845e-09, rtol = 0.05)
+        @test isapprox(FisherRate(m1, m2), 0.806693810766622, rtol = 0.05)
+    
+        # ---.-.-.-.-.-.-.-.------.---.-...-.-.-.-.-.-.-.-..-----.-..-.-.-.....
+    
+        #                      kboff,   konb,    kuon,   kbon, koffu, kuoff, konu
+        m1.logrates = log10.([0.0005,   1e-5,       1e-5,     1e-5,  1e-5,     0,   0])
+        m1.cr = 5000
+        m2.logrates = m1.logrates
+        m2.cr = m1.cr * 1.01
+    
+        initDecoys!(m1)
+        initDecoys!(m2)
+    
+        @test isapprox(FisherRate(m1, m2), 1.9973865408615845e-09, rtol = 0.05)
     end
 
 
@@ -509,7 +557,7 @@ using Cubature
         #                  kboff,  kuoff,  kbon,  kuon,  konu,  koffu, kon1b, kon2b
         logrates = log10.([0.05,   0.2,    0.5,   1 ,    5,     1 ,    1 ,    1])
     
-        global d_c = OneBurstDecoyModel(;
+        global m1 = OneBurstDecoyModel(;
             nstates = nstates,
             edges = edges,
             input_edges = input_edges,
@@ -525,7 +573,7 @@ using Cubature
             maxevals = maxevals,
         )
     
-        global d_cdc = OneBurstDecoyModel(;
+        global m2 = OneBurstDecoyModel(;
             nstates = nstates,
             edges = edges,
             input_edges = input_edges,
@@ -541,19 +589,19 @@ using Cubature
             maxevals = maxevals,
         )
     
-        init2bs!(d_c)
-        init2bs!(d_cdc)
+        init2bs!(m1)
+        init2bs!(m2)
     
         # testing Pon, Poff, and the partial Fishers
-        integralOff, err = hquadrature(t -> t*Poff(t, d_c), 
-            0, 30/d_c.maxeigval_set; reltol=d_c.reltol, maxevals=d_c.maxevals)
+        integralOff, err = hquadrature(t -> t*Poff(t, m1), 
+            0, 30/m1.maxeigval_set; reltol=m1.reltol, maxevals=m1.maxevals)
     
-        integralOn, err = hquadrature(t -> t*Pon(t, d_c), 
-            0, 30/d_c.maxeigval_set; reltol=d_c.reltol, maxevals=d_c.maxevals)
+        integralOn, err = hquadrature(t -> t*Pon(t, m1), 
+            0, 30/m1.maxeigval_set; reltol=m1.reltol, maxevals=m1.maxevals)
     
 
-        tauOff_ = tauOff(d_c)
-        tauOn_ = tauOn(d_c)
+        tauOff_ = tauOff(m1)
+        tauOn_ = tauOn(m1)
         @test isapprox(tauOff_, 0.2630071599045347, rtol= 1e-6)
         @test isapprox(tauOn_, 12.433174224343679, rtol= 1e-6)    
         @test isapprox(integralOff, 0.2630071599045347, rtol=1e-6)

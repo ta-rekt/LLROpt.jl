@@ -29,9 +29,17 @@ function init2bsWeights!(d::OneBurstDecoyModel)
     kboff,   kuoff,  kbon,  kuon,  konu,  koffu, kon1b, kon2b = 10 .^ d.logrates
 
     # edges = [(5, 1),    (1, 5),    (2, 6),    (6, 2),    (1, 2),    (1, 3), 
-            #  (2, 4),    (3, 1),    (3, 4),    (4, 2),    (6, 5),    (5, 6)]
+    #          (2, 4),    (3, 1),    (3, 4),    (4, 2),    (6, 5),    (5, 6)]
     d.weights = [2*kboff,  kuoff,     kuon,     2*kbon,    kon1b,      kboff,
                  kbon,     2*kuoff,   kon2b,    2*kuon,    koffu,      konu]
+
+    return d
+end
+
+export init6bsWeights!
+function init6bsWeights!(d::OneBurstDecoyModel)
+    # transition rates
+    d.weights = 10 .^ d.logrates
 
     return d
 end
@@ -107,6 +115,15 @@ export init2bs!
 function init2bs!(d::OneBurstDecoyModel)
 
     init2bsWeights!(d)
+    initOneBurst!(d)
+
+    return d
+end
+
+export init6bs!
+function init6bs!(d::OneBurstDecoyModel)
+
+    init6bsWeights!(d)
     initOneBurst!(d)
 
     return d

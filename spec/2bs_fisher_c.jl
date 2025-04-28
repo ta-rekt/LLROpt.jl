@@ -75,9 +75,6 @@ global m2 = OneBurstDecoyModel(;
     maxevals = maxevals,
 )
 
-# init2bs!(d_c)
-# init2bs!(d_cdc)
-
 ### Optimization parameters
 opt_alg = BBO_adaptive_de_rand_1_bin_radiuslimited()
 # opt_alg = Evolutionary.CMAES(μ = 5, λ = 10, sigma0 = 1)

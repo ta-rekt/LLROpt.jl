@@ -71,8 +71,7 @@ let
                         xinit = Vector{Float64}(xinit)
                     end
 
-                    args_acc = [edges1, edges2, input_edges, cr, dc, on_ind1, on_ind2, 
-                        beta, gamma, w]
+                    args_acc = [m1, m2, beta, gamma, w*beta]
                     targetfun_acc(x, p) = target_acc(x, args_acc...)[1]
                     ir_acc_mix(x) = target_acc(x, args_acc...)[2]
                     ir_acc_pure(x) = target_acc(x, args_acc...)[3]
