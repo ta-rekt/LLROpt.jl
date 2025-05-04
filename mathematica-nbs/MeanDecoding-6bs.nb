@@ -10,10 +10,10 @@
 NotebookFileLineBreakTest
 NotebookFileLineBreakTest
 NotebookDataPosition[       154,          7]
-NotebookDataLength[    127466,       2946]
-NotebookOptionsPosition[    124370,       2897]
-NotebookOutlinePosition[    124763,       2913]
-CellTagsIndexPosition[    124720,       2910]
+NotebookDataLength[     65617,       1526]
+NotebookOptionsPosition[     62478,       1468]
+NotebookOutlinePosition[     62870,       1484]
+CellTagsIndexPosition[     62827,       1481]
 WindowFrame->Normal*)
 
 (* Beginning of Notebook Content *)
@@ -28,7 +28,7 @@ Cell[BoxData[{
  CellChangeTimes->{{3.9548355985390673`*^9, 3.9548356333974047`*^9}, {
   3.954835749166286*^9, 3.9548357494280663`*^9}, {3.9548360599173803`*^9, 
   3.954836089678364*^9}},
- CellLabel->"In[95]:=",ExpressionUUID->"3cf56f3b-2d05-42da-992b-446f80ebc901"],
+ CellLabel->"In[1]:=",ExpressionUUID->"3cf56f3b-2d05-42da-992b-446f80ebc901"],
 
 Cell[CellGroupData[{
 
@@ -229,7 +229,7 @@ Cell[BoxData[
    3.951930443966791*^9, 3.951930445880865*^9}, {3.952024466444131*^9, 
    3.952024491121895*^9}, {3.952427513954825*^9, 3.952427524411121*^9}, {
    3.9544946556191587`*^9, 3.954494657823329*^9}},
- CellLabel->"In[20]:=",ExpressionUUID->"1b727f3f-7e1f-46ac-9ab0-7f0700c1b665"],
+ CellLabel->"In[3]:=",ExpressionUUID->"1b727f3f-7e1f-46ac-9ab0-7f0700c1b665"],
 
 Cell[BoxData[
  GraphicsBox[
@@ -391,8 +391,9 @@ Cell[BoxData[
   FrameTicks->None,
   ImageSize->250]], "Output",
  CellChangeTimes->{3.9548356671173*^9, 3.9548357747994947`*^9, 
-  3.954836094015389*^9, 3.9548361695977716`*^9, 3.954846182835945*^9},
- CellLabel->"Out[26]=",ExpressionUUID->"01c0d1fa-6cb1-4832-bb86-61ca0c4cf15d"]
+  3.954836094015389*^9, 3.9548361695977716`*^9, 3.954846182835945*^9, 
+  3.9548851252769327`*^9},
+ CellLabel->"Out[9]=",ExpressionUUID->"86dc0e4e-99a9-4179-b465-f4333a1b81ba"]
 }, Open  ]],
 
 Cell[BoxData[{
@@ -404,7 +405,20 @@ Cell[BoxData[{
  RowBox[{
   RowBox[{"ss2", " ", "=", " ", 
    RowBox[{"SteadyStateProbabilities", "[", "Q2", "]"}]}], ";"}]}], "Input",
- CellLabel->"In[27]:=",ExpressionUUID->"b9c9d22f-9ca0-41cc-bd09-2d5b2706535d"],
+ CellLabel->"In[10]:=",ExpressionUUID->"b9c9d22f-9ca0-41cc-bd09-2d5b2706535d"],
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{
+   RowBox[{"var", "[", 
+    RowBox[{"a_", ",", " ", "pss_", ",", " ", "Z_"}], "]"}], ":=", 
+   RowBox[{
+    RowBox[{"(", 
+     RowBox[{"a", "*", "pss"}], ")"}], ".", 
+    RowBox[{"(", 
+     RowBox[{"Z", ".", "a"}], ")"}]}]}], ";"}]], "Input",
+ CellLabel->
+  "In[123]:=",ExpressionUUID->"f668afb2-f317-4dfb-b0cb-4e02875181c4"],
 
 Cell[CellGroupData[{
 
@@ -464,6 +478,147 @@ Cell[BoxData[
 
 Cell[CellGroupData[{
 
+Cell[BoxData[{
+ RowBox[{
+  RowBox[{"a", " ", "=", " ", 
+   RowBox[{"{", 
+    RowBox[{"0", ",", "0", ",", "1", ",", "1", ",", "1", ",", "0"}], "}"}]}], 
+  ";"}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{"pss", " ", "=", " ", 
+   RowBox[{"Simplify", "[", "ss2", "]"}]}], ";"}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{"pion", " ", "=", 
+   RowBox[{"pss", ".", "a"}]}], ";"}], "\[IndentingNewLine]", 
+ RowBox[{"With", "[", 
+  RowBox[{
+   RowBox[{"{", 
+    RowBox[{
+     RowBox[{"c", "=", "1."}], ",", 
+     RowBox[{"c2", "=", "3"}], ",", 
+     RowBox[{"\[Gamma]", "=", "1"}], ",", 
+     RowBox[{"kboff", "=", "1"}], ",", " ", 
+     RowBox[{"konb", "=", "1"}], ",", " ", 
+     RowBox[{"kuon", "=", "1"}], ",", " ", 
+     RowBox[{"kbon", "=", "1"}], ",", " ", 
+     RowBox[{"koffu", "=", "1"}], ",", " ", 
+     RowBox[{"kuoff", "=", "1"}], ",", " ", 
+     RowBox[{"konu", "=", "1"}]}], "}"}], ",", 
+   RowBox[{"Evaluate", "[", "pion", "]"}]}], "]"}]}], "Input",
+ CellChangeTimes->{{3.954847392656124*^9, 3.954847421221508*^9}, {
+  3.954871062332556*^9, 3.954871097618636*^9}, {3.954872361164916*^9, 
+  3.954872396517819*^9}},
+ CellLabel->
+  "In[127]:=",ExpressionUUID->"b03e83b1-7ae5-4d76-8b3e-26b9f93968f3"],
+
+Cell[BoxData["0.8500000000000001`"], "Output",
+ CellChangeTimes->{3.954871098501248*^9, 3.9548723969108257`*^9},
+ CellLabel->
+  "Out[130]=",ExpressionUUID->"204c71b1-21b6-4120-ba30-3a64d4f0b3a0"]
+}, Open  ]],
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{"Pss", " ", "=", " ", 
+   RowBox[{"Table", "[", 
+    RowBox[{"pss", ",", " ", 
+     RowBox[{"{", 
+      RowBox[{"i", ",", "1", ",", 
+       RowBox[{"Length", "[", "pss", "]"}]}], "}"}]}], "]"}]}], 
+  ";"}]], "Input",
+ CellChangeTimes->{{3.954871155958523*^9, 3.954871160908793*^9}, {
+  3.9548712393911858`*^9, 3.9548712608170223`*^9}, {3.954871320128426*^9, 
+  3.954871323077345*^9}, {3.9548713781487417`*^9, 3.95487146565086*^9}, {
+  3.9548718793861217`*^9, 3.954871904287484*^9}, {3.9548723672300158`*^9, 
+  3.9548723828355017`*^9}},ExpressionUUID->"5381575a-b8c4-4325-9248-\
+36b044e5327c"],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[{
+ RowBox[{
+  RowBox[{"Z", " ", "=", " ", 
+   RowBox[{
+    RowBox[{"Inverse", "[", 
+     RowBox[{"Pss", " ", "-", " ", "Q2"}], "]"}], " ", "-", " ", "Pss"}]}], 
+  ";"}], "\[IndentingNewLine]", 
+ RowBox[{"With", "[", 
+  RowBox[{
+   RowBox[{"{", 
+    RowBox[{
+     RowBox[{"c", "=", "1."}], ",", 
+     RowBox[{"c2", "=", "3"}], ",", 
+     RowBox[{"\[Gamma]", "=", "1"}], ",", 
+     RowBox[{"kboff", "=", "1"}], ",", " ", 
+     RowBox[{"konb", "=", "1"}], ",", " ", 
+     RowBox[{"kuon", "=", "1"}], ",", " ", 
+     RowBox[{"kbon", "=", "1"}], ",", " ", 
+     RowBox[{"koffu", "=", "1"}], ",", " ", 
+     RowBox[{"kuoff", "=", "1"}], ",", " ", 
+     RowBox[{"konu", "=", "1"}]}], "}"}], ",", 
+   RowBox[{"Evaluate", "[", 
+    RowBox[{"2", "*", 
+     RowBox[{"var", "[", 
+      RowBox[{"a", ",", "pss", ",", "Z"}], "]"}]}], "]"}]}], "]"}]}], "Input",\
+
+ CellChangeTimes->{{3.954871155958523*^9, 3.954871160908793*^9}, {
+  3.9548712393911858`*^9, 3.9548712608170223`*^9}, {3.954871320128426*^9, 
+  3.954871323077345*^9}, {3.9548713781487417`*^9, 3.9548714195498333`*^9}, {
+  3.954871916179641*^9, 3.954872064573473*^9}, {3.95487218933572*^9, 
+  3.954872189677744*^9}, {3.954886306717325*^9, 
+  3.954886307569928*^9}},ExpressionUUID->"eedc900d-bef7-48ff-9ed8-\
+aa25675c0e1b"],
+
+Cell["0.21849999999999986", "Output",
+ CellChangeTimes->{{3.9548719995187683`*^9, 3.9548720186670713`*^9}, {
+  3.954872093449589*^9, 3.9548720968243523`*^9}, {3.954872191063243*^9, 
+  3.954872204238838*^9}},
+ CellLabel->
+  "Out[126]=",ExpressionUUID->"1664c7a0-57fb-4595-b65f-dd52c827a588"]
+}, Open  ]],
+
+Cell[BoxData[{
+ RowBox[{
+  RowBox[{"dpion", " ", "=", " ", 
+   RowBox[{"D", "[", 
+    RowBox[{"pion", ",", " ", "c"}], "]"}]}], ";"}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{"s", " ", "=", " ", 
+   RowBox[{"FullSimplify", "[", 
+    RowBox[{"c", "*", "dpion"}], "]"}]}], ";"}]}], "Input",
+ CellChangeTimes->{
+  3.9297093862729273`*^9, {3.930304641982588*^9, 3.930304949165997*^9}, {
+   3.930305028976486*^9, 3.9303051460617867`*^9}, {3.930305288582861*^9, 
+   3.930305294184111*^9}, {3.930305435216313*^9, 3.93030557019522*^9}, {
+   3.930305724808614*^9, 3.930305744510647*^9}, {3.930306156127227*^9, 
+   3.930306164870653*^9}, {3.930306309920615*^9, 3.930306318512101*^9}, {
+   3.930309289635054*^9, 3.930309297447812*^9}, {3.930329463147499*^9, 
+   3.930329477066758*^9}, {3.930329539914678*^9, 3.930329545251989*^9}, {
+   3.930333283787848*^9, 3.93033328666708*^9}, {3.930334179015177*^9, 
+   3.930334211947112*^9}, {3.930371982777776*^9, 3.930371985888834*^9}, {
+   3.930372068394835*^9, 3.930372081506349*^9}, {3.9303721221299334`*^9, 
+   3.9303721595213337`*^9}, {3.930373297866673*^9, 3.930373348314488*^9}, {
+   3.930374789460844*^9, 3.9303747979060163`*^9}, {3.93046614289922*^9, 
+   3.930466146560094*^9}, {3.930466178042569*^9, 3.930466225888509*^9}, {
+   3.930467657434786*^9, 3.930467680880457*^9}, {3.9304679640274277`*^9, 
+   3.930468029411212*^9}, {3.930468323258215*^9, 3.930468324656049*^9}, {
+   3.930468669930484*^9, 3.930468670274906*^9}, {3.9304723713884697`*^9, 
+   3.930472392577035*^9}, {3.930472525319188*^9, 3.930472543809781*^9}, {
+   3.93047292715207*^9, 3.9304729750986557`*^9}, {3.930473056092429*^9, 
+   3.930473065081435*^9}, {3.9304734661950817`*^9, 3.930473480306382*^9}, {
+   3.947059648988618*^9, 3.947059649148408*^9}, {3.9470639302222967`*^9, 
+   3.947063930535261*^9}, {3.9470652594949636`*^9, 3.947065260748815*^9}, {
+   3.947151802718294*^9, 3.947151805074959*^9}, {3.947153707788375*^9, 
+   3.9471537143191233`*^9}, {3.9472481487284803`*^9, 3.947248217332384*^9}, {
+   3.9472483039692097`*^9, 3.9472483555195503`*^9}, {3.949576492335803*^9, 
+   3.949576493238154*^9}, {3.9496445640165157`*^9, 3.949644575291836*^9}, {
+   3.954872351261024*^9, 3.9548723561119413`*^9}, {3.954872403202553*^9, 
+   3.954872404313733*^9}},
+ CellLabel->
+  "In[131]:=",ExpressionUUID->"d7296349-4b1e-4b5d-8379-f903e1556562"],
+
+Cell[CellGroupData[{
+
 Cell[BoxData[
  RowBox[{"With", "[", 
   RowBox[{
@@ -479,2423 +634,839 @@ Cell[BoxData[
      RowBox[{"koffu", "=", "1"}], ",", " ", 
      RowBox[{"kuoff", "=", "1"}], ",", " ", 
      RowBox[{"konu", "=", "1"}]}], "}"}], ",", 
-   RowBox[{"Evaluate", "[", "]"}]}], "]"}]], "Input",
- CellChangeTimes->{{3.954847392656124*^9, 
-  3.954847421221508*^9}},ExpressionUUID->"b03e83b1-7ae5-4d76-8b3e-\
-26b9f93968f3"],
-
-Cell[BoxData[
- TemplateBox[{
-  "Power", "infy", 
-   "\"Infinite expression \\!\\(\\*FractionBox[\\\"1\\\", \\\"0\\\"]\\) \
-encountered.\"", 2, 93, 21, 33584165429603174155, "Local"},
-  "MessageTemplate",
-  BaseStyle->"MSG"]], "Message",
- CellChangeTimes->{{3.954847398917987*^9, 3.9548474126746407`*^9}},
+   RowBox[{"Evaluate", "[", "s", "]"}]}], "]"}]], "Input",
+ CellChangeTimes->{3.954872418183997*^9},
  CellLabel->
-  "During evaluation of \
-In[93]:=",ExpressionUUID->"3b4645a6-7d80-451c-a423-a7cf6802c681"],
+  "In[134]:=",ExpressionUUID->"237478d6-9f25-41bc-a5e0-f4f6afd5976a"],
 
-Cell[BoxData[
- TemplateBox[{
-  "Infinity", "indet", 
-   "\"Indeterminate expression \\!\\(\\*RowBox[{\\\"0\\\", \\\" \\\", \
-\\\"ComplexInfinity\\\"}]\\) encountered.\"", 2, 93, 22, 33584165429603174155,
-    "Local"},
-  "MessageTemplate",
-  BaseStyle->"MSG"]], "Message",
- CellChangeTimes->{{3.954847398917987*^9, 3.954847412678297*^9}},
+Cell["0.02375", "Output",
+ CellChangeTimes->{{3.954872432215001*^9, 3.954872436260305*^9}},
  CellLabel->
-  "During evaluation of \
-In[93]:=",ExpressionUUID->"9f4bba1e-ca30-46f8-948a-61202a84c3db"],
-
-Cell[BoxData[
- TemplateBox[{
-  "Power", "infy", 
-   "\"Infinite expression \\!\\(\\*FractionBox[\\\"1\\\", \\\"0\\\"]\\) \
-encountered.\"", 2, 93, 23, 33584165429603174155, "Local"},
-  "MessageTemplate",
-  BaseStyle->"MSG"]], "Message",
- CellChangeTimes->{{3.954847398917987*^9, 3.9548474126811743`*^9}},
- CellLabel->
-  "During evaluation of \
-In[93]:=",ExpressionUUID->"2a23bd6a-c66f-4689-88f4-3336149f5f4c"],
-
-Cell[BoxData[
- TemplateBox[{
-  "Infinity", "indet", 
-   "\"Indeterminate expression \\!\\(\\*RowBox[{\\\"0\\\", \\\" \\\", \
-\\\"ComplexInfinity\\\"}]\\) encountered.\"", 2, 93, 24, 33584165429603174155,
-    "Local"},
-  "MessageTemplate",
-  BaseStyle->"MSG"]], "Message",
- CellChangeTimes->{{3.954847398917987*^9, 3.954847412683462*^9}},
- CellLabel->
-  "During evaluation of \
-In[93]:=",ExpressionUUID->"7537d4b7-f6c6-4eca-86de-3543397560e3"],
-
-Cell[BoxData[
- TemplateBox[{
-  "Power", "infy", 
-   "\"Infinite expression \\!\\(\\*FractionBox[\\\"1\\\", \\\"0\\\"]\\) \
-encountered.\"", 2, 93, 25, 33584165429603174155, "Local"},
-  "MessageTemplate",
-  BaseStyle->"MSG"]], "Message",
- CellChangeTimes->{{3.954847398917987*^9, 3.954847412686037*^9}},
- CellLabel->
-  "During evaluation of \
-In[93]:=",ExpressionUUID->"1735a20f-5c8c-4d1d-9be2-c7ffdb474bc5"],
-
-Cell[BoxData[
- TemplateBox[{
-  "General", "stop", 
-   "\"Further output of \\!\\(\\*StyleBox[RowBox[{\\\"Power\\\", \\\"::\\\", \
-\\\"infy\\\"}], \\\"MessageName\\\"]\\) will be suppressed during this \
-calculation.\"", 2, 93, 26, 33584165429603174155, "Local"},
-  "MessageTemplate",
-  BaseStyle->"MSG"]], "Message",
- CellChangeTimes->{{3.954847398917987*^9, 3.954847412688229*^9}},
- CellLabel->
-  "During evaluation of \
-In[93]:=",ExpressionUUID->"0b60ebc6-3bb9-47da-84b9-dbba8ab0bea5"],
-
-Cell[BoxData[
- TemplateBox[{
-  "Infinity", "indet", 
-   "\"Indeterminate expression \\!\\(\\*RowBox[{\\\"0\\\", \\\" \\\", \
-\\\"ComplexInfinity\\\"}]\\) encountered.\"", 2, 93, 27, 33584165429603174155,
-    "Local"},
-  "MessageTemplate",
-  BaseStyle->"MSG"]], "Message",
- CellChangeTimes->{{3.954847398917987*^9, 3.954847412690382*^9}},
- CellLabel->
-  "During evaluation of \
-In[93]:=",ExpressionUUID->"bbbb4547-0236-4065-921f-34996f8058ec"],
-
-Cell[BoxData[
- TemplateBox[{
-  "General", "stop", 
-   "\"Further output of \\!\\(\\*StyleBox[RowBox[{\\\"Infinity\\\", \
-\\\"::\\\", \\\"indet\\\"}], \\\"MessageName\\\"]\\) will be suppressed \
-during this calculation.\"", 2, 93, 28, 33584165429603174155, "Local"},
-  "MessageTemplate",
-  BaseStyle->"MSG"]], "Message",
- CellChangeTimes->{{3.954847398917987*^9, 3.9548474126924543`*^9}},
- CellLabel->
-  "During evaluation of \
-In[93]:=",ExpressionUUID->"4aaca728-9114-4154-a37f-bce9362427af"],
-
-Cell[BoxData["Indeterminate"], "Output",
- CellChangeTimes->{{3.9548473989519453`*^9, 3.954847412694498*^9}},
- CellLabel->"Out[93]=",ExpressionUUID->"20287a5f-e9b1-4871-b120-6261de350a8c"]
+  "Out[134]=",ExpressionUUID->"5965ca4f-ceef-423c-99d3-b038f5e3b2cf"]
 }, Open  ]],
 
 Cell[CellGroupData[{
 
 Cell[BoxData[{
  RowBox[{
-  RowBox[{"ClearAll", "[", "ss", "]"}], ";"}], "\[IndentingNewLine]", 
- RowBox[{"EPss", "[", "Q2", "]"}]}], "Input",
- CellChangeTimes->{{3.954847623940926*^9, 3.954847630554091*^9}},
- CellLabel->"In[98]:=",ExpressionUUID->"386d7140-0321-43d3-8a7f-3bc5f0950ae8"],
-
-Cell[BoxData[
- TemplateBox[{
-  "Solve", "ivar", 
-   "\"\\!\\(\\*RowBox[{\\\"{\\\", RowBox[{FractionBox[RowBox[{\\\"kuon\\\", \
-\\\" \\\", RowBox[{\\\"(\\\", RowBox[{\\\"konb\\\", \\\"+\\\", \
-RowBox[{\\\"kuoff\\\", \\\" \\\", \\\"\[Gamma]\\\"}]}], \\\")\\\"}], \\\" \
-\\\", RowBox[{\\\"(\\\", RowBox[{RowBox[{\\\"koffu\\\", \\\" \\\", \\\"konb\\\
-\", \\\" \\\", \\\"\[Gamma]\\\"}], \\\"+\\\", RowBox[{\\\"koffu\\\", \\\" \
-\\\", \\\"kuoff\\\", \\\" \\\", \\\"\[Gamma]\\\"}]}], \\\")\\\"}]}], \
-RowBox[{RowBox[{\\\"c\\\", \\\" \\\", \\\"c2\\\", \\\" \\\", \\\"kboff\\\", \
-\\\" \\\", \\\"kbon\\\", \\\" \\\", SuperscriptBox[\\\"konb\\\", \
-\\\"2\\\"]}], \\\"+\\\", RowBox[{SuperscriptBox[\\\"c2\\\", \\\"2\\\"], \\\" \
-\\\", \\\"kboff\\\", \\\" \\\", \\\"kbon\\\", \\\" \\\", \
-SuperscriptBox[\\\"konb\\\", \\\"2\\\"]}], \\\"+\\\", RowBox[{\\\"c2\\\", \
-\\\" \\\", \\\"kboff\\\", \\\" \\\", \\\"koffu\\\", \\\" \\\", \
-SuperscriptBox[\\\"konb\\\", \\\"2\\\"]}], \\\"+\\\", RowBox[{\\\"c2\\\", \
-\\\" \\\", \\\"kbon\\\", \\\" \\\", SuperscriptBox[\\\"konb\\\", \\\"2\\\"], \
-\\\" \\\", \\\"konu\\\"}], \\\"+\\\", RowBox[{\\\"\[LeftSkeleton]\\\", \\\"27\
-\\\", \\\"\[RightSkeleton]\\\"}], \\\"+\\\", RowBox[{\\\"koffu\\\", \\\" \
-\\\", \\\"konb\\\", \\\" \\\", \\\"kuoff\\\", \\\" \\\", \\\"kuon\\\", \\\" \
-\\\", SuperscriptBox[\\\"\[Gamma]\\\", \\\"2\\\"]}], \\\"+\\\", \
-RowBox[{\\\"konb\\\", \\\" \\\", \\\"konu\\\", \\\" \\\", \\\"kuoff\\\", \\\" \
-\\\", \\\"kuon\\\", \\\" \\\", SuperscriptBox[\\\"\[Gamma]\\\", \\\"2\\\"]}], \
-\\\"+\\\", RowBox[{\\\"koffu\\\", \\\" \\\", SuperscriptBox[\\\"kuoff\\\", \\\
-\"2\\\"], \\\" \\\", \\\"kuon\\\", \\\" \\\", \
-SuperscriptBox[\\\"\[Gamma]\\\", \\\"2\\\"]}], \\\"+\\\", \
-RowBox[{\\\"konu\\\", \\\" \\\", SuperscriptBox[\\\"kuoff\\\", \\\"2\\\"], \\\
-\" \\\", \\\"kuon\\\", \\\" \\\", SuperscriptBox[\\\"\[Gamma]\\\", \
-\\\"2\\\"]}]}]], \\\",\\\", RowBox[{\\\"\[LeftSkeleton]\\\", \\\"4\\\", \\\"\
-\[RightSkeleton]\\\"}], \\\",\\\", FractionBox[RowBox[{\\\"c2\\\", \\\" \\\", \
-\\\"kboff\\\", \\\" \\\", \\\"kuon\\\", \\\" \\\", RowBox[{\\\"(\\\", \
-RowBox[{RowBox[{\\\"koffu\\\", \\\" \\\", \\\"konb\\\", \\\" \\\", \\\"\
-\[Gamma]\\\"}], \\\"+\\\", RowBox[{\\\"koffu\\\", \\\" \\\", \\\"kuoff\\\", \
-\\\" \\\", \\\"\[Gamma]\\\"}]}], \\\")\\\"}]}], RowBox[{RowBox[{\\\"c\\\", \\\
-\" \\\", \\\"c2\\\", \\\" \\\", \\\"kboff\\\", \\\" \\\", \\\"kbon\\\", \\\" \
-\\\", SuperscriptBox[\\\"konb\\\", \\\"2\\\"]}], \\\"+\\\", \
-RowBox[{SuperscriptBox[\\\"c2\\\", \\\"2\\\"], \\\" \\\", \\\"kboff\\\", \\\" \
-\\\", \\\"kbon\\\", \\\" \\\", SuperscriptBox[\\\"konb\\\", \\\"2\\\"]}], \
-\\\"+\\\", RowBox[{\\\"\[LeftSkeleton]\\\", \\\"32\\\", \
-\\\"\[RightSkeleton]\\\"}], \\\"+\\\", RowBox[{\\\"konu\\\", \\\" \\\", \
-SuperscriptBox[\\\"kuoff\\\", \\\"2\\\"], \\\" \\\", \\\"kuon\\\", \\\" \\\", \
-SuperscriptBox[\\\"\[Gamma]\\\", \\\"2\\\"]}]}]]}], \\\"}\\\"}]\\) is not a \
-valid variable.\"", 2, 99, 47, 33584165429603174155, "Local"},
-  "MessageTemplate",
-  BaseStyle->"MSG"]], "Message",
+  RowBox[{"dc", " ", "=", " ", 
+   RowBox[{"c", "/", "100"}]}], ";"}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{"iracc", "=", " ", 
+   RowBox[{
+    RowBox[{"s", "^", "2"}], " ", "/", " ", 
+    RowBox[{"var", "[", 
+     RowBox[{"a", ",", "pss", ",", "Z"}], "]"}]}]}], ";"}], "\[IndentingNewLine]", 
+ RowBox[{"With", "[", 
+  RowBox[{
+   RowBox[{"{", 
+    RowBox[{
+     RowBox[{"c", "=", "1."}], ",", 
+     RowBox[{"c2", "=", "3"}], ",", 
+     RowBox[{"\[Gamma]", "=", "1"}], ",", 
+     RowBox[{"kboff", "=", "1"}], ",", " ", 
+     RowBox[{"konb", "=", "1"}], ",", " ", 
+     RowBox[{"kuon", "=", "1"}], ",", " ", 
+     RowBox[{"kbon", "=", "1"}], ",", " ", 
+     RowBox[{"koffu", "=", "1"}], ",", " ", 
+     RowBox[{"kuoff", "=", "1"}], ",", " ", 
+     RowBox[{"konu", "=", "1"}]}], "}"}], ",", 
+   RowBox[{"Evaluate", "[", "iracc", "]"}]}], 
+  "]"}], "\[IndentingNewLine]"}], "Input",
  CellChangeTimes->{
-  3.95484742337127*^9, {3.954847612827421*^9, 3.954847631118943*^9}},
+  3.9297093862729273`*^9, {3.930304641982588*^9, 3.930304949165997*^9}, {
+   3.930305028976486*^9, 3.9303051460617867`*^9}, {3.930305288582861*^9, 
+   3.930305294184111*^9}, {3.930305435216313*^9, 3.93030557019522*^9}, {
+   3.930305724808614*^9, 3.930305744510647*^9}, {3.930306156127227*^9, 
+   3.930306164870653*^9}, {3.930306309920615*^9, 3.930306318512101*^9}, {
+   3.930309289635054*^9, 3.930309297447812*^9}, {3.930329463147499*^9, 
+   3.930329477066758*^9}, {3.930329539914678*^9, 3.930329545251989*^9}, {
+   3.930333283787848*^9, 3.93033328666708*^9}, {3.930334179015177*^9, 
+   3.930334211947112*^9}, {3.930371982777776*^9, 3.930371985888834*^9}, {
+   3.930372068394835*^9, 3.930372081506349*^9}, {3.9303721221299334`*^9, 
+   3.9303721595213337`*^9}, {3.930373297866673*^9, 3.930373348314488*^9}, {
+   3.930374789460844*^9, 3.9303747979060163`*^9}, {3.93046614289922*^9, 
+   3.930466146560094*^9}, {3.930466178042569*^9, 3.930466225888509*^9}, {
+   3.930467657434786*^9, 3.930467680880457*^9}, {3.9304679640274277`*^9, 
+   3.930468029411212*^9}, {3.930468323258215*^9, 3.930468324656049*^9}, {
+   3.930468669930484*^9, 3.930468670274906*^9}, {3.9304723713884697`*^9, 
+   3.930472392577035*^9}, {3.930472525319188*^9, 3.930472543809781*^9}, {
+   3.93047292715207*^9, 3.9304729750986557`*^9}, {3.930473056092429*^9, 
+   3.930473065081435*^9}, {3.9304734661950817`*^9, 3.930473480306382*^9}, {
+   3.947059648988618*^9, 3.947059649148408*^9}, {3.9470639302222967`*^9, 
+   3.947063930535261*^9}, {3.9470652594949636`*^9, 3.947065260748815*^9}, {
+   3.947151802718294*^9, 3.947151805074959*^9}, {3.947153707788375*^9, 
+   3.9471537143191233`*^9}, {3.9472481487284803`*^9, 3.947248217332384*^9}, {
+   3.9472483039692097`*^9, 3.9472483555195503`*^9}, {3.949576492335803*^9, 
+   3.949576493238154*^9}, {3.9496445640165157`*^9, 3.949644575291836*^9}, {
+   3.954872514181876*^9, 3.954872584070505*^9}, 3.954872623365973*^9},
  CellLabel->
-  "During evaluation of \
-In[98]:=",ExpressionUUID->"88560909-da17-47e5-a5fe-e6cca2a24b45"],
+  "In[146]:=",ExpressionUUID->"7cbf68c3-e94d-4054-9bc4-0671ecd485e5"],
 
-Cell[BoxData[
- TemplateBox[{
-  "Power", "infy", 
-   "\"Infinite expression \\!\\(\\*FractionBox[\\\"1\\\", \\\"0\\\"]\\) \
-encountered.\"", 2, 99, 48, 33584165429603174155, "Local"},
-  "MessageTemplate",
-  BaseStyle->"MSG"]], "Message",
- CellChangeTimes->{
-  3.95484742337127*^9, {3.954847612827421*^9, 3.954847631125187*^9}},
+Cell["0.005163043478260874", "Output",
+ CellChangeTimes->{{3.954872635288526*^9, 3.9548726414794617`*^9}},
  CellLabel->
-  "During evaluation of \
-In[98]:=",ExpressionUUID->"8298cfd6-7010-4d49-894e-dd8a40e80efe"],
+  "Out[148]=",ExpressionUUID->"c35ff9f4-e46e-460a-b90d-45463f09b508"]
+}, Open  ]],
 
-Cell[BoxData[
- TemplateBox[{
-  "Infinity", "indet", 
-   "\"Indeterminate expression \\!\\(\\*RowBox[{\\\"0\\\", \\\" \\\", \
-\\\"ComplexInfinity\\\"}]\\) encountered.\"", 2, 99, 49, 33584165429603174155,
-    "Local"},
-  "MessageTemplate",
-  BaseStyle->"MSG"]], "Message",
- CellChangeTimes->{
-  3.95484742337127*^9, {3.954847612827421*^9, 3.954847631129146*^9}},
- CellLabel->
-  "During evaluation of \
-In[98]:=",ExpressionUUID->"39436075-6c8a-4569-8031-35a03e282d62"],
-
-Cell[BoxData[
- TemplateBox[{
-  "Power", "infy", 
-   "\"Infinite expression \\!\\(\\*FractionBox[\\\"1\\\", \\\"0\\\"]\\) \
-encountered.\"", 2, 99, 50, 33584165429603174155, "Local"},
-  "MessageTemplate",
-  BaseStyle->"MSG"]], "Message",
- CellChangeTimes->{
-  3.95484742337127*^9, {3.954847612827421*^9, 3.9548476311320868`*^9}},
- CellLabel->
-  "During evaluation of \
-In[98]:=",ExpressionUUID->"fd6f9ebf-dce8-49c7-891b-07747c5973b1"],
-
-Cell[BoxData[
- TemplateBox[{
-  "Infinity", "indet", 
-   "\"Indeterminate expression \\!\\(\\*RowBox[{\\\"0\\\", \\\" \\\", \
-\\\"ComplexInfinity\\\"}]\\) encountered.\"", 2, 99, 51, 33584165429603174155,
-    "Local"},
-  "MessageTemplate",
-  BaseStyle->"MSG"]], "Message",
- CellChangeTimes->{
-  3.95484742337127*^9, {3.954847612827421*^9, 3.954847631134768*^9}},
- CellLabel->
-  "During evaluation of \
-In[98]:=",ExpressionUUID->"5e494637-3db8-4371-893e-b214cfe5901a"],
-
-Cell[BoxData[
- TemplateBox[{
-  "Power", "infy", 
-   "\"Infinite expression \\!\\(\\*FractionBox[\\\"1\\\", \\\"0\\\"]\\) \
-encountered.\"", 2, 99, 52, 33584165429603174155, "Local"},
-  "MessageTemplate",
-  BaseStyle->"MSG"]], "Message",
- CellChangeTimes->{
-  3.95484742337127*^9, {3.954847612827421*^9, 3.954847631137268*^9}},
- CellLabel->
-  "During evaluation of \
-In[98]:=",ExpressionUUID->"d5ba18ad-3ef4-40f1-ad7e-3ad6931dca7e"],
-
-Cell[BoxData[
- TemplateBox[{
-  "General", "stop", 
-   "\"Further output of \\!\\(\\*StyleBox[RowBox[{\\\"Power\\\", \\\"::\\\", \
-\\\"infy\\\"}], \\\"MessageName\\\"]\\) will be suppressed during this \
-calculation.\"", 2, 99, 53, 33584165429603174155, "Local"},
-  "MessageTemplate",
-  BaseStyle->"MSG"]], "Message",
- CellChangeTimes->{
-  3.95484742337127*^9, {3.954847612827421*^9, 3.954847631139436*^9}},
- CellLabel->
-  "During evaluation of \
-In[98]:=",ExpressionUUID->"165d59a1-d510-446c-b16c-2f326ae041ea"],
-
-Cell[BoxData[
- TemplateBox[{
-  "Infinity", "indet", 
-   "\"Indeterminate expression \\!\\(\\*RowBox[{\\\"0\\\", \\\" \\\", \
-\\\"ComplexInfinity\\\"}]\\) encountered.\"", 2, 99, 54, 33584165429603174155,
-    "Local"},
-  "MessageTemplate",
-  BaseStyle->"MSG"]], "Message",
- CellChangeTimes->{
-  3.95484742337127*^9, {3.954847612827421*^9, 3.954847631141613*^9}},
- CellLabel->
-  "During evaluation of \
-In[98]:=",ExpressionUUID->"5c7babd9-8337-4dda-bb03-2fab42258c6b"],
-
-Cell[BoxData[
- TemplateBox[{
-  "General", "stop", 
-   "\"Further output of \\!\\(\\*StyleBox[RowBox[{\\\"Infinity\\\", \
-\\\"::\\\", \\\"indet\\\"}], \\\"MessageName\\\"]\\) will be suppressed \
-during this calculation.\"", 2, 99, 55, 33584165429603174155, "Local"},
-  "MessageTemplate",
-  BaseStyle->"MSG"]], "Message",
- CellChangeTimes->{
-  3.95484742337127*^9, {3.954847612827421*^9, 3.954847631143635*^9}},
- CellLabel->
-  "During evaluation of \
-In[98]:=",ExpressionUUID->"a7da5d8b-d907-4f27-bafc-9ed63b39fcdd"],
-
-Cell[BoxData[
- TemplateBox[{
-  "ReplaceAll", "reps", 
-   "\"\\!\\(\\*RowBox[{\\\"{\\\", RowBox[{RowBox[{RowBox[{\\\"{\\\", \
-RowBox[{RowBox[{RowBox[{RowBox[{\\\"(\\\", RowBox[{RowBox[{RowBox[{\\\"-\\\", \
-\\\"c\\\"}], \\\" \\\", \\\"kboff\\\"}], \\\"-\\\", RowBox[{\\\"c2\\\", \\\" \
-\\\", \\\"kboff\\\"}], \\\"-\\\", \\\"konu\\\"}], \\\")\\\"}], \\\" \\\", \
-\\\"ss1\\\"}], \\\"+\\\", RowBox[{\\\"koffu\\\", \\\" \\\", \\\"ss4\\\"}], \\\
-\"+\\\", RowBox[{\\\"kuoff\\\", \\\" \\\", \\\"ss6\\\", \\\" \\\", \\\"\
-\[Gamma]\\\"}], \\\"+\\\", FractionBox[RowBox[{\\\"kuoff\\\", \\\" \\\", \
-\\\"kuon\\\", \\\" \\\", RowBox[{\\\"(\\\", RowBox[{\\\"konb\\\", \\\"+\\\", \
-RowBox[{\\\"kuoff\\\", \\\" \\\", \\\"\[Gamma]\\\"}]}], \\\")\\\"}], \\\" \
-\\\", RowBox[{\\\"(\\\", RowBox[{RowBox[{\\\"koffu\\\", \\\" \\\", \\\"konb\\\
-\", \\\" \\\", \\\"\[Gamma]\\\"}], \\\"+\\\", RowBox[{\\\"koffu\\\", \\\" \
-\\\", \\\"kuoff\\\", \\\" \\\", \\\"\[Gamma]\\\"}]}], \\\")\\\"}]}], \
-RowBox[{RowBox[{\\\"Times\\\", \\\"[\\\", RowBox[{\\\"\[LeftSkeleton]\\\", \\\
-\"5\\\", \\\"\[RightSkeleton]\\\"}], \\\"]\\\"}], \\\"+\\\", \
-RowBox[{\\\"Times\\\", \\\"[\\\", RowBox[{\\\"\[LeftSkeleton]\\\", \\\"4\\\", \
-\\\"\[RightSkeleton]\\\"}], \\\"]\\\"}], \\\"+\\\", RowBox[{\\\"Times\\\", \\\
-\"[\\\", RowBox[{\\\"\[LeftSkeleton]\\\", \\\"4\\\", \
-\\\"\[RightSkeleton]\\\"}], \\\"]\\\"}], \\\"+\\\", RowBox[{\\\"Times\\\", \\\
-\"[\\\", RowBox[{\\\"\[LeftSkeleton]\\\", \\\"4\\\", \
-\\\"\[RightSkeleton]\\\"}], \\\"]\\\"}], \\\"+\\\", RowBox[{\\\"Times\\\", \\\
-\"[\\\", RowBox[{\\\"\[LeftSkeleton]\\\", \\\"5\\\", \
-\\\"\[RightSkeleton]\\\"}], \\\"]\\\"}], \\\"+\\\", RowBox[{\\\"Times\\\", \\\
-\"[\\\", RowBox[{\\\"\[LeftSkeleton]\\\", \\\"5\\\", \
-\\\"\[RightSkeleton]\\\"}], \\\"]\\\"}], \\\"+\\\", RowBox[{\\\"Times\\\", \\\
-\"[\\\", RowBox[{\\\"\[LeftSkeleton]\\\", \\\"5\\\", \
-\\\"\[RightSkeleton]\\\"}], \\\"]\\\"}], \\\"+\\\", RowBox[{\\\"Times\\\", \\\
-\"[\\\", RowBox[{\\\"\[LeftSkeleton]\\\", \\\"5\\\", \
-\\\"\[RightSkeleton]\\\"}], \\\"]\\\"}], \\\"+\\\", RowBox[{\\\"\
-\[LeftSkeleton]\\\", \\\"19\\\", \\\"\[RightSkeleton]\\\"}], \\\"+\\\", \
-RowBox[{\\\"Times\\\", \\\"[\\\", RowBox[{\\\"\[LeftSkeleton]\\\", \\\"6\\\", \
-\\\"\[RightSkeleton]\\\"}], \\\"]\\\"}], \\\"+\\\", RowBox[{\\\"Times\\\", \\\
-\"[\\\", RowBox[{\\\"\[LeftSkeleton]\\\", \\\"5\\\", \
-\\\"\[RightSkeleton]\\\"}], \\\"]\\\"}], \\\"+\\\", RowBox[{\\\"Times\\\", \\\
-\"[\\\", RowBox[{\\\"\[LeftSkeleton]\\\", \\\"6\\\", \
-\\\"\[RightSkeleton]\\\"}], \\\"]\\\"}], \\\"+\\\", RowBox[{\\\"Times\\\", \\\
-\"[\\\", RowBox[{\\\"\[LeftSkeleton]\\\", \\\"6\\\", \
-\\\"\[RightSkeleton]\\\"}], \\\"]\\\"}], \\\"+\\\", RowBox[{\\\"Times\\\", \\\
-\"[\\\", RowBox[{\\\"\[LeftSkeleton]\\\", \\\"5\\\", \
-\\\"\[RightSkeleton]\\\"}], \\\"]\\\"}], \\\"+\\\", RowBox[{\\\"Times\\\", \\\
-\"[\\\", RowBox[{\\\"\[LeftSkeleton]\\\", \\\"5\\\", \
-\\\"\[RightSkeleton]\\\"}], \\\"]\\\"}], \\\"+\\\", RowBox[{\\\"Times\\\", \\\
-\"[\\\", RowBox[{\\\"\[LeftSkeleton]\\\", \\\"4\\\", \
-\\\"\[RightSkeleton]\\\"}], \\\"]\\\"}], \\\"+\\\", RowBox[{\\\"Times\\\", \\\
-\"[\\\", RowBox[{\\\"\[LeftSkeleton]\\\", \\\"4\\\", \
-\\\"\[RightSkeleton]\\\"}], \\\"]\\\"}]}]]}], \\\",\\\", RowBox[{\\\"\
-\[LeftSkeleton]\\\", \\\"5\\\", \\\"\[RightSkeleton]\\\"}]}], \\\"}\\\"}], \\\
-\"\[Equal]\\\", \\\"0\\\"}], \\\",\\\", RowBox[{\\\"\[LeftSkeleton]\\\", \
-\\\"5\\\", \\\"\[RightSkeleton]\\\"}], \\\",\\\", RowBox[{RowBox[{\\\"{\\\", \
-RowBox[{RowBox[{\\\"ss1\\\", \\\"+\\\", \\\"ss3\\\", \\\"+\\\", RowBox[{\\\"\
-\[LeftSkeleton]\\\", \\\"3\\\", \\\"\[RightSkeleton]\\\"}], \\\"+\\\", \
-FractionBox[RowBox[{\\\"kuon\\\", \\\" \\\", RowBox[{\\\"(\\\", \
-RowBox[{\\\"konb\\\", \\\"+\\\", RowBox[{\\\"\[LeftSkeleton]\\\", \\\"1\\\", \
-\\\"\[RightSkeleton]\\\"}]}], \\\")\\\"}], \\\" \\\", RowBox[{\\\"(\\\", \
-RowBox[{RowBox[{\\\"koffu\\\", \\\" \\\", \\\"konb\\\", \\\" \\\", \\\"\
-\[Gamma]\\\"}], \\\"+\\\", RowBox[{\\\"koffu\\\", \\\" \\\", \\\"kuoff\\\", \
-\\\" \\\", \\\"\[Gamma]\\\"}]}], \\\")\\\"}]}], \
-RowBox[{RowBox[{\\\"Times\\\", \\\"[\\\", RowBox[{\\\"\[LeftSkeleton]\\\", \\\
-\"5\\\", \\\"\[RightSkeleton]\\\"}], \\\"]\\\"}], \\\"+\\\", \
-RowBox[{\\\"Times\\\", \\\"[\\\", RowBox[{\\\"\[LeftSkeleton]\\\", \\\"4\\\", \
-\\\"\[RightSkeleton]\\\"}], \\\"]\\\"}], \\\"+\\\", RowBox[{\\\"\
-\[LeftSkeleton]\\\", \\\"31\\\", \\\"\[RightSkeleton]\\\"}], \\\"+\\\", \
-RowBox[{\\\"Times\\\", \\\"[\\\", RowBox[{\\\"\[LeftSkeleton]\\\", \\\"4\\\", \
-\\\"\[RightSkeleton]\\\"}], \\\"]\\\"}], \\\"+\\\", RowBox[{\\\"Times\\\", \\\
-\"[\\\", RowBox[{\\\"\[LeftSkeleton]\\\", \\\"4\\\", \
-\\\"\[RightSkeleton]\\\"}], \\\"]\\\"}]}]]}], \\\",\\\", RowBox[{\\\"\
-\[LeftSkeleton]\\\", \\\"5\\\", \\\"\[RightSkeleton]\\\"}]}], \\\"}\\\"}], \\\
-\"\[Equal]\\\", \\\"1\\\"}]}], \\\"}\\\"}]\\) is neither a list of \
-replacement rules nor a valid dispatch table, and so cannot be used for \
-replacing.\"", 2, 99, 56, 33584165429603174155, "Local"},
-  "MessageTemplate",
-  BaseStyle->"MSG"]], "Message",
- CellChangeTimes->{
-  3.95484742337127*^9, {3.954847612827421*^9, 3.9548476311456823`*^9}},
- CellLabel->
-  "During evaluation of \
-In[98]:=",ExpressionUUID->"fb116822-4b23-4ab9-b24d-f4fc78acaf48"],
+Cell[CellGroupData[{
 
 Cell[BoxData[
  RowBox[{
-  FractionBox["1", "2"], " ", 
-  RowBox[{"(", 
+  RowBox[{"(*", 
+   RowBox[{"Edge", " ", "lists", " ", "and", " ", "weights"}], "*)"}], 
+  "\[IndentingNewLine]", 
+  RowBox[{
    RowBox[{
+    RowBox[{"edges6", "=", 
+     RowBox[{"{", 
+      RowBox[{
+       RowBox[{"{", 
+        RowBox[{"1", ",", "2"}], "}"}], ",", 
+       RowBox[{"{", 
+        RowBox[{"2", ",", "1"}], "}"}], ",", 
+       RowBox[{"{", 
+        RowBox[{"2", ",", "3"}], "}"}], ",", 
+       RowBox[{"{", 
+        RowBox[{"3", ",", "2"}], "}"}], ",", 
+       RowBox[{"{", 
+        RowBox[{"3", ",", "4"}], "}"}], ",", 
+       RowBox[{"{", 
+        RowBox[{"4", ",", "3"}], "}"}], ",", 
+       RowBox[{"{", 
+        RowBox[{"4", ",", "5"}], "}"}], ",", 
+       RowBox[{"{", 
+        RowBox[{"5", ",", "4"}], "}"}], ",", 
+       RowBox[{"{", 
+        RowBox[{"5", ",", "6"}], "}"}], ",", 
+       RowBox[{"{", 
+        RowBox[{"6", ",", "5"}], "}"}], ",", 
+       RowBox[{"{", 
+        RowBox[{"6", ",", "7"}], "}"}], ",", 
+       RowBox[{"{", 
+        RowBox[{"7", ",", "6"}], "}"}], ",", 
+       RowBox[{"{", 
+        RowBox[{"8", ",", "9"}], "}"}], ",", 
+       RowBox[{"{", 
+        RowBox[{"9", ",", "8"}], "}"}], ",", 
+       RowBox[{"{", 
+        RowBox[{"9", ",", "10"}], "}"}], ",", 
+       RowBox[{"{", 
+        RowBox[{"10", ",", "9"}], "}"}], ",", 
+       RowBox[{"{", 
+        RowBox[{"10", ",", "11"}], "}"}], ",", 
+       RowBox[{"{", 
+        RowBox[{"11", ",", "10"}], "}"}], ",", 
+       RowBox[{"{", 
+        RowBox[{"11", ",", "12"}], "}"}], ",", 
+       RowBox[{"{", 
+        RowBox[{"12", ",", "11"}], "}"}], ",", 
+       RowBox[{"{", 
+        RowBox[{"12", ",", "13"}], "}"}], ",", 
+       RowBox[{"{", 
+        RowBox[{"13", ",", "12"}], "}"}], ",", 
+       RowBox[{"{", 
+        RowBox[{"13", ",", "14"}], "}"}], ",", 
+       RowBox[{"{", 
+        RowBox[{"14", ",", "13"}], "}"}], ",", 
+       RowBox[{"{", 
+        RowBox[{"1", ",", "8"}], "}"}], ",", 
+       RowBox[{"{", 
+        RowBox[{"8", ",", "1"}], "}"}], ",", 
+       RowBox[{"{", 
+        RowBox[{"2", ",", "9"}], "}"}], ",", 
+       RowBox[{"{", 
+        RowBox[{"9", ",", "2"}], "}"}], ",", 
+       RowBox[{"{", 
+        RowBox[{"3", ",", "10"}], "}"}], ",", 
+       RowBox[{"{", 
+        RowBox[{"10", ",", "3"}], "}"}], ",", 
+       RowBox[{"{", 
+        RowBox[{"4", ",", "11"}], "}"}], ",", 
+       RowBox[{"{", 
+        RowBox[{"11", ",", "4"}], "}"}], ",", 
+       RowBox[{"{", 
+        RowBox[{"5", ",", "12"}], "}"}], ",", 
+       RowBox[{"{", 
+        RowBox[{"12", ",", "5"}], "}"}], ",", 
+       RowBox[{"{", 
+        RowBox[{"6", ",", "13"}], "}"}], ",", 
+       RowBox[{"{", 
+        RowBox[{"13", ",", "6"}], "}"}], ",", 
+       RowBox[{"{", 
+        RowBox[{"7", ",", "14"}], "}"}], ",", 
+       RowBox[{"{", 
+        RowBox[{"14", ",", "7"}], "}"}]}], "}"}]}], ";"}], "\[IndentingNewLine]", 
+   RowBox[{"weights6", " ", "=", " ", 
     RowBox[{"{", 
      RowBox[{
-     "Indeterminate", ",", "Indeterminate", ",", "Indeterminate", ",", 
-      "Indeterminate", ",", "Indeterminate", ",", "Indeterminate"}], "}"}], "/.",
-     "\[VeryThinSpace]", 
-    RowBox[{"{", 
-     RowBox[{
+      RowBox[{"c", "*", "kboff1"}], ",", "kuoff1", ",", 
+      RowBox[{"c", "*", "kboff2"}], ",", "kuoff2", ",", 
+      RowBox[{"c", "*", "kboff3"}], ",", "kuoff3", ",", 
+      RowBox[{"c", "*", "kboff4"}], ",", "kuoff4", ",", 
+      RowBox[{"c", "*", "kboff5"}], ",", "kuoff5", ",", 
+      RowBox[{"c", "*", "kboff6"}], ",", "kuoff6", ",", 
+      RowBox[{"c", "*", "kbon1"}], ",", "kuon1", ",", 
+      RowBox[{"c", "*", "kbon2"}], ",", "kuon2", ",", 
+      RowBox[{"c", "*", "kbon3"}], ",", "kuon3", ",", 
+      RowBox[{"c", "*", "kbon4"}], ",", "kuon4", ",", 
+      RowBox[{"c", "*", "kbon5"}], ",", "kuon5", ",", 
+      RowBox[{"c", "*", "kbon6"}], ",", "kuon6", ",", "kon1", ",", "koff1", ",",
+       "kon2", ",", "koff2", ",", "kon3", ",", "koff3", ",", "kon4", ",", 
+      "koff4", ",", "kon5", ",", "koff5", ",", "kon6", ",", "koff6", ",", 
+      "kon7", ",", "koff7"}], "}"}]}], "\[IndentingNewLine]", 
+   RowBox[{
+    RowBox[{"nstates6", " ", "=", " ", "14"}], ";"}], "\[IndentingNewLine]", 
+   RowBox[{
+    RowBox[{"nedges6", "=", " ", 
+     RowBox[{"Length", "[", "edges6", "]"}]}], ";"}], "\[IndentingNewLine]", 
+   "\[IndentingNewLine]", 
+   RowBox[{"(*", 
+    RowBox[{"Plot", " ", "the", " ", "circuit"}], "*)"}], "\[IndentingNewLine]", 
+   RowBox[{
+    RowBox[{"ClearAll", "[", "edgeList", "]"}], ";"}], "\[IndentingNewLine]", 
+   
+   RowBox[{
+    RowBox[{"edgeList", "=", 
+     RowBox[{"Table", "[", 
       RowBox[{
+       RowBox[{
+        RowBox[{"edges6", "[", 
+         RowBox[{"[", 
+          RowBox[{"i", ",", "1"}], "]"}], "]"}], "->", 
+        RowBox[{"edges6", "[", 
+         RowBox[{"[", 
+          RowBox[{"i", ",", "2"}], "]"}], "]"}]}], ",", 
        RowBox[{"{", 
+        RowBox[{"i", ",", "1", ",", "nedges6"}], "}"}]}], "]"}]}], ";"}], "\[IndentingNewLine]", 
+   RowBox[{"g", "=", 
+    RowBox[{"Graph", "[", 
+     RowBox[{"edges6", ",", 
+      RowBox[{"VertexLabels", "->", "\"\<Name\>\""}], ",", 
+      RowBox[{"DirectedEdges", "->", "True"}], ",", 
+      RowBox[{"EdgeLabels", "->", 
+       RowBox[{"Table", "[", 
         RowBox[{
          RowBox[{
-          RowBox[{"-", 
-           RowBox[{"(", 
+          RowBox[{"edgeList", "[", 
+           RowBox[{"[", "i", "]"}], "]"}], "->", 
+          RowBox[{"Placed", "[", 
+           RowBox[{
             RowBox[{
              RowBox[{"(", 
-              RowBox[{
-               RowBox[{"c", " ", "kboff"}], "+", 
-               RowBox[{"c2", " ", "kboff"}], "+", "konu"}], ")"}], " ", 
-             "ss1"}], ")"}]}], "+", 
-          RowBox[{"koffu", " ", "ss4"}], "+", 
-          RowBox[{"kuoff", " ", "ss6", " ", "\[Gamma]"}], "+", 
-          RowBox[{
-           RowBox[{"(", 
-            RowBox[{"koffu", " ", "kuoff", " ", 
-             RowBox[{"(", 
-              RowBox[{"konb", "+", "kuoff"}], ")"}], " ", "kuon", " ", 
-             "\[Gamma]", " ", 
-             RowBox[{"(", 
-              RowBox[{"konb", "+", 
-               RowBox[{"kuoff", " ", "\[Gamma]"}]}], ")"}]}], ")"}], "/", 
-           RowBox[{"(", 
-            RowBox[{
-             RowBox[{
-              SuperscriptBox["c", "2"], " ", "kboff", " ", "kbon", " ", 
-              "konb", " ", "\[Gamma]", " ", 
-              RowBox[{"(", 
-               RowBox[{"konb", "+", 
-                RowBox[{"kuoff", " ", "\[Gamma]"}]}], ")"}]}], "+", 
-             RowBox[{"c", " ", 
-              RowBox[{"(", 
-               RowBox[{
-                RowBox[{
-                 RowBox[{"(", 
-                  RowBox[{
-                   RowBox[{"kbon", " ", "konu", " ", 
-                    RowBox[{"(", 
-                    RowBox[{"konb", "+", "kuoff"}], ")"}]}], "+", 
-                   RowBox[{"kboff", " ", "konb", " ", "kuon"}], "+", 
-                   RowBox[{"kboff", " ", "koffu", " ", 
-                    RowBox[{"(", 
-                    RowBox[{"konb", "+", "kuon"}], ")"}]}]}], ")"}], " ", 
-                 "\[Gamma]", " ", 
-                 RowBox[{"(", 
-                  RowBox[{"konb", "+", 
-                   RowBox[{"kuoff", " ", "\[Gamma]"}]}], ")"}]}], "+", 
-                RowBox[{"c2", " ", "kboff", " ", "kbon", " ", "konb", " ", 
-                 RowBox[{"(", 
-                  RowBox[{"konb", "+", 
-                   RowBox[{"konb", " ", "\[Gamma]"}], "+", 
-                   RowBox[{"2", " ", "kuoff", " ", "\[Gamma]"}]}], ")"}]}]}], 
-               ")"}]}], "+", 
-             RowBox[{
-              RowBox[{"(", 
-               RowBox[{"konb", "+", "kuoff"}], ")"}], " ", 
-              RowBox[{"(", 
-               RowBox[{
-                RowBox[{
-                 SuperscriptBox["c2", "2"], " ", "kboff", " ", "kbon", " ", 
-                 "konb"}], "+", 
-                RowBox[{"c2", " ", "kbon", " ", "konu", " ", 
-                 RowBox[{"(", 
-                  RowBox[{"konb", "+", 
-                   RowBox[{"kuoff", " ", "\[Gamma]"}]}], ")"}]}], "+", 
-                RowBox[{
-                 RowBox[{"(", 
-                  RowBox[{"koffu", "+", "konu"}], ")"}], " ", "kuon", " ", 
-                 "\[Gamma]", " ", 
-                 RowBox[{"(", 
-                  RowBox[{"konb", "+", 
-                   RowBox[{"kuoff", " ", "\[Gamma]"}]}], ")"}]}], "+", 
-                RowBox[{"c2", " ", "kboff", " ", 
-                 RowBox[{"(", 
-                  RowBox[{
-                   RowBox[{"konb", " ", "kuon", " ", "\[Gamma]"}], "+", 
-                   RowBox[{"koffu", " ", 
-                    RowBox[{"(", 
-                    RowBox[{"konb", "+", 
-                    RowBox[{"kuon", " ", "\[Gamma]"}]}], ")"}]}]}], ")"}]}]}],
-                ")"}]}]}], ")"}]}]}], ",", 
-         RowBox[{
-          RowBox[{"-", 
-           RowBox[{"(", 
-            RowBox[{
-             RowBox[{"(", 
-              RowBox[{
-               RowBox[{"c", " ", "kboff"}], "+", 
-               RowBox[{"c2", " ", "kboff"}], "+", "konu"}], ")"}], " ", 
-             "ss1"}], ")"}]}], "+", 
-          RowBox[{"koffu", " ", "ss4"}], "+", 
-          RowBox[{"kuoff", " ", "ss6", " ", "\[Gamma]"}], "+", 
-          RowBox[{
-           RowBox[{"(", 
-            RowBox[{
-            "c", " ", "kboff", " ", "koffu", " ", "kuoff", " ", "kuon", " ", 
-             "\[Gamma]", " ", 
-             RowBox[{"(", 
-              RowBox[{"konb", "+", 
-               RowBox[{"kuoff", " ", "\[Gamma]"}]}], ")"}]}], ")"}], "/", 
-           RowBox[{"(", 
-            RowBox[{
-             RowBox[{
-              SuperscriptBox["c", "2"], " ", "kboff", " ", "kbon", " ", 
-              "konb", " ", "\[Gamma]", " ", 
-              RowBox[{"(", 
-               RowBox[{"konb", "+", 
-                RowBox[{"kuoff", " ", "\[Gamma]"}]}], ")"}]}], "+", 
-             RowBox[{"c", " ", 
-              RowBox[{"(", 
-               RowBox[{
-                RowBox[{
-                 RowBox[{"(", 
-                  RowBox[{
-                   RowBox[{"kbon", " ", "konu", " ", 
-                    RowBox[{"(", 
-                    RowBox[{"konb", "+", "kuoff"}], ")"}]}], "+", 
-                   RowBox[{"kboff", " ", "konb", " ", "kuon"}], "+", 
-                   RowBox[{"kboff", " ", "koffu", " ", 
-                    RowBox[{"(", 
-                    RowBox[{"konb", "+", "kuon"}], ")"}]}]}], ")"}], " ", 
-                 "\[Gamma]", " ", 
-                 RowBox[{"(", 
-                  RowBox[{"konb", "+", 
-                   RowBox[{"kuoff", " ", "\[Gamma]"}]}], ")"}]}], "+", 
-                RowBox[{"c2", " ", "kboff", " ", "kbon", " ", "konb", " ", 
-                 RowBox[{"(", 
-                  RowBox[{"konb", "+", 
-                   RowBox[{"konb", " ", "\[Gamma]"}], "+", 
-                   RowBox[{"2", " ", "kuoff", " ", "\[Gamma]"}]}], ")"}]}]}], 
-               ")"}]}], "+", 
-             RowBox[{
-              RowBox[{"(", 
-               RowBox[{"konb", "+", "kuoff"}], ")"}], " ", 
-              RowBox[{"(", 
-               RowBox[{
-                RowBox[{
-                 SuperscriptBox["c2", "2"], " ", "kboff", " ", "kbon", " ", 
-                 "konb"}], "+", 
-                RowBox[{"c2", " ", "kbon", " ", "konu", " ", 
-                 RowBox[{"(", 
-                  RowBox[{"konb", "+", 
-                   RowBox[{"kuoff", " ", "\[Gamma]"}]}], ")"}]}], "+", 
-                RowBox[{
-                 RowBox[{"(", 
-                  RowBox[{"koffu", "+", "konu"}], ")"}], " ", "kuon", " ", 
-                 "\[Gamma]", " ", 
-                 RowBox[{"(", 
-                  RowBox[{"konb", "+", 
-                   RowBox[{"kuoff", " ", "\[Gamma]"}]}], ")"}]}], "+", 
-                RowBox[{"c2", " ", "kboff", " ", 
-                 RowBox[{"(", 
-                  RowBox[{
-                   RowBox[{"konb", " ", "kuon", " ", "\[Gamma]"}], "+", 
-                   RowBox[{"koffu", " ", 
-                    RowBox[{"(", 
-                    RowBox[{"konb", "+", 
-                    RowBox[{"kuon", " ", "\[Gamma]"}]}], ")"}]}]}], ")"}]}]}],
-                ")"}]}]}], ")"}]}]}], ",", 
-         RowBox[{
-          RowBox[{"-", 
-           RowBox[{"(", 
-            RowBox[{
-             RowBox[{"(", 
-              RowBox[{
-               RowBox[{"c", " ", "kboff"}], "+", 
-               RowBox[{"c2", " ", "kboff"}], "+", "konu"}], ")"}], " ", 
-             "ss1"}], ")"}]}], "+", 
-          RowBox[{"koffu", " ", "ss4"}], "+", 
-          RowBox[{"kuoff", " ", "ss6", " ", "\[Gamma]"}], "+", 
-          RowBox[{
-           RowBox[{"(", 
-            RowBox[{"c", " ", "kuoff", " ", "\[Gamma]", " ", 
-             RowBox[{"(", 
-              RowBox[{
-               RowBox[{"c2", " ", "kboff", " ", "kbon", " ", "konb", " ", 
-                RowBox[{"(", 
-                 RowBox[{"konb", "+", "kuoff"}], ")"}]}], "+", 
-               RowBox[{"c", " ", "kboff", " ", "kbon", " ", "konb", " ", 
-                RowBox[{"(", 
-                 RowBox[{"konb", "+", 
-                  RowBox[{"kuoff", " ", "\[Gamma]"}]}], ")"}]}], "+", 
-               RowBox[{
-                RowBox[{"(", 
-                 RowBox[{
-                  RowBox[{"kboff", " ", "koffu", " ", "konb"}], "+", 
-                  RowBox[{"kbon", " ", "konu", " ", 
-                   RowBox[{"(", 
-                    RowBox[{"konb", "+", "kuoff"}], ")"}]}]}], ")"}], " ", 
-                RowBox[{"(", 
-                 RowBox[{"konb", "+", 
-                  RowBox[{"kuoff", " ", "\[Gamma]"}]}], ")"}]}]}], ")"}]}], 
-            ")"}], "/", 
-           RowBox[{"(", 
-            RowBox[{
-             RowBox[{
-              SuperscriptBox["c", "2"], " ", "kboff", " ", "kbon", " ", 
-              "konb", " ", "\[Gamma]", " ", 
-              RowBox[{"(", 
-               RowBox[{"konb", "+", 
-                RowBox[{"kuoff", " ", "\[Gamma]"}]}], ")"}]}], "+", 
-             RowBox[{"c", " ", 
-              RowBox[{"(", 
-               RowBox[{
-                RowBox[{
-                 RowBox[{"(", 
-                  RowBox[{
-                   RowBox[{"kbon", " ", "konu", " ", 
-                    RowBox[{"(", 
-                    RowBox[{"konb", "+", "kuoff"}], ")"}]}], "+", 
-                   RowBox[{"kboff", " ", "konb", " ", "kuon"}], "+", 
-                   RowBox[{"kboff", " ", "koffu", " ", 
-                    RowBox[{"(", 
-                    RowBox[{"konb", "+", "kuon"}], ")"}]}]}], ")"}], " ", 
-                 "\[Gamma]", " ", 
-                 RowBox[{"(", 
-                  RowBox[{"konb", "+", 
-                   RowBox[{"kuoff", " ", "\[Gamma]"}]}], ")"}]}], "+", 
-                RowBox[{"c2", " ", "kboff", " ", "kbon", " ", "konb", " ", 
-                 RowBox[{"(", 
-                  RowBox[{"konb", "+", 
-                   RowBox[{"konb", " ", "\[Gamma]"}], "+", 
-                   RowBox[{"2", " ", "kuoff", " ", "\[Gamma]"}]}], ")"}]}]}], 
-               ")"}]}], "+", 
-             RowBox[{
-              RowBox[{"(", 
-               RowBox[{"konb", "+", "kuoff"}], ")"}], " ", 
-              RowBox[{"(", 
-               RowBox[{
-                RowBox[{
-                 SuperscriptBox["c2", "2"], " ", "kboff", " ", "kbon", " ", 
-                 "konb"}], "+", 
-                RowBox[{"c2", " ", "kbon", " ", "konu", " ", 
-                 RowBox[{"(", 
-                  RowBox[{"konb", "+", 
-                   RowBox[{"kuoff", " ", "\[Gamma]"}]}], ")"}]}], "+", 
-                RowBox[{
-                 RowBox[{"(", 
-                  RowBox[{"koffu", "+", "konu"}], ")"}], " ", "kuon", " ", 
-                 "\[Gamma]", " ", 
-                 RowBox[{"(", 
-                  RowBox[{"konb", "+", 
-                   RowBox[{"kuoff", " ", "\[Gamma]"}]}], ")"}]}], "+", 
-                RowBox[{"c2", " ", "kboff", " ", 
-                 RowBox[{"(", 
-                  RowBox[{
-                   RowBox[{"konb", " ", "kuon", " ", "\[Gamma]"}], "+", 
-                   RowBox[{"koffu", " ", 
-                    RowBox[{"(", 
-                    RowBox[{"konb", "+", 
-                    RowBox[{"kuon", " ", "\[Gamma]"}]}], ")"}]}]}], ")"}]}]}],
-                ")"}]}]}], ")"}]}]}], ",", 
-         RowBox[{
-          RowBox[{"-", 
-           RowBox[{"(", 
-            RowBox[{
-             RowBox[{"(", 
-              RowBox[{
-               RowBox[{"c", " ", "kboff"}], "+", 
-               RowBox[{"c2", " ", "kboff"}], "+", "konu"}], ")"}], " ", 
-             "ss1"}], ")"}]}], "+", 
-          RowBox[{"koffu", " ", "ss4"}], "+", 
-          RowBox[{"kuoff", " ", "ss6", " ", "\[Gamma]"}], "+", 
-          RowBox[{
-           RowBox[{"(", 
-            RowBox[{"kuoff", " ", "kuon", " ", "\[Gamma]", " ", 
-             RowBox[{"(", 
-              RowBox[{
-               RowBox[{"c", " ", "kboff", " ", "konb", " ", 
-                RowBox[{"(", 
-                 RowBox[{"konb", "+", 
-                  RowBox[{"kuoff", " ", "\[Gamma]"}]}], ")"}]}], "+", 
-               RowBox[{
-                RowBox[{"(", 
-                 RowBox[{"konb", "+", "kuoff"}], ")"}], " ", 
-                RowBox[{"(", 
-                 RowBox[{
-                  RowBox[{"c2", " ", "kboff", " ", "konb"}], "+", 
-                  RowBox[{"konu", " ", 
-                   RowBox[{"(", 
-                    RowBox[{"konb", "+", 
-                    RowBox[{"kuoff", " ", "\[Gamma]"}]}], ")"}]}]}], 
-                 ")"}]}]}], ")"}]}], ")"}], "/", 
-           RowBox[{"(", 
-            RowBox[{
-             RowBox[{
-              SuperscriptBox["c", "2"], " ", "kboff", " ", "kbon", " ", 
-              "konb", " ", "\[Gamma]", " ", 
-              RowBox[{"(", 
-               RowBox[{"konb", "+", 
-                RowBox[{"kuoff", " ", "\[Gamma]"}]}], ")"}]}], "+", 
-             RowBox[{"c", " ", 
-              RowBox[{"(", 
-               RowBox[{
-                RowBox[{
-                 RowBox[{"(", 
-                  RowBox[{
-                   RowBox[{"kbon", " ", "konu", " ", 
-                    RowBox[{"(", 
-                    RowBox[{"konb", "+", "kuoff"}], ")"}]}], "+", 
-                   RowBox[{"kboff", " ", "konb", " ", "kuon"}], "+", 
-                   RowBox[{"kboff", " ", "koffu", " ", 
-                    RowBox[{"(", 
-                    RowBox[{"konb", "+", "kuon"}], ")"}]}]}], ")"}], " ", 
-                 "\[Gamma]", " ", 
-                 RowBox[{"(", 
-                  RowBox[{"konb", "+", 
-                   RowBox[{"kuoff", " ", "\[Gamma]"}]}], ")"}]}], "+", 
-                RowBox[{"c2", " ", "kboff", " ", "kbon", " ", "konb", " ", 
-                 RowBox[{"(", 
-                  RowBox[{"konb", "+", 
-                   RowBox[{"konb", " ", "\[Gamma]"}], "+", 
-                   RowBox[{"2", " ", "kuoff", " ", "\[Gamma]"}]}], ")"}]}]}], 
-               ")"}]}], "+", 
-             RowBox[{
-              RowBox[{"(", 
-               RowBox[{"konb", "+", "kuoff"}], ")"}], " ", 
-              RowBox[{"(", 
-               RowBox[{
-                RowBox[{
-                 SuperscriptBox["c2", "2"], " ", "kboff", " ", "kbon", " ", 
-                 "konb"}], "+", 
-                RowBox[{"c2", " ", "kbon", " ", "konu", " ", 
-                 RowBox[{"(", 
-                  RowBox[{"konb", "+", 
-                   RowBox[{"kuoff", " ", "\[Gamma]"}]}], ")"}]}], "+", 
-                RowBox[{
-                 RowBox[{"(", 
-                  RowBox[{"koffu", "+", "konu"}], ")"}], " ", "kuon", " ", 
-                 "\[Gamma]", " ", 
-                 RowBox[{"(", 
-                  RowBox[{"konb", "+", 
-                   RowBox[{"kuoff", " ", "\[Gamma]"}]}], ")"}]}], "+", 
-                RowBox[{"c2", " ", "kboff", " ", 
-                 RowBox[{"(", 
-                  RowBox[{
-                   RowBox[{"konb", " ", "kuon", " ", "\[Gamma]"}], "+", 
-                   RowBox[{"koffu", " ", 
-                    RowBox[{"(", 
-                    RowBox[{"konb", "+", 
-                    RowBox[{"kuon", " ", "\[Gamma]"}]}], ")"}]}]}], ")"}]}]}],
-                ")"}]}]}], ")"}]}]}], ",", 
-         RowBox[{
-          RowBox[{"-", 
-           RowBox[{"(", 
-            RowBox[{
-             RowBox[{"(", 
-              RowBox[{
-               RowBox[{"c", " ", "kboff"}], "+", 
-               RowBox[{"c2", " ", "kboff"}], "+", "konu"}], ")"}], " ", 
-             "ss1"}], ")"}]}], "+", 
-          RowBox[{"koffu", " ", "ss4"}], "+", 
-          RowBox[{"kuoff", " ", "ss6", " ", "\[Gamma]"}], "+", 
-          RowBox[{
-           RowBox[{"(", 
-            RowBox[{"c2", " ", "kuoff", " ", 
-             RowBox[{"(", 
-              RowBox[{
-               RowBox[{"c", " ", "kboff", " ", "kbon", " ", "konb", " ", 
-                RowBox[{"(", 
-                 RowBox[{"konb", "+", 
-                  RowBox[{"kuoff", " ", "\[Gamma]"}]}], ")"}]}], "+", 
-               RowBox[{
-                RowBox[{"(", 
-                 RowBox[{"konb", "+", "kuoff"}], ")"}], " ", 
-                RowBox[{"(", 
-                 RowBox[{
-                  RowBox[{"c2", " ", "kboff", " ", "kbon", " ", "konb"}], "+", 
-                  RowBox[{"kboff", " ", "koffu", " ", "konb"}], "+", 
-                  RowBox[{"kbon", " ", "konu", " ", 
-                   RowBox[{"(", 
-                    RowBox[{"konb", "+", 
-                    RowBox[{"kuoff", " ", "\[Gamma]"}]}], ")"}]}]}], 
-                 ")"}]}]}], ")"}]}], ")"}], "/", 
-           RowBox[{"(", 
-            RowBox[{
-             RowBox[{
-              SuperscriptBox["c", "2"], " ", "kboff", " ", "kbon", " ", 
-              "konb", " ", "\[Gamma]", " ", 
-              RowBox[{"(", 
-               RowBox[{"konb", "+", 
-                RowBox[{"kuoff", " ", "\[Gamma]"}]}], ")"}]}], "+", 
-             RowBox[{"c", " ", 
-              RowBox[{"(", 
-               RowBox[{
-                RowBox[{
-                 RowBox[{"(", 
-                  RowBox[{
-                   RowBox[{"kbon", " ", "konu", " ", 
-                    RowBox[{"(", 
-                    RowBox[{"konb", "+", "kuoff"}], ")"}]}], "+", 
-                   RowBox[{"kboff", " ", "konb", " ", "kuon"}], "+", 
-                   RowBox[{"kboff", " ", "koffu", " ", 
-                    RowBox[{"(", 
-                    RowBox[{"konb", "+", "kuon"}], ")"}]}]}], ")"}], " ", 
-                 "\[Gamma]", " ", 
-                 RowBox[{"(", 
-                  RowBox[{"konb", "+", 
-                   RowBox[{"kuoff", " ", "\[Gamma]"}]}], ")"}]}], "+", 
-                RowBox[{"c2", " ", "kboff", " ", "kbon", " ", "konb", " ", 
-                 RowBox[{"(", 
-                  RowBox[{"konb", "+", 
-                   RowBox[{"konb", " ", "\[Gamma]"}], "+", 
-                   RowBox[{"2", " ", "kuoff", " ", "\[Gamma]"}]}], ")"}]}]}], 
-               ")"}]}], "+", 
-             RowBox[{
-              RowBox[{"(", 
-               RowBox[{"konb", "+", "kuoff"}], ")"}], " ", 
-              RowBox[{"(", 
-               RowBox[{
-                RowBox[{
-                 SuperscriptBox["c2", "2"], " ", "kboff", " ", "kbon", " ", 
-                 "konb"}], "+", 
-                RowBox[{"c2", " ", "kbon", " ", "konu", " ", 
-                 RowBox[{"(", 
-                  RowBox[{"konb", "+", 
-                   RowBox[{"kuoff", " ", "\[Gamma]"}]}], ")"}]}], "+", 
-                RowBox[{
-                 RowBox[{"(", 
-                  RowBox[{"koffu", "+", "konu"}], ")"}], " ", "kuon", " ", 
-                 "\[Gamma]", " ", 
-                 RowBox[{"(", 
-                  RowBox[{"konb", "+", 
-                   RowBox[{"kuoff", " ", "\[Gamma]"}]}], ")"}]}], "+", 
-                RowBox[{"c2", " ", "kboff", " ", 
-                 RowBox[{"(", 
-                  RowBox[{
-                   RowBox[{"konb", " ", "kuon", " ", "\[Gamma]"}], "+", 
-                   RowBox[{"koffu", " ", 
-                    RowBox[{"(", 
-                    RowBox[{"konb", "+", 
-                    RowBox[{"kuon", " ", "\[Gamma]"}]}], ")"}]}]}], ")"}]}]}],
-                ")"}]}]}], ")"}]}]}], ",", 
-         RowBox[{
-          RowBox[{"-", 
-           RowBox[{"(", 
-            RowBox[{
-             RowBox[{"(", 
-              RowBox[{
-               RowBox[{"c", " ", "kboff"}], "+", 
-               RowBox[{"c2", " ", "kboff"}], "+", "konu"}], ")"}], " ", 
-             "ss1"}], ")"}]}], "+", 
-          RowBox[{"koffu", " ", "ss4"}], "+", 
-          RowBox[{"kuoff", " ", "ss6", " ", "\[Gamma]"}], "+", 
-          RowBox[{
-           RowBox[{"(", 
-            RowBox[{"c2", " ", "kboff", " ", "koffu", " ", "kuoff", " ", 
-             RowBox[{"(", 
-              RowBox[{"konb", "+", "kuoff"}], ")"}], " ", "kuon", " ", 
-             "\[Gamma]"}], ")"}], "/", 
-           RowBox[{"(", 
-            RowBox[{
-             RowBox[{
-              SuperscriptBox["c", "2"], " ", "kboff", " ", "kbon", " ", 
-              "konb", " ", "\[Gamma]", " ", 
-              RowBox[{"(", 
-               RowBox[{"konb", "+", 
-                RowBox[{"kuoff", " ", "\[Gamma]"}]}], ")"}]}], "+", 
-             RowBox[{"c", " ", 
-              RowBox[{"(", 
-               RowBox[{
-                RowBox[{
-                 RowBox[{"(", 
-                  RowBox[{
-                   RowBox[{"kbon", " ", "konu", " ", 
-                    RowBox[{"(", 
-                    RowBox[{"konb", "+", "kuoff"}], ")"}]}], "+", 
-                   RowBox[{"kboff", " ", "konb", " ", "kuon"}], "+", 
-                   RowBox[{"kboff", " ", "koffu", " ", 
-                    RowBox[{"(", 
-                    RowBox[{"konb", "+", "kuon"}], ")"}]}]}], ")"}], " ", 
-                 "\[Gamma]", " ", 
-                 RowBox[{"(", 
-                  RowBox[{"konb", "+", 
-                   RowBox[{"kuoff", " ", "\[Gamma]"}]}], ")"}]}], "+", 
-                RowBox[{"c2", " ", "kboff", " ", "kbon", " ", "konb", " ", 
-                 RowBox[{"(", 
-                  RowBox[{"konb", "+", 
-                   RowBox[{"konb", " ", "\[Gamma]"}], "+", 
-                   RowBox[{"2", " ", "kuoff", " ", "\[Gamma]"}]}], ")"}]}]}], 
-               ")"}]}], "+", 
-             RowBox[{
-              RowBox[{"(", 
-               RowBox[{"konb", "+", "kuoff"}], ")"}], " ", 
-              RowBox[{"(", 
-               RowBox[{
-                RowBox[{
-                 SuperscriptBox["c2", "2"], " ", "kboff", " ", "kbon", " ", 
-                 "konb"}], "+", 
-                RowBox[{"c2", " ", "kbon", " ", "konu", " ", 
-                 RowBox[{"(", 
-                  RowBox[{"konb", "+", 
-                   RowBox[{"kuoff", " ", "\[Gamma]"}]}], ")"}]}], "+", 
-                RowBox[{
-                 RowBox[{"(", 
-                  RowBox[{"koffu", "+", "konu"}], ")"}], " ", "kuon", " ", 
-                 "\[Gamma]", " ", 
-                 RowBox[{"(", 
-                  RowBox[{"konb", "+", 
-                   RowBox[{"kuoff", " ", "\[Gamma]"}]}], ")"}]}], "+", 
-                RowBox[{"c2", " ", "kboff", " ", 
-                 RowBox[{"(", 
-                  RowBox[{
-                   RowBox[{"konb", " ", "kuon", " ", "\[Gamma]"}], "+", 
-                   RowBox[{"koffu", " ", 
-                    RowBox[{"(", 
-                    RowBox[{"konb", "+", 
-                    RowBox[{"kuon", " ", "\[Gamma]"}]}], ")"}]}]}], ")"}]}]}],
-                ")"}]}]}], ")"}]}]}]}], "}"}], "\[Equal]", "0"}], ",", 
-      RowBox[{
+              RowBox[{"HoldForm", "/@", "weights6"}], ")"}], "[", 
+             RowBox[{"[", "i", "]"}], "]"}], ",", "0.55"}], "]"}]}], ",", 
+         RowBox[{"{", 
+          RowBox[{"i", ",", "1", ",", "nedges6"}], "}"}]}], "]"}]}], ",", 
+      RowBox[{"ImageSize", "->", "600"}], ",", " ", 
+      RowBox[{"GraphLayout", "->", 
        RowBox[{"{", 
-        RowBox[{
-         RowBox[{
-          RowBox[{"c", " ", "kboff", " ", "ss1"}], "-", 
-          RowBox[{
-           RowBox[{"(", 
-            RowBox[{"koffu", " ", 
-             SuperscriptBox[
-              RowBox[{"(", 
-               RowBox[{"konb", "+", "kuoff"}], ")"}], "2"], " ", "kuon", " ", 
-             "\[Gamma]", " ", 
-             RowBox[{"(", 
-              RowBox[{"konb", "+", 
-               RowBox[{"kuoff", " ", "\[Gamma]"}]}], ")"}]}], ")"}], "/", 
-           RowBox[{"(", 
-            RowBox[{
-             RowBox[{
-              SuperscriptBox["c", "2"], " ", "kboff", " ", "kbon", " ", 
-              "konb", " ", "\[Gamma]", " ", 
-              RowBox[{"(", 
-               RowBox[{"konb", "+", 
-                RowBox[{"kuoff", " ", "\[Gamma]"}]}], ")"}]}], "+", 
-             RowBox[{"c", " ", 
-              RowBox[{"(", 
-               RowBox[{
-                RowBox[{
-                 RowBox[{"(", 
-                  RowBox[{
-                   RowBox[{"kbon", " ", "konu", " ", 
-                    RowBox[{"(", 
-                    RowBox[{"konb", "+", "kuoff"}], ")"}]}], "+", 
-                   RowBox[{"kboff", " ", "konb", " ", "kuon"}], "+", 
-                   RowBox[{"kboff", " ", "koffu", " ", 
-                    RowBox[{"(", 
-                    RowBox[{"konb", "+", "kuon"}], ")"}]}]}], ")"}], " ", 
-                 "\[Gamma]", " ", 
-                 RowBox[{"(", 
-                  RowBox[{"konb", "+", 
-                   RowBox[{"kuoff", " ", "\[Gamma]"}]}], ")"}]}], "+", 
-                RowBox[{"c2", " ", "kboff", " ", "kbon", " ", "konb", " ", 
-                 RowBox[{"(", 
-                  RowBox[{"konb", "+", 
-                   RowBox[{"konb", " ", "\[Gamma]"}], "+", 
-                   RowBox[{"2", " ", "kuoff", " ", "\[Gamma]"}]}], ")"}]}]}], 
-               ")"}]}], "+", 
-             RowBox[{
-              RowBox[{"(", 
-               RowBox[{"konb", "+", "kuoff"}], ")"}], " ", 
-              RowBox[{"(", 
-               RowBox[{
-                RowBox[{
-                 SuperscriptBox["c2", "2"], " ", "kboff", " ", "kbon", " ", 
-                 "konb"}], "+", 
-                RowBox[{"c2", " ", "kbon", " ", "konu", " ", 
-                 RowBox[{"(", 
-                  RowBox[{"konb", "+", 
-                   RowBox[{"kuoff", " ", "\[Gamma]"}]}], ")"}]}], "+", 
-                RowBox[{
-                 RowBox[{"(", 
-                  RowBox[{"koffu", "+", "konu"}], ")"}], " ", "kuon", " ", 
-                 "\[Gamma]", " ", 
-                 RowBox[{"(", 
-                  RowBox[{"konb", "+", 
-                   RowBox[{"kuoff", " ", "\[Gamma]"}]}], ")"}]}], "+", 
-                RowBox[{"c2", " ", "kboff", " ", 
-                 RowBox[{"(", 
-                  RowBox[{
-                   RowBox[{"konb", " ", "kuon", " ", "\[Gamma]"}], "+", 
-                   RowBox[{"koffu", " ", 
-                    RowBox[{"(", 
-                    RowBox[{"konb", "+", 
-                    RowBox[{"kuon", " ", "\[Gamma]"}]}], ")"}]}]}], ")"}]}]}],
-                ")"}]}]}], ")"}]}]}], ",", 
-         RowBox[{"c", " ", "kboff", " ", 
-          RowBox[{"(", 
-           RowBox[{"ss1", "-", 
-            RowBox[{
-             RowBox[{"(", 
-              RowBox[{"koffu", " ", 
-               RowBox[{"(", 
-                RowBox[{"konb", "+", "kuoff"}], ")"}], " ", "kuon", " ", 
-               "\[Gamma]", " ", 
-               RowBox[{"(", 
-                RowBox[{"konb", "+", 
-                 RowBox[{"kuoff", " ", "\[Gamma]"}]}], ")"}]}], ")"}], "/", 
-             RowBox[{"(", 
-              RowBox[{
-               RowBox[{
-                SuperscriptBox["c", "2"], " ", "kboff", " ", "kbon", " ", 
-                "konb", " ", "\[Gamma]", " ", 
-                RowBox[{"(", 
-                 RowBox[{"konb", "+", 
-                  RowBox[{"kuoff", " ", "\[Gamma]"}]}], ")"}]}], "+", 
-               RowBox[{"c", " ", 
-                RowBox[{"(", 
-                 RowBox[{
-                  RowBox[{
-                   RowBox[{"(", 
-                    RowBox[{
-                    RowBox[{"kbon", " ", "konu", " ", 
-                    RowBox[{"(", 
-                    RowBox[{"konb", "+", "kuoff"}], ")"}]}], "+", 
-                    RowBox[{"kboff", " ", "konb", " ", "kuon"}], "+", 
-                    RowBox[{"kboff", " ", "koffu", " ", 
-                    RowBox[{"(", 
-                    RowBox[{"konb", "+", "kuon"}], ")"}]}]}], ")"}], " ", 
-                   "\[Gamma]", " ", 
-                   RowBox[{"(", 
-                    RowBox[{"konb", "+", 
-                    RowBox[{"kuoff", " ", "\[Gamma]"}]}], ")"}]}], "+", 
-                  RowBox[{"c2", " ", "kboff", " ", "kbon", " ", "konb", " ", 
-                   RowBox[{"(", 
-                    RowBox[{"konb", "+", 
-                    RowBox[{"konb", " ", "\[Gamma]"}], "+", 
-                    RowBox[{"2", " ", "kuoff", " ", "\[Gamma]"}]}], ")"}]}]}],
-                  ")"}]}], "+", 
-               RowBox[{
-                RowBox[{"(", 
-                 RowBox[{"konb", "+", "kuoff"}], ")"}], " ", 
-                RowBox[{"(", 
-                 RowBox[{
-                  RowBox[{
-                   SuperscriptBox["c2", "2"], " ", "kboff", " ", "kbon", " ", 
-                   "konb"}], "+", 
-                  RowBox[{"c2", " ", "kbon", " ", "konu", " ", 
-                   RowBox[{"(", 
-                    RowBox[{"konb", "+", 
-                    RowBox[{"kuoff", " ", "\[Gamma]"}]}], ")"}]}], "+", 
-                  RowBox[{
-                   RowBox[{"(", 
-                    RowBox[{"koffu", "+", "konu"}], ")"}], " ", "kuon", " ", 
-                   "\[Gamma]", " ", 
-                   RowBox[{"(", 
-                    RowBox[{"konb", "+", 
-                    RowBox[{"kuoff", " ", "\[Gamma]"}]}], ")"}]}], "+", 
-                  RowBox[{"c2", " ", "kboff", " ", 
-                   RowBox[{"(", 
-                    RowBox[{
-                    RowBox[{"konb", " ", "kuon", " ", "\[Gamma]"}], "+", 
-                    RowBox[{"koffu", " ", 
-                    RowBox[{"(", 
-                    RowBox[{"konb", "+", 
-                    RowBox[{"kuon", " ", "\[Gamma]"}]}], ")"}]}]}], ")"}]}]}],
-                  ")"}]}]}], ")"}]}]}], ")"}]}], ",", 
-         RowBox[{
-          RowBox[{"c", " ", "kboff", " ", "ss1"}], "-", 
-          RowBox[{
-           RowBox[{"(", 
-            RowBox[{"c", " ", 
-             RowBox[{"(", 
-              RowBox[{"konb", "+", "kuoff"}], ")"}], " ", "\[Gamma]", " ", 
-             RowBox[{"(", 
-              RowBox[{
-               RowBox[{"c2", " ", "kboff", " ", "kbon", " ", "konb", " ", 
-                RowBox[{"(", 
-                 RowBox[{"konb", "+", "kuoff"}], ")"}]}], "+", 
-               RowBox[{"c", " ", "kboff", " ", "kbon", " ", "konb", " ", 
-                RowBox[{"(", 
-                 RowBox[{"konb", "+", 
-                  RowBox[{"kuoff", " ", "\[Gamma]"}]}], ")"}]}], "+", 
-               RowBox[{
-                RowBox[{"(", 
-                 RowBox[{
-                  RowBox[{"kboff", " ", "koffu", " ", "konb"}], "+", 
-                  RowBox[{"kbon", " ", "konu", " ", 
-                   RowBox[{"(", 
-                    RowBox[{"konb", "+", "kuoff"}], ")"}]}]}], ")"}], " ", 
-                RowBox[{"(", 
-                 RowBox[{"konb", "+", 
-                  RowBox[{"kuoff", " ", "\[Gamma]"}]}], ")"}]}]}], ")"}]}], 
-            ")"}], "/", 
-           RowBox[{"(", 
-            RowBox[{
-             RowBox[{
-              SuperscriptBox["c", "2"], " ", "kboff", " ", "kbon", " ", 
-              "konb", " ", "\[Gamma]", " ", 
-              RowBox[{"(", 
-               RowBox[{"konb", "+", 
-                RowBox[{"kuoff", " ", "\[Gamma]"}]}], ")"}]}], "+", 
-             RowBox[{"c", " ", 
-              RowBox[{"(", 
-               RowBox[{
-                RowBox[{
-                 RowBox[{"(", 
-                  RowBox[{
-                   RowBox[{"kbon", " ", "konu", " ", 
-                    RowBox[{"(", 
-                    RowBox[{"konb", "+", "kuoff"}], ")"}]}], "+", 
-                   RowBox[{"kboff", " ", "konb", " ", "kuon"}], "+", 
-                   RowBox[{"kboff", " ", "koffu", " ", 
-                    RowBox[{"(", 
-                    RowBox[{"konb", "+", "kuon"}], ")"}]}]}], ")"}], " ", 
-                 "\[Gamma]", " ", 
-                 RowBox[{"(", 
-                  RowBox[{"konb", "+", 
-                   RowBox[{"kuoff", " ", "\[Gamma]"}]}], ")"}]}], "+", 
-                RowBox[{"c2", " ", "kboff", " ", "kbon", " ", "konb", " ", 
-                 RowBox[{"(", 
-                  RowBox[{"konb", "+", 
-                   RowBox[{"konb", " ", "\[Gamma]"}], "+", 
-                   RowBox[{"2", " ", "kuoff", " ", "\[Gamma]"}]}], ")"}]}]}], 
-               ")"}]}], "+", 
-             RowBox[{
-              RowBox[{"(", 
-               RowBox[{"konb", "+", "kuoff"}], ")"}], " ", 
-              RowBox[{"(", 
-               RowBox[{
-                RowBox[{
-                 SuperscriptBox["c2", "2"], " ", "kboff", " ", "kbon", " ", 
-                 "konb"}], "+", 
-                RowBox[{"c2", " ", "kbon", " ", "konu", " ", 
-                 RowBox[{"(", 
-                  RowBox[{"konb", "+", 
-                   RowBox[{"kuoff", " ", "\[Gamma]"}]}], ")"}]}], "+", 
-                RowBox[{
-                 RowBox[{"(", 
-                  RowBox[{"koffu", "+", "konu"}], ")"}], " ", "kuon", " ", 
-                 "\[Gamma]", " ", 
-                 RowBox[{"(", 
-                  RowBox[{"konb", "+", 
-                   RowBox[{"kuoff", " ", "\[Gamma]"}]}], ")"}]}], "+", 
-                RowBox[{"c2", " ", "kboff", " ", 
-                 RowBox[{"(", 
-                  RowBox[{
-                   RowBox[{"konb", " ", "kuon", " ", "\[Gamma]"}], "+", 
-                   RowBox[{"koffu", " ", 
-                    RowBox[{"(", 
-                    RowBox[{"konb", "+", 
-                    RowBox[{"kuon", " ", "\[Gamma]"}]}], ")"}]}]}], ")"}]}]}],
-                ")"}]}]}], ")"}]}]}], ",", 
-         RowBox[{
-          RowBox[{"c", " ", "kboff", " ", "ss1"}], "-", 
-          RowBox[{
-           RowBox[{"(", 
-            RowBox[{
-             RowBox[{"(", 
-              RowBox[{"konb", "+", "kuoff"}], ")"}], " ", "kuon", " ", 
-             "\[Gamma]", " ", 
-             RowBox[{"(", 
-              RowBox[{
-               RowBox[{"c", " ", "kboff", " ", "konb", " ", 
-                RowBox[{"(", 
-                 RowBox[{"konb", "+", 
-                  RowBox[{"kuoff", " ", "\[Gamma]"}]}], ")"}]}], "+", 
-               RowBox[{
-                RowBox[{"(", 
-                 RowBox[{"konb", "+", "kuoff"}], ")"}], " ", 
-                RowBox[{"(", 
-                 RowBox[{
-                  RowBox[{"c2", " ", "kboff", " ", "konb"}], "+", 
-                  RowBox[{"konu", " ", 
-                   RowBox[{"(", 
-                    RowBox[{"konb", "+", 
-                    RowBox[{"kuoff", " ", "\[Gamma]"}]}], ")"}]}]}], 
-                 ")"}]}]}], ")"}]}], ")"}], "/", 
-           RowBox[{"(", 
-            RowBox[{
-             RowBox[{
-              SuperscriptBox["c", "2"], " ", "kboff", " ", "kbon", " ", 
-              "konb", " ", "\[Gamma]", " ", 
-              RowBox[{"(", 
-               RowBox[{"konb", "+", 
-                RowBox[{"kuoff", " ", "\[Gamma]"}]}], ")"}]}], "+", 
-             RowBox[{"c", " ", 
-              RowBox[{"(", 
-               RowBox[{
-                RowBox[{
-                 RowBox[{"(", 
-                  RowBox[{
-                   RowBox[{"kbon", " ", "konu", " ", 
-                    RowBox[{"(", 
-                    RowBox[{"konb", "+", "kuoff"}], ")"}]}], "+", 
-                   RowBox[{"kboff", " ", "konb", " ", "kuon"}], "+", 
-                   RowBox[{"kboff", " ", "koffu", " ", 
-                    RowBox[{"(", 
-                    RowBox[{"konb", "+", "kuon"}], ")"}]}]}], ")"}], " ", 
-                 "\[Gamma]", " ", 
-                 RowBox[{"(", 
-                  RowBox[{"konb", "+", 
-                   RowBox[{"kuoff", " ", "\[Gamma]"}]}], ")"}]}], "+", 
-                RowBox[{"c2", " ", "kboff", " ", "kbon", " ", "konb", " ", 
-                 RowBox[{"(", 
-                  RowBox[{"konb", "+", 
-                   RowBox[{"konb", " ", "\[Gamma]"}], "+", 
-                   RowBox[{"2", " ", "kuoff", " ", "\[Gamma]"}]}], ")"}]}]}], 
-               ")"}]}], "+", 
-             RowBox[{
-              RowBox[{"(", 
-               RowBox[{"konb", "+", "kuoff"}], ")"}], " ", 
-              RowBox[{"(", 
-               RowBox[{
-                RowBox[{
-                 SuperscriptBox["c2", "2"], " ", "kboff", " ", "kbon", " ", 
-                 "konb"}], "+", 
-                RowBox[{"c2", " ", "kbon", " ", "konu", " ", 
-                 RowBox[{"(", 
-                  RowBox[{"konb", "+", 
-                   RowBox[{"kuoff", " ", "\[Gamma]"}]}], ")"}]}], "+", 
-                RowBox[{
-                 RowBox[{"(", 
-                  RowBox[{"koffu", "+", "konu"}], ")"}], " ", "kuon", " ", 
-                 "\[Gamma]", " ", 
-                 RowBox[{"(", 
-                  RowBox[{"konb", "+", 
-                   RowBox[{"kuoff", " ", "\[Gamma]"}]}], ")"}]}], "+", 
-                RowBox[{"c2", " ", "kboff", " ", 
-                 RowBox[{"(", 
-                  RowBox[{
-                   RowBox[{"konb", " ", "kuon", " ", "\[Gamma]"}], "+", 
-                   RowBox[{"koffu", " ", 
-                    RowBox[{"(", 
-                    RowBox[{"konb", "+", 
-                    RowBox[{"kuon", " ", "\[Gamma]"}]}], ")"}]}]}], ")"}]}]}],
-                ")"}]}]}], ")"}]}]}], ",", 
-         RowBox[{
-          RowBox[{"c", " ", "kboff", " ", "ss1"}], "-", 
-          RowBox[{
-           RowBox[{"(", 
-            RowBox[{"c2", " ", 
-             RowBox[{"(", 
-              RowBox[{"konb", "+", "kuoff"}], ")"}], " ", 
-             RowBox[{"(", 
-              RowBox[{
-               RowBox[{"c", " ", "kboff", " ", "kbon", " ", "konb", " ", 
-                RowBox[{"(", 
-                 RowBox[{"konb", "+", 
-                  RowBox[{"kuoff", " ", "\[Gamma]"}]}], ")"}]}], "+", 
-               RowBox[{
-                RowBox[{"(", 
-                 RowBox[{"konb", "+", "kuoff"}], ")"}], " ", 
-                RowBox[{"(", 
-                 RowBox[{
-                  RowBox[{"c2", " ", "kboff", " ", "kbon", " ", "konb"}], "+", 
-                  RowBox[{"kboff", " ", "koffu", " ", "konb"}], "+", 
-                  RowBox[{"kbon", " ", "konu", " ", 
-                   RowBox[{"(", 
-                    RowBox[{"konb", "+", 
-                    RowBox[{"kuoff", " ", "\[Gamma]"}]}], ")"}]}]}], 
-                 ")"}]}]}], ")"}]}], ")"}], "/", 
-           RowBox[{"(", 
-            RowBox[{
-             RowBox[{
-              SuperscriptBox["c", "2"], " ", "kboff", " ", "kbon", " ", 
-              "konb", " ", "\[Gamma]", " ", 
-              RowBox[{"(", 
-               RowBox[{"konb", "+", 
-                RowBox[{"kuoff", " ", "\[Gamma]"}]}], ")"}]}], "+", 
-             RowBox[{"c", " ", 
-              RowBox[{"(", 
-               RowBox[{
-                RowBox[{
-                 RowBox[{"(", 
-                  RowBox[{
-                   RowBox[{"kbon", " ", "konu", " ", 
-                    RowBox[{"(", 
-                    RowBox[{"konb", "+", "kuoff"}], ")"}]}], "+", 
-                   RowBox[{"kboff", " ", "konb", " ", "kuon"}], "+", 
-                   RowBox[{"kboff", " ", "koffu", " ", 
-                    RowBox[{"(", 
-                    RowBox[{"konb", "+", "kuon"}], ")"}]}]}], ")"}], " ", 
-                 "\[Gamma]", " ", 
-                 RowBox[{"(", 
-                  RowBox[{"konb", "+", 
-                   RowBox[{"kuoff", " ", "\[Gamma]"}]}], ")"}]}], "+", 
-                RowBox[{"c2", " ", "kboff", " ", "kbon", " ", "konb", " ", 
-                 RowBox[{"(", 
-                  RowBox[{"konb", "+", 
-                   RowBox[{"konb", " ", "\[Gamma]"}], "+", 
-                   RowBox[{"2", " ", "kuoff", " ", "\[Gamma]"}]}], ")"}]}]}], 
-               ")"}]}], "+", 
-             RowBox[{
-              RowBox[{"(", 
-               RowBox[{"konb", "+", "kuoff"}], ")"}], " ", 
-              RowBox[{"(", 
-               RowBox[{
-                RowBox[{
-                 SuperscriptBox["c2", "2"], " ", "kboff", " ", "kbon", " ", 
-                 "konb"}], "+", 
-                RowBox[{"c2", " ", "kbon", " ", "konu", " ", 
-                 RowBox[{"(", 
-                  RowBox[{"konb", "+", 
-                   RowBox[{"kuoff", " ", "\[Gamma]"}]}], ")"}]}], "+", 
-                RowBox[{
-                 RowBox[{"(", 
-                  RowBox[{"koffu", "+", "konu"}], ")"}], " ", "kuon", " ", 
-                 "\[Gamma]", " ", 
-                 RowBox[{"(", 
-                  RowBox[{"konb", "+", 
-                   RowBox[{"kuoff", " ", "\[Gamma]"}]}], ")"}]}], "+", 
-                RowBox[{"c2", " ", "kboff", " ", 
-                 RowBox[{"(", 
-                  RowBox[{
-                   RowBox[{"konb", " ", "kuon", " ", "\[Gamma]"}], "+", 
-                   RowBox[{"koffu", " ", 
-                    RowBox[{"(", 
-                    RowBox[{"konb", "+", 
-                    RowBox[{"kuon", " ", "\[Gamma]"}]}], ")"}]}]}], ")"}]}]}],
-                ")"}]}]}], ")"}]}]}], ",", 
-         RowBox[{
-          RowBox[{"c", " ", "kboff", " ", "ss1"}], "-", 
-          RowBox[{
-           RowBox[{"(", 
-            RowBox[{"c2", " ", "kboff", " ", "koffu", " ", 
-             SuperscriptBox[
-              RowBox[{"(", 
-               RowBox[{"konb", "+", "kuoff"}], ")"}], "2"], " ", "kuon", " ", 
-             "\[Gamma]"}], ")"}], "/", 
-           RowBox[{"(", 
-            RowBox[{
-             RowBox[{
-              SuperscriptBox["c", "2"], " ", "kboff", " ", "kbon", " ", 
-              "konb", " ", "\[Gamma]", " ", 
-              RowBox[{"(", 
-               RowBox[{"konb", "+", 
-                RowBox[{"kuoff", " ", "\[Gamma]"}]}], ")"}]}], "+", 
-             RowBox[{"c", " ", 
-              RowBox[{"(", 
-               RowBox[{
-                RowBox[{
-                 RowBox[{"(", 
-                  RowBox[{
-                   RowBox[{"kbon", " ", "konu", " ", 
-                    RowBox[{"(", 
-                    RowBox[{"konb", "+", "kuoff"}], ")"}]}], "+", 
-                   RowBox[{"kboff", " ", "konb", " ", "kuon"}], "+", 
-                   RowBox[{"kboff", " ", "koffu", " ", 
-                    RowBox[{"(", 
-                    RowBox[{"konb", "+", "kuon"}], ")"}]}]}], ")"}], " ", 
-                 "\[Gamma]", " ", 
-                 RowBox[{"(", 
-                  RowBox[{"konb", "+", 
-                   RowBox[{"kuoff", " ", "\[Gamma]"}]}], ")"}]}], "+", 
-                RowBox[{"c2", " ", "kboff", " ", "kbon", " ", "konb", " ", 
-                 RowBox[{"(", 
-                  RowBox[{"konb", "+", 
-                   RowBox[{"konb", " ", "\[Gamma]"}], "+", 
-                   RowBox[{"2", " ", "kuoff", " ", "\[Gamma]"}]}], ")"}]}]}], 
-               ")"}]}], "+", 
-             RowBox[{
-              RowBox[{"(", 
-               RowBox[{"konb", "+", "kuoff"}], ")"}], " ", 
-              RowBox[{"(", 
-               RowBox[{
-                RowBox[{
-                 SuperscriptBox["c2", "2"], " ", "kboff", " ", "kbon", " ", 
-                 "konb"}], "+", 
-                RowBox[{"c2", " ", "kbon", " ", "konu", " ", 
-                 RowBox[{"(", 
-                  RowBox[{"konb", "+", 
-                   RowBox[{"kuoff", " ", "\[Gamma]"}]}], ")"}]}], "+", 
-                RowBox[{
-                 RowBox[{"(", 
-                  RowBox[{"koffu", "+", "konu"}], ")"}], " ", "kuon", " ", 
-                 "\[Gamma]", " ", 
-                 RowBox[{"(", 
-                  RowBox[{"konb", "+", 
-                   RowBox[{"kuoff", " ", "\[Gamma]"}]}], ")"}]}], "+", 
-                RowBox[{"c2", " ", "kboff", " ", 
-                 RowBox[{"(", 
-                  RowBox[{
-                   RowBox[{"konb", " ", "kuon", " ", "\[Gamma]"}], "+", 
-                   RowBox[{"koffu", " ", 
-                    RowBox[{"(", 
-                    RowBox[{"konb", "+", 
-                    RowBox[{"kuon", " ", "\[Gamma]"}]}], ")"}]}]}], ")"}]}]}],
-                ")"}]}]}], ")"}]}]}]}], "}"}], "\[Equal]", "0"}], ",", 
-      RowBox[{
-       RowBox[{"{", 
-        RowBox[{
-         RowBox[{
-          RowBox[{
-           RowBox[{"-", "kuon"}], " ", "ss3"}], "+", 
-          RowBox[{"c", " ", "kbon", " ", "ss4"}], "+", 
-          RowBox[{
-           RowBox[{"(", 
-            RowBox[{"koffu", " ", "konb", " ", 
-             RowBox[{"(", 
-              RowBox[{"konb", "+", "kuoff"}], ")"}], " ", "kuon", " ", 
-             "\[Gamma]", " ", 
-             RowBox[{"(", 
-              RowBox[{"konb", "+", 
-               RowBox[{"kuoff", " ", "\[Gamma]"}]}], ")"}]}], ")"}], "/", 
-           RowBox[{"(", 
-            RowBox[{
-             RowBox[{
-              SuperscriptBox["c", "2"], " ", "kboff", " ", "kbon", " ", 
-              "konb", " ", "\[Gamma]", " ", 
-              RowBox[{"(", 
-               RowBox[{"konb", "+", 
-                RowBox[{"kuoff", " ", "\[Gamma]"}]}], ")"}]}], "+", 
-             RowBox[{"c", " ", 
-              RowBox[{"(", 
-               RowBox[{
-                RowBox[{
-                 RowBox[{"(", 
-                  RowBox[{
-                   RowBox[{"kbon", " ", "konu", " ", 
-                    RowBox[{"(", 
-                    RowBox[{"konb", "+", "kuoff"}], ")"}]}], "+", 
-                   RowBox[{"kboff", " ", "konb", " ", "kuon"}], "+", 
-                   RowBox[{"kboff", " ", "koffu", " ", 
-                    RowBox[{"(", 
-                    RowBox[{"konb", "+", "kuon"}], ")"}]}]}], ")"}], " ", 
-                 "\[Gamma]", " ", 
-                 RowBox[{"(", 
-                  RowBox[{"konb", "+", 
-                   RowBox[{"kuoff", " ", "\[Gamma]"}]}], ")"}]}], "+", 
-                RowBox[{"c2", " ", "kboff", " ", "kbon", " ", "konb", " ", 
-                 RowBox[{"(", 
-                  RowBox[{"konb", "+", 
-                   RowBox[{"konb", " ", "\[Gamma]"}], "+", 
-                   RowBox[{"2", " ", "kuoff", " ", "\[Gamma]"}]}], ")"}]}]}], 
-               ")"}]}], "+", 
-             RowBox[{
-              RowBox[{"(", 
-               RowBox[{"konb", "+", "kuoff"}], ")"}], " ", 
-              RowBox[{"(", 
-               RowBox[{
-                RowBox[{
-                 SuperscriptBox["c2", "2"], " ", "kboff", " ", "kbon", " ", 
-                 "konb"}], "+", 
-                RowBox[{"c2", " ", "kbon", " ", "konu", " ", 
-                 RowBox[{"(", 
-                  RowBox[{"konb", "+", 
-                   RowBox[{"kuoff", " ", "\[Gamma]"}]}], ")"}]}], "+", 
-                RowBox[{
-                 RowBox[{"(", 
-                  RowBox[{"koffu", "+", "konu"}], ")"}], " ", "kuon", " ", 
-                 "\[Gamma]", " ", 
-                 RowBox[{"(", 
-                  RowBox[{"konb", "+", 
-                   RowBox[{"kuoff", " ", "\[Gamma]"}]}], ")"}]}], "+", 
-                RowBox[{"c2", " ", "kboff", " ", 
-                 RowBox[{"(", 
-                  RowBox[{
-                   RowBox[{"konb", " ", "kuon", " ", "\[Gamma]"}], "+", 
-                   RowBox[{"koffu", " ", 
-                    RowBox[{"(", 
-                    RowBox[{"konb", "+", 
-                    RowBox[{"kuon", " ", "\[Gamma]"}]}], ")"}]}]}], ")"}]}]}],
-                ")"}]}]}], ")"}]}]}], ",", 
-         RowBox[{
-          RowBox[{
-           RowBox[{"-", "kuon"}], " ", "ss3"}], "+", 
-          RowBox[{"c", " ", "kbon", " ", "ss4"}], "+", 
-          RowBox[{
-           RowBox[{"(", 
-            RowBox[{
-            "c", " ", "kboff", " ", "koffu", " ", "konb", " ", "kuon", " ", 
-             "\[Gamma]", " ", 
-             RowBox[{"(", 
-              RowBox[{"konb", "+", 
-               RowBox[{"kuoff", " ", "\[Gamma]"}]}], ")"}]}], ")"}], "/", 
-           RowBox[{"(", 
-            RowBox[{
-             RowBox[{
-              SuperscriptBox["c", "2"], " ", "kboff", " ", "kbon", " ", 
-              "konb", " ", "\[Gamma]", " ", 
-              RowBox[{"(", 
-               RowBox[{"konb", "+", 
-                RowBox[{"kuoff", " ", "\[Gamma]"}]}], ")"}]}], "+", 
-             RowBox[{"c", " ", 
-              RowBox[{"(", 
-               RowBox[{
-                RowBox[{
-                 RowBox[{"(", 
-                  RowBox[{
-                   RowBox[{"kbon", " ", "konu", " ", 
-                    RowBox[{"(", 
-                    RowBox[{"konb", "+", "kuoff"}], ")"}]}], "+", 
-                   RowBox[{"kboff", " ", "konb", " ", "kuon"}], "+", 
-                   RowBox[{"kboff", " ", "koffu", " ", 
-                    RowBox[{"(", 
-                    RowBox[{"konb", "+", "kuon"}], ")"}]}]}], ")"}], " ", 
-                 "\[Gamma]", " ", 
-                 RowBox[{"(", 
-                  RowBox[{"konb", "+", 
-                   RowBox[{"kuoff", " ", "\[Gamma]"}]}], ")"}]}], "+", 
-                RowBox[{"c2", " ", "kboff", " ", "kbon", " ", "konb", " ", 
-                 RowBox[{"(", 
-                  RowBox[{"konb", "+", 
-                   RowBox[{"konb", " ", "\[Gamma]"}], "+", 
-                   RowBox[{"2", " ", "kuoff", " ", "\[Gamma]"}]}], ")"}]}]}], 
-               ")"}]}], "+", 
-             RowBox[{
-              RowBox[{"(", 
-               RowBox[{"konb", "+", "kuoff"}], ")"}], " ", 
-              RowBox[{"(", 
-               RowBox[{
-                RowBox[{
-                 SuperscriptBox["c2", "2"], " ", "kboff", " ", "kbon", " ", 
-                 "konb"}], "+", 
-                RowBox[{"c2", " ", "kbon", " ", "konu", " ", 
-                 RowBox[{"(", 
-                  RowBox[{"konb", "+", 
-                   RowBox[{"kuoff", " ", "\[Gamma]"}]}], ")"}]}], "+", 
-                RowBox[{
-                 RowBox[{"(", 
-                  RowBox[{"koffu", "+", "konu"}], ")"}], " ", "kuon", " ", 
-                 "\[Gamma]", " ", 
-                 RowBox[{"(", 
-                  RowBox[{"konb", "+", 
-                   RowBox[{"kuoff", " ", "\[Gamma]"}]}], ")"}]}], "+", 
-                RowBox[{"c2", " ", "kboff", " ", 
-                 RowBox[{"(", 
-                  RowBox[{
-                   RowBox[{"konb", " ", "kuon", " ", "\[Gamma]"}], "+", 
-                   RowBox[{"koffu", " ", 
-                    RowBox[{"(", 
-                    RowBox[{"konb", "+", 
-                    RowBox[{"kuon", " ", "\[Gamma]"}]}], ")"}]}]}], ")"}]}]}],
-                ")"}]}]}], ")"}]}]}], ",", 
-         RowBox[{
-          RowBox[{
-           RowBox[{"-", "kuon"}], " ", "ss3"}], "+", 
-          RowBox[{"c", " ", "kbon", " ", "ss4"}], "+", 
-          RowBox[{
-           RowBox[{"(", 
-            RowBox[{"c", " ", "konb", " ", "\[Gamma]", " ", 
-             RowBox[{"(", 
-              RowBox[{
-               RowBox[{"c2", " ", "kboff", " ", "kbon", " ", "konb", " ", 
-                RowBox[{"(", 
-                 RowBox[{"konb", "+", "kuoff"}], ")"}]}], "+", 
-               RowBox[{"c", " ", "kboff", " ", "kbon", " ", "konb", " ", 
-                RowBox[{"(", 
-                 RowBox[{"konb", "+", 
-                  RowBox[{"kuoff", " ", "\[Gamma]"}]}], ")"}]}], "+", 
-               RowBox[{
-                RowBox[{"(", 
-                 RowBox[{
-                  RowBox[{"kboff", " ", "koffu", " ", "konb"}], "+", 
-                  RowBox[{"kbon", " ", "konu", " ", 
-                   RowBox[{"(", 
-                    RowBox[{"konb", "+", "kuoff"}], ")"}]}]}], ")"}], " ", 
-                RowBox[{"(", 
-                 RowBox[{"konb", "+", 
-                  RowBox[{"kuoff", " ", "\[Gamma]"}]}], ")"}]}]}], ")"}]}], 
-            ")"}], "/", 
-           RowBox[{"(", 
-            RowBox[{
-             RowBox[{
-              SuperscriptBox["c", "2"], " ", "kboff", " ", "kbon", " ", 
-              "konb", " ", "\[Gamma]", " ", 
-              RowBox[{"(", 
-               RowBox[{"konb", "+", 
-                RowBox[{"kuoff", " ", "\[Gamma]"}]}], ")"}]}], "+", 
-             RowBox[{"c", " ", 
-              RowBox[{"(", 
-               RowBox[{
-                RowBox[{
-                 RowBox[{"(", 
-                  RowBox[{
-                   RowBox[{"kbon", " ", "konu", " ", 
-                    RowBox[{"(", 
-                    RowBox[{"konb", "+", "kuoff"}], ")"}]}], "+", 
-                   RowBox[{"kboff", " ", "konb", " ", "kuon"}], "+", 
-                   RowBox[{"kboff", " ", "koffu", " ", 
-                    RowBox[{"(", 
-                    RowBox[{"konb", "+", "kuon"}], ")"}]}]}], ")"}], " ", 
-                 "\[Gamma]", " ", 
-                 RowBox[{"(", 
-                  RowBox[{"konb", "+", 
-                   RowBox[{"kuoff", " ", "\[Gamma]"}]}], ")"}]}], "+", 
-                RowBox[{"c2", " ", "kboff", " ", "kbon", " ", "konb", " ", 
-                 RowBox[{"(", 
-                  RowBox[{"konb", "+", 
-                   RowBox[{"konb", " ", "\[Gamma]"}], "+", 
-                   RowBox[{"2", " ", "kuoff", " ", "\[Gamma]"}]}], ")"}]}]}], 
-               ")"}]}], "+", 
-             RowBox[{
-              RowBox[{"(", 
-               RowBox[{"konb", "+", "kuoff"}], ")"}], " ", 
-              RowBox[{"(", 
-               RowBox[{
-                RowBox[{
-                 SuperscriptBox["c2", "2"], " ", "kboff", " ", "kbon", " ", 
-                 "konb"}], "+", 
-                RowBox[{"c2", " ", "kbon", " ", "konu", " ", 
-                 RowBox[{"(", 
-                  RowBox[{"konb", "+", 
-                   RowBox[{"kuoff", " ", "\[Gamma]"}]}], ")"}]}], "+", 
-                RowBox[{
-                 RowBox[{"(", 
-                  RowBox[{"koffu", "+", "konu"}], ")"}], " ", "kuon", " ", 
-                 "\[Gamma]", " ", 
-                 RowBox[{"(", 
-                  RowBox[{"konb", "+", 
-                   RowBox[{"kuoff", " ", "\[Gamma]"}]}], ")"}]}], "+", 
-                RowBox[{"c2", " ", "kboff", " ", 
-                 RowBox[{"(", 
-                  RowBox[{
-                   RowBox[{"konb", " ", "kuon", " ", "\[Gamma]"}], "+", 
-                   RowBox[{"koffu", " ", 
-                    RowBox[{"(", 
-                    RowBox[{"konb", "+", 
-                    RowBox[{"kuon", " ", "\[Gamma]"}]}], ")"}]}]}], ")"}]}]}],
-                ")"}]}]}], ")"}]}]}], ",", 
-         RowBox[{
-          RowBox[{
-           RowBox[{"-", "kuon"}], " ", "ss3"}], "+", 
-          RowBox[{"c", " ", "kbon", " ", "ss4"}], "+", 
-          RowBox[{
-           RowBox[{"(", 
-            RowBox[{"konb", " ", "kuon", " ", "\[Gamma]", " ", 
-             RowBox[{"(", 
-              RowBox[{
-               RowBox[{"c", " ", "kboff", " ", "konb", " ", 
-                RowBox[{"(", 
-                 RowBox[{"konb", "+", 
-                  RowBox[{"kuoff", " ", "\[Gamma]"}]}], ")"}]}], "+", 
-               RowBox[{
-                RowBox[{"(", 
-                 RowBox[{"konb", "+", "kuoff"}], ")"}], " ", 
-                RowBox[{"(", 
-                 RowBox[{
-                  RowBox[{"c2", " ", "kboff", " ", "konb"}], "+", 
-                  RowBox[{"konu", " ", 
-                   RowBox[{"(", 
-                    RowBox[{"konb", "+", 
-                    RowBox[{"kuoff", " ", "\[Gamma]"}]}], ")"}]}]}], 
-                 ")"}]}]}], ")"}]}], ")"}], "/", 
-           RowBox[{"(", 
-            RowBox[{
-             RowBox[{
-              SuperscriptBox["c", "2"], " ", "kboff", " ", "kbon", " ", 
-              "konb", " ", "\[Gamma]", " ", 
-              RowBox[{"(", 
-               RowBox[{"konb", "+", 
-                RowBox[{"kuoff", " ", "\[Gamma]"}]}], ")"}]}], "+", 
-             RowBox[{"c", " ", 
-              RowBox[{"(", 
-               RowBox[{
-                RowBox[{
-                 RowBox[{"(", 
-                  RowBox[{
-                   RowBox[{"kbon", " ", "konu", " ", 
-                    RowBox[{"(", 
-                    RowBox[{"konb", "+", "kuoff"}], ")"}]}], "+", 
-                   RowBox[{"kboff", " ", "konb", " ", "kuon"}], "+", 
-                   RowBox[{"kboff", " ", "koffu", " ", 
-                    RowBox[{"(", 
-                    RowBox[{"konb", "+", "kuon"}], ")"}]}]}], ")"}], " ", 
-                 "\[Gamma]", " ", 
-                 RowBox[{"(", 
-                  RowBox[{"konb", "+", 
-                   RowBox[{"kuoff", " ", "\[Gamma]"}]}], ")"}]}], "+", 
-                RowBox[{"c2", " ", "kboff", " ", "kbon", " ", "konb", " ", 
-                 RowBox[{"(", 
-                  RowBox[{"konb", "+", 
-                   RowBox[{"konb", " ", "\[Gamma]"}], "+", 
-                   RowBox[{"2", " ", "kuoff", " ", "\[Gamma]"}]}], ")"}]}]}], 
-               ")"}]}], "+", 
-             RowBox[{
-              RowBox[{"(", 
-               RowBox[{"konb", "+", "kuoff"}], ")"}], " ", 
-              RowBox[{"(", 
-               RowBox[{
-                RowBox[{
-                 SuperscriptBox["c2", "2"], " ", "kboff", " ", "kbon", " ", 
-                 "konb"}], "+", 
-                RowBox[{"c2", " ", "kbon", " ", "konu", " ", 
-                 RowBox[{"(", 
-                  RowBox[{"konb", "+", 
-                   RowBox[{"kuoff", " ", "\[Gamma]"}]}], ")"}]}], "+", 
-                RowBox[{
-                 RowBox[{"(", 
-                  RowBox[{"koffu", "+", "konu"}], ")"}], " ", "kuon", " ", 
-                 "\[Gamma]", " ", 
-                 RowBox[{"(", 
-                  RowBox[{"konb", "+", 
-                   RowBox[{"kuoff", " ", "\[Gamma]"}]}], ")"}]}], "+", 
-                RowBox[{"c2", " ", "kboff", " ", 
-                 RowBox[{"(", 
-                  RowBox[{
-                   RowBox[{"konb", " ", "kuon", " ", "\[Gamma]"}], "+", 
-                   RowBox[{"koffu", " ", 
-                    RowBox[{"(", 
-                    RowBox[{"konb", "+", 
-                    RowBox[{"kuon", " ", "\[Gamma]"}]}], ")"}]}]}], ")"}]}]}],
-                ")"}]}]}], ")"}]}]}], ",", 
-         RowBox[{
-          RowBox[{
-           RowBox[{"-", "kuon"}], " ", "ss3"}], "+", 
-          RowBox[{"c", " ", "kbon", " ", "ss4"}], "+", 
-          RowBox[{
-           RowBox[{"(", 
-            RowBox[{"c2", " ", "konb", " ", 
-             RowBox[{"(", 
-              RowBox[{
-               RowBox[{"c", " ", "kboff", " ", "kbon", " ", "konb", " ", 
-                RowBox[{"(", 
-                 RowBox[{"konb", "+", 
-                  RowBox[{"kuoff", " ", "\[Gamma]"}]}], ")"}]}], "+", 
-               RowBox[{
-                RowBox[{"(", 
-                 RowBox[{"konb", "+", "kuoff"}], ")"}], " ", 
-                RowBox[{"(", 
-                 RowBox[{
-                  RowBox[{"c2", " ", "kboff", " ", "kbon", " ", "konb"}], "+", 
-                  RowBox[{"kboff", " ", "koffu", " ", "konb"}], "+", 
-                  RowBox[{"kbon", " ", "konu", " ", 
-                   RowBox[{"(", 
-                    RowBox[{"konb", "+", 
-                    RowBox[{"kuoff", " ", "\[Gamma]"}]}], ")"}]}]}], 
-                 ")"}]}]}], ")"}]}], ")"}], "/", 
-           RowBox[{"(", 
-            RowBox[{
-             RowBox[{
-              SuperscriptBox["c", "2"], " ", "kboff", " ", "kbon", " ", 
-              "konb", " ", "\[Gamma]", " ", 
-              RowBox[{"(", 
-               RowBox[{"konb", "+", 
-                RowBox[{"kuoff", " ", "\[Gamma]"}]}], ")"}]}], "+", 
-             RowBox[{"c", " ", 
-              RowBox[{"(", 
-               RowBox[{
-                RowBox[{
-                 RowBox[{"(", 
-                  RowBox[{
-                   RowBox[{"kbon", " ", "konu", " ", 
-                    RowBox[{"(", 
-                    RowBox[{"konb", "+", "kuoff"}], ")"}]}], "+", 
-                   RowBox[{"kboff", " ", "konb", " ", "kuon"}], "+", 
-                   RowBox[{"kboff", " ", "koffu", " ", 
-                    RowBox[{"(", 
-                    RowBox[{"konb", "+", "kuon"}], ")"}]}]}], ")"}], " ", 
-                 "\[Gamma]", " ", 
-                 RowBox[{"(", 
-                  RowBox[{"konb", "+", 
-                   RowBox[{"kuoff", " ", "\[Gamma]"}]}], ")"}]}], "+", 
-                RowBox[{"c2", " ", "kboff", " ", "kbon", " ", "konb", " ", 
-                 RowBox[{"(", 
-                  RowBox[{"konb", "+", 
-                   RowBox[{"konb", " ", "\[Gamma]"}], "+", 
-                   RowBox[{"2", " ", "kuoff", " ", "\[Gamma]"}]}], ")"}]}]}], 
-               ")"}]}], "+", 
-             RowBox[{
-              RowBox[{"(", 
-               RowBox[{"konb", "+", "kuoff"}], ")"}], " ", 
-              RowBox[{"(", 
-               RowBox[{
-                RowBox[{
-                 SuperscriptBox["c2", "2"], " ", "kboff", " ", "kbon", " ", 
-                 "konb"}], "+", 
-                RowBox[{"c2", " ", "kbon", " ", "konu", " ", 
-                 RowBox[{"(", 
-                  RowBox[{"konb", "+", 
-                   RowBox[{"kuoff", " ", "\[Gamma]"}]}], ")"}]}], "+", 
-                RowBox[{
-                 RowBox[{"(", 
-                  RowBox[{"koffu", "+", "konu"}], ")"}], " ", "kuon", " ", 
-                 "\[Gamma]", " ", 
-                 RowBox[{"(", 
-                  RowBox[{"konb", "+", 
-                   RowBox[{"kuoff", " ", "\[Gamma]"}]}], ")"}]}], "+", 
-                RowBox[{"c2", " ", "kboff", " ", 
-                 RowBox[{"(", 
-                  RowBox[{
-                   RowBox[{"konb", " ", "kuon", " ", "\[Gamma]"}], "+", 
-                   RowBox[{"koffu", " ", 
-                    RowBox[{"(", 
-                    RowBox[{"konb", "+", 
-                    RowBox[{"kuon", " ", "\[Gamma]"}]}], ")"}]}]}], ")"}]}]}],
-                ")"}]}]}], ")"}]}]}], ",", 
-         RowBox[{
-          RowBox[{
-           RowBox[{"-", "kuon"}], " ", "ss3"}], "+", 
-          RowBox[{"c", " ", "kbon", " ", "ss4"}], "+", 
-          RowBox[{
-           RowBox[{"(", 
-            RowBox[{"c2", " ", "kboff", " ", "koffu", " ", "konb", " ", 
-             RowBox[{"(", 
-              RowBox[{"konb", "+", "kuoff"}], ")"}], " ", "kuon", " ", 
-             "\[Gamma]"}], ")"}], "/", 
-           RowBox[{"(", 
-            RowBox[{
-             RowBox[{
-              SuperscriptBox["c", "2"], " ", "kboff", " ", "kbon", " ", 
-              "konb", " ", "\[Gamma]", " ", 
-              RowBox[{"(", 
-               RowBox[{"konb", "+", 
-                RowBox[{"kuoff", " ", "\[Gamma]"}]}], ")"}]}], "+", 
-             RowBox[{"c", " ", 
-              RowBox[{"(", 
-               RowBox[{
-                RowBox[{
-                 RowBox[{"(", 
-                  RowBox[{
-                   RowBox[{"kbon", " ", "konu", " ", 
-                    RowBox[{"(", 
-                    RowBox[{"konb", "+", "kuoff"}], ")"}]}], "+", 
-                   RowBox[{"kboff", " ", "konb", " ", "kuon"}], "+", 
-                   RowBox[{"kboff", " ", "koffu", " ", 
-                    RowBox[{"(", 
-                    RowBox[{"konb", "+", "kuon"}], ")"}]}]}], ")"}], " ", 
-                 "\[Gamma]", " ", 
-                 RowBox[{"(", 
-                  RowBox[{"konb", "+", 
-                   RowBox[{"kuoff", " ", "\[Gamma]"}]}], ")"}]}], "+", 
-                RowBox[{"c2", " ", "kboff", " ", "kbon", " ", "konb", " ", 
-                 RowBox[{"(", 
-                  RowBox[{"konb", "+", 
-                   RowBox[{"konb", " ", "\[Gamma]"}], "+", 
-                   RowBox[{"2", " ", "kuoff", " ", "\[Gamma]"}]}], ")"}]}]}], 
-               ")"}]}], "+", 
-             RowBox[{
-              RowBox[{"(", 
-               RowBox[{"konb", "+", "kuoff"}], ")"}], " ", 
-              RowBox[{"(", 
-               RowBox[{
-                RowBox[{
-                 SuperscriptBox["c2", "2"], " ", "kboff", " ", "kbon", " ", 
-                 "konb"}], "+", 
-                RowBox[{"c2", " ", "kbon", " ", "konu", " ", 
-                 RowBox[{"(", 
-                  RowBox[{"konb", "+", 
-                   RowBox[{"kuoff", " ", "\[Gamma]"}]}], ")"}]}], "+", 
-                RowBox[{
-                 RowBox[{"(", 
-                  RowBox[{"koffu", "+", "konu"}], ")"}], " ", "kuon", " ", 
-                 "\[Gamma]", " ", 
-                 RowBox[{"(", 
-                  RowBox[{"konb", "+", 
-                   RowBox[{"kuoff", " ", "\[Gamma]"}]}], ")"}]}], "+", 
-                RowBox[{"c2", " ", "kboff", " ", 
-                 RowBox[{"(", 
-                  RowBox[{
-                   RowBox[{"konb", " ", "kuon", " ", "\[Gamma]"}], "+", 
-                   RowBox[{"koffu", " ", 
-                    RowBox[{"(", 
-                    RowBox[{"konb", "+", 
-                    RowBox[{"kuon", " ", "\[Gamma]"}]}], ")"}]}]}], ")"}]}]}],
-                ")"}]}]}], ")"}]}]}]}], "}"}], "\[Equal]", "0"}], ",", 
-      RowBox[{
-       RowBox[{"{", 
-        RowBox[{
-         RowBox[{
-          RowBox[{"konu", " ", "ss1"}], "-", 
-          RowBox[{
-           RowBox[{"(", 
-            RowBox[{
-             RowBox[{"c", " ", "kbon"}], "+", 
-             RowBox[{"c2", " ", "kbon"}], "+", "koffu"}], ")"}], " ", "ss4"}],
-           "+", 
-          RowBox[{"kuon", " ", 
-           RowBox[{"(", 
-            RowBox[{"ss3", "+", 
-             RowBox[{"ss5", " ", "\[Gamma]"}]}], ")"}]}]}], ",", 
-         RowBox[{
-          RowBox[{"konu", " ", "ss1"}], "-", 
-          RowBox[{
-           RowBox[{"(", 
-            RowBox[{
-             RowBox[{"c", " ", "kbon"}], "+", 
-             RowBox[{"c2", " ", "kbon"}], "+", "koffu"}], ")"}], " ", "ss4"}],
-           "+", 
-          RowBox[{"kuon", " ", 
-           RowBox[{"(", 
-            RowBox[{"ss3", "+", 
-             RowBox[{"ss5", " ", "\[Gamma]"}]}], ")"}]}]}], ",", 
-         RowBox[{
-          RowBox[{"konu", " ", "ss1"}], "-", 
-          RowBox[{
-           RowBox[{"(", 
-            RowBox[{
-             RowBox[{"c", " ", "kbon"}], "+", 
-             RowBox[{"c2", " ", "kbon"}], "+", "koffu"}], ")"}], " ", "ss4"}],
-           "+", 
-          RowBox[{"kuon", " ", 
-           RowBox[{"(", 
-            RowBox[{"ss3", "+", 
-             RowBox[{"ss5", " ", "\[Gamma]"}]}], ")"}]}]}], ",", 
-         RowBox[{
-          RowBox[{"konu", " ", "ss1"}], "-", 
-          RowBox[{
-           RowBox[{"(", 
-            RowBox[{
-             RowBox[{"c", " ", "kbon"}], "+", 
-             RowBox[{"c2", " ", "kbon"}], "+", "koffu"}], ")"}], " ", "ss4"}],
-           "+", 
-          RowBox[{"kuon", " ", 
-           RowBox[{"(", 
-            RowBox[{"ss3", "+", 
-             RowBox[{"ss5", " ", "\[Gamma]"}]}], ")"}]}]}], ",", 
-         RowBox[{
-          RowBox[{"konu", " ", "ss1"}], "-", 
-          RowBox[{
-           RowBox[{"(", 
-            RowBox[{
-             RowBox[{"c", " ", "kbon"}], "+", 
-             RowBox[{"c2", " ", "kbon"}], "+", "koffu"}], ")"}], " ", "ss4"}],
-           "+", 
-          RowBox[{"kuon", " ", 
-           RowBox[{"(", 
-            RowBox[{"ss3", "+", 
-             RowBox[{"ss5", " ", "\[Gamma]"}]}], ")"}]}]}], ",", 
-         RowBox[{
-          RowBox[{"konu", " ", "ss1"}], "-", 
-          RowBox[{
-           RowBox[{"(", 
-            RowBox[{
-             RowBox[{"c", " ", "kbon"}], "+", 
-             RowBox[{"c2", " ", "kbon"}], "+", "koffu"}], ")"}], " ", "ss4"}],
-           "+", 
-          RowBox[{"kuon", " ", 
-           RowBox[{"(", 
-            RowBox[{"ss3", "+", 
-             RowBox[{"ss5", " ", "\[Gamma]"}]}], ")"}]}]}]}], "}"}], "\[Equal]",
-        "0"}], ",", 
-      RowBox[{
-       RowBox[{"{", 
-        RowBox[{
-         RowBox[{
-          RowBox[{"c2", " ", "kbon", " ", "ss4"}], "+", 
-          RowBox[{"konb", " ", "ss6"}], "-", 
-          RowBox[{"kuon", " ", "ss5", " ", "\[Gamma]"}]}], ",", 
-         RowBox[{
-          RowBox[{"c2", " ", "kbon", " ", "ss4"}], "+", 
-          RowBox[{"konb", " ", "ss6"}], "-", 
-          RowBox[{"kuon", " ", "ss5", " ", "\[Gamma]"}]}], ",", 
-         RowBox[{
-          RowBox[{"c2", " ", "kbon", " ", "ss4"}], "+", 
-          RowBox[{"konb", " ", "ss6"}], "-", 
-          RowBox[{"kuon", " ", "ss5", " ", "\[Gamma]"}]}], ",", 
-         RowBox[{
-          RowBox[{"c2", " ", "kbon", " ", "ss4"}], "+", 
-          RowBox[{"konb", " ", "ss6"}], "-", 
-          RowBox[{"kuon", " ", "ss5", " ", "\[Gamma]"}]}], ",", 
-         RowBox[{
-          RowBox[{"c2", " ", "kbon", " ", "ss4"}], "+", 
-          RowBox[{"konb", " ", "ss6"}], "-", 
-          RowBox[{"kuon", " ", "ss5", " ", "\[Gamma]"}]}], ",", 
-         RowBox[{
-          RowBox[{"c2", " ", "kbon", " ", "ss4"}], "+", 
-          RowBox[{"konb", " ", "ss6"}], "-", 
-          RowBox[{"kuon", " ", "ss5", " ", "\[Gamma]"}]}]}], "}"}], "\[Equal]",
-        "0"}], ",", 
-      RowBox[{
-       RowBox[{"{", 
-        RowBox[{
-         RowBox[{
-          RowBox[{"c2", " ", "kboff", " ", "ss1"}], "-", 
-          RowBox[{"ss6", " ", 
-           RowBox[{"(", 
-            RowBox[{"konb", "+", 
-             RowBox[{"kuoff", " ", "\[Gamma]"}]}], ")"}]}]}], ",", 
-         RowBox[{
-          RowBox[{"c2", " ", "kboff", " ", "ss1"}], "-", 
-          RowBox[{"ss6", " ", 
-           RowBox[{"(", 
-            RowBox[{"konb", "+", 
-             RowBox[{"kuoff", " ", "\[Gamma]"}]}], ")"}]}]}], ",", 
-         RowBox[{
-          RowBox[{"c2", " ", "kboff", " ", "ss1"}], "-", 
-          RowBox[{"ss6", " ", 
-           RowBox[{"(", 
-            RowBox[{"konb", "+", 
-             RowBox[{"kuoff", " ", "\[Gamma]"}]}], ")"}]}]}], ",", 
-         RowBox[{
-          RowBox[{"c2", " ", "kboff", " ", "ss1"}], "-", 
-          RowBox[{"ss6", " ", 
-           RowBox[{"(", 
-            RowBox[{"konb", "+", 
-             RowBox[{"kuoff", " ", "\[Gamma]"}]}], ")"}]}]}], ",", 
-         RowBox[{
-          RowBox[{"c2", " ", "kboff", " ", "ss1"}], "-", 
-          RowBox[{"ss6", " ", 
-           RowBox[{"(", 
-            RowBox[{"konb", "+", 
-             RowBox[{"kuoff", " ", "\[Gamma]"}]}], ")"}]}]}], ",", 
-         RowBox[{
-          RowBox[{"c2", " ", "kboff", " ", "ss1"}], "-", 
-          RowBox[{"ss6", " ", 
-           RowBox[{"(", 
-            RowBox[{"konb", "+", 
-             RowBox[{"kuoff", " ", "\[Gamma]"}]}], ")"}]}]}]}], "}"}], "\[Equal]",
-        "0"}], ",", 
-      RowBox[{
-       RowBox[{"{", 
-        RowBox[{
-         RowBox[{"ss1", "+", "ss3", "+", "ss4", "+", "ss5", "+", "ss6", "+", 
-          RowBox[{
-           RowBox[{"(", 
-            RowBox[{"koffu", " ", 
-             RowBox[{"(", 
-              RowBox[{"konb", "+", "kuoff"}], ")"}], " ", "kuon", " ", 
-             "\[Gamma]", " ", 
-             RowBox[{"(", 
-              RowBox[{"konb", "+", 
-               RowBox[{"kuoff", " ", "\[Gamma]"}]}], ")"}]}], ")"}], "/", 
-           RowBox[{"(", 
-            RowBox[{
-             RowBox[{
-              SuperscriptBox["c", "2"], " ", "kboff", " ", "kbon", " ", 
-              "konb", " ", "\[Gamma]", " ", 
-              RowBox[{"(", 
-               RowBox[{"konb", "+", 
-                RowBox[{"kuoff", " ", "\[Gamma]"}]}], ")"}]}], "+", 
-             RowBox[{"c", " ", 
-              RowBox[{"(", 
-               RowBox[{
-                RowBox[{
-                 RowBox[{"(", 
-                  RowBox[{
-                   RowBox[{"kbon", " ", "konu", " ", 
-                    RowBox[{"(", 
-                    RowBox[{"konb", "+", "kuoff"}], ")"}]}], "+", 
-                   RowBox[{"kboff", " ", "konb", " ", "kuon"}], "+", 
-                   RowBox[{"kboff", " ", "koffu", " ", 
-                    RowBox[{"(", 
-                    RowBox[{"konb", "+", "kuon"}], ")"}]}]}], ")"}], " ", 
-                 "\[Gamma]", " ", 
-                 RowBox[{"(", 
-                  RowBox[{"konb", "+", 
-                   RowBox[{"kuoff", " ", "\[Gamma]"}]}], ")"}]}], "+", 
-                RowBox[{"c2", " ", "kboff", " ", "kbon", " ", "konb", " ", 
-                 RowBox[{"(", 
-                  RowBox[{"konb", "+", 
-                   RowBox[{"konb", " ", "\[Gamma]"}], "+", 
-                   RowBox[{"2", " ", "kuoff", " ", "\[Gamma]"}]}], ")"}]}]}], 
-               ")"}]}], "+", 
-             RowBox[{
-              RowBox[{"(", 
-               RowBox[{"konb", "+", "kuoff"}], ")"}], " ", 
-              RowBox[{"(", 
-               RowBox[{
-                RowBox[{
-                 SuperscriptBox["c2", "2"], " ", "kboff", " ", "kbon", " ", 
-                 "konb"}], "+", 
-                RowBox[{"c2", " ", "kbon", " ", "konu", " ", 
-                 RowBox[{"(", 
-                  RowBox[{"konb", "+", 
-                   RowBox[{"kuoff", " ", "\[Gamma]"}]}], ")"}]}], "+", 
-                RowBox[{
-                 RowBox[{"(", 
-                  RowBox[{"koffu", "+", "konu"}], ")"}], " ", "kuon", " ", 
-                 "\[Gamma]", " ", 
-                 RowBox[{"(", 
-                  RowBox[{"konb", "+", 
-                   RowBox[{"kuoff", " ", "\[Gamma]"}]}], ")"}]}], "+", 
-                RowBox[{"c2", " ", "kboff", " ", 
-                 RowBox[{"(", 
-                  RowBox[{
-                   RowBox[{"konb", " ", "kuon", " ", "\[Gamma]"}], "+", 
-                   RowBox[{"koffu", " ", 
-                    RowBox[{"(", 
-                    RowBox[{"konb", "+", 
-                    RowBox[{"kuon", " ", "\[Gamma]"}]}], ")"}]}]}], ")"}]}]}],
-                ")"}]}]}], ")"}]}]}], ",", 
-         RowBox[{"ss1", "+", "ss3", "+", "ss4", "+", "ss5", "+", "ss6", "+", 
-          RowBox[{
-           RowBox[{"(", 
-            RowBox[{
-            "c", " ", "kboff", " ", "koffu", " ", "kuon", " ", "\[Gamma]", " ", 
-             RowBox[{"(", 
-              RowBox[{"konb", "+", 
-               RowBox[{"kuoff", " ", "\[Gamma]"}]}], ")"}]}], ")"}], "/", 
-           RowBox[{"(", 
-            RowBox[{
-             RowBox[{
-              SuperscriptBox["c", "2"], " ", "kboff", " ", "kbon", " ", 
-              "konb", " ", "\[Gamma]", " ", 
-              RowBox[{"(", 
-               RowBox[{"konb", "+", 
-                RowBox[{"kuoff", " ", "\[Gamma]"}]}], ")"}]}], "+", 
-             RowBox[{"c", " ", 
-              RowBox[{"(", 
-               RowBox[{
-                RowBox[{
-                 RowBox[{"(", 
-                  RowBox[{
-                   RowBox[{"kbon", " ", "konu", " ", 
-                    RowBox[{"(", 
-                    RowBox[{"konb", "+", "kuoff"}], ")"}]}], "+", 
-                   RowBox[{"kboff", " ", "konb", " ", "kuon"}], "+", 
-                   RowBox[{"kboff", " ", "koffu", " ", 
-                    RowBox[{"(", 
-                    RowBox[{"konb", "+", "kuon"}], ")"}]}]}], ")"}], " ", 
-                 "\[Gamma]", " ", 
-                 RowBox[{"(", 
-                  RowBox[{"konb", "+", 
-                   RowBox[{"kuoff", " ", "\[Gamma]"}]}], ")"}]}], "+", 
-                RowBox[{"c2", " ", "kboff", " ", "kbon", " ", "konb", " ", 
-                 RowBox[{"(", 
-                  RowBox[{"konb", "+", 
-                   RowBox[{"konb", " ", "\[Gamma]"}], "+", 
-                   RowBox[{"2", " ", "kuoff", " ", "\[Gamma]"}]}], ")"}]}]}], 
-               ")"}]}], "+", 
-             RowBox[{
-              RowBox[{"(", 
-               RowBox[{"konb", "+", "kuoff"}], ")"}], " ", 
-              RowBox[{"(", 
-               RowBox[{
-                RowBox[{
-                 SuperscriptBox["c2", "2"], " ", "kboff", " ", "kbon", " ", 
-                 "konb"}], "+", 
-                RowBox[{"c2", " ", "kbon", " ", "konu", " ", 
-                 RowBox[{"(", 
-                  RowBox[{"konb", "+", 
-                   RowBox[{"kuoff", " ", "\[Gamma]"}]}], ")"}]}], "+", 
-                RowBox[{
-                 RowBox[{"(", 
-                  RowBox[{"koffu", "+", "konu"}], ")"}], " ", "kuon", " ", 
-                 "\[Gamma]", " ", 
-                 RowBox[{"(", 
-                  RowBox[{"konb", "+", 
-                   RowBox[{"kuoff", " ", "\[Gamma]"}]}], ")"}]}], "+", 
-                RowBox[{"c2", " ", "kboff", " ", 
-                 RowBox[{"(", 
-                  RowBox[{
-                   RowBox[{"konb", " ", "kuon", " ", "\[Gamma]"}], "+", 
-                   RowBox[{"koffu", " ", 
-                    RowBox[{"(", 
-                    RowBox[{"konb", "+", 
-                    RowBox[{"kuon", " ", "\[Gamma]"}]}], ")"}]}]}], ")"}]}]}],
-                ")"}]}]}], ")"}]}]}], ",", 
-         RowBox[{"ss1", "+", "ss3", "+", "ss4", "+", "ss5", "+", "ss6", "+", 
-          RowBox[{
-           RowBox[{"(", 
-            RowBox[{"c", " ", "\[Gamma]", " ", 
-             RowBox[{"(", 
-              RowBox[{
-               RowBox[{"c2", " ", "kboff", " ", "kbon", " ", "konb", " ", 
-                RowBox[{"(", 
-                 RowBox[{"konb", "+", "kuoff"}], ")"}]}], "+", 
-               RowBox[{"c", " ", "kboff", " ", "kbon", " ", "konb", " ", 
-                RowBox[{"(", 
-                 RowBox[{"konb", "+", 
-                  RowBox[{"kuoff", " ", "\[Gamma]"}]}], ")"}]}], "+", 
-               RowBox[{
-                RowBox[{"(", 
-                 RowBox[{
-                  RowBox[{"kboff", " ", "koffu", " ", "konb"}], "+", 
-                  RowBox[{"kbon", " ", "konu", " ", 
-                   RowBox[{"(", 
-                    RowBox[{"konb", "+", "kuoff"}], ")"}]}]}], ")"}], " ", 
-                RowBox[{"(", 
-                 RowBox[{"konb", "+", 
-                  RowBox[{"kuoff", " ", "\[Gamma]"}]}], ")"}]}]}], ")"}]}], 
-            ")"}], "/", 
-           RowBox[{"(", 
-            RowBox[{
-             RowBox[{
-              SuperscriptBox["c", "2"], " ", "kboff", " ", "kbon", " ", 
-              "konb", " ", "\[Gamma]", " ", 
-              RowBox[{"(", 
-               RowBox[{"konb", "+", 
-                RowBox[{"kuoff", " ", "\[Gamma]"}]}], ")"}]}], "+", 
-             RowBox[{"c", " ", 
-              RowBox[{"(", 
-               RowBox[{
-                RowBox[{
-                 RowBox[{"(", 
-                  RowBox[{
-                   RowBox[{"kbon", " ", "konu", " ", 
-                    RowBox[{"(", 
-                    RowBox[{"konb", "+", "kuoff"}], ")"}]}], "+", 
-                   RowBox[{"kboff", " ", "konb", " ", "kuon"}], "+", 
-                   RowBox[{"kboff", " ", "koffu", " ", 
-                    RowBox[{"(", 
-                    RowBox[{"konb", "+", "kuon"}], ")"}]}]}], ")"}], " ", 
-                 "\[Gamma]", " ", 
-                 RowBox[{"(", 
-                  RowBox[{"konb", "+", 
-                   RowBox[{"kuoff", " ", "\[Gamma]"}]}], ")"}]}], "+", 
-                RowBox[{"c2", " ", "kboff", " ", "kbon", " ", "konb", " ", 
-                 RowBox[{"(", 
-                  RowBox[{"konb", "+", 
-                   RowBox[{"konb", " ", "\[Gamma]"}], "+", 
-                   RowBox[{"2", " ", "kuoff", " ", "\[Gamma]"}]}], ")"}]}]}], 
-               ")"}]}], "+", 
-             RowBox[{
-              RowBox[{"(", 
-               RowBox[{"konb", "+", "kuoff"}], ")"}], " ", 
-              RowBox[{"(", 
-               RowBox[{
-                RowBox[{
-                 SuperscriptBox["c2", "2"], " ", "kboff", " ", "kbon", " ", 
-                 "konb"}], "+", 
-                RowBox[{"c2", " ", "kbon", " ", "konu", " ", 
-                 RowBox[{"(", 
-                  RowBox[{"konb", "+", 
-                   RowBox[{"kuoff", " ", "\[Gamma]"}]}], ")"}]}], "+", 
-                RowBox[{
-                 RowBox[{"(", 
-                  RowBox[{"koffu", "+", "konu"}], ")"}], " ", "kuon", " ", 
-                 "\[Gamma]", " ", 
-                 RowBox[{"(", 
-                  RowBox[{"konb", "+", 
-                   RowBox[{"kuoff", " ", "\[Gamma]"}]}], ")"}]}], "+", 
-                RowBox[{"c2", " ", "kboff", " ", 
-                 RowBox[{"(", 
-                  RowBox[{
-                   RowBox[{"konb", " ", "kuon", " ", "\[Gamma]"}], "+", 
-                   RowBox[{"koffu", " ", 
-                    RowBox[{"(", 
-                    RowBox[{"konb", "+", 
-                    RowBox[{"kuon", " ", "\[Gamma]"}]}], ")"}]}]}], ")"}]}]}],
-                ")"}]}]}], ")"}]}]}], ",", 
-         RowBox[{"ss1", "+", "ss3", "+", "ss4", "+", "ss5", "+", "ss6", "+", 
-          RowBox[{
-           RowBox[{"(", 
-            RowBox[{"kuon", " ", "\[Gamma]", " ", 
-             RowBox[{"(", 
-              RowBox[{
-               RowBox[{"c", " ", "kboff", " ", "konb", " ", 
-                RowBox[{"(", 
-                 RowBox[{"konb", "+", 
-                  RowBox[{"kuoff", " ", "\[Gamma]"}]}], ")"}]}], "+", 
-               RowBox[{
-                RowBox[{"(", 
-                 RowBox[{"konb", "+", "kuoff"}], ")"}], " ", 
-                RowBox[{"(", 
-                 RowBox[{
-                  RowBox[{"c2", " ", "kboff", " ", "konb"}], "+", 
-                  RowBox[{"konu", " ", 
-                   RowBox[{"(", 
-                    RowBox[{"konb", "+", 
-                    RowBox[{"kuoff", " ", "\[Gamma]"}]}], ")"}]}]}], 
-                 ")"}]}]}], ")"}]}], ")"}], "/", 
-           RowBox[{"(", 
-            RowBox[{
-             RowBox[{
-              SuperscriptBox["c", "2"], " ", "kboff", " ", "kbon", " ", 
-              "konb", " ", "\[Gamma]", " ", 
-              RowBox[{"(", 
-               RowBox[{"konb", "+", 
-                RowBox[{"kuoff", " ", "\[Gamma]"}]}], ")"}]}], "+", 
-             RowBox[{"c", " ", 
-              RowBox[{"(", 
-               RowBox[{
-                RowBox[{
-                 RowBox[{"(", 
-                  RowBox[{
-                   RowBox[{"kbon", " ", "konu", " ", 
-                    RowBox[{"(", 
-                    RowBox[{"konb", "+", "kuoff"}], ")"}]}], "+", 
-                   RowBox[{"kboff", " ", "konb", " ", "kuon"}], "+", 
-                   RowBox[{"kboff", " ", "koffu", " ", 
-                    RowBox[{"(", 
-                    RowBox[{"konb", "+", "kuon"}], ")"}]}]}], ")"}], " ", 
-                 "\[Gamma]", " ", 
-                 RowBox[{"(", 
-                  RowBox[{"konb", "+", 
-                   RowBox[{"kuoff", " ", "\[Gamma]"}]}], ")"}]}], "+", 
-                RowBox[{"c2", " ", "kboff", " ", "kbon", " ", "konb", " ", 
-                 RowBox[{"(", 
-                  RowBox[{"konb", "+", 
-                   RowBox[{"konb", " ", "\[Gamma]"}], "+", 
-                   RowBox[{"2", " ", "kuoff", " ", "\[Gamma]"}]}], ")"}]}]}], 
-               ")"}]}], "+", 
-             RowBox[{
-              RowBox[{"(", 
-               RowBox[{"konb", "+", "kuoff"}], ")"}], " ", 
-              RowBox[{"(", 
-               RowBox[{
-                RowBox[{
-                 SuperscriptBox["c2", "2"], " ", "kboff", " ", "kbon", " ", 
-                 "konb"}], "+", 
-                RowBox[{"c2", " ", "kbon", " ", "konu", " ", 
-                 RowBox[{"(", 
-                  RowBox[{"konb", "+", 
-                   RowBox[{"kuoff", " ", "\[Gamma]"}]}], ")"}]}], "+", 
-                RowBox[{
-                 RowBox[{"(", 
-                  RowBox[{"koffu", "+", "konu"}], ")"}], " ", "kuon", " ", 
-                 "\[Gamma]", " ", 
-                 RowBox[{"(", 
-                  RowBox[{"konb", "+", 
-                   RowBox[{"kuoff", " ", "\[Gamma]"}]}], ")"}]}], "+", 
-                RowBox[{"c2", " ", "kboff", " ", 
-                 RowBox[{"(", 
-                  RowBox[{
-                   RowBox[{"konb", " ", "kuon", " ", "\[Gamma]"}], "+", 
-                   RowBox[{"koffu", " ", 
-                    RowBox[{"(", 
-                    RowBox[{"konb", "+", 
-                    RowBox[{"kuon", " ", "\[Gamma]"}]}], ")"}]}]}], ")"}]}]}],
-                ")"}]}]}], ")"}]}]}], ",", 
-         RowBox[{"ss1", "+", "ss3", "+", "ss4", "+", "ss5", "+", "ss6", "+", 
-          RowBox[{
-           RowBox[{"(", 
-            RowBox[{"c2", " ", 
-             RowBox[{"(", 
-              RowBox[{
-               RowBox[{"c", " ", "kboff", " ", "kbon", " ", "konb", " ", 
-                RowBox[{"(", 
-                 RowBox[{"konb", "+", 
-                  RowBox[{"kuoff", " ", "\[Gamma]"}]}], ")"}]}], "+", 
-               RowBox[{
-                RowBox[{"(", 
-                 RowBox[{"konb", "+", "kuoff"}], ")"}], " ", 
-                RowBox[{"(", 
-                 RowBox[{
-                  RowBox[{"c2", " ", "kboff", " ", "kbon", " ", "konb"}], "+", 
-                  RowBox[{"kboff", " ", "koffu", " ", "konb"}], "+", 
-                  RowBox[{"kbon", " ", "konu", " ", 
-                   RowBox[{"(", 
-                    RowBox[{"konb", "+", 
-                    RowBox[{"kuoff", " ", "\[Gamma]"}]}], ")"}]}]}], 
-                 ")"}]}]}], ")"}]}], ")"}], "/", 
-           RowBox[{"(", 
-            RowBox[{
-             RowBox[{
-              SuperscriptBox["c", "2"], " ", "kboff", " ", "kbon", " ", 
-              "konb", " ", "\[Gamma]", " ", 
-              RowBox[{"(", 
-               RowBox[{"konb", "+", 
-                RowBox[{"kuoff", " ", "\[Gamma]"}]}], ")"}]}], "+", 
-             RowBox[{"c", " ", 
-              RowBox[{"(", 
-               RowBox[{
-                RowBox[{
-                 RowBox[{"(", 
-                  RowBox[{
-                   RowBox[{"kbon", " ", "konu", " ", 
-                    RowBox[{"(", 
-                    RowBox[{"konb", "+", "kuoff"}], ")"}]}], "+", 
-                   RowBox[{"kboff", " ", "konb", " ", "kuon"}], "+", 
-                   RowBox[{"kboff", " ", "koffu", " ", 
-                    RowBox[{"(", 
-                    RowBox[{"konb", "+", "kuon"}], ")"}]}]}], ")"}], " ", 
-                 "\[Gamma]", " ", 
-                 RowBox[{"(", 
-                  RowBox[{"konb", "+", 
-                   RowBox[{"kuoff", " ", "\[Gamma]"}]}], ")"}]}], "+", 
-                RowBox[{"c2", " ", "kboff", " ", "kbon", " ", "konb", " ", 
-                 RowBox[{"(", 
-                  RowBox[{"konb", "+", 
-                   RowBox[{"konb", " ", "\[Gamma]"}], "+", 
-                   RowBox[{"2", " ", "kuoff", " ", "\[Gamma]"}]}], ")"}]}]}], 
-               ")"}]}], "+", 
-             RowBox[{
-              RowBox[{"(", 
-               RowBox[{"konb", "+", "kuoff"}], ")"}], " ", 
-              RowBox[{"(", 
-               RowBox[{
-                RowBox[{
-                 SuperscriptBox["c2", "2"], " ", "kboff", " ", "kbon", " ", 
-                 "konb"}], "+", 
-                RowBox[{"c2", " ", "kbon", " ", "konu", " ", 
-                 RowBox[{"(", 
-                  RowBox[{"konb", "+", 
-                   RowBox[{"kuoff", " ", "\[Gamma]"}]}], ")"}]}], "+", 
-                RowBox[{
-                 RowBox[{"(", 
-                  RowBox[{"koffu", "+", "konu"}], ")"}], " ", "kuon", " ", 
-                 "\[Gamma]", " ", 
-                 RowBox[{"(", 
-                  RowBox[{"konb", "+", 
-                   RowBox[{"kuoff", " ", "\[Gamma]"}]}], ")"}]}], "+", 
-                RowBox[{"c2", " ", "kboff", " ", 
-                 RowBox[{"(", 
-                  RowBox[{
-                   RowBox[{"konb", " ", "kuon", " ", "\[Gamma]"}], "+", 
-                   RowBox[{"koffu", " ", 
-                    RowBox[{"(", 
-                    RowBox[{"konb", "+", 
-                    RowBox[{"kuon", " ", "\[Gamma]"}]}], ")"}]}]}], ")"}]}]}],
-                ")"}]}]}], ")"}]}]}], ",", 
-         RowBox[{"ss1", "+", "ss3", "+", "ss4", "+", "ss5", "+", "ss6", "+", 
-          RowBox[{
-           RowBox[{"(", 
-            RowBox[{"c2", " ", "kboff", " ", "koffu", " ", 
-             RowBox[{"(", 
-              RowBox[{"konb", "+", "kuoff"}], ")"}], " ", "kuon", " ", 
-             "\[Gamma]"}], ")"}], "/", 
-           RowBox[{"(", 
-            RowBox[{
-             RowBox[{
-              SuperscriptBox["c", "2"], " ", "kboff", " ", "kbon", " ", 
-              "konb", " ", "\[Gamma]", " ", 
-              RowBox[{"(", 
-               RowBox[{"konb", "+", 
-                RowBox[{"kuoff", " ", "\[Gamma]"}]}], ")"}]}], "+", 
-             RowBox[{"c", " ", 
-              RowBox[{"(", 
-               RowBox[{
-                RowBox[{
-                 RowBox[{"(", 
-                  RowBox[{
-                   RowBox[{"kbon", " ", "konu", " ", 
-                    RowBox[{"(", 
-                    RowBox[{"konb", "+", "kuoff"}], ")"}]}], "+", 
-                   RowBox[{"kboff", " ", "konb", " ", "kuon"}], "+", 
-                   RowBox[{"kboff", " ", "koffu", " ", 
-                    RowBox[{"(", 
-                    RowBox[{"konb", "+", "kuon"}], ")"}]}]}], ")"}], " ", 
-                 "\[Gamma]", " ", 
-                 RowBox[{"(", 
-                  RowBox[{"konb", "+", 
-                   RowBox[{"kuoff", " ", "\[Gamma]"}]}], ")"}]}], "+", 
-                RowBox[{"c2", " ", "kboff", " ", "kbon", " ", "konb", " ", 
-                 RowBox[{"(", 
-                  RowBox[{"konb", "+", 
-                   RowBox[{"konb", " ", "\[Gamma]"}], "+", 
-                   RowBox[{"2", " ", "kuoff", " ", "\[Gamma]"}]}], ")"}]}]}], 
-               ")"}]}], "+", 
-             RowBox[{
-              RowBox[{"(", 
-               RowBox[{"konb", "+", "kuoff"}], ")"}], " ", 
-              RowBox[{"(", 
-               RowBox[{
-                RowBox[{
-                 SuperscriptBox["c2", "2"], " ", "kboff", " ", "kbon", " ", 
-                 "konb"}], "+", 
-                RowBox[{"c2", " ", "kbon", " ", "konu", " ", 
-                 RowBox[{"(", 
-                  RowBox[{"konb", "+", 
-                   RowBox[{"kuoff", " ", "\[Gamma]"}]}], ")"}]}], "+", 
-                RowBox[{
-                 RowBox[{"(", 
-                  RowBox[{"koffu", "+", "konu"}], ")"}], " ", "kuon", " ", 
-                 "\[Gamma]", " ", 
-                 RowBox[{"(", 
-                  RowBox[{"konb", "+", 
-                   RowBox[{"kuoff", " ", "\[Gamma]"}]}], ")"}]}], "+", 
-                RowBox[{"c2", " ", "kboff", " ", 
-                 RowBox[{"(", 
-                  RowBox[{
-                   RowBox[{"konb", " ", "kuon", " ", "\[Gamma]"}], "+", 
-                   RowBox[{"koffu", " ", 
-                    RowBox[{"(", 
-                    RowBox[{"konb", "+", 
-                    RowBox[{"kuon", " ", "\[Gamma]"}]}], ")"}]}]}], ")"}]}]}],
-                ")"}]}]}], ")"}]}]}]}], "}"}], "\[Equal]", "1"}]}], "}"}]}], 
-   ")"}]}]], "Output",
+        RowBox[{"\"\<MultipartiteEmbedding\>\"", ",", 
+         RowBox[{"\"\<VertexPartition\>\"", "->", 
+          RowBox[{"{", 
+           RowBox[{
+            RowBox[{"{", 
+             RowBox[{"8", ",", "1"}], "}"}], ",", 
+            RowBox[{"{", 
+             RowBox[{"9", ",", "2"}], "}"}], ",", 
+            RowBox[{"{", 
+             RowBox[{"10", ",", "3"}], "}"}], ",", 
+            RowBox[{"{", 
+             RowBox[{"11", ",", "4"}], "}"}], ",", 
+            RowBox[{"{", 
+             RowBox[{"12", ",", "5"}], "}"}], ",", 
+            RowBox[{"{", 
+             RowBox[{"13", ",", "6"}], "}"}], ",", 
+            RowBox[{"{", 
+             RowBox[{"14", ",", "7"}], "}"}]}], "}"}]}]}], "}"}]}]}], 
+     "]"}]}]}]}]], "Input",
+ CellChangeTimes->{{3.954885168500375*^9, 3.954885258860671*^9}, {
+   3.954885313133644*^9, 3.954885547466172*^9}, 3.954885594485132*^9, {
+   3.954885748816628*^9, 3.954885775115698*^9}, {3.9548858598771467`*^9, 
+   3.9548859628254757`*^9}, {3.95488599671282*^9, 3.954886001355937*^9}},
+ CellLabel->
+  "In[104]:=",ExpressionUUID->"1cff0b27-78d7-4b34-b068-360f00450735"],
+
+Cell[BoxData[
+ RowBox[{"{", 
+  RowBox[{
+   RowBox[{"c", " ", "kboff1"}], ",", "kuoff1", ",", 
+   RowBox[{"c", " ", "kboff2"}], ",", "kuoff2", ",", 
+   RowBox[{"c", " ", "kboff3"}], ",", "kuoff3", ",", 
+   RowBox[{"c", " ", "kboff4"}], ",", "kuoff4", ",", 
+   RowBox[{"c", " ", "kboff5"}], ",", "kuoff5", ",", 
+   RowBox[{"c", " ", "kboff6"}], ",", "kuoff6", ",", 
+   RowBox[{"c", " ", "kbon1"}], ",", "kuon1", ",", 
+   RowBox[{"c", " ", "kbon2"}], ",", "kuon2", ",", 
+   RowBox[{"c", " ", "kbon3"}], ",", "kuon3", ",", 
+   RowBox[{"c", " ", "kbon4"}], ",", "kuon4", ",", 
+   RowBox[{"c", " ", "kbon5"}], ",", "kuon5", ",", 
+   RowBox[{"c", " ", "kbon6"}], ",", "kuon6", ",", "kon1", ",", "koff1", ",", 
+   "kon2", ",", "koff2", ",", "kon3", ",", "koff3", ",", "kon4", ",", "koff4",
+    ",", "kon5", ",", "koff5", ",", "kon6", ",", "koff6", ",", "kon7", ",", 
+   "koff7"}], "}"}]], "Output",
  CellChangeTimes->{
-  3.954847423391967*^9, {3.95484761507199*^9, 3.954847631238861*^9}},
- CellLabel->"Out[99]=",ExpressionUUID->"78bb734a-5ee0-4db2-828e-803f3e8a5b7a"]
-}, Open  ]]
+  3.9548858610135593`*^9, {3.954885913628406*^9, 3.954885963122353*^9}, {
+   3.9548859973524237`*^9, 3.95488600161172*^9}},
+ CellLabel->
+  "Out[105]=",ExpressionUUID->"0947555f-181c-485d-9902-94c55a3ee8b2"],
+
+Cell[BoxData[
+ GraphicsBox[
+  NamespaceBox["NetworkGraphics",
+   DynamicModuleBox[{Typeset`graph = HoldComplete[
+     Graph[{1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 
+      14}, {{{1, 2}, {2, 1}, {2, 3}, {3, 2}, {3, 4}, {4, 3}, {4, 5}, {5, 4}, {
+       5, 6}, {6, 5}, {6, 7}, {7, 6}, {8, 9}, {9, 8}, {9, 10}, {10, 9}, {10, 
+       11}, {11, 10}, {11, 12}, {12, 11}, {12, 13}, {13, 12}, {13, 14}, {14, 
+       13}, {1, 8}, {8, 1}, {2, 9}, {9, 2}, {3, 10}, {10, 3}, {4, 11}, {11, 
+       4}, {5, 12}, {12, 5}, {6, 13}, {13, 6}, {7, 14}, {14, 7}}, Null}, {
+      EdgeLabels -> {DirectedEdge[7, 14] -> Placed[
+           HoldForm[$CellContext`kon7], 0.55], DirectedEdge[13, 14] -> 
+         Placed[
+           HoldForm[$CellContext`c $CellContext`kbon6], 0.55], 
+         DirectedEdge[6, 7] -> Placed[
+           HoldForm[$CellContext`c $CellContext`kboff6], 0.55], 
+         DirectedEdge[11, 4] -> Placed[
+           HoldForm[$CellContext`koff4], 0.55], DirectedEdge[2, 1] -> Placed[
+           HoldForm[$CellContext`kuoff1], 0.55], DirectedEdge[3, 10] -> Placed[
+           HoldForm[$CellContext`kon3], 0.55], DirectedEdge[5, 6] -> Placed[
+           HoldForm[$CellContext`c $CellContext`kboff5], 0.55], 
+         DirectedEdge[11, 10] -> Placed[
+           HoldForm[$CellContext`kuon3], 0.55], DirectedEdge[10, 9] -> 
+         Placed[
+           HoldForm[$CellContext`kuon2], 0.55], DirectedEdge[5, 4] -> Placed[
+           HoldForm[$CellContext`kuoff4], 0.55], DirectedEdge[5, 12] -> Placed[
+           HoldForm[$CellContext`kon5], 0.55], DirectedEdge[4, 3] -> Placed[
+           HoldForm[$CellContext`kuoff3], 0.55], DirectedEdge[3, 4] -> 
+         Placed[
+           HoldForm[$CellContext`c $CellContext`kboff3], 0.55], 
+         DirectedEdge[12, 11] -> Placed[
+           HoldForm[$CellContext`kuon4], 0.55], DirectedEdge[2, 9] -> Placed[
+           HoldForm[$CellContext`kon2], 0.55], DirectedEdge[13, 6] -> Placed[
+           HoldForm[$CellContext`koff6], 0.55], DirectedEdge[6, 13] -> 
+         Placed[
+           HoldForm[$CellContext`kon6], 0.55], DirectedEdge[8, 1] -> Placed[
+           HoldForm[$CellContext`koff1], 0.55], DirectedEdge[14, 13] -> Placed[
+           HoldForm[$CellContext`kuon6], 0.55], DirectedEdge[7, 6] -> Placed[
+           HoldForm[$CellContext`kuoff6], 0.55], DirectedEdge[1, 8] -> 
+         Placed[
+           HoldForm[$CellContext`kon1], 0.55], DirectedEdge[1, 2] -> Placed[
+           HoldForm[$CellContext`c $CellContext`kboff1], 0.55], 
+         DirectedEdge[4, 5] -> Placed[
+           HoldForm[$CellContext`c $CellContext`kboff4], 0.55], 
+         DirectedEdge[2, 3] -> Placed[
+           HoldForm[$CellContext`c $CellContext`kboff2], 0.55], 
+         DirectedEdge[12, 13] -> Placed[
+           HoldForm[$CellContext`c $CellContext`kbon5], 0.55], 
+         DirectedEdge[6, 5] -> Placed[
+           HoldForm[$CellContext`kuoff5], 0.55], DirectedEdge[13, 12] -> 
+         Placed[
+           HoldForm[$CellContext`kuon5], 0.55], DirectedEdge[9, 8] -> Placed[
+           HoldForm[$CellContext`kuon1], 0.55], DirectedEdge[10, 3] -> 
+         Placed[
+           HoldForm[$CellContext`koff3], 0.55], DirectedEdge[9, 2] -> Placed[
+           HoldForm[$CellContext`koff2], 0.55], DirectedEdge[8, 9] -> Placed[
+           HoldForm[$CellContext`c $CellContext`kbon1], 0.55], 
+         DirectedEdge[3, 2] -> Placed[
+           HoldForm[$CellContext`kuoff2], 0.55], DirectedEdge[11, 12] -> 
+         Placed[
+           HoldForm[$CellContext`c $CellContext`kbon4], 0.55], 
+         DirectedEdge[10, 11] -> Placed[
+           HoldForm[$CellContext`c $CellContext`kbon3], 0.55], 
+         DirectedEdge[9, 10] -> Placed[
+           HoldForm[$CellContext`c $CellContext`kbon2], 0.55], 
+         DirectedEdge[4, 11] -> Placed[
+           HoldForm[$CellContext`kon4], 0.55], DirectedEdge[12, 5] -> Placed[
+           HoldForm[$CellContext`koff5], 0.55], DirectedEdge[14, 7] -> 
+         Placed[
+           HoldForm[$CellContext`koff7], 0.55]}, 
+       GraphLayout -> {
+        "MultipartiteEmbedding", 
+         "VertexPartition" -> {{8, 1}, {9, 2}, {10, 3}, {11, 4}, {12, 5}, {13,
+           6}, {14, 7}}}, ImageSize -> 600, VertexLabels -> {"Name"}}]]}, 
+    TagBox[GraphicsGroupBox[{
+       {Hue[0.6, 0.7, 0.7], Opacity[0.7], CapForm["Round"], Arrowheads[
+        Medium], {
+         ArrowBox[
+          BezierCurveBox[{{0., 1.8791019662496855`}, {0.5000000000000032, 
+           2.043542713432805}, {1., 1.8791019662496855`}}], 
+          0.04847715736040609], InsetBox[
+          RowBox[{"c", " ", "kboff1"}], 
+          Offset[{0, 2}, {0.550998436261805, 1.9491019662496862}], 
+          ImageScaled[{0.5, 0}],
+          BaseStyle->"Graphics"]}, {
+         ArrowBox[
+          BezierCurveBox[{{0., 1.8791019662496855`}, {0.6180018627267229, 
+           5.240806627958791*^-16}, {0., -1.8791019662496855`}}], 
+          0.04847715736040609], 
+         InsetBox["kon1", 
+          Offset[{0, 2}, {0.2630742752749564, -0.19166252371043324}], 
+          ImageScaled[{0.5, 0}],
+          BaseStyle->"Graphics"]}, {
+         ArrowBox[
+          BezierCurveBox[{{1., 1.8791019662496855`}, {0.5000000000000063, 
+           1.714661219066566}, {0., 1.8791019662496855`}}], 
+          0.04847715736040609], 
+         InsetBox["kuoff1", 
+          Offset[{0, 2}, {0.4490015637381952, 1.8091019662496859}], 
+          ImageScaled[{0.5, 0}],
+          BaseStyle->"Graphics"]}, {
+         ArrowBox[
+          BezierCurveBox[{{1., 1.8791019662496855`}, {1.4999999999999738`, 
+           2.0435427134327977`}, {2., 1.8791019662496855`}}], 
+          0.04847715736040609], InsetBox[
+          RowBox[{"c", " ", "kboff2"}], 
+          Offset[{0, 2}, {1.550998436261805, 1.9491019662496862}], 
+          ImageScaled[{0.5, 0}],
+          BaseStyle->"Graphics"]}, {
+         ArrowBox[
+          BezierCurveBox[{{1., 1.8791019662496855`}, {1.6180018627267247`, 
+           0.}, {1., -1.8791019662496855`}}], 0.04847715736040609], 
+         InsetBox["kon2", 
+          Offset[{0, 2}, {1.2630742752749564, -0.19166252371043324}], 
+          ImageScaled[{0.5, 0}],
+          BaseStyle->"Graphics"]}, {
+         ArrowBox[
+          BezierCurveBox[{{2., 1.8791019662496855`}, {1.4999999999999782`, 
+           1.7146612190665735`}, {1., 1.8791019662496855`}}], 
+          0.04847715736040609], 
+         InsetBox["kuoff2", 
+          Offset[{0, 2}, {1.449001563738195, 1.8091019662496859}], 
+          ImageScaled[{0.5, 0}],
+          BaseStyle->"Graphics"]}, {
+         ArrowBox[
+          BezierCurveBox[{{2., 1.8791019662496855`}, {2.5000000000000258`, 
+           2.0435427134328146`}, {3., 1.8791019662496855`}}], 
+          0.04847715736040609], InsetBox[
+          RowBox[{"c", " ", "kboff3"}], 
+          Offset[{0, 2}, {2.5509984362618052, 1.949101966249686}], 
+          ImageScaled[{0.5, 0}],
+          BaseStyle->"Graphics"]}, {
+         ArrowBox[
+          BezierCurveBox[{{2., 1.8791019662496855`}, {2.6180018627267225`, 
+           0.}, {2., -1.8791019662496855`}}], 0.04847715736040609], 
+         InsetBox["kon3", 
+          Offset[{0, 2}, {2.263074275274956, -0.19166252371043346}], 
+          ImageScaled[{0.5, 0}],
+          BaseStyle->"Graphics"]}, {
+         ArrowBox[
+          BezierCurveBox[{{3., 1.8791019662496855`}, {2.5, 
+           1.7146612190665804`}, {2., 1.8791019662496855`}}], 
+          0.04847715736040609], 
+         InsetBox["kuoff3", 
+          Offset[{0, 2}, {2.4490015637381948, 1.8091019662496859}], 
+          ImageScaled[{0.5, 0}],
+          BaseStyle->"Graphics"]}, {
+         ArrowBox[
+          BezierCurveBox[{{3., 1.8791019662496855`}, {3.4999999999999742`, 
+           2.0435427134328146`}, {4., 1.8791019662496855`}}], 
+          0.04847715736040609], InsetBox[
+          RowBox[{"c", " ", "kboff4"}], 
+          Offset[{0, 2}, {3.5509984362618052, 1.949101966249686}], 
+          ImageScaled[{0.5, 0}],
+          BaseStyle->"Graphics"]}, {
+         ArrowBox[
+          BezierCurveBox[{{3., 1.8791019662496855`}, {3.618001862726729, 
+           0.}, {3., -1.8791019662496855`}}], 0.04847715736040609], 
+         InsetBox["kon4", 
+          Offset[{0, 2}, {3.263074275274956, -0.19166252371043346}], 
+          ImageScaled[{0.5, 0}],
+          BaseStyle->"Graphics"]}, {
+         ArrowBox[
+          BezierCurveBox[{{4., 1.8791019662496855`}, {3.5000000000000253`, 
+           1.714661219066572}, {3., 1.8791019662496855`}}], 
+          0.04847715736040609], 
+         InsetBox["kuoff4", 
+          Offset[{0, 2}, {3.4490015637381948, 1.8091019662496859}], 
+          ImageScaled[{0.5, 0}],
+          BaseStyle->"Graphics"]}, {
+         ArrowBox[
+          BezierCurveBox[{{4., 1.8791019662496855`}, {4.499999999999974, 
+           2.0435427134327973`}, {5., 1.8791019662496855`}}], 
+          0.04847715736040609], InsetBox[
+          RowBox[{"c", " ", "kboff5"}], 
+          Offset[{0, 2}, {4.550998436261805, 1.949101966249686}], 
+          ImageScaled[{0.5, 0}],
+          BaseStyle->"Graphics"]}, {
+         ArrowBox[
+          BezierCurveBox[{{4., 1.8791019662496855`}, {
+           4.618001862726718, -2.6204033139794307`*^-14}, {
+           4., -1.8791019662496855`}}], 0.04847715736040609], 
+         InsetBox["kon5", 
+          Offset[{0, 2}, {4.263074275274956, -0.19166252371043313}], 
+          ImageScaled[{0.5, 0}],
+          BaseStyle->"Graphics"]}, {
+         ArrowBox[
+          BezierCurveBox[{{5., 1.8791019662496855`}, {4.500000000000026, 
+           1.7146612190665607`}, {4., 1.8791019662496855`}}], 
+          0.04847715736040609], 
+         InsetBox["kuoff5", 
+          Offset[{0, 2}, {4.449001563738195, 1.8091019662496859}], 
+          ImageScaled[{0.5, 0}],
+          BaseStyle->"Graphics"]}, {
+         ArrowBox[
+          BezierCurveBox[{{5., 1.8791019662496855`}, {5.500000000000128, 
+           2.0435427134327973`}, {6., 1.8791019662496855`}}], 
+          0.04847715736040609], InsetBox[
+          RowBox[{"c", " ", "kboff6"}], 
+          Offset[{0, 2}, {5.550998436261805, 1.949101966249686}], 
+          ImageScaled[{0.5, 0}],
+          BaseStyle->"Graphics"]}, {
+         ArrowBox[
+          BezierCurveBox[{{5., 1.8791019662496855`}, {5.618001862726728, 
+           1.3626097232692668`*^-14}, {5., -1.8791019662496855`}}], 
+          0.04847715736040609], 
+         InsetBox["kon6", 
+          Offset[{0, 2}, {5.263074275274958, -0.19166252371043346}], 
+          ImageScaled[{0.5, 0}],
+          BaseStyle->"Graphics"]}, {
+         ArrowBox[
+          BezierCurveBox[{{6., 1.8791019662496855`}, {5.499999999999924, 
+           1.714661219066544}, {5., 1.8791019662496855`}}], 
+          0.04847715736040609], 
+         InsetBox["kuoff6", 
+          Offset[{0, 2}, {5.449001563738195, 1.8091019662496857}], 
+          ImageScaled[{0.5, 0}],
+          BaseStyle->"Graphics"]}, {
+         ArrowBox[
+          BezierCurveBox[{{6., 1.8791019662496855`}, {
+           6.618001862726722, -2.725219446538608*^-14}, {
+           6., -1.8791019662496855`}}], 0.04847715736040609], 
+         InsetBox["kon7", 
+          Offset[{0, 2}, {6.263074275274956, -0.19166252371043313}], 
+          ImageScaled[{0.5, 0}],
+          BaseStyle->"Graphics"]}, {
+         ArrowBox[
+          BezierCurveBox[{{
+           0., -1.8791019662496855`}, {-0.6180018627267229, \
+-5.240806627958791*^-16}, {0., 1.8791019662496855`}}], 0.04847715736040609], 
+         InsetBox["koff1", 
+          Offset[{0, 2}, {-0.2630742752749564, 0.19166252371043324}], 
+          ImageScaled[{0.5, 0}],
+          BaseStyle->"Graphics"]}, {
+         ArrowBox[
+          BezierCurveBox[{{0., -1.8791019662496855`}, {
+           0.5000000000000056, -1.7146612190665655`}, {
+           1., -1.8791019662496855`}}], 0.04847715736040609], InsetBox[
+          RowBox[{"c", " ", "kbon1"}], 
+          Offset[{0, 2}, {0.550998436261805, -1.8091019662496859}], 
+          ImageScaled[{0.5, 0}],
+          BaseStyle->"Graphics"]}, {
+         ArrowBox[
+          BezierCurveBox[{{1., -1.8791019662496855`}, {0.38199813727327764`, 
+           0.}, {1., 1.8791019662496855`}}], 0.04847715736040609], 
+         InsetBox["koff2", 
+          Offset[{0, 2}, {0.7369257247250434, 0.19166252371043313}], 
+          ImageScaled[{0.5, 0}],
+          BaseStyle->"Graphics"]}, {
+         ArrowBox[
+          BezierCurveBox[{{1., -1.8791019662496855`}, {
+           0.5000000000000049, -2.0435427134328044`}, {
+           0., -1.8791019662496855`}}], 0.04847715736040609], 
+         InsetBox["kuon1", 
+          Offset[{0, 2}, {0.44900156373819505, -1.9491019662496862}], 
+          ImageScaled[{0.5, 0}],
+          BaseStyle->"Graphics"]}, {
+         ArrowBox[
+          BezierCurveBox[{{1., -1.8791019662496855`}, {
+           1.499999999999971, -1.7146612190665733`}, {
+           2., -1.8791019662496855`}}], 0.04847715736040609], InsetBox[
+          RowBox[{"c", " ", "kbon2"}], 
+          Offset[{0, 2}, {1.550998436261805, -1.8091019662496859}], 
+          ImageScaled[{0.5, 0}],
+          BaseStyle->"Graphics"]}, {
+         ArrowBox[
+          BezierCurveBox[{{2., -1.8791019662496855`}, {1.3819981372732775`, 
+           0.}, {2., 1.8791019662496855`}}], 0.04847715736040609], 
+         InsetBox["koff3", 
+          Offset[{0, 2}, {1.7369257247250434, 0.19166252371043313}], 
+          ImageScaled[{0.5, 0}],
+          BaseStyle->"Graphics"]}, {
+         ArrowBox[
+          BezierCurveBox[{{2., -1.8791019662496855`}, {
+           1.5000000000000007`, -2.0435427134327897`}, {
+           1., -1.8791019662496855`}}], 0.04847715736040609], 
+         InsetBox["kuon2", 
+          Offset[{0, 2}, {1.449001563738195, -1.9491019662496858}], 
+          ImageScaled[{0.5, 0}],
+          BaseStyle->"Graphics"]}, {
+         ArrowBox[
+          BezierCurveBox[{{2., -1.8791019662496855`}, {
+           2.4999999999999742`, -1.714661219066572}, {
+           3., -1.8791019662496855`}}], 0.04847715736040609], InsetBox[
+          RowBox[{"c", " ", "kbon3"}], 
+          Offset[{0, 2}, {2.5509984362618052, -1.8091019662496859}], 
+          ImageScaled[{0.5, 0}],
+          BaseStyle->"Graphics"]}, {
+         ArrowBox[
+          BezierCurveBox[{{3., -1.8791019662496855`}, {2.3819981372732735`, 
+           6.813048616346428*^-15}, {3., 1.8791019662496855`}}], 
+          0.04847715736040609], 
+         InsetBox["koff4", 
+          Offset[{0, 2}, {2.7369257247250434, 0.19166252371043313}], 
+          ImageScaled[{0.5, 0}],
+          BaseStyle->"Graphics"]}, {
+         ArrowBox[
+          BezierCurveBox[{{3., -1.8791019662496855`}, {
+           2.5000000000000258`, -2.0435427134328146`}, {
+           2., -1.8791019662496855`}}], 0.04847715736040609], 
+         InsetBox["kuon3", 
+          Offset[{0, 2}, {2.4490015637381948, -1.9491019662496858}], 
+          ImageScaled[{0.5, 0}],
+          BaseStyle->"Graphics"]}, {
+         ArrowBox[
+          BezierCurveBox[{{3., -1.8791019662496855`}, {
+           3.5000000000000253`, -1.714661219066572}, {
+           4., -1.8791019662496855`}}], 0.04847715736040609], InsetBox[
+          RowBox[{"c", " ", "kbon4"}], 
+          Offset[{0, 2}, {3.5509984362618052, -1.8091019662496859}], 
+          ImageScaled[{0.5, 0}],
+          BaseStyle->"Graphics"]}, {
+         ArrowBox[
+          BezierCurveBox[{{4., -1.8791019662496855`}, {3.3819981372732735`, 
+           0.}, {4., 1.8791019662496855`}}], 0.04847715736040609], 
+         InsetBox["koff5", 
+          Offset[{0, 2}, {3.7369257247250434, 0.19166252371043313}], 
+          ImageScaled[{0.5, 0}],
+          BaseStyle->"Graphics"]}, {
+         ArrowBox[
+          BezierCurveBox[{{4., -1.8791019662496855`}, {
+           3.4999999999999742`, -2.0435427134328146`}, {
+           3., -1.8791019662496855`}}], 0.04847715736040609], 
+         InsetBox["kuon4", 
+          Offset[{0, 2}, {3.4490015637381948, -1.9491019662496858}], 
+          ImageScaled[{0.5, 0}],
+          BaseStyle->"Graphics"]}, {
+         ArrowBox[
+          BezierCurveBox[{{4., -1.8791019662496855`}, {
+           4.500000000000026, -1.7146612190665607`}, {
+           5., -1.8791019662496855`}}], 0.04847715736040609], InsetBox[
+          RowBox[{"c", " ", "kbon5"}], 
+          Offset[{0, 2}, {4.550998436261805, -1.8091019662496857}], 
+          ImageScaled[{0.5, 0}],
+          BaseStyle->"Graphics"]}, {
+         ArrowBox[
+          BezierCurveBox[{{5., -1.8791019662496855`}, {
+           4.38199813727327, -2.7252194465385336`*^-14}, {5., 
+           1.8791019662496855`}}], 0.04847715736040609], 
+         InsetBox["koff6", 
+          Offset[{0, 2}, {4.736925724725044, 0.19166252371043324}], 
+          ImageScaled[{0.5, 0}],
+          BaseStyle->"Graphics"]}, {
+         ArrowBox[
+          BezierCurveBox[{{5., -1.8791019662496855`}, {
+           4.499999999999974, -2.0435427134327973`}, {
+           4., -1.8791019662496855`}}], 0.04847715736040609], 
+         InsetBox["kuon5", 
+          Offset[{0, 2}, {4.449001563738195, -1.949101966249686}], 
+          ImageScaled[{0.5, 0}],
+          BaseStyle->"Graphics"]}, {
+         ArrowBox[
+          BezierCurveBox[{{5., -1.8791019662496855`}, {
+           5.499999999999924, -1.714661219066544}, {
+           6., -1.8791019662496855`}}], 0.04847715736040609], InsetBox[
+          RowBox[{"c", " ", "kbon6"}], 
+          Offset[{0, 2}, {5.550998436261805, -1.8091019662496859}], 
+          ImageScaled[{0.5, 0}],
+          BaseStyle->"Graphics"]}, {
+         ArrowBox[
+          BezierCurveBox[{{6., -1.8791019662496855`}, {5.381998137273286, 
+           2.725219446538608*^-14}, {6., 1.8791019662496855`}}], 
+          0.04847715736040609], 
+         InsetBox["koff7", 
+          Offset[{0, 2}, {5.736925724725044, 0.19166252371043313}], 
+          ImageScaled[{0.5, 0}],
+          BaseStyle->"Graphics"]}, {
+         ArrowBox[
+          BezierCurveBox[{{6., -1.8791019662496855`}, {
+           5.500000000000128, -2.0435427134327973`}, {
+           5., -1.8791019662496855`}}], 0.04847715736040609], 
+         InsetBox["kuon6", 
+          Offset[{0, 2}, {5.449001563738195, -1.9491019662496858}], 
+          ImageScaled[{0.5, 0}],
+          BaseStyle->"Graphics"]}}, 
+       {Hue[0.6, 0.5, 1.], EdgeForm[{GrayLevel[0], Opacity[
+        0.7]}], {DiskBox[{0., 1.8791019662496855`}, 0.04847715736040609], 
+         InsetBox["1", 
+          Offset[{2, 2}, {0.04847715736040609, 1.9275791236100916}], 
+          ImageScaled[{0, 0}],
+          BaseStyle->"Graphics"]}, {
+         DiskBox[{1., 1.8791019662496855`}, 0.04847715736040609], 
+         InsetBox["2", 
+          Offset[{2, 2}, {1.0484771573604061, 1.9275791236100916}], 
+          ImageScaled[{0, 0}],
+          BaseStyle->"Graphics"]}, {
+         DiskBox[{2., 1.8791019662496855`}, 0.04847715736040609], 
+         InsetBox["3", 
+          Offset[{2, 2}, {2.048477157360406, 1.9275791236100916}], 
+          ImageScaled[{0, 0}],
+          BaseStyle->"Graphics"]}, {
+         DiskBox[{3., 1.8791019662496855`}, 0.04847715736040609], 
+         InsetBox["4", 
+          Offset[{2, 2}, {3.048477157360406, 1.9275791236100916}], 
+          ImageScaled[{0, 0}],
+          BaseStyle->"Graphics"]}, {
+         DiskBox[{4., 1.8791019662496855`}, 0.04847715736040609], 
+         InsetBox["5", 
+          Offset[{2, 2}, {4.048477157360406, 1.9275791236100916}], 
+          ImageScaled[{0, 0}],
+          BaseStyle->"Graphics"]}, {
+         DiskBox[{5., 1.8791019662496855`}, 0.04847715736040609], 
+         InsetBox["6", 
+          Offset[{2, 2}, {5.048477157360406, 1.9275791236100916}], 
+          ImageScaled[{0, 0}],
+          BaseStyle->"Graphics"]}, {
+         DiskBox[{6., 1.8791019662496855`}, 0.04847715736040609], 
+         InsetBox["7", 
+          Offset[{2, 2}, {6.048477157360406, 1.9275791236100916}], 
+          ImageScaled[{0, 0}],
+          BaseStyle->"Graphics"]}, {
+         DiskBox[{0., -1.8791019662496855`}, 0.04847715736040609], 
+         InsetBox["8", 
+          Offset[{2, 2}, {0.04847715736040609, -1.8306248088892794}], 
+          ImageScaled[{0, 0}],
+          BaseStyle->"Graphics"]}, {
+         DiskBox[{1., -1.8791019662496855`}, 0.04847715736040609], 
+         InsetBox["9", 
+          Offset[{2, 2}, {1.0484771573604061, -1.8306248088892794}], 
+          ImageScaled[{0, 0}],
+          BaseStyle->"Graphics"]}, {
+         DiskBox[{2., -1.8791019662496855`}, 0.04847715736040609], 
+         InsetBox["10", 
+          Offset[{2, 2}, {2.048477157360406, -1.8306248088892794}], 
+          ImageScaled[{0, 0}],
+          BaseStyle->"Graphics"]}, {
+         DiskBox[{3., -1.8791019662496855`}, 0.04847715736040609], 
+         InsetBox["11", 
+          Offset[{2, 2}, {3.048477157360406, -1.8306248088892794}], 
+          ImageScaled[{0, 0}],
+          BaseStyle->"Graphics"]}, {
+         DiskBox[{4., -1.8791019662496855`}, 0.04847715736040609], 
+         InsetBox["12", 
+          Offset[{2, 2}, {4.048477157360406, -1.8306248088892794}], 
+          ImageScaled[{0, 0}],
+          BaseStyle->"Graphics"]}, {
+         DiskBox[{5., -1.8791019662496855`}, 0.04847715736040609], 
+         InsetBox["13", 
+          Offset[{2, 2}, {5.048477157360406, -1.8306248088892794}], 
+          ImageScaled[{0, 0}],
+          BaseStyle->"Graphics"]}, {
+         DiskBox[{6., -1.8791019662496855`}, 0.04847715736040609], 
+         InsetBox["14", 
+          Offset[{2, 2}, {6.048477157360406, -1.8306248088892794}], 
+          ImageScaled[{0, 0}],
+          BaseStyle->"Graphics"]}}}],
+     MouseAppearanceTag["NetworkGraphics"]],
+    AllowKernelInitialization->False]],
+  DefaultBaseStyle->"NetworkGraphics",
+  FormatType->TraditionalForm,
+  FrameTicks->None,
+  ImageSize->600]], "Output",
+ CellChangeTimes->{
+  3.9548858610135593`*^9, {3.954885913628406*^9, 3.954885963122353*^9}, {
+   3.9548859973524237`*^9, 3.954886001661172*^9}},
+ CellLabel->
+  "Out[110]=",ExpressionUUID->"c4baf07f-56bd-4a42-b280-559b836aad45"]
+}, Open  ]],
+
+Cell[BoxData[{
+ RowBox[{
+  RowBox[{"ClearAll", "[", "c", "]"}], ";"}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{"Q6", " ", "=", " ", 
+   RowBox[{"RateMatrix", "[", 
+    RowBox[{"edges6", ",", " ", "weights6", ",", " ", "nstates6"}], "]"}]}], 
+  ";"}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{"ss6", " ", "=", " ", 
+   RowBox[{"SteadyStateProbabilities", "[", "Q6", "]"}]}], ";"}]}], "Input",
+ CellChangeTimes->{{3.954886049846109*^9, 3.954886172469336*^9}, {
+  3.9548862122088614`*^9, 3.954886219309557*^9}, {3.954886326189116*^9, 
+  3.954886326997916*^9}},
+ CellLabel->
+  "In[127]:=",ExpressionUUID->"8f4fa2e0-6cdf-4ff8-9c46-6c0c48795d61"],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{"Simplify", "[", 
+  RowBox[{"ss6", "[", 
+   RowBox[{"[", "1", "]"}], "]"}], "]"}]], "Input",
+ CellChangeTimes->{{3.954886636376404*^9, 3.954886649700098*^9}},
+ CellLabel->
+  "In[139]:=",ExpressionUUID->"b2bb2d59-892a-4923-a6f2-420fe06f5ef5"],
+
+Cell[BoxData["$Aborted"], "Output",
+ CellChangeTimes->{3.9548866382313633`*^9, 3.954886683417469*^9},
+ CellLabel->
+  "Out[139]=",ExpressionUUID->"c467bb07-fd2d-4c99-9171-582bcfdbfb3c"]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[{
+ RowBox[{
+  RowBox[{"a6", "=", 
+   RowBox[{"{", 
+    RowBox[{
+    "0", ",", "0", ",", "0", ",", "0", ",", "0", ",", "0", ",", "0", ",", "1",
+      ",", "1", ",", "1", ",", "1", ",", "1", ",", "1", ",", "1"}], "}"}]}], 
+  ";"}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{"Pss", " ", "=", " ", 
+   RowBox[{"Table", "[", 
+    RowBox[{"ss6", ",", " ", 
+     RowBox[{"{", 
+      RowBox[{"i", ",", "1", ",", 
+       RowBox[{"Length", "[", "ss6", "]"}]}], "}"}]}], "]"}]}], ";"}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{"Z6", " ", "=", " ", 
+   RowBox[{
+    RowBox[{"Inverse", "[", 
+     RowBox[{"Pss", " ", "-", " ", "Q6"}], "]"}], " ", "-", " ", "Pss"}]}], 
+  ";"}]}], "Input",
+ CellChangeTimes->{{3.954886049846109*^9, 3.954886172469336*^9}, {
+  3.9548862122088614`*^9, 3.954886223396953*^9}, {3.954886403731535*^9, 
+  3.954886411306408*^9}},
+ CellLabel->
+  "In[135]:=",ExpressionUUID->"9f71f30f-f872-427d-88b0-5f4f8dc1e0df"],
+
+Cell[BoxData["$Aborted"], "Output",
+ CellChangeTimes->{3.954886633825903*^9},
+ CellLabel->
+  "Out[137]=",ExpressionUUID->"694da6cd-6d03-4291-a33a-f551a30f4e73"]
+}, Open  ]],
+
+Cell[BoxData[{
+ RowBox[{
+  RowBox[{"pion6", " ", "=", " ", 
+   RowBox[{"a6", ".", "ss6"}]}], ";"}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{"dpion", " ", "=", " ", 
+   RowBox[{"D", "[", 
+    RowBox[{"pion6", ",", " ", "c"}], "]"}]}], ";"}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{"s", " ", "=", " ", 
+   RowBox[{"Simplify", "[", 
+    RowBox[{"c", "*", "dpion6"}], "]"}]}], ";"}]}], "Input",
+ CellChangeTimes->{{3.954886049846109*^9, 3.954886172469336*^9}, {
+  3.9548862122088614`*^9, 
+  3.9548862319645367`*^9}},ExpressionUUID->"0c35f45d-b5af-4845-9dd2-\
+502c7c4510af"],
+
+Cell[BoxData[
+ RowBox[{"iracc", "=", " ", 
+  RowBox[{
+   RowBox[{"s6", "^", "2"}], " ", "/", " ", 
+   RowBox[{"var", "[", 
+    RowBox[{"a6", ",", "ss6", ",", "Z6"}], "]"}]}]}]], "Input",
+ CellChangeTimes->{{3.954886049846109*^9, 3.954886172469336*^9}, {
+  3.9548862122088614`*^9, 
+  3.9548862319645367`*^9}},ExpressionUUID->"9ffb6f81-ce6d-4b54-9ff1-\
+679c289cd8f0"]
 },
-WindowSize->{960, 1032},
+WindowSize->{960, 552},
 WindowMargins->{{0, Automatic}, {Automatic, 0}},
 FrontEndVersion->"14.2 for Linux x86 (64-bit) (December 26, 2024)",
 StyleDefinitions->"Default.nb",
@@ -2912,42 +1483,51 @@ CellTagsIndex->{}
 *)
 (*NotebookFileOutline
 Notebook[{
-Cell[554, 20, 489, 10, 49, "Input",ExpressionUUID->"3cf56f3b-2d05-42da-992b-446f80ebc901"],
+Cell[554, 20, 488, 10, 49, "Input",ExpressionUUID->"3cf56f3b-2d05-42da-992b-446f80ebc901"],
 Cell[CellGroupData[{
-Cell[1068, 34, 7943, 197, 358, "Input",ExpressionUUID->"1b727f3f-7e1f-46ac-9ab0-7f0700c1b665"],
-Cell[9014, 233, 7736, 161, 211, "Output",ExpressionUUID->"01c0d1fa-6cb1-4832-bb86-61ca0c4cf15d"]
+Cell[1067, 34, 7942, 197, 358, "Input",ExpressionUUID->"1b727f3f-7e1f-46ac-9ab0-7f0700c1b665"],
+Cell[9012, 233, 7762, 162, 211, "Output",ExpressionUUID->"86dc0e4e-99a9-4179-b465-f4333a1b81ba"]
 }, Open  ]],
-Cell[16765, 397, 397, 9, 51, "Input",ExpressionUUID->"b9c9d22f-9ca0-41cc-bd09-2d5b2706535d"],
+Cell[16789, 398, 397, 9, 51, "Input",ExpressionUUID->"b9c9d22f-9ca0-41cc-bd09-2d5b2706535d"],
+Cell[17189, 409, 360, 11, 30, "Input",ExpressionUUID->"f668afb2-f317-4dfb-b0cb-4e02875181c4"],
 Cell[CellGroupData[{
-Cell[17187, 410, 1629, 41, 178, "Input",ExpressionUUID->"90147eb7-8403-42bd-bfa4-76ad2428de2e"],
-Cell[18819, 453, 392, 8, 33, "Output",ExpressionUUID->"304cdfde-de4c-4578-b725-def64216e7d9"]
-}, Open  ]],
-Cell[CellGroupData[{
-Cell[19248, 466, 689, 18, 30, "Input",ExpressionUUID->"b03e83b1-7ae5-4d76-8b3e-26b9f93968f3"],
-Cell[19940, 486, 409, 10, 37, "Message",ExpressionUUID->"3b4645a6-7d80-451c-a423-a7cf6802c681"],
-Cell[20352, 498, 442, 11, 26, "Message",ExpressionUUID->"9f4bba1e-ca30-46f8-948a-61202a84c3db"],
-Cell[20797, 511, 409, 10, 37, "Message",ExpressionUUID->"2a23bd6a-c66f-4689-88f4-3336149f5f4c"],
-Cell[21209, 523, 442, 11, 26, "Message",ExpressionUUID->"7537d4b7-f6c6-4eca-86de-3543397560e3"],
-Cell[21654, 536, 407, 10, 37, "Message",ExpressionUUID->"1735a20f-5c8c-4d1d-9be2-c7ffdb474bc5"],
-Cell[22064, 548, 487, 11, 26, "Message",ExpressionUUID->"0b60ebc6-3bb9-47da-84b9-dbba8ab0bea5"],
-Cell[22554, 561, 442, 11, 26, "Message",ExpressionUUID->"bbbb4547-0236-4065-921f-34996f8058ec"],
-Cell[22999, 574, 493, 11, 26, "Message",ExpressionUUID->"4aaca728-9114-4154-a37f-bce9362427af"],
-Cell[23495, 587, 187, 2, 33, "Output",ExpressionUUID->"20287a5f-e9b1-4871-b120-6261de350a8c"]
+Cell[17574, 424, 1629, 41, 178, "Input",ExpressionUUID->"90147eb7-8403-42bd-bfa4-76ad2428de2e"],
+Cell[19206, 467, 392, 8, 33, "Output",ExpressionUUID->"304cdfde-de4c-4578-b725-def64216e7d9"]
 }, Open  ]],
 Cell[CellGroupData[{
-Cell[23719, 594, 286, 5, 49, "Input",ExpressionUUID->"386d7140-0321-43d3-8a7f-3bc5f0950ae8"],
-Cell[24008, 601, 3224, 49, 121, "Message",ExpressionUUID->"88560909-da17-47e5-a5fe-e6cca2a24b45"],
-Cell[27235, 652, 431, 11, 37, "Message",ExpressionUUID->"8298cfd6-7010-4d49-894e-dd8a40e80efe"],
-Cell[27669, 665, 466, 12, 26, "Message",ExpressionUUID->"39436075-6c8a-4569-8031-35a03e282d62"],
-Cell[28138, 679, 433, 11, 37, "Message",ExpressionUUID->"fd6f9ebf-dce8-49c7-891b-07747c5973b1"],
-Cell[28574, 692, 466, 12, 26, "Message",ExpressionUUID->"5e494637-3db8-4371-893e-b214cfe5901a"],
-Cell[29043, 706, 431, 11, 37, "Message",ExpressionUUID->"d5ba18ad-3ef4-40f1-ad7e-3ad6931dca7e"],
-Cell[29477, 719, 511, 12, 26, "Message",ExpressionUUID->"165d59a1-d510-446c-b16c-2f326ae041ea"],
-Cell[29991, 733, 466, 12, 26, "Message",ExpressionUUID->"5c7babd9-8337-4dda-bb03-2fab42258c6b"],
-Cell[30460, 747, 515, 12, 26, "Message",ExpressionUUID->"a7da5d8b-d907-4f27-bafc-9ed63b39fcdd"],
-Cell[30978, 761, 5205, 78, 162, "Message",ExpressionUUID->"fb116822-4b23-4ab9-b24d-f4fc78acaf48"],
-Cell[36186, 841, 88168, 2053, 3089, "Output",ExpressionUUID->"78bb734a-5ee0-4db2-828e-803f3e8a5b7a"]
-}, Open  ]]
+Cell[19635, 480, 1210, 31, 113, "Input",ExpressionUUID->"b03e83b1-7ae5-4d76-8b3e-26b9f93968f3"],
+Cell[20848, 513, 195, 3, 33, "Output",ExpressionUUID->"204c71b1-21b6-4120-ba30-3a64d4f0b3a0"]
+}, Open  ]],
+Cell[21058, 519, 626, 14, 30, "Input",ExpressionUUID->"5381575a-b8c4-4325-9248-36b044e5327c"],
+Cell[CellGroupData[{
+Cell[21709, 537, 1282, 32, 75, "Input",ExpressionUUID->"eedc900d-bef7-48ff-9ed8-aa25675c0e1b"],
+Cell[22994, 571, 290, 5, 33, "Output",ExpressionUUID->"1664c7a0-57fb-4595-b65f-dd52c827a588"]
+}, Open  ]],
+Cell[23299, 579, 2348, 38, 51, "Input",ExpressionUUID->"d7296349-4b1e-4b5d-8379-f903e1556562"],
+Cell[CellGroupData[{
+Cell[25672, 621, 693, 18, 30, "Input",ExpressionUUID->"237478d6-9f25-41bc-a5e0-f4f6afd5976a"],
+Cell[26368, 641, 174, 3, 33, "Output",ExpressionUUID->"5965ca4f-ceef-423c-99d3-b038f5e3b2cf"]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[26579, 649, 2937, 54, 93, "Input",ExpressionUUID->"7cbf68c3-e94d-4054-9bc4-0671ecd485e5"],
+Cell[29519, 705, 189, 3, 33, "Output",ExpressionUUID->"c35ff9f4-e46e-460a-b90d-45463f09b508"]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[29745, 713, 6634, 174, 414, "Input",ExpressionUUID->"1cff0b27-78d7-4b34-b068-360f00450735"],
+Cell[36382, 889, 1117, 22, 77, "Output",ExpressionUUID->"0947555f-181c-485d-9902-94c55a3ee8b2"],
+Cell[37502, 913, 21730, 456, 365, "Output",ExpressionUUID->"c4baf07f-56bd-4a42-b280-559b836aad45"]
+}, Open  ]],
+Cell[59247, 1372, 647, 15, 71, "Input",ExpressionUUID->"8f4fa2e0-6cdf-4ff8-9c46-6c0c48795d61"],
+Cell[CellGroupData[{
+Cell[59919, 1391, 264, 6, 29, "Input",ExpressionUUID->"b2bb2d59-892a-4923-a6f2-420fe06f5ef5"],
+Cell[60186, 1399, 184, 3, 33, "Output",ExpressionUUID->"c467bb07-fd2d-4c99-9171-582bcfdbfb3c"]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[60407, 1407, 943, 25, 73, "Input",ExpressionUUID->"9f71f30f-f872-427d-88b0-5f4f8dc1e0df"],
+Cell[61353, 1434, 160, 3, 33, "Output",ExpressionUUID->"694da6cd-6d03-4291-a33a-f551a30f4e73"]
+}, Open  ]],
+Cell[61528, 1440, 578, 15, 71, "Input",ExpressionUUID->"0c35f45d-b5af-4845-9dd2-502c7c4510af"],
+Cell[62109, 1457, 365, 9, 30, "Input",ExpressionUUID->"9ffb6f81-ce6d-4b54-9ff1-679c289cd8f0"]
 }
 ]
 *)

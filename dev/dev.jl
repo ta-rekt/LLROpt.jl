@@ -1235,23 +1235,54 @@ end
 # DOING: adding EPR and marginal Fisher rates to dataset
 
 let 
-    inpath = "/home/tohme/.julia/dev/LLROpt/data/20250426/fir-c0-cw-multiparam-clean/ir_full_mix_vs_pure_pareto_pid"
-    outpath = "/home/tohme/.julia/dev/LLROpt/data/20250426/fir-c0-cw-multiparam-clean-marginals/"
+    inputdir = "20250429/6bs-ir-acc-c0-5.6-equilibrium"
+    outputdir = "20250429/6bs-ir-acc-c0-5.6-equilibrium-tauonoff"
+    whichf = "acc"
+
+    inpath = string("/home/tohme/.julia/dev/LLROpt/data/", inputdir, 
+                    "/ir_", whichf, "_mix_vs_pure_pareto_pid")
+    outpath = string("/home/tohme/.julia/dev/LLROpt/data/", outputdir, "/")
+
     results_init = Dict()
-    ncs = 32
-    nws = 5
-    ngs = 3
-    nstates = 6
-    nrates = 7
-    edges = [(1, 2), (2, 1), (1, 6), (6, 1), (4, 3), (3, 4), 
-             (4, 5), (5, 4), (6, 5), (4, 1), (2, 3), (1, 4)]
-    input_edges = [(1,2), (4,3)]
-    off_ind = BitArray([1,1,0,0,0,1])
+    ncpus = 16
+    nparams = 64
+    nparams_per_cpu = div(nparams, ncpus)
+    nws = 1
+    ngs = 1
+    nstates = 14
+    nrates = 38
+    # edges = [(1, 2), (2, 1), (1, 6), (6, 1), (4, 3), (3, 4), 
+    #          (4, 5), (5, 4), (6, 5), (4, 1), (2, 3), (1, 4)]
+    edges = [(1 ,2 ), (2 ,1 ),
+             (2 ,3 ), (3 ,2 ),
+             (3 ,4 ), (4 ,3 ),
+             (4 ,5 ), (5 ,4 ),
+             (5 ,6 ), (6 ,5 ),
+             (6 ,7 ), (7 ,6 ),
+             (8 ,9 ), (9 ,8 ),
+             (9 ,10), (10,9 ),
+             (10,11), (11,10),
+             (11,12), (12,11),
+             (12,13), (13,12),
+             (13,14), (14,13),
+             (1 ,8 ), (8 ,1 ),  
+             (2 ,9 ), (9 ,2 ),
+             (3 ,10), (10,3 ),
+             (4 ,11), (11,4 ),
+             (5 ,12), (12,5 ),
+             (6 ,13), (13,6 ),
+             (7 ,14), (14,7 )]
+
+    # input_edges = [(1,2), (4,3)]
+    input_edges = [(i,i+1) for i in range(1,13) if i != 7]
+    # on_ind = BitArray([0,0,1,1,1,0])
+    off_ind = vcat(ones(Bool, 7), zeros(Bool, 7))
+    off_ind = BitArray(off_ind)
     maxevals = 100000
     reltol = 1e-12
     eps = 1e-30
 
-    for cpukey in range(1, stop=ncs)
+    for cpukey in range(1, stop=ncpus)
         infile = string(inpath, cpukey, ".json")
         results_init = Dict()
 
@@ -1259,58 +1290,65 @@ let
             results_init = JSON.parse(f)
         end
 
-        kc = string(cpukey)
+        for k in 1:nparams_per_cpu
 
-        for j in range(1, nws)
-            kw = string(j)
+            kc = (cpukey - 1) * nparams_per_cpu + k
+            kc = string(kc)
 
-            for k in range(1, ngs)
-                kg = string(k)
+            for j in range(1, nws)
+                kw = string(j)
 
-                logrates = results_init[kc][kg][kw][1:nrates]
-                cr, gamma, cw = results_init[kc][kg][kw][end-2:end]
+                for k in range(1, ngs)
+                    kg = string(k)
 
-                global d_c = OneBurstDecoyModel(;
-                    nstates = nstates,
-                    edges = edges,
-                    input_edges = input_edges,
-                    logrates = logrates,
-                    cr = cr,
-                    cw = cw,
-                    gamma = gamma,
-                    ind_set = off_ind,
-                    start_state = 1,
-                    hitting_set = [3,4,5],
-                    eps = eps,
-                    reltol = reltol,
-                    maxevals = maxevals,
-                )
-            
-                global d_cdc = OneBurstDecoyModel(;
-                    nstates = nstates,
-                    edges = edges,
-                    input_edges = input_edges,
-                    logrates = logrates,
-                    cr = cr*1.1,
-                    cw = cw,
-                    gamma = gamma,
-                    ind_set = off_ind,
-                    start_state = 1,
-                    hitting_set = [3,4,5],
-                    eps = eps,
-                    reltol = reltol,
-                    maxevals = maxevals,
-                )
+                    logrates = results_init[kc][kg][kw][1:nrates]
+                    cr, gamma, cw = results_init[kc][kg][kw][end-2:end]
 
-                initDecoys!(d_c)
-                initDecoys!(d_cdc)
+                    global d_c = OneBurstDecoyModel(;
+                        nstates = nstates,
+                        edges = edges,
+                        input_edges = input_edges,
+                        logrates = logrates,
+                        cr = cr,
+                        cw = cw,
+                        gamma = gamma,
+                        ind_set = off_ind,
+                        start_state = 1,
+                        hitting_set = [8,9,10,11,12,13,14], #[3,4,5],
+                        eps = eps,
+                        reltol = reltol,
+                        maxevals = maxevals,
+                    )
+                
+                    global d_cdc = OneBurstDecoyModel(;
+                        nstates = nstates,
+                        edges = edges,
+                        input_edges = input_edges,
+                        logrates = logrates,
+                        cr = cr*1.1,
+                        cw = cw,
+                        gamma = gamma,
+                        ind_set = off_ind,
+                        start_state = 1,
+                        hitting_set = [8,9,10,11,12,13,14], #[3,4,5],
+                        eps = eps,
+                        reltol = reltol,
+                        maxevals = maxevals,
+                    )
 
-                Foff = FisherRateOff(d_c, d_cdc)
-                Fon = FisherRateOn(d_c, d_cdc)
+                    init6bs!(d_c)
+                    init6bs!(d_cdc)
 
-                results_init[kc][kg][kw][nrates+3] = Foff
-                results_init[kc][kg][kw][nrates+4] = Fon
-                results_init[kc][kg][kw][nrates+5] = EP_ss(d_c.Q)
+                    # initDecoys!(d_c)
+                    # initDecoys!(d_cdc)
+
+                    # Foff = FisherRateOff(d_c, d_cdc)
+                    # Fon = FisherRateOn(d_c, d_cdc)
+
+                    results_init[kc][kg][kw][nrates+3] = EP_ss(d_c)
+                    results_init[kc][kg][kw][nrates+5] = tauOn(d_c)
+                    results_init[kc][kg][kw][nrates+6] = tauOff(d_c)
+                end
             end
         end
 
@@ -1491,6 +1529,130 @@ let
     @assert isapprox(d.Pjoint, 0.07419284612916327, rtol= 1e-12)
 
     @show d.Pjoint
+
+end
+
+## -.-.--..-.-.-.-.-.---------.-.-.--.........---.-.--
+# testing 6 binding sites optimization
+
+let
+    edges = [(1 ,2 ), (2 ,1 ),
+            (2 ,3 ), (3 ,2 ),
+            (3 ,4 ), (4 ,3 ),
+            (4 ,5 ), (5 ,4 ),
+            (5 ,6 ), (6 ,5 ),
+            (6 ,7 ), (7 ,6 ),
+            (8 ,9 ), (9 ,8 ),
+            (9 ,10), (10,9 ),
+            (10,11), (11,10),
+            (11,12), (12,11),
+            (12,13), (13,12),
+            (13,14), (14,13),
+            (1 ,8 ), (8 ,1 ),
+            (2 ,9 ), (9 ,2 ),
+            (3 ,10), (10,3 ),
+            (4 ,11), (11,4 ),
+            (5 ,12), (12,5 ),
+            (6 ,13), (13,6 ),
+            (7 ,14), (14,7 )]
+    
+    nstates = 14
+    input_edges = [(i,i+1) for i in range(1,13) if i != 7]
+    on_ind = vcat(zeros(Bool, 7), ones(Bool, 7))
+    on_ind = BitArray(on_ind)
+    idist = ones(14) ./ 14
+
+    cr = 1
+    dc = cr / 10
+    beta = cr
+    maxevals = 100000
+    reltol = 1e-12
+    eps = 1e-30
+    kmin = 1e-5
+    kmax = 5
+    kdl = 0.0888
+
+
+    logrates = [-0.2735392,
+                        0.6986202,
+                        -0.35262105,
+                        0.99632066,
+                        -0.45629358,
+                        1.1676022,
+                        -0.8154811,
+                        1.3010213,
+                        -2.999901,
+                        -2.2746994,
+                        -1.0834411,
+                        -2.9947932,
+                        -0.27343628,
+                        -2.6676974,
+                        -0.3527842,
+                        -2.1704595,
+                        -0.46818706,
+                        -0.32609335,
+                        -2.8146002,
+                        1.286127,
+                        -2.961565,
+                        -2.9999177,
+                        -1.0515879,
+                        -2.9999974,
+                        0.69897,
+                        -2.9308462,
+                        0.69633293,
+                        0.6055425,
+                        0.34476626,
+                        0.66343576,
+                        -1.3484193,
+                        0.6595521,
+                        -1.5140427,
+                        0.6395374,
+                        0.6306018,
+                        -2.9999943,
+                        0.6969057,
+                        -2.9990544]
+
+    global m1 = OneBurstDecoyModel(;
+        nstates = nstates,
+        edges = edges,
+        input_edges = input_edges,
+        logrates = nothing,
+        cr = nothing,
+        cw = nothing,
+        gamma = nothing,
+        ind_set = on_ind,
+        start_state = 1,
+        hitting_set = [8,9,10,11,12,13,14],
+        eps = eps,
+        reltol = reltol,
+        maxevals = maxevals,
+    )
+    
+    global m2 = OneBurstDecoyModel(;
+        nstates = nstates,
+        edges = edges,
+        input_edges = input_edges,
+        logrates = nothing,
+        cr = nothing,
+        cw = nothing,
+        gamma = nothing,
+        ind_set = on_ind,
+        start_state = 1,
+        hitting_set = [8,9,10,11,12,13,14],
+        eps = eps,
+        reltol = reltol,
+        maxevals = maxevals,
+    )
+
+    m1.cr = cr
+    m2.cr = cr*1.1
+    m1.logrates = logrates
+    m2.logrates = logrates
+
+    init6bs!(m1)
+    init6bs!(m2)
+
+    ir_acc(m1, m2)
 
 end
 

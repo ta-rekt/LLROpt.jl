@@ -109,7 +109,7 @@ using Cubature
         n = 1
         k = 1
         cr = 1
-        dc = cr / 10
+        dc = cr / 1000
         beta = cr
         gamma = 1
         cw = 3
@@ -128,7 +128,7 @@ using Cubature
             cr = cr,
             cw = cw,
             gamma = gamma,
-            ind_set = off_ind,
+            ind_set = on_ind,
             start_state = 1,
             hitting_set = [3,4,5],
             eps = eps,
@@ -144,7 +144,7 @@ using Cubature
             cr = cr + dc,
             cw = cw,
             gamma = gamma,
-            ind_set = off_ind,
+            ind_set = on_ind,
             start_state = 1,
             hitting_set = [3,4,5],
             eps = eps,
@@ -175,25 +175,25 @@ using Cubature
         # pi_on
 
         _pi_on = pi_on(m1)
-        # @test _pi_on == 0.5
+        @test isapprox(_pi_on, 0.85, rtol=1e-12)
 
         ## . - -- .- .-.- . .- .-- -.- .- .- --.-.... - -.-
         # variance
 
         _var = variance(m1)
-        # @test _var == 0.125
+        @test isapprox(_var, 0.21849999999999986, rtol=1e-12)
 
         # . - -- .- .-.- . .- .-- -.- .- .- --.-.... - -.-
         # sharpness
 
         _sharpness = sharpness(m1, m2)
-        # @test _sharpness == 0.25
+        @test isapprox(_sharpness, 0.02375, rtol=1e-3)
 
         # . - -- .- .-.- . .- .-- -.- .- .- --.-.... - -.-
         # ir_acc
 
-        _ir_acc = ir_acc(m1, m2)
-        # @test isapprox(_ir_acc, 0.002326968666254386, rtol=1e-6)
+        _ir_acc = ir_acc(m1, m2) * 4 * (cr/dc)^2
+        @test isapprox(_ir_acc, 0.005163043478260874, rtol=1e-3)
     end
 
     # . - -- .- .-.- . .- .-- -.- .- .- --.-.... - -.-
@@ -283,7 +283,7 @@ using Cubature
         cr = 50
         dc = cr / 100
         beta = cr
-        gamma = 1  # integral blows up when this is smaller than 0.4 and cw=0...
+        gamma = 1  
         cw = 1e-5
         eps = 1e-30
         reltol = 1e-12
@@ -538,7 +538,7 @@ using Cubature
     end
 
 
-    # 2 binding sites
+    # 2 binding sites mean tauOn, tauOff
     let 
         nstates = 6
         # edges = [(1, 2), (2, 1), (2, 3), (3, 2), (3, 4), (4, 5), 

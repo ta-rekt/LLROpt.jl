@@ -37,17 +37,17 @@ let
         keyb = (cpukey - 1) * nparams_per_cpu + k
         beta = betas[keyb]
 
-        if !fixed_conc
-            llb_clipped = max(log10(lb), log10(lb) - log10(beta))
-            # lub_clipped = min(log10(dl_tf), log10(ub) - log10(beta))
+        # if !fixed_conc
+        #     llb_clipped = max(log10(lb), log10(lb) - log10(beta))
+        #     # lub_clipped = min(log10(dl_tf), log10(ub) - log10(beta))
 
-            llb1[1] = llb_clipped
-            llb1[4] = llb_clipped
-            # lub1[1] = lub_clipped
-            # lub1[4] = lub_clipped
+        #     llb1[1] = llb_clipped
+        #     llb1[4] = llb_clipped
+        #     # lub1[1] = lub_clipped
+        #     # lub1[4] = lub_clipped
 
-            xinit1 = (lub1 .+ llb1) ./ 2
-        end
+        #     xinit1 = (lub1 .+ llb1) ./ 2
+        # end
 
         # IR ACC
         if whichf == "acc" || whichf == "both"
