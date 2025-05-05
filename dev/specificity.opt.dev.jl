@@ -71,7 +71,7 @@ let
                         xinit = Vector{Float64}(xinit)
                     end
 
-                    args_acc = [m1, m2, beta, gamma, w*beta]
+                    args_acc = [m1, m2, beta, gamma, w]
                     targetfun_acc(x, p) = target_acc(x, args_acc...)[1]
                     ir_acc_mix(x) = target_acc(x, args_acc...)[2]
                     ir_acc_pure(x) = target_acc(x, args_acc...)[3]
@@ -111,7 +111,7 @@ let
                         xinit = Vector{Float64}(xinit)
                     end
 
-                    args_full = [m1, m2, beta, gamma, w*beta]
+                    args_full = [m1, m2, beta, gamma, w]
                     targetfun_full(x, p) = target_full(x, args_full...)[1]
                     ir_full_mix(x) = target_full(x, args_full...)[2]
                     ir_full_pure(x) = target_full(x, args_full...)[3]
@@ -126,15 +126,22 @@ let
                     results_full[keyb][keyg][keyw] = vcat(sol_full.u, 0, 0, 0, 0, 
                         ep_full(sol_full.u), beta, gamma, w)
 
-                    for i in 1:N
-                        irvals_mix[i] = ir_full_mix(sol_full.u)
-                        irvals_pure[i] = ir_full_pure(sol_full.u)
-                    end
+                    if monte_carlo
+                        for i in 1:N
+                            irvals_mix[i] = ir_full_mix(sol_full.u)
+                            irvals_pure[i] = ir_full_pure(sol_full.u)
+                        end
 
-                    results_full[keyb][keyg][keyw][end-7] = Statistics.mean(irvals_mix)
-                    results_full[keyb][keyg][keyw][end-6] = Statistics.mean(irvals_pure)
-                    results_full[keyb][keyg][keyw][end-5] = Statistics.std(irvals_mix)
-                    results_full[keyb][keyg][keyw][end-4] = Statistics.std(irvals_pure)
+                        results_full[keyb][keyg][keyw][end-7] = Statistics.mean(irvals_mix)
+                        results_full[keyb][keyg][keyw][end-6] = Statistics.mean(irvals_pure)
+                        results_full[keyb][keyg][keyw][end-5] = Statistics.std(irvals_mix)
+                        results_full[keyb][keyg][keyw][end-4] = Statistics.std(irvals_pure)
+                    else
+                        results_full[keyb][keyg][keyw][end-7] = -targetfun_full(sol_full.u, nothing)
+                        results_full[keyb][keyg][keyw][end-6] = ir_full_mix(sol_full.u)
+                        results_full[keyb][keyg][keyw][end-5] = ir_full_pure(sol_full.u)
+                        results_full[keyb][keyg][keyw][end-4] = ep_full(sol_full.u)
+                    end
                 end
             end
         end

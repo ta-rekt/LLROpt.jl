@@ -13,12 +13,12 @@ end
 export initDecoyWeights!
 function initDecoyWeights!(d::OneBurstDecoyModel)
     # transition rates
-    kboff, konb, kuon, kbon, koffu, kuoff, konu = 10 .^ d.logrates
+    kboff, konb, kuon, kbon, koffu, kuoff = 10 .^ d.logrates
 
     # edges = [(1, 2),    (2, 1),        (1, 6),    (6, 1),        (4, 3), (3, 4), 
-    #          (4, 5),    (5, 4),        (6, 5),    (4, 1),        (2, 3), (1, 4)]
+    #          (4, 5),    (5, 4),        (6, 5),    (4, 1),        (2, 3)]
     d.weights = [kboff,     kuoff,        d.cw*kboff, d.gamma*kuoff, kbon, kuon,
-                 d.cw*kbon, d.gamma*kuon, konb,       koffu,         konb, konu]
+                 d.cw*kbon, d.gamma*kuon, konb,       koffu,         konb]
 
     return d
 end

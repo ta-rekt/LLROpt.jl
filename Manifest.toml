@@ -2,7 +2,7 @@
 
 julia_version = "1.11.1"
 manifest_format = "2.0"
-project_hash = "3cf80cb33ab8dafa2454bcac588c7d50a50c131c"
+project_hash = "9067e7b1ce99316f2d80f70c0e9c1ad30e3da81f"
 
 [[deps.ADTypes]]
 git-tree-sha1 = "30bb95a372787af850addf28ac937f1be7b79173"
@@ -766,6 +766,12 @@ weakdeps = ["Dates", "Test"]
     [deps.InverseFunctions.extensions]
     InverseFunctionsDatesExt = "Dates"
     InverseFunctionsTestExt = "Test"
+
+[[deps.InverseLaplace]]
+deps = ["AbstractFFTs", "FFTW", "SpecialFunctions"]
+git-tree-sha1 = "5f07b4c895a9cd548a48c4dbc5dc30f3076ca656"
+uuid = "e24f45a5-4790-5a38-8b2c-33d770a4e70f"
+version = "0.3.2"
 
 [[deps.IrrationalConstants]]
 git-tree-sha1 = "630b497eafcc20001bba38a4651b327dcfc491d2"

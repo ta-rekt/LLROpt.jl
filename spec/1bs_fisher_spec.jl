@@ -15,16 +15,16 @@ ub = 5
 lb = 1e-4
 
 ### Upper bounds for mixed ligands circuit
-#   kboff,   konb,    kuon,   kbon,   koffu,   kuoff,   konu
-llb1 = ones(7) .* log10(lb)
-lub1 = ones(7) .* log10(ub)
+#   kboff,   konb,    kuon,   kbon,   koffu,   kuoff // konu
+llb1 = ones(6) .* log10(lb)
+lub1 = ones(6) .* log10(ub)
 lub1[1] = log10(dl_tf)
 lub1[4] = log10(dl_tf)
 
 ## circuit description
 nstates = 6
 edges = [(1, 2), (2, 1), (1, 6), (6, 1), (4, 3), (3, 4), 
-         (4, 5), (5, 4), (6, 5), (4, 1), (2, 3), (1, 4)]
+         (4, 5), (5, 4), (6, 5), (4, 1), (2, 3)]
 input_edges = [(1,2), (4,3)]
 off_ind = BitArray([1,1,0,0,0,1])
 # cr = 50
@@ -32,8 +32,8 @@ off_ind = BitArray([1,1,0,0,0,1])
 # beta = cr
 # cw = 1e-3
 gamma = 1 
-maxevals = 100000
-reltol = 1e-12
+maxevals = 10000
+reltol = 1e-10
 eps = 1e-30
 N = 1   # legacy parameter, number of samples once optima have been found
 n = 1
@@ -85,9 +85,10 @@ opt_alg = BBO_adaptive_de_rand_1_bin_radiuslimited()
 # opt_alg = Evolutionary.CMAES(μ = 5, λ = 10, sigma0 = 1)
 
 maxiters_acc = 30000
-maxiters_full = 2000
+maxiters_full = 3000
 whichf = "full"
 fixed_conc = false   # is concentration fixed, or are we sweeping over it?
+monte_carlo = false   # are we sampling trajectories and taking averages?
 
 ### Temperature parameter
 # angle_incr = 3.141592 / 1e3
@@ -99,8 +100,8 @@ betas = 10 .^ range(-1, stop=2, length=32)
 nparams = length(betas)
 
 ### Other parameters
-gammas = [1.5, 5]
-wvals = [0.1, 2, 10]
+gammas = [10]
+wvals = [0.5,1,5]
 
 
 ### objective functions
@@ -127,8 +128,10 @@ end
 end
 
 @counted function target_full(logrates, args...)
-    m1, m2, cr, gamma, cw = args
+    m1, m2, beta, gamma, w = args
 
+    cr = beta
+    cw = cr*w
     m1.cr = cr
     m1.cw = cw
     m1.gamma = gamma
@@ -143,15 +146,17 @@ end
     initDecoys!(m2)
 
     # print(logrates)
-    EP = EP_ss(m1.Q)
+    EP = EP_ss(m1)
     Jplus = 0
-    pi_ = P_ss(m1.Q)
+    pi_ = P_ss(m1)
     # J = pi_[1] * m1.Q[1,2] - pi_[2] * m1.Q[2,1]
     # Jplus = J + abs(J)   # penalty for counterclockwise flux
 
-    FisherInfoRate = FisherRate(m1, m2)
-    logSpecificity = log2((cw/(cr*gamma))*(pi_[3])/(pi_[5]))
+    fir = FisherRate(m1, m2)
+    firOff = FisherRateOff(m1, m2)
+    firOn = FisherRateOn(m1, m2)
+    logSpec = log2((w/gamma)*(pi_[3])/(pi_[5]))
 
-    (- FisherInfoRate + Jplus, logSpecificity, FisherInfoRate, EP)
+    (- fir, firOff, firOn, logSpec)
 end
 

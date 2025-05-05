@@ -12,6 +12,7 @@
     using Statistics
     using Plots
     using Cubature
+    using InverseLaplace
 end
 
 
@@ -1010,7 +1011,7 @@ let
 end 
 
 ## . - -- .- .-.- . .- .-- -.- .- .- --.-.... - -.-
-# DOING: debugging decoy circuit MLE variance numerical integral
+# DOING: debugging decoy circuit Fisher rate numerical integral
 
 function outer_integrand(t_on, d_c, d_cdc, m)
     integral, _ = quadgk(t -> inner_integrand(t, t_on, d_c, d_cdc, m), 
@@ -1447,7 +1448,7 @@ end
 
 ## ----.-.-.--....-.---.-..-.-.-.-.-.--.-.-.-----.--
 # testing Pon, Poff, Pjoint
-let 
+@time let 
     edges = [(1, 2), (2, 1), (1, 6), (6, 1), (4, 3), (3, 4), 
         (4, 5), (5, 4), (6, 5), (4, 1), (2, 3), (1, 4)]
     input_edges = [(1,2), (4,3)]
@@ -1526,7 +1527,7 @@ let
     @assert isapprox(d.F_comp[1,4], 0.1348369063163023, rtol= evalrtol)
     @assert isapprox(d.F_comp[1,5], 0.11652126742757, rtol= evalrtol)
     
-    @assert isapprox(d.Pjoint, 0.07419284612916327, rtol= 1e-12)
+    @assert isapprox(d.Pjoint, 0.07419284612916327, rtol= evalrtol)
 
     @show d.Pjoint
 
@@ -1655,6 +1656,27 @@ let
     ir_acc(m1, m2)
 
 end
+
+## -.-.--..-.-.-.-.-.---------.-.-.--.........---.-.--
+# testing numerical inverse Laplace transform
+
+@time let 
+    function outer(s2, t2)
+        ft = Talbot(s1 -> 1 / ((s1 + 1)*(s2 + 1)), 1);
+        return ft(t2)
+    end
+
+    function ilt(t1, t2)
+        out = Talbot(s2 -> outer(s2, t2), 1)
+        return out(t1)
+    end
+
+    @show ilt(1, 1)
+    @show exp(-2)
+
+end
+
+
 
 # old tests
 
