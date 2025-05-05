@@ -15,23 +15,23 @@ ub = 5
 lb = 1e-3
 
 ### Upper bounds for mixed ligands circuit
-#   kboff,   konb,    kuon,   kbon,   koffu,   kuoff,   konu
-llb1 = ones(8) .* log10(lb)
-lub1 = ones(8) .* log10(ub)
+#   kboff,   konb,    kuon,   kbon,   koffu,   kuoff //   konu
+llb1 = ones(7) .* log10(lb)
+lub1 = ones(7) .* log10(ub)
 lub1[1] = log10(dl_tf)
 lub1[4] = log10(dl_tf)
 
 ## circuit description
 nstates = 6
 edges = [(5, 1), (1, 5), (2, 6), (6, 2), (1, 2), (1, 3), 
-         (2, 4), (3, 1), (3, 4), (4, 2), (6, 5), (5, 6)]
+         (2, 4), (3, 1), (3, 4), (4, 2), (6, 5)]
 input_edges = [(5,1), (1,3), (6,2), (2,4)]
 off_ind = BitArray([1,0,1,0,1,0])
 # cr = 100
 # dc = cr / 10
 # beta = cr
-maxevals = 100000
-reltol = 1e-12
+maxevals = 10000
+reltol = 1e-10
 eps = 1e-30
 N = 1   # legacy parameter, number of samples once optima have been found
 n = 1
@@ -83,6 +83,7 @@ maxiters_acc = 30000
 maxiters_full = 2000
 whichf = "full"
 fixed_conc = false   # is concentration fixed, or are we sweeping over it?
+monte_carlo = false
 
 ### Temperature parameter
 # angle_incr = 3.141592 / 1e3
@@ -90,7 +91,7 @@ fixed_conc = false   # is concentration fixed, or are we sweeping over it?
 # betasp = map(x->tan(x), range(0*angle_incr, stop=1*angle_incr, length=128))
 # betas = vcat(betasn, betasp)
 betas = 10 .^ range(-1, stop=2, length=16)
-# betas = [50]
+# betas = [0.1]
 nparams = length(betas)
 
 ### Other parameters
@@ -155,8 +156,9 @@ end
 
 # IR FULL
 @counted function target_full(logrates, args...)
-    m1, m2, cr, gamma, cw = args
+    m1, m2, beta, gamma, w = args
     
+    cr = beta
     m1.cr = cr
     m2.cr = cr*1.1
     m1.logrates = logrates
@@ -166,9 +168,11 @@ end
     init2bs!(m2)
 
     # print(logrates)
-    EP = EP_ss(m1.Q)
+    EP = EP_ss(m1)
 
-    FisherInfoRate = FisherRate(m1, m2)
+    fir = FisherRate(m1, m2)
+    firOff = FisherRateOff(m1, m2)
+    firOn = FisherRateOn(m1, m2)
 
-    (- FisherInfoRate, cr, FisherInfoRate, EP)
+    (- fir, firOff, firOn, EP)
 end

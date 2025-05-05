@@ -95,13 +95,13 @@ monte_carlo = false   # are we sampling trajectories and taking averages?
 # betasn = map(x->-tan(x), range(0*angle_incr, stop=0.5*angle_incr, length=128))
 # betasp = map(x->tan(x), range(0*angle_incr, stop=1*angle_incr, length=128))
 # betas = vcat(betasn, betasp)
-betas = 10 .^ range(-1, stop=2, length=32)
+betas = 10 .^ range(-1, stop=3, length=32)
 # betas = [0.05]
 nparams = length(betas)
 
 ### Other parameters
-gammas = [10]
-wvals = [0.5,1,5]
+gammas = [1.5,2.5,10]
+wvals = [0.05,0.2,1,5,10]
 
 
 ### objective functions
@@ -137,7 +137,7 @@ end
     m1.gamma = gamma
     m1.logrates = logrates
 
-    m2.cr = 1.1*cr
+    m2.cr = 1.05*cr
     m2.cw = cw
     m2.gamma = gamma
     m2.logrates = logrates
@@ -155,7 +155,7 @@ end
     fir = FisherRate(m1, m2)
     firOff = FisherRateOff(m1, m2)
     firOn = FisherRateOn(m1, m2)
-    logSpec = log2((w/gamma)*(pi_[3])/(pi_[5]))
+    logSpec = log2((pi_[3])/(pi_[3]+pi_[4]+pi_[5]))
 
     (- fir, firOff, firOn, logSpec)
 end
