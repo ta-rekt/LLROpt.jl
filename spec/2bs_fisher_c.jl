@@ -30,8 +30,8 @@ off_ind = BitArray([1,0,1,0,1,0])
 # cr = 100
 # dc = cr / 10
 # beta = cr
-maxevals = 10000
-reltol = 1e-10
+maxevals = 50000
+reltol = 1e-12
 eps = 1e-30
 N = 1   # legacy parameter, number of samples once optima have been found
 n = 1
@@ -80,7 +80,7 @@ opt_alg = BBO_adaptive_de_rand_1_bin_radiuslimited()
 # opt_alg = Evolutionary.CMAES(μ = 5, λ = 10, sigma0 = 1)
 
 maxiters_acc = 30000
-maxiters_full = 2000
+maxiters_full = 3000
 whichf = "full"
 fixed_conc = false   # is concentration fixed, or are we sweeping over it?
 monte_carlo = false

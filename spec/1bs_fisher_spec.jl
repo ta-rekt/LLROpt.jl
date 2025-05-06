@@ -27,12 +27,10 @@ edges = [(1, 2), (2, 1), (1, 6), (6, 1), (4, 3), (3, 4),
          (4, 5), (5, 4), (6, 5), (4, 1), (2, 3)]
 input_edges = [(1,2), (4,3)]
 off_ind = BitArray([1,1,0,0,0,1])
-# cr = 50
-# dc = cr / 100
+cr = 1
 # beta = cr
-# cw = 1e-3
-gamma = 1 
-maxevals = 10000
+
+maxevals = 50000
 reltol = 1e-10
 eps = 1e-30
 N = 1   # legacy parameter, number of samples once optima have been found
@@ -50,7 +48,7 @@ m1 = OneBurstDecoyModel(;
     edges = edges,
     input_edges = input_edges,
     logrates = nothing,
-    cr = nothing,
+    cr = cr,
     cw = nothing,
     gamma = nothing,
     start_state = 1,
@@ -66,7 +64,7 @@ m2 = OneBurstDecoyModel(;
     edges = edges,
     input_edges = input_edges,
     logrates = nothing,
-    cr = nothing,
+    cr = 1.05*cr,
     cw = nothing,
     gamma = nothing,
     start_state = 1,
@@ -87,21 +85,20 @@ opt_alg = BBO_adaptive_de_rand_1_bin_radiuslimited()
 maxiters_acc = 30000
 maxiters_full = 3000
 whichf = "full"
-fixed_conc = false   # is concentration fixed, or are we sweeping over it?
+fixed_conc = true   # is concentration fixed, or are we sweeping over it?
 monte_carlo = false   # are we sampling trajectories and taking averages?
 
 ### Temperature parameter
-# angle_incr = 3.141592 / 1e3
-# betasn = map(x->-tan(x), range(0*angle_incr, stop=0.5*angle_incr, length=128))
-# betasp = map(x->tan(x), range(0*angle_incr, stop=1*angle_incr, length=128))
-# betas = vcat(betasn, betasp)
-betas = 10 .^ range(-1, stop=3, length=32)
+betas1 = map(x->tan(x), range(0, stop=pi/15, length=32))
+betas2 = map(x->tan(x), range(pi/15, stop=pi/2 - 0.1, length=32))
+betas = vcat(betas1, betas2)
+# betas = 10 .^ range(-1, stop=3, length=32)
 # betas = [0.05]
 nparams = length(betas)
 
 ### Other parameters
-gammas = [1.5,2.5,10]
-wvals = [0.05,0.2,1,5,10]
+gammas = [1.5,10]
+wvals = [0.01,5]
 
 
 ### objective functions
@@ -130,15 +127,11 @@ end
 @counted function target_full(logrates, args...)
     m1, m2, beta, gamma, w = args
 
-    cr = beta
-    cw = cr*w
-    m1.cr = cr
-    m1.cw = cw
+    m1.cw = m1.cr*w
     m1.gamma = gamma
     m1.logrates = logrates
 
-    m2.cr = 1.05*cr
-    m2.cw = cw
+    m2.cw = m1.cr*w
     m2.gamma = gamma
     m2.logrates = logrates
 
@@ -157,6 +150,6 @@ end
     firOn = FisherRateOn(m1, m2)
     logSpec = log2((pi_[3])/(pi_[3]+pi_[4]+pi_[5]))
 
-    (- fir, firOff, firOn, logSpec)
+    (- fir - beta*logSpec, fir, logSpec, EP)
 end
 
