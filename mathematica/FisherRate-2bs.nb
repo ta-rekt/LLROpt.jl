@@ -10,10 +10,10 @@
 NotebookFileLineBreakTest
 NotebookFileLineBreakTest
 NotebookDataPosition[       154,          7]
-NotebookDataLength[    641756,      11576]
-NotebookOptionsPosition[    636867,      11491]
-NotebookOutlinePosition[    637331,      11509]
-CellTagsIndexPosition[    637288,      11506]
+NotebookDataLength[    643659,      11620]
+NotebookOptionsPosition[    638421,      11533]
+NotebookOutlinePosition[    638885,      11551]
+CellTagsIndexPosition[    638842,      11548]
 WindowFrame->Normal*)
 
 (* Beginning of Notebook Content *)
@@ -22,13 +22,13 @@ Cell[BoxData[{
  RowBox[{
   RowBox[{"AppendTo", "[", 
    RowBox[{
-   "$Path", ",", "\"\</home/tohme/.julia/dev/LLROpt/mathematica-nbs\>\""}], 
-   "]"}], ";"}], "\[IndentingNewLine]", 
+   "$Path", ",", "\"\</home/tohme/.julia/dev/LLROpt/mathematica\>\""}], "]"}],
+   ";"}], "\[IndentingNewLine]", 
  RowBox[{"Get", "[", "\"\<ctmc`\>\"", "]"}], "\[IndentingNewLine]", 
  RowBox[{"Get", "[", "\"\<utils`\>\"", "]"}]}], "Input",
- CellChangeTimes->{{3.955724839347168*^9, 3.955724845083117*^9}},
- CellLabel->
-  "In[407]:=",ExpressionUUID->"6a493ea4-13fc-4f3a-9ce6-a7eedc5734ba"],
+ CellChangeTimes->{{3.955724839347168*^9, 3.955724845083117*^9}, 
+   3.955792676502256*^9},
+ CellLabel->"In[2]:=",ExpressionUUID->"6a493ea4-13fc-4f3a-9ce6-a7eedc5734ba"],
 
 Cell[BoxData[
  RowBox[{
@@ -159,8 +159,7 @@ Cell[BoxData[
    3.9528646538465347`*^9}, {3.955454087051461*^9, 3.9554540885237083`*^9}, {
    3.955727814388935*^9, 3.9557278487475567`*^9}, {3.955733829464839*^9, 
    3.9557338664641457`*^9}},
- CellLabel->
-  "In[280]:=",ExpressionUUID->"72bb594b-946d-446d-a06c-f57243be8ffa"],
+ CellLabel->"In[5]:=",ExpressionUUID->"72bb594b-946d-446d-a06c-f57243be8ffa"],
 
 Cell[CellGroupData[{
 
@@ -217,7 +216,7 @@ Cell[BoxData[
              RowBox[{"4", ",", "3"}], "}"}]}], "}"}]}]}], "}"}]}]}], 
      "]"}]}]}]}]], "Input",
  CellChangeTimes->{{3.95200764587851*^9, 3.952007672461377*^9}},
- CellLabel->"In[9]:=",ExpressionUUID->"2aebfb50-1760-4819-8acb-6da0452ec651"],
+ CellLabel->"In[10]:=",ExpressionUUID->"2aebfb50-1760-4819-8acb-6da0452ec651"],
 
 Cell[BoxData[
  GraphicsBox[
@@ -372,8 +371,9 @@ Cell[BoxData[
    3.9531151691915503`*^9, 3.9554283017540283`*^9, {3.955454092424655*^9, 
    3.955454120715394*^9}, 3.955455455526239*^9, 3.955484461953785*^9, 
    3.9557114524673567`*^9, 3.955726479975045*^9, 3.955726921575879*^9, 
-   3.955727858014749*^9, 3.9557287972878733`*^9, 3.95573309427229*^9},
- CellLabel->"Out[10]=",ExpressionUUID->"72f74c27-1ced-44e0-9887-2d1f9e1678ca"]
+   3.955727858014749*^9, 3.9557287972878733`*^9, 3.95573309427229*^9, 
+   3.955792681262063*^9},
+ CellLabel->"Out[11]=",ExpressionUUID->"0d0d5ec2-595d-46a6-9fd8-0cba122625a4"]
 }, Open  ]],
 
 Cell[BoxData[{
@@ -389,7 +389,7 @@ Cell[BoxData[{
  CellChangeTimes->{
   3.952007846429535*^9, {3.952008042970345*^9, 3.95200804624146*^9}, {
    3.952008097792385*^9, 3.9520080990054693`*^9}},
- CellLabel->"In[11]:=",ExpressionUUID->"77f8807a-aed1-4fb2-bee4-0dffee868302"],
+ CellLabel->"In[12]:=",ExpressionUUID->"77f8807a-aed1-4fb2-bee4-0dffee868302"],
 
 Cell[BoxData[
  RowBox[{
@@ -820,234 +820,238 @@ Cell[BoxData[
  CellLabel->
   "In[291]:=",ExpressionUUID->"d05d906b-1192-4f07-a69d-592504144826"],
 
-Cell[CellGroupData[{
-
 Cell[BoxData[
- RowBox[{"integrandSimpl", "=", 
-  RowBox[{"integrand", "//.", 
-   RowBox[{"{", 
-    RowBox[{
+ RowBox[{
+  RowBox[{"integrandSimpl", "=", 
+   RowBox[{"integrand", "//.", 
+    RowBox[{"{", 
      RowBox[{
-      RowBox[{"Root", "[", 
-       RowBox[{
+      RowBox[{
+       RowBox[{"Root", "[", 
         RowBox[{
          RowBox[{
           RowBox[{
-           SuperscriptBox["c", "2"], " ", "kboff", " ", "kboff2", " ", 
-           "kon2b"}], "+", 
-          RowBox[{"c", " ", "kboff2", " ", "kon1b", " ", "kon2b"}], "+", 
-          RowBox[{"c", " ", "kboff2", " ", "kon1b", " ", "kuoff2"}], "+", 
-          RowBox[{
-           RowBox[{"(", 
-            RowBox[{
+           RowBox[{
+            SuperscriptBox["c", "2"], " ", "kboff", " ", "kboff2", " ", 
+            "kon2b"}], "+", 
+           RowBox[{"c", " ", "kboff2", " ", "kon1b", " ", "kon2b"}], "+", 
+           RowBox[{"c", " ", "kboff2", " ", "kon1b", " ", "kuoff2"}], "+", 
+           RowBox[{
+            RowBox[{"(", 
              RowBox[{
-              SuperscriptBox["c", "2"], " ", "kboff", " ", "kboff2"}], "+", 
-             RowBox[{"c", " ", "kboff2", " ", "kon1b"}], "+", 
-             RowBox[{"c", " ", "kboff", " ", "kon2b"}], "+", 
-             RowBox[{"c", " ", "kboff2", " ", "kon2b"}], "+", 
-             RowBox[{"kon1b", " ", "kon2b"}], "+", 
-             RowBox[{"kon2b", " ", "kuoff"}], "+", 
-             RowBox[{"c", " ", "kboff2", " ", "kuoff2"}], "+", 
-             RowBox[{"kon1b", " ", "kuoff2"}], "+", 
-             RowBox[{"kuoff", " ", "kuoff2"}]}], ")"}], " ", "#1"}], "+", 
-          RowBox[{
-           RowBox[{"(", 
-            RowBox[{
-             RowBox[{"c", " ", "kboff"}], "+", 
-             RowBox[{"c", " ", "kboff2"}], "+", "kon1b", "+", "kon2b", "+", 
-             "kuoff", "+", "kuoff2"}], ")"}], " ", 
-           SuperscriptBox["#1", "2"]}], "+", 
-          SuperscriptBox["#1", "3"]}], "&"}], ",", "1"}], "]"}], "->", "A1"}],
-      ",", "\[IndentingNewLine]", 
-     RowBox[{
-      RowBox[{"Root", "[", 
-       RowBox[{
+              RowBox[{
+               SuperscriptBox["c", "2"], " ", "kboff", " ", "kboff2"}], "+", 
+              RowBox[{"c", " ", "kboff2", " ", "kon1b"}], "+", 
+              RowBox[{"c", " ", "kboff", " ", "kon2b"}], "+", 
+              RowBox[{"c", " ", "kboff2", " ", "kon2b"}], "+", 
+              RowBox[{"kon1b", " ", "kon2b"}], "+", 
+              RowBox[{"kon2b", " ", "kuoff"}], "+", 
+              RowBox[{"c", " ", "kboff2", " ", "kuoff2"}], "+", 
+              RowBox[{"kon1b", " ", "kuoff2"}], "+", 
+              RowBox[{"kuoff", " ", "kuoff2"}]}], ")"}], " ", "#1"}], "+", 
+           RowBox[{
+            RowBox[{"(", 
+             RowBox[{
+              RowBox[{"c", " ", "kboff"}], "+", 
+              RowBox[{"c", " ", "kboff2"}], "+", "kon1b", "+", "kon2b", "+", 
+              "kuoff", "+", "kuoff2"}], ")"}], " ", 
+            SuperscriptBox["#1", "2"]}], "+", 
+           SuperscriptBox["#1", "3"]}], "&"}], ",", "1"}], "]"}], "->", 
+       "A1"}], ",", "\[IndentingNewLine]", 
+      RowBox[{
+       RowBox[{"Root", "[", 
         RowBox[{
          RowBox[{
           RowBox[{
-           SuperscriptBox["c", "2"], " ", "kboff", " ", "kboff2", " ", 
-           "kon2b"}], "+", 
-          RowBox[{"c", " ", "kboff2", " ", "kon1b", " ", "kon2b"}], "+", 
-          RowBox[{"c", " ", "kboff2", " ", "kon1b", " ", "kuoff2"}], "+", 
-          RowBox[{
-           RowBox[{"(", 
-            RowBox[{
+           RowBox[{
+            SuperscriptBox["c", "2"], " ", "kboff", " ", "kboff2", " ", 
+            "kon2b"}], "+", 
+           RowBox[{"c", " ", "kboff2", " ", "kon1b", " ", "kon2b"}], "+", 
+           RowBox[{"c", " ", "kboff2", " ", "kon1b", " ", "kuoff2"}], "+", 
+           RowBox[{
+            RowBox[{"(", 
              RowBox[{
-              SuperscriptBox["c", "2"], " ", "kboff", " ", "kboff2"}], "+", 
-             RowBox[{"c", " ", "kboff2", " ", "kon1b"}], "+", 
-             RowBox[{"c", " ", "kboff", " ", "kon2b"}], "+", 
-             RowBox[{"c", " ", "kboff2", " ", "kon2b"}], "+", 
-             RowBox[{"kon1b", " ", "kon2b"}], "+", 
-             RowBox[{"kon2b", " ", "kuoff"}], "+", 
-             RowBox[{"c", " ", "kboff2", " ", "kuoff2"}], "+", 
-             RowBox[{"kon1b", " ", "kuoff2"}], "+", 
-             RowBox[{"kuoff", " ", "kuoff2"}]}], ")"}], " ", "#1"}], "+", 
-          RowBox[{
-           RowBox[{"(", 
-            RowBox[{
-             RowBox[{"c", " ", "kboff"}], "+", 
-             RowBox[{"c", " ", "kboff2"}], "+", "kon1b", "+", "kon2b", "+", 
-             "kuoff", "+", "kuoff2"}], ")"}], " ", 
-           SuperscriptBox["#1", "2"]}], "+", 
-          SuperscriptBox["#1", "3"]}], "&"}], ",", "2"}], "]"}], "->", "A2"}],
-      ",", "\[IndentingNewLine]", 
-     RowBox[{
-      RowBox[{"Root", "[", 
-       RowBox[{
+              RowBox[{
+               SuperscriptBox["c", "2"], " ", "kboff", " ", "kboff2"}], "+", 
+              RowBox[{"c", " ", "kboff2", " ", "kon1b"}], "+", 
+              RowBox[{"c", " ", "kboff", " ", "kon2b"}], "+", 
+              RowBox[{"c", " ", "kboff2", " ", "kon2b"}], "+", 
+              RowBox[{"kon1b", " ", "kon2b"}], "+", 
+              RowBox[{"kon2b", " ", "kuoff"}], "+", 
+              RowBox[{"c", " ", "kboff2", " ", "kuoff2"}], "+", 
+              RowBox[{"kon1b", " ", "kuoff2"}], "+", 
+              RowBox[{"kuoff", " ", "kuoff2"}]}], ")"}], " ", "#1"}], "+", 
+           RowBox[{
+            RowBox[{"(", 
+             RowBox[{
+              RowBox[{"c", " ", "kboff"}], "+", 
+              RowBox[{"c", " ", "kboff2"}], "+", "kon1b", "+", "kon2b", "+", 
+              "kuoff", "+", "kuoff2"}], ")"}], " ", 
+            SuperscriptBox["#1", "2"]}], "+", 
+           SuperscriptBox["#1", "3"]}], "&"}], ",", "2"}], "]"}], "->", 
+       "A2"}], ",", "\[IndentingNewLine]", 
+      RowBox[{
+       RowBox[{"Root", "[", 
         RowBox[{
          RowBox[{
           RowBox[{
-           SuperscriptBox["c", "2"], " ", "kboff", " ", "kboff2", " ", 
-           "kon2b"}], "+", 
-          RowBox[{"c", " ", "kboff2", " ", "kon1b", " ", "kon2b"}], "+", 
-          RowBox[{"c", " ", "kboff2", " ", "kon1b", " ", "kuoff2"}], "+", 
-          RowBox[{
-           RowBox[{"(", 
-            RowBox[{
+           RowBox[{
+            SuperscriptBox["c", "2"], " ", "kboff", " ", "kboff2", " ", 
+            "kon2b"}], "+", 
+           RowBox[{"c", " ", "kboff2", " ", "kon1b", " ", "kon2b"}], "+", 
+           RowBox[{"c", " ", "kboff2", " ", "kon1b", " ", "kuoff2"}], "+", 
+           RowBox[{
+            RowBox[{"(", 
              RowBox[{
-              SuperscriptBox["c", "2"], " ", "kboff", " ", "kboff2"}], "+", 
-             RowBox[{"c", " ", "kboff2", " ", "kon1b"}], "+", 
-             RowBox[{"c", " ", "kboff", " ", "kon2b"}], "+", 
-             RowBox[{"c", " ", "kboff2", " ", "kon2b"}], "+", 
-             RowBox[{"kon1b", " ", "kon2b"}], "+", 
-             RowBox[{"kon2b", " ", "kuoff"}], "+", 
-             RowBox[{"c", " ", "kboff2", " ", "kuoff2"}], "+", 
-             RowBox[{"kon1b", " ", "kuoff2"}], "+", 
-             RowBox[{"kuoff", " ", "kuoff2"}]}], ")"}], " ", "#1"}], "+", 
-          RowBox[{
-           RowBox[{"(", 
-            RowBox[{
-             RowBox[{"c", " ", "kboff"}], "+", 
-             RowBox[{"c", " ", "kboff2"}], "+", "kon1b", "+", "kon2b", "+", 
-             "kuoff", "+", "kuoff2"}], ")"}], " ", 
-           SuperscriptBox["#1", "2"]}], "+", 
-          SuperscriptBox["#1", "3"]}], "&"}], ",", "3"}], "]"}], "->", "A3"}],
-      ",", "\[IndentingNewLine]", 
-     RowBox[{
-      RowBox[{"Root", "[", 
-       RowBox[{
+              RowBox[{
+               SuperscriptBox["c", "2"], " ", "kboff", " ", "kboff2"}], "+", 
+              RowBox[{"c", " ", "kboff2", " ", "kon1b"}], "+", 
+              RowBox[{"c", " ", "kboff", " ", "kon2b"}], "+", 
+              RowBox[{"c", " ", "kboff2", " ", "kon2b"}], "+", 
+              RowBox[{"kon1b", " ", "kon2b"}], "+", 
+              RowBox[{"kon2b", " ", "kuoff"}], "+", 
+              RowBox[{"c", " ", "kboff2", " ", "kuoff2"}], "+", 
+              RowBox[{"kon1b", " ", "kuoff2"}], "+", 
+              RowBox[{"kuoff", " ", "kuoff2"}]}], ")"}], " ", "#1"}], "+", 
+           RowBox[{
+            RowBox[{"(", 
+             RowBox[{
+              RowBox[{"c", " ", "kboff"}], "+", 
+              RowBox[{"c", " ", "kboff2"}], "+", "kon1b", "+", "kon2b", "+", 
+              "kuoff", "+", "kuoff2"}], ")"}], " ", 
+            SuperscriptBox["#1", "2"]}], "+", 
+           SuperscriptBox["#1", "3"]}], "&"}], ",", "3"}], "]"}], "->", 
+       "A3"}], ",", "\[IndentingNewLine]", 
+      RowBox[{
+       RowBox[{"Root", "[", 
         RowBox[{
          RowBox[{
-          RowBox[{"koffu", " ", "kuon", " ", "kuon2"}], "+", 
           RowBox[{
-           RowBox[{"(", 
-            RowBox[{
+           RowBox[{"koffu", " ", "kuon", " ", "kuon2"}], "+", 
+           RowBox[{
+            RowBox[{"(", 
              RowBox[{
-              SuperscriptBox["c", "2"], " ", "kbon", " ", "kbon2"}], "+", 
-             RowBox[{"c", " ", "kbon", " ", "koffu"}], "+", 
-             RowBox[{"koffu", " ", "kuon"}], "+", 
-             RowBox[{"c", " ", "kbon2", " ", "kuon2"}], "+", 
-             RowBox[{"koffu", " ", "kuon2"}], "+", 
-             RowBox[{"kuon", " ", "kuon2"}]}], ")"}], " ", "#1"}], "+", 
-          RowBox[{
-           RowBox[{"(", 
-            RowBox[{
-             RowBox[{"c", " ", "kbon"}], "+", 
-             RowBox[{"c", " ", "kbon2"}], "+", "koffu", "+", "kuon", "+", 
-             "kuon2"}], ")"}], " ", 
-           SuperscriptBox["#1", "2"]}], "+", 
-          SuperscriptBox["#1", "3"]}], "&"}], ",", "1"}], "]"}], "->", "B1"}],
-      ",", "\[IndentingNewLine]", 
-     RowBox[{
-      RowBox[{"Root", "[", 
-       RowBox[{
+              RowBox[{
+               SuperscriptBox["c", "2"], " ", "kbon", " ", "kbon2"}], "+", 
+              RowBox[{"c", " ", "kbon", " ", "koffu"}], "+", 
+              RowBox[{"koffu", " ", "kuon"}], "+", 
+              RowBox[{"c", " ", "kbon2", " ", "kuon2"}], "+", 
+              RowBox[{"koffu", " ", "kuon2"}], "+", 
+              RowBox[{"kuon", " ", "kuon2"}]}], ")"}], " ", "#1"}], "+", 
+           RowBox[{
+            RowBox[{"(", 
+             RowBox[{
+              RowBox[{"c", " ", "kbon"}], "+", 
+              RowBox[{"c", " ", "kbon2"}], "+", "koffu", "+", "kuon", "+", 
+              "kuon2"}], ")"}], " ", 
+            SuperscriptBox["#1", "2"]}], "+", 
+           SuperscriptBox["#1", "3"]}], "&"}], ",", "1"}], "]"}], "->", 
+       "B1"}], ",", "\[IndentingNewLine]", 
+      RowBox[{
+       RowBox[{"Root", "[", 
         RowBox[{
          RowBox[{
-          RowBox[{"koffu", " ", "kuon", " ", "kuon2"}], "+", 
           RowBox[{
-           RowBox[{"(", 
-            RowBox[{
+           RowBox[{"koffu", " ", "kuon", " ", "kuon2"}], "+", 
+           RowBox[{
+            RowBox[{"(", 
              RowBox[{
-              SuperscriptBox["c", "2"], " ", "kbon", " ", "kbon2"}], "+", 
-             RowBox[{"c", " ", "kbon", " ", "koffu"}], "+", 
-             RowBox[{"koffu", " ", "kuon"}], "+", 
-             RowBox[{"c", " ", "kbon2", " ", "kuon2"}], "+", 
-             RowBox[{"koffu", " ", "kuon2"}], "+", 
-             RowBox[{"kuon", " ", "kuon2"}]}], ")"}], " ", "#1"}], "+", 
-          RowBox[{
-           RowBox[{"(", 
-            RowBox[{
-             RowBox[{"c", " ", "kbon"}], "+", 
-             RowBox[{"c", " ", "kbon2"}], "+", "koffu", "+", "kuon", "+", 
-             "kuon2"}], ")"}], " ", 
-           SuperscriptBox["#1", "2"]}], "+", 
-          SuperscriptBox["#1", "3"]}], "&"}], ",", "2"}], "]"}], "->", "B2"}],
-      ",", "\[IndentingNewLine]", 
-     RowBox[{
-      RowBox[{"Root", "[", 
-       RowBox[{
+              RowBox[{
+               SuperscriptBox["c", "2"], " ", "kbon", " ", "kbon2"}], "+", 
+              RowBox[{"c", " ", "kbon", " ", "koffu"}], "+", 
+              RowBox[{"koffu", " ", "kuon"}], "+", 
+              RowBox[{"c", " ", "kbon2", " ", "kuon2"}], "+", 
+              RowBox[{"koffu", " ", "kuon2"}], "+", 
+              RowBox[{"kuon", " ", "kuon2"}]}], ")"}], " ", "#1"}], "+", 
+           RowBox[{
+            RowBox[{"(", 
+             RowBox[{
+              RowBox[{"c", " ", "kbon"}], "+", 
+              RowBox[{"c", " ", "kbon2"}], "+", "koffu", "+", "kuon", "+", 
+              "kuon2"}], ")"}], " ", 
+            SuperscriptBox["#1", "2"]}], "+", 
+           SuperscriptBox["#1", "3"]}], "&"}], ",", "2"}], "]"}], "->", 
+       "B2"}], ",", "\[IndentingNewLine]", 
+      RowBox[{
+       RowBox[{"Root", "[", 
         RowBox[{
          RowBox[{
-          RowBox[{"koffu", " ", "kuon", " ", "kuon2"}], "+", 
           RowBox[{
-           RowBox[{"(", 
-            RowBox[{
+           RowBox[{"koffu", " ", "kuon", " ", "kuon2"}], "+", 
+           RowBox[{
+            RowBox[{"(", 
              RowBox[{
-              SuperscriptBox["c", "2"], " ", "kbon", " ", "kbon2"}], "+", 
-             RowBox[{"c", " ", "kbon", " ", "koffu"}], "+", 
-             RowBox[{"koffu", " ", "kuon"}], "+", 
-             RowBox[{"c", " ", "kbon2", " ", "kuon2"}], "+", 
-             RowBox[{"koffu", " ", "kuon2"}], "+", 
-             RowBox[{"kuon", " ", "kuon2"}]}], ")"}], " ", "#1"}], "+", 
-          RowBox[{
-           RowBox[{"(", 
-            RowBox[{
-             RowBox[{"c", " ", "kbon"}], "+", 
-             RowBox[{"c", " ", "kbon2"}], "+", "koffu", "+", "kuon", "+", 
-             "kuon2"}], ")"}], " ", 
-           SuperscriptBox["#1", "2"]}], "+", 
-          SuperscriptBox["#1", "3"]}], "&"}], ",", "3"}], "]"}], "->", "B3"}],
-      ",", "\[IndentingNewLine]", 
-     RowBox[{
+              RowBox[{
+               SuperscriptBox["c", "2"], " ", "kbon", " ", "kbon2"}], "+", 
+              RowBox[{"c", " ", "kbon", " ", "koffu"}], "+", 
+              RowBox[{"koffu", " ", "kuon"}], "+", 
+              RowBox[{"c", " ", "kbon2", " ", "kuon2"}], "+", 
+              RowBox[{"koffu", " ", "kuon2"}], "+", 
+              RowBox[{"kuon", " ", "kuon2"}]}], ")"}], " ", "#1"}], "+", 
+           RowBox[{
+            RowBox[{"(", 
+             RowBox[{
+              RowBox[{"c", " ", "kbon"}], "+", 
+              RowBox[{"c", " ", "kbon2"}], "+", "koffu", "+", "kuon", "+", 
+              "kuon2"}], ")"}], " ", 
+            SuperscriptBox["#1", "2"]}], "+", 
+           SuperscriptBox["#1", "3"]}], "&"}], ",", "3"}], "]"}], "->", 
+       "B3"}], ",", "\[IndentingNewLine]", 
       RowBox[{
        RowBox[{
-        SuperscriptBox["c", "2"], " ", "kboff", " ", "kboff2"}], "+", 
-       RowBox[{"c", " ", "kboff2", " ", "kon1b"}], "+", 
-       RowBox[{"c", " ", "kboff", " ", "kon2b"}], "+", 
-       RowBox[{"c", " ", "kboff2", " ", "kon2b"}], "+", 
-       RowBox[{"kon1b", " ", "kon2b"}], "+", 
-       RowBox[{"kon2b", " ", "kuoff"}], "+", 
-       RowBox[{"c", " ", "kboff2", " ", "kuoff2"}], "+", 
-       RowBox[{"kon1b", " ", "kuoff2"}], "+", 
-       RowBox[{"kuoff", " ", "kuoff2"}]}], "->", "C1"}], ",", 
-     "\[IndentingNewLine]", 
-     RowBox[{
-      RowBox[{
-       RowBox[{"c", " ", "kboff"}], "+", 
-       RowBox[{"c", " ", "kboff2"}], "+", "kon1b", "+", "kon2b", "+", "kuoff",
-        "+", "kuoff2"}], "->", "C2"}], ",", "\[IndentingNewLine]", 
-     RowBox[{
+        RowBox[{
+         SuperscriptBox["c", "2"], " ", "kboff", " ", "kboff2"}], "+", 
+        RowBox[{"c", " ", "kboff2", " ", "kon1b"}], "+", 
+        RowBox[{"c", " ", "kboff", " ", "kon2b"}], "+", 
+        RowBox[{"c", " ", "kboff2", " ", "kon2b"}], "+", 
+        RowBox[{"kon1b", " ", "kon2b"}], "+", 
+        RowBox[{"kon2b", " ", "kuoff"}], "+", 
+        RowBox[{"c", " ", "kboff2", " ", "kuoff2"}], "+", 
+        RowBox[{"kon1b", " ", "kuoff2"}], "+", 
+        RowBox[{"kuoff", " ", "kuoff2"}]}], "->", "C1"}], ",", 
+      "\[IndentingNewLine]", 
       RowBox[{
        RowBox[{
-        SuperscriptBox["c", "2"], " ", "kbon", " ", "kbon2"}], "+", 
-       RowBox[{"c", " ", "kbon", " ", "koffu"}], "+", 
-       RowBox[{"koffu", " ", "kuon"}], "+", 
-       RowBox[{"c", " ", "kbon2", " ", "kuon2"}], "+", 
-       RowBox[{"koffu", " ", "kuon2"}], "+", 
-       RowBox[{"kuon", " ", "kuon2"}]}], "->", "C3"}], ",", 
-     "\[IndentingNewLine]", 
-     RowBox[{
-      RowBox[{
-       RowBox[{"2", " ", "c", " ", "kboff", " ", "kboff2"}], "+", 
-       RowBox[{"kboff2", " ", "kon1b"}], "+", 
-       RowBox[{"kboff", " ", "kon2b"}], "+", 
-       RowBox[{"kboff2", " ", "kon2b"}], "+", 
-       RowBox[{"kboff2", " ", "kuoff2"}]}], "->", "C4"}], ",", 
-     "\[IndentingNewLine]", 
-     RowBox[{
+        RowBox[{"c", " ", "kboff"}], "+", 
+        RowBox[{"c", " ", "kboff2"}], "+", "kon1b", "+", "kon2b", "+", 
+        "kuoff", "+", "kuoff2"}], "->", "C2"}], ",", "\[IndentingNewLine]", 
       RowBox[{
        RowBox[{
-        RowBox[{"-", "2"}], " ", "c", " ", "kboff", " ", "kboff2", " ", 
-        "kon2b"}], "-", 
-       RowBox[{"kboff2", " ", "kon1b", " ", "kon2b"}], "-", 
-       RowBox[{"kboff2", " ", "kon1b", " ", "kuoff2"}]}], "->", "C5"}], ",", 
-     "\[IndentingNewLine]", 
-     RowBox[{
+        RowBox[{
+         SuperscriptBox["c", "2"], " ", "kbon", " ", "kbon2"}], "+", 
+        RowBox[{"c", " ", "kbon", " ", "koffu"}], "+", 
+        RowBox[{"koffu", " ", "kuon"}], "+", 
+        RowBox[{"c", " ", "kbon2", " ", "kuon2"}], "+", 
+        RowBox[{"koffu", " ", "kuon2"}], "+", 
+        RowBox[{"kuon", " ", "kuon2"}]}], "->", "C3"}], ",", 
+      "\[IndentingNewLine]", 
       RowBox[{
-       RowBox[{"2", " ", "c", " ", "kbon", " ", "kbon2"}], "+", 
-       RowBox[{"kbon", " ", "koffu"}], "+", 
-       RowBox[{"kbon2", " ", "kuon2"}]}], "->", "C6"}]}], "}"}]}]}]], "Input",\
-
+       RowBox[{
+        RowBox[{"2", " ", "c", " ", "kboff", " ", "kboff2"}], "+", 
+        RowBox[{"kboff2", " ", "kon1b"}], "+", 
+        RowBox[{"kboff", " ", "kon2b"}], "+", 
+        RowBox[{"kboff2", " ", "kon2b"}], "+", 
+        RowBox[{"kboff2", " ", "kuoff2"}]}], "->", "C4"}], ",", 
+      "\[IndentingNewLine]", 
+      RowBox[{
+       RowBox[{
+        RowBox[{
+         RowBox[{"-", "2"}], " ", "c", " ", "kboff", " ", "kboff2", " ", 
+         "kon2b"}], "-", 
+        RowBox[{"kboff2", " ", "kon1b", " ", "kon2b"}], "-", 
+        RowBox[{"kboff2", " ", "kon1b", " ", "kuoff2"}]}], "->", "C5"}], ",", 
+      "\[IndentingNewLine]", 
+      RowBox[{
+       RowBox[{
+        RowBox[{"2", " ", "c", " ", "kbon", " ", "kbon2"}], "+", 
+        RowBox[{"kbon", " ", "koffu"}], "+", 
+        RowBox[{"kbon2", " ", "kuon2"}]}], "->", "C6"}], ",", 
+      "\[IndentingNewLine]", 
+      RowBox[{
+       RowBox[{
+        RowBox[{"c", " ", "kbon"}], "+", 
+        RowBox[{"c", " ", "kbon2"}], "+", "koffu", "+", "kuon", "+", 
+        "kuon2"}], "->", "C7"}]}], "}"}]}]}], ";"}]], "Input",
  CellChangeTimes->{{3.9554542693437557`*^9, 3.955454270950427*^9}, {
    3.955454789279842*^9, 3.955454823770238*^9}, {3.9554549613924513`*^9, 
    3.955454974823202*^9}, {3.955455185459968*^9, 3.955455232562009*^9}, {
@@ -1058,72 +1062,109 @@ Cell[BoxData[
    3.9557282336617727`*^9, 3.955728279114456*^9}, {3.955731216237705*^9, 
    3.9557312443639936`*^9}, {3.9557312858123903`*^9, 3.9557313045557404`*^9}, 
    3.95573136232653*^9, {3.955731409137847*^9, 3.95573144940005*^9}, 
-   3.955731495817349*^9, {3.955731531311928*^9, 3.955731534702952*^9}},
+   3.955731495817349*^9, {3.955731531311928*^9, 3.955731534702952*^9}, {
+   3.955741340102694*^9, 3.955741345038097*^9}, {3.955741487427486*^9, 
+   3.955741496714406*^9}},
  CellLabel->
-  "In[292]:=",ExpressionUUID->"bc1862e3-060d-4a1a-af19-727ab3492c5e"],
+  "In[1046]:=",ExpressionUUID->"bc1862e3-060d-4a1a-af19-727ab3492c5e"],
 
 Cell[BoxData[
- TemplateBox[<|"shortenedBoxes" -> TagBox[
-     FractionBox[
-      RowBox[{
-        RowBox[{"(", 
-          RowBox[{"A1", "-", "A2"}], ")"}], " ", 
-        RowBox[{"(", 
-          RowBox[{"A1", "-", "A3"}], ")"}], " ", 
-        RowBox[{"(", 
-          RowBox[{"A2", "-", "A3"}], ")"}], " ", 
-        RowBox[{"(", 
-          RowBox[{"B1", "-", "B2"}], ")"}], " ", 
-        RowBox[{"(", 
-          RowBox[{"B1", "-", "B3"}], ")"}], " ", 
-        RowBox[{"(", 
-          RowBox[{"B2", "-", "B3"}], ")"}], " ", 
-        SuperscriptBox[
-         RowBox[{"(", 
-           RowBox[{
-             TemplateBox[{"13"}, "OutputSizeLimit`Skeleton"], "+", 
-             FractionBox[
-              TemplateBox[{"1"}, "OutputSizeLimit`Skeleton"], 
-              TemplateBox[{"1"}, "OutputSizeLimit`Skeleton"]]}], ")"}], 
-         "2"]}], 
-      RowBox[{"c", " ", "kboff2", " ", "koffu", " ", "kuon", " ", 
-        RowBox[{"(", 
-          RowBox[{
-            RowBox[{"A1", " ", "A2", " ", "B1", " ", "B2", " ", 
-              SuperscriptBox["\[ExponentialE]", 
-               RowBox[{
-                 RowBox[{"A1", " ", "t1"}], "+", 
-                 RowBox[{"B1", " ", "t2"}]}]], " ", "kon1b"}], "-", 
-            RowBox[{"A1", " ", "A3", " ", "B1", " ", "B2", " ", 
-              SuperscriptBox["\[ExponentialE]", 
-               RowBox[{
-                 RowBox[{"A1", " ", "t1"}], "+", 
-                 RowBox[{"B1", " ", "t2"}]}]], " ", "kon1b"}], "-", 
-            RowBox[{"A1", " ", "A2", " ", "B1", " ", "B3", " ", 
-              SuperscriptBox["\[ExponentialE]", 
-               RowBox[{
-                 RowBox[{"A1", " ", "t1"}], "+", 
-                 RowBox[{"B1", " ", "t2"}]}]], " ", "kon1b"}], "+", 
-            TemplateBox[{"372"}, "OutputSizeLimit`Skeleton"], "+", 
-            RowBox[{"A2", " ", "B2", " ", 
-              SuperscriptBox["\[ExponentialE]", 
-               RowBox[{
-                 RowBox[{"A3", " ", "t1"}], "+", 
-                 RowBox[{"B3", " ", "t2"}]}]], " ", "kon1b", " ", "kuoff2", 
-              " ", "kuon2"}]}], ")"}]}]], Short[#, 8]& ], "line" -> 292, 
-   "sessionID" -> 33590043487965580609, "byteCount" -> 2031992, "size" -> 8, 
-   "stored" -> False, "expr" -> Missing["NotStored"], "wrap" -> 
-   OutputSizeLimit`Defer, "version" -> 1|>,
-  "OutputSizeLimitTemplate"]], "Output",
- CellChangeTimes->{
-  3.9557282803737392`*^9, 3.955728815826807*^9, 3.9557312486149483`*^9, {
-   3.955731299108629*^9, 3.9557313053635483`*^9}, 3.9557313646406107`*^9, 
-   3.955731412845016*^9, 3.955731450229727*^9, 3.955731497960959*^9, {
-   3.9557315354361486`*^9, 3.955731562557088*^9}, 3.9557327353134108`*^9, 
-   3.9557331136786957`*^9, 3.9557338942860947`*^9},
+ RowBox[{
+  RowBox[{
+   RowBox[{
+    RowBox[{"integrandSimpl", "[", 
+     RowBox[{"[", "12", "]"}], "]"}], "[", 
+    RowBox[{"[", "1", "]"}], "]"}], "[", 
+   RowBox[{"[", "1", "]"}], "]"}], "//", "Simplify"}]], "Input",
+ CellChangeTimes->{{3.955741505329837*^9, 3.955741570944953*^9}},
  CellLabel->
-  "Out[292]=",ExpressionUUID->"d5293a76-66af-4686-a54b-a3204f38ae13"]
-}, Open  ]],
+  "In[1054]:=",ExpressionUUID->"937a8445-542f-4372-be62-3e3182fe557c"],
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{"integrandSimpl", "[", 
+   RowBox[{"[", "11", "]"}], "]"}], "//", "Simplify"}]], "Input",
+ CellChangeTimes->{{3.955741602584196*^9, 3.955741662351337*^9}},
+ CellLabel->
+  "In[1062]:=",ExpressionUUID->"e46471a9-94ab-488d-81d5-1d07f45cf34a"],
+
+Cell[BoxData[
+ RowBox[{"expr", "=", 
+  RowBox[{
+   RowBox[{
+    RowBox[{
+     RowBox[{
+      RowBox[{"integrandSimpl", "[", 
+       RowBox[{"[", "12", "]"}], "]"}], "[", 
+      RowBox[{"[", "1", "]"}], "]"}], "[", 
+     RowBox[{"[", "8", "]"}], "]"}], "[", 
+    RowBox[{"[", "11", "]"}], "]"}], "//.", 
+   RowBox[{"{", 
+    RowBox[{
+     RowBox[{
+      RowBox[{"kboff", "+", "kboff2"}], "->", "C8"}], ",", 
+     RowBox[{
+      RowBox[{"kbon", "+", "kbon2"}], "->", "C9"}]}], "}"}]}]}]], "Input",
+ CellChangeTimes->{{3.955741705127471*^9, 3.955741829450564*^9}, {
+   3.955741860003455*^9, 3.9557418765460253`*^9}, {3.955741968784327*^9, 
+   3.95574198054475*^9}, {3.955742061054338*^9, 3.955742098956133*^9}, {
+   3.955742281162438*^9, 3.955742329879458*^9}, {3.955742388686934*^9, 
+   3.955742389775012*^9}, {3.95574248952558*^9, 3.955742499244792*^9}, 
+   3.955742689473453*^9},
+ CellLabel->
+  "In[1105]:=",ExpressionUUID->"66cda65b-f7d1-4dcd-b2d9-50d6bc828309"],
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{"exprSmall", "=", 
+   RowBox[{"Collect", "[", 
+    RowBox[{
+     RowBox[{"Total", "[", "simpleTerms", "]"}], ",", 
+     RowBox[{"{", 
+      RowBox[{
+      "A1", ",", " ", "A2", ",", " ", "A3", ",", " ", "B1", ",", " ", "B2", ",",
+        " ", "B3"}], "}"}], ",", 
+     RowBox[{"(*", 
+      RowBox[{
+      "collect", " ", "with", " ", "respect", " ", "to", " ", "x", " ", "and",
+        " ", "y"}], "*)"}], "\[IndentingNewLine]", "Factor"}], "      ", 
+    RowBox[{"(*", 
+     RowBox[{"factor", " ", "each", " ", "collected", " ", "coefficient"}], 
+     "*)"}], "]"}]}], ";"}]], "Input",
+ CellChangeTimes->{{3.955742670075678*^9, 3.955742682464917*^9}, {
+  3.9557427380316153`*^9, 3.955742744518889*^9}},
+ CellLabel->
+  "In[1106]:=",ExpressionUUID->"e5425f30-b7a2-4b22-a9b4-2a979a654543"],
+
+Cell[BoxData[{
+ RowBox[{
+  RowBox[{
+   RowBox[{"assoc", "=", 
+    RowBox[{"GroupBy", "[", 
+     RowBox[{"simpleTerms", ",", "Denominator", ",", 
+      RowBox[{"(*", 
+       RowBox[{"key", ":", 
+        RowBox[{"the", " ", "denominator"}]}], "*)"}], 
+      RowBox[{
+       RowBox[{"Total", "[", 
+        RowBox[{"Numerator", "/@", "#"}], "]"}], "&"}]}], "              ", 
+     RowBox[{"(*", 
+      RowBox[{"value", ":", 
+       RowBox[{"sum", " ", "of", " ", "numerators"}]}], "*)"}], "]"}]}], 
+   ";"}], "\n"}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{"combinedTerms", "=", 
+   RowBox[{"KeyValueMap", "[", 
+    RowBox[{
+     RowBox[{"Function", "[", 
+      RowBox[{
+       RowBox[{"{", 
+        RowBox[{"den", ",", "num"}], "}"}], ",", 
+       RowBox[{"num", "/", "den"}]}], "]"}], ",", "assoc"}], "]"}]}], 
+  "\[IndentingNewLine]"}], "\[IndentingNewLine]"}], "Input",
+ CellChangeTimes->{{3.9557425848870993`*^9, 3.955742589931007*^9}},
+ CellLabel->
+  "In[1111]:=",ExpressionUUID->"84756472-ae1f-4059-8fa2-97e1c6bbc269"],
 
 Cell[CellGroupData[{
 
@@ -7976,505 +8017,505 @@ $CellContext`kuon, $CellContext`kuon2, $CellContext`t1, $CellContext`t2},
      Compile`$329 = $CellContext`B2 + Compile`$327; 
      Compile`$368 = $CellContext`A1 $CellContext`A2 $CellContext`B1 \
 $CellContext`B2 Compile`$346 $CellContext`kon1b; 
-     Compile`$369 = -$CellContext`A1 $CellContext`A3 $CellContext`B1 \
+     Compile`$369 = (-$CellContext`A1) $CellContext`A3 $CellContext`B1 \
 $CellContext`B2 Compile`$346 $CellContext`kon1b; 
-     Compile`$370 = -$CellContext`A1 $CellContext`A2 $CellContext`B1 \
+     Compile`$370 = (-$CellContext`A1) $CellContext`A2 $CellContext`B1 \
 $CellContext`B3 Compile`$346 $CellContext`kon1b; 
      Compile`$371 = $CellContext`A1 $CellContext`A3 $CellContext`B1 \
 $CellContext`B3 Compile`$346 $CellContext`kon1b; 
-     Compile`$384 = -$CellContext`A1 $CellContext`A2 $CellContext`B1 \
+     Compile`$384 = (-$CellContext`A1) $CellContext`A2 $CellContext`B1 \
 $CellContext`B2 Compile`$383 $CellContext`kon1b; 
      Compile`$385 = $CellContext`A2 $CellContext`A3 $CellContext`B1 \
 $CellContext`B2 Compile`$383 $CellContext`kon1b; 
      Compile`$386 = $CellContext`A1 $CellContext`A2 $CellContext`B1 \
 $CellContext`B3 Compile`$383 $CellContext`kon1b; 
-     Compile`$387 = -$CellContext`A2 $CellContext`A3 $CellContext`B1 \
+     Compile`$387 = (-$CellContext`A2) $CellContext`A3 $CellContext`B1 \
 $CellContext`B3 Compile`$383 $CellContext`kon1b; 
      Compile`$391 = $CellContext`A1 $CellContext`A3 $CellContext`B1 \
 $CellContext`B2 Compile`$390 $CellContext`kon1b; 
-     Compile`$392 = -$CellContext`A2 $CellContext`A3 $CellContext`B1 \
+     Compile`$392 = (-$CellContext`A2) $CellContext`A3 $CellContext`B1 \
 $CellContext`B2 Compile`$390 $CellContext`kon1b; 
-     Compile`$393 = -$CellContext`A1 $CellContext`A3 $CellContext`B1 \
+     Compile`$393 = (-$CellContext`A1) $CellContext`A3 $CellContext`B1 \
 $CellContext`B3 Compile`$390 $CellContext`kon1b; 
      Compile`$394 = $CellContext`A2 $CellContext`A3 $CellContext`B1 \
 $CellContext`B3 Compile`$390 $CellContext`kon1b; 
-     Compile`$398 = -$CellContext`A1 $CellContext`A2 $CellContext`B1 \
+     Compile`$398 = (-$CellContext`A1) $CellContext`A2 $CellContext`B1 \
 $CellContext`B2 Compile`$397 $CellContext`kon1b; 
      Compile`$399 = $CellContext`A1 $CellContext`A3 $CellContext`B1 \
 $CellContext`B2 Compile`$397 $CellContext`kon1b; 
      Compile`$400 = $CellContext`A1 $CellContext`A2 $CellContext`B2 \
 $CellContext`B3 Compile`$397 $CellContext`kon1b; 
-     Compile`$401 = -$CellContext`A1 $CellContext`A3 $CellContext`B2 \
+     Compile`$401 = (-$CellContext`A1) $CellContext`A3 $CellContext`B2 \
 $CellContext`B3 Compile`$397 $CellContext`kon1b; 
      Compile`$404 = $CellContext`A1 $CellContext`A2 $CellContext`B1 \
 $CellContext`B2 Compile`$403 $CellContext`kon1b; 
-     Compile`$405 = -$CellContext`A2 $CellContext`A3 $CellContext`B1 \
+     Compile`$405 = (-$CellContext`A2) $CellContext`A3 $CellContext`B1 \
 $CellContext`B2 Compile`$403 $CellContext`kon1b; 
-     Compile`$406 = -$CellContext`A1 $CellContext`A2 $CellContext`B2 \
+     Compile`$406 = (-$CellContext`A1) $CellContext`A2 $CellContext`B2 \
 $CellContext`B3 Compile`$403 $CellContext`kon1b; 
      Compile`$407 = $CellContext`A2 $CellContext`A3 $CellContext`B2 \
 $CellContext`B3 Compile`$403 $CellContext`kon1b; 
-     Compile`$410 = -$CellContext`A1 $CellContext`A3 $CellContext`B1 \
+     Compile`$410 = (-$CellContext`A1) $CellContext`A3 $CellContext`B1 \
 $CellContext`B2 Compile`$409 $CellContext`kon1b; 
      Compile`$411 = $CellContext`A2 $CellContext`A3 $CellContext`B1 \
 $CellContext`B2 Compile`$409 $CellContext`kon1b; 
      Compile`$412 = $CellContext`A1 $CellContext`A3 $CellContext`B2 \
 $CellContext`B3 Compile`$409 $CellContext`kon1b; 
-     Compile`$413 = -$CellContext`A2 $CellContext`A3 $CellContext`B2 \
+     Compile`$413 = (-$CellContext`A2) $CellContext`A3 $CellContext`B2 \
 $CellContext`B3 Compile`$409 $CellContext`kon1b; 
      Compile`$417 = $CellContext`A1 $CellContext`A2 $CellContext`B1 \
 $CellContext`B3 Compile`$416 $CellContext`kon1b; 
-     Compile`$418 = -$CellContext`A1 $CellContext`A3 $CellContext`B1 \
+     Compile`$418 = (-$CellContext`A1) $CellContext`A3 $CellContext`B1 \
 $CellContext`B3 Compile`$416 $CellContext`kon1b; 
-     Compile`$419 = -$CellContext`A1 $CellContext`A2 $CellContext`B2 \
+     Compile`$419 = (-$CellContext`A1) $CellContext`A2 $CellContext`B2 \
 $CellContext`B3 Compile`$416 $CellContext`kon1b; 
      Compile`$420 = $CellContext`A1 $CellContext`A3 $CellContext`B2 \
 $CellContext`B3 Compile`$416 $CellContext`kon1b; 
-     Compile`$423 = -$CellContext`A1 $CellContext`A2 $CellContext`B1 \
+     Compile`$423 = (-$CellContext`A1) $CellContext`A2 $CellContext`B1 \
 $CellContext`B3 Compile`$422 $CellContext`kon1b; 
      Compile`$424 = $CellContext`A2 $CellContext`A3 $CellContext`B1 \
 $CellContext`B3 Compile`$422 $CellContext`kon1b; 
      Compile`$425 = $CellContext`A1 $CellContext`A2 $CellContext`B2 \
 $CellContext`B3 Compile`$422 $CellContext`kon1b; 
-     Compile`$426 = -$CellContext`A2 $CellContext`A3 $CellContext`B2 \
+     Compile`$426 = (-$CellContext`A2) $CellContext`A3 $CellContext`B2 \
 $CellContext`B3 Compile`$422 $CellContext`kon1b; 
      Compile`$429 = $CellContext`A1 $CellContext`A3 $CellContext`B1 \
 $CellContext`B3 Compile`$428 $CellContext`kon1b; 
-     Compile`$430 = -$CellContext`A2 $CellContext`A3 $CellContext`B1 \
+     Compile`$430 = (-$CellContext`A2) $CellContext`A3 $CellContext`B1 \
 $CellContext`B3 Compile`$428 $CellContext`kon1b; 
-     Compile`$431 = -$CellContext`A1 $CellContext`A3 $CellContext`B2 \
+     Compile`$431 = (-$CellContext`A1) $CellContext`A3 $CellContext`B2 \
 $CellContext`B3 Compile`$428 $CellContext`kon1b; 
      Compile`$432 = $CellContext`A2 $CellContext`A3 $CellContext`B2 \
 $CellContext`B3 Compile`$428 $CellContext`kon1b; 
      Compile`$433 = $CellContext`A2 $CellContext`B1 $CellContext`B2 
        Compile`$346 $CellContext`kon1b $CellContext`kon2b; 
-     Compile`$434 = -$CellContext`A3 $CellContext`B1 $CellContext`B2 
+     Compile`$434 = (-$CellContext`A3) $CellContext`B1 $CellContext`B2 
        Compile`$346 $CellContext`kon1b $CellContext`kon2b; 
-     Compile`$435 = -$CellContext`A2 $CellContext`B1 $CellContext`B3 
+     Compile`$435 = (-$CellContext`A2) $CellContext`B1 $CellContext`B3 
        Compile`$346 $CellContext`kon1b $CellContext`kon2b; 
      Compile`$436 = $CellContext`A3 $CellContext`B1 $CellContext`B3 
        Compile`$346 $CellContext`kon1b $CellContext`kon2b; 
-     Compile`$437 = -$CellContext`A1 $CellContext`B1 $CellContext`B2 
+     Compile`$437 = (-$CellContext`A1) $CellContext`B1 $CellContext`B2 
        Compile`$383 $CellContext`kon1b $CellContext`kon2b; 
      Compile`$438 = $CellContext`A3 $CellContext`B1 $CellContext`B2 
        Compile`$383 $CellContext`kon1b $CellContext`kon2b; 
      Compile`$439 = $CellContext`A1 $CellContext`B1 $CellContext`B3 
        Compile`$383 $CellContext`kon1b $CellContext`kon2b; 
-     Compile`$440 = -$CellContext`A3 $CellContext`B1 $CellContext`B3 
+     Compile`$440 = (-$CellContext`A3) $CellContext`B1 $CellContext`B3 
        Compile`$383 $CellContext`kon1b $CellContext`kon2b; 
      Compile`$441 = $CellContext`A1 $CellContext`B1 $CellContext`B2 
        Compile`$390 $CellContext`kon1b $CellContext`kon2b; 
-     Compile`$442 = -$CellContext`A2 $CellContext`B1 $CellContext`B2 
+     Compile`$442 = (-$CellContext`A2) $CellContext`B1 $CellContext`B2 
        Compile`$390 $CellContext`kon1b $CellContext`kon2b; 
-     Compile`$443 = -$CellContext`A1 $CellContext`B1 $CellContext`B3 
+     Compile`$443 = (-$CellContext`A1) $CellContext`B1 $CellContext`B3 
        Compile`$390 $CellContext`kon1b $CellContext`kon2b; 
      Compile`$444 = $CellContext`A2 $CellContext`B1 $CellContext`B3 
        Compile`$390 $CellContext`kon1b $CellContext`kon2b; 
-     Compile`$445 = -$CellContext`A2 $CellContext`B1 $CellContext`B2 
+     Compile`$445 = (-$CellContext`A2) $CellContext`B1 $CellContext`B2 
        Compile`$397 $CellContext`kon1b $CellContext`kon2b; 
      Compile`$446 = $CellContext`A3 $CellContext`B1 $CellContext`B2 
        Compile`$397 $CellContext`kon1b $CellContext`kon2b; 
      Compile`$447 = $CellContext`A2 $CellContext`B2 $CellContext`B3 
        Compile`$397 $CellContext`kon1b $CellContext`kon2b; 
-     Compile`$448 = -$CellContext`A3 $CellContext`B2 $CellContext`B3 
+     Compile`$448 = (-$CellContext`A3) $CellContext`B2 $CellContext`B3 
        Compile`$397 $CellContext`kon1b $CellContext`kon2b; 
      Compile`$449 = $CellContext`A1 $CellContext`B1 $CellContext`B2 
        Compile`$403 $CellContext`kon1b $CellContext`kon2b; 
-     Compile`$450 = -$CellContext`A3 $CellContext`B1 $CellContext`B2 
+     Compile`$450 = (-$CellContext`A3) $CellContext`B1 $CellContext`B2 
        Compile`$403 $CellContext`kon1b $CellContext`kon2b; 
-     Compile`$451 = -$CellContext`A1 $CellContext`B2 $CellContext`B3 
+     Compile`$451 = (-$CellContext`A1) $CellContext`B2 $CellContext`B3 
        Compile`$403 $CellContext`kon1b $CellContext`kon2b; 
      Compile`$452 = $CellContext`A3 $CellContext`B2 $CellContext`B3 
        Compile`$403 $CellContext`kon1b $CellContext`kon2b; 
-     Compile`$453 = -$CellContext`A1 $CellContext`B1 $CellContext`B2 
+     Compile`$453 = (-$CellContext`A1) $CellContext`B1 $CellContext`B2 
        Compile`$409 $CellContext`kon1b $CellContext`kon2b; 
      Compile`$454 = $CellContext`A2 $CellContext`B1 $CellContext`B2 
        Compile`$409 $CellContext`kon1b $CellContext`kon2b; 
      Compile`$455 = $CellContext`A1 $CellContext`B2 $CellContext`B3 
        Compile`$409 $CellContext`kon1b $CellContext`kon2b; 
-     Compile`$456 = -$CellContext`A2 $CellContext`B2 $CellContext`B3 
+     Compile`$456 = (-$CellContext`A2) $CellContext`B2 $CellContext`B3 
        Compile`$409 $CellContext`kon1b $CellContext`kon2b; 
      Compile`$457 = $CellContext`A2 $CellContext`B1 $CellContext`B3 
        Compile`$416 $CellContext`kon1b $CellContext`kon2b; 
-     Compile`$458 = -$CellContext`A3 $CellContext`B1 $CellContext`B3 
+     Compile`$458 = (-$CellContext`A3) $CellContext`B1 $CellContext`B3 
        Compile`$416 $CellContext`kon1b $CellContext`kon2b; 
-     Compile`$459 = -$CellContext`A2 $CellContext`B2 $CellContext`B3 
+     Compile`$459 = (-$CellContext`A2) $CellContext`B2 $CellContext`B3 
        Compile`$416 $CellContext`kon1b $CellContext`kon2b; 
      Compile`$460 = $CellContext`A3 $CellContext`B2 $CellContext`B3 
        Compile`$416 $CellContext`kon1b $CellContext`kon2b; 
-     Compile`$461 = -$CellContext`A1 $CellContext`B1 $CellContext`B3 
+     Compile`$461 = (-$CellContext`A1) $CellContext`B1 $CellContext`B3 
        Compile`$422 $CellContext`kon1b $CellContext`kon2b; 
      Compile`$462 = $CellContext`A3 $CellContext`B1 $CellContext`B3 
        Compile`$422 $CellContext`kon1b $CellContext`kon2b; 
      Compile`$463 = $CellContext`A1 $CellContext`B2 $CellContext`B3 
        Compile`$422 $CellContext`kon1b $CellContext`kon2b; 
-     Compile`$464 = -$CellContext`A3 $CellContext`B2 $CellContext`B3 
+     Compile`$464 = (-$CellContext`A3) $CellContext`B2 $CellContext`B3 
        Compile`$422 $CellContext`kon1b $CellContext`kon2b; 
      Compile`$465 = $CellContext`A1 $CellContext`B1 $CellContext`B3 
        Compile`$428 $CellContext`kon1b $CellContext`kon2b; 
-     Compile`$466 = -$CellContext`A2 $CellContext`B1 $CellContext`B3 
+     Compile`$466 = (-$CellContext`A2) $CellContext`B1 $CellContext`B3 
        Compile`$428 $CellContext`kon1b $CellContext`kon2b; 
-     Compile`$467 = -$CellContext`A1 $CellContext`B2 $CellContext`B3 
+     Compile`$467 = (-$CellContext`A1) $CellContext`B2 $CellContext`B3 
        Compile`$428 $CellContext`kon1b $CellContext`kon2b; 
      Compile`$468 = $CellContext`A2 $CellContext`B2 $CellContext`B3 
        Compile`$428 $CellContext`kon1b $CellContext`kon2b; 
      Compile`$469 = $CellContext`A2 $CellContext`B1 $CellContext`B2 
        Compile`$346 $CellContext`kon1b $CellContext`kuoff2; 
-     Compile`$470 = -$CellContext`A3 $CellContext`B1 $CellContext`B2 
+     Compile`$470 = (-$CellContext`A3) $CellContext`B1 $CellContext`B2 
        Compile`$346 $CellContext`kon1b $CellContext`kuoff2; 
-     Compile`$471 = -$CellContext`A2 $CellContext`B1 $CellContext`B3 
+     Compile`$471 = (-$CellContext`A2) $CellContext`B1 $CellContext`B3 
        Compile`$346 $CellContext`kon1b $CellContext`kuoff2; 
      Compile`$472 = $CellContext`A3 $CellContext`B1 $CellContext`B3 
        Compile`$346 $CellContext`kon1b $CellContext`kuoff2; 
-     Compile`$473 = -$CellContext`A1 $CellContext`B1 $CellContext`B2 
+     Compile`$473 = (-$CellContext`A1) $CellContext`B1 $CellContext`B2 
        Compile`$383 $CellContext`kon1b $CellContext`kuoff2; 
      Compile`$474 = $CellContext`A3 $CellContext`B1 $CellContext`B2 
        Compile`$383 $CellContext`kon1b $CellContext`kuoff2; 
      Compile`$475 = $CellContext`A1 $CellContext`B1 $CellContext`B3 
        Compile`$383 $CellContext`kon1b $CellContext`kuoff2; 
-     Compile`$476 = -$CellContext`A3 $CellContext`B1 $CellContext`B3 
+     Compile`$476 = (-$CellContext`A3) $CellContext`B1 $CellContext`B3 
        Compile`$383 $CellContext`kon1b $CellContext`kuoff2; 
      Compile`$477 = $CellContext`A1 $CellContext`B1 $CellContext`B2 
        Compile`$390 $CellContext`kon1b $CellContext`kuoff2; 
-     Compile`$478 = -$CellContext`A2 $CellContext`B1 $CellContext`B2 
+     Compile`$478 = (-$CellContext`A2) $CellContext`B1 $CellContext`B2 
        Compile`$390 $CellContext`kon1b $CellContext`kuoff2; 
-     Compile`$479 = -$CellContext`A1 $CellContext`B1 $CellContext`B3 
+     Compile`$479 = (-$CellContext`A1) $CellContext`B1 $CellContext`B3 
        Compile`$390 $CellContext`kon1b $CellContext`kuoff2; 
      Compile`$480 = $CellContext`A2 $CellContext`B1 $CellContext`B3 
        Compile`$390 $CellContext`kon1b $CellContext`kuoff2; 
-     Compile`$481 = -$CellContext`A2 $CellContext`B1 $CellContext`B2 
+     Compile`$481 = (-$CellContext`A2) $CellContext`B1 $CellContext`B2 
        Compile`$397 $CellContext`kon1b $CellContext`kuoff2; 
      Compile`$482 = $CellContext`A3 $CellContext`B1 $CellContext`B2 
        Compile`$397 $CellContext`kon1b $CellContext`kuoff2; 
      Compile`$483 = $CellContext`A2 $CellContext`B2 $CellContext`B3 
        Compile`$397 $CellContext`kon1b $CellContext`kuoff2; 
-     Compile`$484 = -$CellContext`A3 $CellContext`B2 $CellContext`B3 
+     Compile`$484 = (-$CellContext`A3) $CellContext`B2 $CellContext`B3 
        Compile`$397 $CellContext`kon1b $CellContext`kuoff2; 
      Compile`$485 = $CellContext`A1 $CellContext`B1 $CellContext`B2 
        Compile`$403 $CellContext`kon1b $CellContext`kuoff2; 
-     Compile`$486 = -$CellContext`A3 $CellContext`B1 $CellContext`B2 
+     Compile`$486 = (-$CellContext`A3) $CellContext`B1 $CellContext`B2 
        Compile`$403 $CellContext`kon1b $CellContext`kuoff2; 
-     Compile`$487 = -$CellContext`A1 $CellContext`B2 $CellContext`B3 
+     Compile`$487 = (-$CellContext`A1) $CellContext`B2 $CellContext`B3 
        Compile`$403 $CellContext`kon1b $CellContext`kuoff2; 
      Compile`$488 = $CellContext`A3 $CellContext`B2 $CellContext`B3 
        Compile`$403 $CellContext`kon1b $CellContext`kuoff2; 
-     Compile`$489 = -$CellContext`A1 $CellContext`B1 $CellContext`B2 
+     Compile`$489 = (-$CellContext`A1) $CellContext`B1 $CellContext`B2 
        Compile`$409 $CellContext`kon1b $CellContext`kuoff2; 
      Compile`$490 = $CellContext`A2 $CellContext`B1 $CellContext`B2 
        Compile`$409 $CellContext`kon1b $CellContext`kuoff2; 
      Compile`$491 = $CellContext`A1 $CellContext`B2 $CellContext`B3 
        Compile`$409 $CellContext`kon1b $CellContext`kuoff2; 
-     Compile`$492 = -$CellContext`A2 $CellContext`B2 $CellContext`B3 
+     Compile`$492 = (-$CellContext`A2) $CellContext`B2 $CellContext`B3 
        Compile`$409 $CellContext`kon1b $CellContext`kuoff2; 
      Compile`$493 = $CellContext`A2 $CellContext`B1 $CellContext`B3 
        Compile`$416 $CellContext`kon1b $CellContext`kuoff2; 
-     Compile`$494 = -$CellContext`A3 $CellContext`B1 $CellContext`B3 
+     Compile`$494 = (-$CellContext`A3) $CellContext`B1 $CellContext`B3 
        Compile`$416 $CellContext`kon1b $CellContext`kuoff2; 
-     Compile`$495 = -$CellContext`A2 $CellContext`B2 $CellContext`B3 
+     Compile`$495 = (-$CellContext`A2) $CellContext`B2 $CellContext`B3 
        Compile`$416 $CellContext`kon1b $CellContext`kuoff2; 
      Compile`$496 = $CellContext`A3 $CellContext`B2 $CellContext`B3 
        Compile`$416 $CellContext`kon1b $CellContext`kuoff2; 
-     Compile`$497 = -$CellContext`A1 $CellContext`B1 $CellContext`B3 
+     Compile`$497 = (-$CellContext`A1) $CellContext`B1 $CellContext`B3 
        Compile`$422 $CellContext`kon1b $CellContext`kuoff2; 
      Compile`$498 = $CellContext`A3 $CellContext`B1 $CellContext`B3 
        Compile`$422 $CellContext`kon1b $CellContext`kuoff2; 
      Compile`$499 = $CellContext`A1 $CellContext`B2 $CellContext`B3 
        Compile`$422 $CellContext`kon1b $CellContext`kuoff2; 
-     Compile`$500 = -$CellContext`A3 $CellContext`B2 $CellContext`B3 
+     Compile`$500 = (-$CellContext`A3) $CellContext`B2 $CellContext`B3 
        Compile`$422 $CellContext`kon1b $CellContext`kuoff2; 
      Compile`$501 = $CellContext`A1 $CellContext`B1 $CellContext`B3 
        Compile`$428 $CellContext`kon1b $CellContext`kuoff2; 
-     Compile`$502 = -$CellContext`A2 $CellContext`B1 $CellContext`B3 
+     Compile`$502 = (-$CellContext`A2) $CellContext`B1 $CellContext`B3 
        Compile`$428 $CellContext`kon1b $CellContext`kuoff2; 
-     Compile`$503 = -$CellContext`A1 $CellContext`B2 $CellContext`B3 
+     Compile`$503 = (-$CellContext`A1) $CellContext`B2 $CellContext`B3 
        Compile`$428 $CellContext`kon1b $CellContext`kuoff2; 
      Compile`$504 = $CellContext`A2 $CellContext`B2 $CellContext`B3 
        Compile`$428 $CellContext`kon1b $CellContext`kuoff2; 
      Compile`$505 = $CellContext`A1 $CellContext`A2 $CellContext`B2 
        Compile`$346 $CellContext`kon1b $CellContext`kuon2; 
-     Compile`$506 = -$CellContext`A1 $CellContext`A3 $CellContext`B2 
+     Compile`$506 = (-$CellContext`A1) $CellContext`A3 $CellContext`B2 
        Compile`$346 $CellContext`kon1b $CellContext`kuon2; 
-     Compile`$507 = -$CellContext`A1 $CellContext`A2 $CellContext`B3 
+     Compile`$507 = (-$CellContext`A1) $CellContext`A2 $CellContext`B3 
        Compile`$346 $CellContext`kon1b $CellContext`kuon2; 
      Compile`$508 = $CellContext`A1 $CellContext`A3 $CellContext`B3 
        Compile`$346 $CellContext`kon1b $CellContext`kuon2; 
-     Compile`$509 = -$CellContext`A1 $CellContext`A2 $CellContext`B2 
+     Compile`$509 = (-$CellContext`A1) $CellContext`A2 $CellContext`B2 
        Compile`$383 $CellContext`kon1b $CellContext`kuon2; 
      Compile`$510 = $CellContext`A2 $CellContext`A3 $CellContext`B2 
        Compile`$383 $CellContext`kon1b $CellContext`kuon2; 
      Compile`$511 = $CellContext`A1 $CellContext`A2 $CellContext`B3 
        Compile`$383 $CellContext`kon1b $CellContext`kuon2; 
-     Compile`$512 = -$CellContext`A2 $CellContext`A3 $CellContext`B3 
+     Compile`$512 = (-$CellContext`A2) $CellContext`A3 $CellContext`B3 
        Compile`$383 $CellContext`kon1b $CellContext`kuon2; 
      Compile`$513 = $CellContext`A1 $CellContext`A3 $CellContext`B2 
        Compile`$390 $CellContext`kon1b $CellContext`kuon2; 
-     Compile`$514 = -$CellContext`A2 $CellContext`A3 $CellContext`B2 
+     Compile`$514 = (-$CellContext`A2) $CellContext`A3 $CellContext`B2 
        Compile`$390 $CellContext`kon1b $CellContext`kuon2; 
-     Compile`$515 = -$CellContext`A1 $CellContext`A3 $CellContext`B3 
+     Compile`$515 = (-$CellContext`A1) $CellContext`A3 $CellContext`B3 
        Compile`$390 $CellContext`kon1b $CellContext`kuon2; 
      Compile`$516 = $CellContext`A2 $CellContext`A3 $CellContext`B3 
        Compile`$390 $CellContext`kon1b $CellContext`kuon2; 
-     Compile`$517 = -$CellContext`A1 $CellContext`A2 $CellContext`B1 
+     Compile`$517 = (-$CellContext`A1) $CellContext`A2 $CellContext`B1 
        Compile`$397 $CellContext`kon1b $CellContext`kuon2; 
      Compile`$518 = $CellContext`A1 $CellContext`A3 $CellContext`B1 
        Compile`$397 $CellContext`kon1b $CellContext`kuon2; 
      Compile`$519 = $CellContext`A1 $CellContext`A2 $CellContext`B3 
        Compile`$397 $CellContext`kon1b $CellContext`kuon2; 
-     Compile`$520 = -$CellContext`A1 $CellContext`A3 $CellContext`B3 
+     Compile`$520 = (-$CellContext`A1) $CellContext`A3 $CellContext`B3 
        Compile`$397 $CellContext`kon1b $CellContext`kuon2; 
      Compile`$521 = $CellContext`A1 $CellContext`A2 $CellContext`B1 
        Compile`$403 $CellContext`kon1b $CellContext`kuon2; 
-     Compile`$522 = -$CellContext`A2 $CellContext`A3 $CellContext`B1 
+     Compile`$522 = (-$CellContext`A2) $CellContext`A3 $CellContext`B1 
        Compile`$403 $CellContext`kon1b $CellContext`kuon2; 
-     Compile`$523 = -$CellContext`A1 $CellContext`A2 $CellContext`B3 
+     Compile`$523 = (-$CellContext`A1) $CellContext`A2 $CellContext`B3 
        Compile`$403 $CellContext`kon1b $CellContext`kuon2; 
      Compile`$524 = $CellContext`A2 $CellContext`A3 $CellContext`B3 
        Compile`$403 $CellContext`kon1b $CellContext`kuon2; 
-     Compile`$525 = -$CellContext`A1 $CellContext`A3 $CellContext`B1 
+     Compile`$525 = (-$CellContext`A1) $CellContext`A3 $CellContext`B1 
        Compile`$409 $CellContext`kon1b $CellContext`kuon2; 
      Compile`$526 = $CellContext`A2 $CellContext`A3 $CellContext`B1 
        Compile`$409 $CellContext`kon1b $CellContext`kuon2; 
      Compile`$527 = $CellContext`A1 $CellContext`A3 $CellContext`B3 
        Compile`$409 $CellContext`kon1b $CellContext`kuon2; 
-     Compile`$528 = -$CellContext`A2 $CellContext`A3 $CellContext`B3 
+     Compile`$528 = (-$CellContext`A2) $CellContext`A3 $CellContext`B3 
        Compile`$409 $CellContext`kon1b $CellContext`kuon2; 
      Compile`$529 = $CellContext`A1 $CellContext`A2 $CellContext`B1 
        Compile`$416 $CellContext`kon1b $CellContext`kuon2; 
-     Compile`$530 = -$CellContext`A1 $CellContext`A3 $CellContext`B1 
+     Compile`$530 = (-$CellContext`A1) $CellContext`A3 $CellContext`B1 
        Compile`$416 $CellContext`kon1b $CellContext`kuon2; 
-     Compile`$531 = -$CellContext`A1 $CellContext`A2 $CellContext`B2 
+     Compile`$531 = (-$CellContext`A1) $CellContext`A2 $CellContext`B2 
        Compile`$416 $CellContext`kon1b $CellContext`kuon2; 
      Compile`$532 = $CellContext`A1 $CellContext`A3 $CellContext`B2 
        Compile`$416 $CellContext`kon1b $CellContext`kuon2; 
-     Compile`$533 = -$CellContext`A1 $CellContext`A2 $CellContext`B1 
+     Compile`$533 = (-$CellContext`A1) $CellContext`A2 $CellContext`B1 
        Compile`$422 $CellContext`kon1b $CellContext`kuon2; 
      Compile`$534 = $CellContext`A2 $CellContext`A3 $CellContext`B1 
        Compile`$422 $CellContext`kon1b $CellContext`kuon2; 
      Compile`$535 = $CellContext`A1 $CellContext`A2 $CellContext`B2 
        Compile`$422 $CellContext`kon1b $CellContext`kuon2; 
-     Compile`$536 = -$CellContext`A2 $CellContext`A3 $CellContext`B2 
+     Compile`$536 = (-$CellContext`A2) $CellContext`A3 $CellContext`B2 
        Compile`$422 $CellContext`kon1b $CellContext`kuon2; 
      Compile`$537 = $CellContext`A1 $CellContext`A3 $CellContext`B1 
        Compile`$428 $CellContext`kon1b $CellContext`kuon2; 
-     Compile`$538 = -$CellContext`A2 $CellContext`A3 $CellContext`B1 
+     Compile`$538 = (-$CellContext`A2) $CellContext`A3 $CellContext`B1 
        Compile`$428 $CellContext`kon1b $CellContext`kuon2; 
-     Compile`$539 = -$CellContext`A1 $CellContext`A3 $CellContext`B2 
+     Compile`$539 = (-$CellContext`A1) $CellContext`A3 $CellContext`B2 
        Compile`$428 $CellContext`kon1b $CellContext`kuon2; 
      Compile`$540 = $CellContext`A2 $CellContext`A3 $CellContext`B2 
        Compile`$428 $CellContext`kon1b $CellContext`kuon2; 
      Compile`$541 = $CellContext`A2 $CellContext`B2 $CellContext`c 
        Compile`$346 $CellContext`kboff $CellContext`kon2b $CellContext`kuon2; 
-     Compile`$542 = -$CellContext`A3 $CellContext`B2 $CellContext`c 
+     Compile`$542 = (-$CellContext`A3) $CellContext`B2 $CellContext`c 
        Compile`$346 $CellContext`kboff $CellContext`kon2b $CellContext`kuon2; 
-     Compile`$543 = -$CellContext`A2 $CellContext`B3 $CellContext`c 
+     Compile`$543 = (-$CellContext`A2) $CellContext`B3 $CellContext`c 
        Compile`$346 $CellContext`kboff $CellContext`kon2b $CellContext`kuon2; 
      Compile`$544 = $CellContext`A3 $CellContext`B3 $CellContext`c 
        Compile`$346 $CellContext`kboff $CellContext`kon2b $CellContext`kuon2; 
-     Compile`$545 = -$CellContext`A1 $CellContext`B2 $CellContext`c 
+     Compile`$545 = (-$CellContext`A1) $CellContext`B2 $CellContext`c 
        Compile`$383 $CellContext`kboff $CellContext`kon2b $CellContext`kuon2; 
      Compile`$546 = $CellContext`A3 $CellContext`B2 $CellContext`c 
        Compile`$383 $CellContext`kboff $CellContext`kon2b $CellContext`kuon2; 
      Compile`$547 = $CellContext`A1 $CellContext`B3 $CellContext`c 
        Compile`$383 $CellContext`kboff $CellContext`kon2b $CellContext`kuon2; 
-     Compile`$548 = -$CellContext`A3 $CellContext`B3 $CellContext`c 
+     Compile`$548 = (-$CellContext`A3) $CellContext`B3 $CellContext`c 
        Compile`$383 $CellContext`kboff $CellContext`kon2b $CellContext`kuon2; 
      Compile`$549 = $CellContext`A1 $CellContext`B2 $CellContext`c 
        Compile`$390 $CellContext`kboff $CellContext`kon2b $CellContext`kuon2; 
-     Compile`$550 = -$CellContext`A2 $CellContext`B2 $CellContext`c 
+     Compile`$550 = (-$CellContext`A2) $CellContext`B2 $CellContext`c 
        Compile`$390 $CellContext`kboff $CellContext`kon2b $CellContext`kuon2; 
-     Compile`$551 = -$CellContext`A1 $CellContext`B3 $CellContext`c 
+     Compile`$551 = (-$CellContext`A1) $CellContext`B3 $CellContext`c 
        Compile`$390 $CellContext`kboff $CellContext`kon2b $CellContext`kuon2; 
      Compile`$552 = $CellContext`A2 $CellContext`B3 $CellContext`c 
        Compile`$390 $CellContext`kboff $CellContext`kon2b $CellContext`kuon2; 
-     Compile`$553 = -$CellContext`A2 $CellContext`B1 $CellContext`c 
+     Compile`$553 = (-$CellContext`A2) $CellContext`B1 $CellContext`c 
        Compile`$397 $CellContext`kboff $CellContext`kon2b $CellContext`kuon2; 
      Compile`$554 = $CellContext`A3 $CellContext`B1 $CellContext`c 
        Compile`$397 $CellContext`kboff $CellContext`kon2b $CellContext`kuon2; 
      Compile`$555 = $CellContext`A2 $CellContext`B3 $CellContext`c 
        Compile`$397 $CellContext`kboff $CellContext`kon2b $CellContext`kuon2; 
-     Compile`$556 = -$CellContext`A3 $CellContext`B3 $CellContext`c 
+     Compile`$556 = (-$CellContext`A3) $CellContext`B3 $CellContext`c 
        Compile`$397 $CellContext`kboff $CellContext`kon2b $CellContext`kuon2; 
      Compile`$557 = $CellContext`A1 $CellContext`B1 $CellContext`c 
        Compile`$403 $CellContext`kboff $CellContext`kon2b $CellContext`kuon2; 
-     Compile`$558 = -$CellContext`A3 $CellContext`B1 $CellContext`c 
+     Compile`$558 = (-$CellContext`A3) $CellContext`B1 $CellContext`c 
        Compile`$403 $CellContext`kboff $CellContext`kon2b $CellContext`kuon2; 
-     Compile`$559 = -$CellContext`A1 $CellContext`B3 $CellContext`c 
+     Compile`$559 = (-$CellContext`A1) $CellContext`B3 $CellContext`c 
        Compile`$403 $CellContext`kboff $CellContext`kon2b $CellContext`kuon2; 
      Compile`$560 = $CellContext`A3 $CellContext`B3 $CellContext`c 
        Compile`$403 $CellContext`kboff $CellContext`kon2b $CellContext`kuon2; 
-     Compile`$561 = -$CellContext`A1 $CellContext`B1 $CellContext`c 
+     Compile`$561 = (-$CellContext`A1) $CellContext`B1 $CellContext`c 
        Compile`$409 $CellContext`kboff $CellContext`kon2b $CellContext`kuon2; 
      Compile`$562 = $CellContext`A2 $CellContext`B1 $CellContext`c 
        Compile`$409 $CellContext`kboff $CellContext`kon2b $CellContext`kuon2; 
      Compile`$563 = $CellContext`A1 $CellContext`B3 $CellContext`c 
        Compile`$409 $CellContext`kboff $CellContext`kon2b $CellContext`kuon2; 
-     Compile`$564 = -$CellContext`A2 $CellContext`B3 $CellContext`c 
+     Compile`$564 = (-$CellContext`A2) $CellContext`B3 $CellContext`c 
        Compile`$409 $CellContext`kboff $CellContext`kon2b $CellContext`kuon2; 
      Compile`$565 = $CellContext`A2 $CellContext`B1 $CellContext`c 
        Compile`$416 $CellContext`kboff $CellContext`kon2b $CellContext`kuon2; 
-     Compile`$566 = -$CellContext`A3 $CellContext`B1 $CellContext`c 
+     Compile`$566 = (-$CellContext`A3) $CellContext`B1 $CellContext`c 
        Compile`$416 $CellContext`kboff $CellContext`kon2b $CellContext`kuon2; 
-     Compile`$567 = -$CellContext`A2 $CellContext`B2 $CellContext`c 
+     Compile`$567 = (-$CellContext`A2) $CellContext`B2 $CellContext`c 
        Compile`$416 $CellContext`kboff $CellContext`kon2b $CellContext`kuon2; 
      Compile`$568 = $CellContext`A3 $CellContext`B2 $CellContext`c 
        Compile`$416 $CellContext`kboff $CellContext`kon2b $CellContext`kuon2; 
-     Compile`$569 = -$CellContext`A1 $CellContext`B1 $CellContext`c 
+     Compile`$569 = (-$CellContext`A1) $CellContext`B1 $CellContext`c 
        Compile`$422 $CellContext`kboff $CellContext`kon2b $CellContext`kuon2; 
      Compile`$570 = $CellContext`A3 $CellContext`B1 $CellContext`c 
        Compile`$422 $CellContext`kboff $CellContext`kon2b $CellContext`kuon2; 
      Compile`$571 = $CellContext`A1 $CellContext`B2 $CellContext`c 
        Compile`$422 $CellContext`kboff $CellContext`kon2b $CellContext`kuon2; 
-     Compile`$572 = -$CellContext`A3 $CellContext`B2 $CellContext`c 
+     Compile`$572 = (-$CellContext`A3) $CellContext`B2 $CellContext`c 
        Compile`$422 $CellContext`kboff $CellContext`kon2b $CellContext`kuon2; 
      Compile`$573 = $CellContext`A1 $CellContext`B1 $CellContext`c 
        Compile`$428 $CellContext`kboff $CellContext`kon2b $CellContext`kuon2; 
-     Compile`$574 = -$CellContext`A2 $CellContext`B1 $CellContext`c 
+     Compile`$574 = (-$CellContext`A2) $CellContext`B1 $CellContext`c 
        Compile`$428 $CellContext`kboff $CellContext`kon2b $CellContext`kuon2; 
-     Compile`$575 = -$CellContext`A1 $CellContext`B2 $CellContext`c 
+     Compile`$575 = (-$CellContext`A1) $CellContext`B2 $CellContext`c 
        Compile`$428 $CellContext`kboff $CellContext`kon2b $CellContext`kuon2; 
      Compile`$576 = $CellContext`A2 $CellContext`B2 $CellContext`c 
        Compile`$428 $CellContext`kboff $CellContext`kon2b $CellContext`kuon2; 
      Compile`$577 = $CellContext`A2 $CellContext`B2 
        Compile`$346 $CellContext`kon1b $CellContext`kon2b $CellContext`kuon2; 
-     Compile`$578 = -$CellContext`A3 $CellContext`B2 
+     Compile`$578 = (-$CellContext`A3) $CellContext`B2 
        Compile`$346 $CellContext`kon1b $CellContext`kon2b $CellContext`kuon2; 
-     Compile`$579 = -$CellContext`A2 $CellContext`B3 
+     Compile`$579 = (-$CellContext`A2) $CellContext`B3 
        Compile`$346 $CellContext`kon1b $CellContext`kon2b $CellContext`kuon2; 
      Compile`$580 = $CellContext`A3 $CellContext`B3 
        Compile`$346 $CellContext`kon1b $CellContext`kon2b $CellContext`kuon2; 
-     Compile`$581 = -$CellContext`A1 $CellContext`B2 
+     Compile`$581 = (-$CellContext`A1) $CellContext`B2 
        Compile`$383 $CellContext`kon1b $CellContext`kon2b $CellContext`kuon2; 
      Compile`$582 = $CellContext`A3 $CellContext`B2 
        Compile`$383 $CellContext`kon1b $CellContext`kon2b $CellContext`kuon2; 
      Compile`$583 = $CellContext`A1 $CellContext`B3 
        Compile`$383 $CellContext`kon1b $CellContext`kon2b $CellContext`kuon2; 
-     Compile`$584 = -$CellContext`A3 $CellContext`B3 
+     Compile`$584 = (-$CellContext`A3) $CellContext`B3 
        Compile`$383 $CellContext`kon1b $CellContext`kon2b $CellContext`kuon2; 
      Compile`$585 = $CellContext`A1 $CellContext`B2 
        Compile`$390 $CellContext`kon1b $CellContext`kon2b $CellContext`kuon2; 
-     Compile`$586 = -$CellContext`A2 $CellContext`B2 
+     Compile`$586 = (-$CellContext`A2) $CellContext`B2 
        Compile`$390 $CellContext`kon1b $CellContext`kon2b $CellContext`kuon2; 
-     Compile`$587 = -$CellContext`A1 $CellContext`B3 
+     Compile`$587 = (-$CellContext`A1) $CellContext`B3 
        Compile`$390 $CellContext`kon1b $CellContext`kon2b $CellContext`kuon2; 
      Compile`$588 = $CellContext`A2 $CellContext`B3 
        Compile`$390 $CellContext`kon1b $CellContext`kon2b $CellContext`kuon2; 
-     Compile`$589 = -$CellContext`A2 $CellContext`B1 
+     Compile`$589 = (-$CellContext`A2) $CellContext`B1 
        Compile`$397 $CellContext`kon1b $CellContext`kon2b $CellContext`kuon2; 
      Compile`$590 = $CellContext`A3 $CellContext`B1 
        Compile`$397 $CellContext`kon1b $CellContext`kon2b $CellContext`kuon2; 
      Compile`$591 = $CellContext`A2 $CellContext`B3 
        Compile`$397 $CellContext`kon1b $CellContext`kon2b $CellContext`kuon2; 
-     Compile`$592 = -$CellContext`A3 $CellContext`B3 
+     Compile`$592 = (-$CellContext`A3) $CellContext`B3 
        Compile`$397 $CellContext`kon1b $CellContext`kon2b $CellContext`kuon2; 
      Compile`$593 = $CellContext`A1 $CellContext`B1 
        Compile`$403 $CellContext`kon1b $CellContext`kon2b $CellContext`kuon2; 
-     Compile`$594 = -$CellContext`A3 $CellContext`B1 
+     Compile`$594 = (-$CellContext`A3) $CellContext`B1 
        Compile`$403 $CellContext`kon1b $CellContext`kon2b $CellContext`kuon2; 
-     Compile`$595 = -$CellContext`A1 $CellContext`B3 
+     Compile`$595 = (-$CellContext`A1) $CellContext`B3 
        Compile`$403 $CellContext`kon1b $CellContext`kon2b $CellContext`kuon2; 
      Compile`$596 = $CellContext`A3 $CellContext`B3 
        Compile`$403 $CellContext`kon1b $CellContext`kon2b $CellContext`kuon2; 
-     Compile`$597 = -$CellContext`A1 $CellContext`B1 
+     Compile`$597 = (-$CellContext`A1) $CellContext`B1 
        Compile`$409 $CellContext`kon1b $CellContext`kon2b $CellContext`kuon2; 
      Compile`$598 = $CellContext`A2 $CellContext`B1 
        Compile`$409 $CellContext`kon1b $CellContext`kon2b $CellContext`kuon2; 
      Compile`$599 = $CellContext`A1 $CellContext`B3 
        Compile`$409 $CellContext`kon1b $CellContext`kon2b $CellContext`kuon2; 
-     Compile`$600 = -$CellContext`A2 $CellContext`B3 
+     Compile`$600 = (-$CellContext`A2) $CellContext`B3 
        Compile`$409 $CellContext`kon1b $CellContext`kon2b $CellContext`kuon2; 
      Compile`$601 = $CellContext`A2 $CellContext`B1 
        Compile`$416 $CellContext`kon1b $CellContext`kon2b $CellContext`kuon2; 
-     Compile`$602 = -$CellContext`A3 $CellContext`B1 
+     Compile`$602 = (-$CellContext`A3) $CellContext`B1 
        Compile`$416 $CellContext`kon1b $CellContext`kon2b $CellContext`kuon2; 
-     Compile`$603 = -$CellContext`A2 $CellContext`B2 
+     Compile`$603 = (-$CellContext`A2) $CellContext`B2 
        Compile`$416 $CellContext`kon1b $CellContext`kon2b $CellContext`kuon2; 
      Compile`$604 = $CellContext`A3 $CellContext`B2 
        Compile`$416 $CellContext`kon1b $CellContext`kon2b $CellContext`kuon2; 
-     Compile`$605 = -$CellContext`A1 $CellContext`B1 
+     Compile`$605 = (-$CellContext`A1) $CellContext`B1 
        Compile`$422 $CellContext`kon1b $CellContext`kon2b $CellContext`kuon2; 
      Compile`$606 = $CellContext`A3 $CellContext`B1 
        Compile`$422 $CellContext`kon1b $CellContext`kon2b $CellContext`kuon2; 
      Compile`$607 = $CellContext`A1 $CellContext`B2 
        Compile`$422 $CellContext`kon1b $CellContext`kon2b $CellContext`kuon2; 
-     Compile`$608 = -$CellContext`A3 $CellContext`B2 
+     Compile`$608 = (-$CellContext`A3) $CellContext`B2 
        Compile`$422 $CellContext`kon1b $CellContext`kon2b $CellContext`kuon2; 
      Compile`$609 = $CellContext`A1 $CellContext`B1 
        Compile`$428 $CellContext`kon1b $CellContext`kon2b $CellContext`kuon2; 
-     Compile`$610 = -$CellContext`A2 $CellContext`B1 
+     Compile`$610 = (-$CellContext`A2) $CellContext`B1 
        Compile`$428 $CellContext`kon1b $CellContext`kon2b $CellContext`kuon2; 
-     Compile`$611 = -$CellContext`A1 $CellContext`B2 
+     Compile`$611 = (-$CellContext`A1) $CellContext`B2 
        Compile`$428 $CellContext`kon1b $CellContext`kon2b $CellContext`kuon2; 
      Compile`$612 = $CellContext`A2 $CellContext`B2 
        Compile`$428 $CellContext`kon1b $CellContext`kon2b $CellContext`kuon2; 
      Compile`$613 = $CellContext`A2 $CellContext`B2 
        Compile`$346 $CellContext`kon1b $CellContext`kuoff2 $CellContext`kuon2; 
-     Compile`$614 = -$CellContext`A3 $CellContext`B2 
+     Compile`$614 = (-$CellContext`A3) $CellContext`B2 
        Compile`$346 $CellContext`kon1b $CellContext`kuoff2 $CellContext`kuon2; 
-     Compile`$615 = -$CellContext`A2 $CellContext`B3 
+     Compile`$615 = (-$CellContext`A2) $CellContext`B3 
        Compile`$346 $CellContext`kon1b $CellContext`kuoff2 $CellContext`kuon2; 
      Compile`$616 = $CellContext`A3 $CellContext`B3 
        Compile`$346 $CellContext`kon1b $CellContext`kuoff2 $CellContext`kuon2; 
-     Compile`$617 = -$CellContext`A1 $CellContext`B2 
+     Compile`$617 = (-$CellContext`A1) $CellContext`B2 
        Compile`$383 $CellContext`kon1b $CellContext`kuoff2 $CellContext`kuon2; 
      Compile`$618 = $CellContext`A3 $CellContext`B2 
        Compile`$383 $CellContext`kon1b $CellContext`kuoff2 $CellContext`kuon2; 
      Compile`$619 = $CellContext`A1 $CellContext`B3 
        Compile`$383 $CellContext`kon1b $CellContext`kuoff2 $CellContext`kuon2; 
-     Compile`$620 = -$CellContext`A3 $CellContext`B3 
+     Compile`$620 = (-$CellContext`A3) $CellContext`B3 
        Compile`$383 $CellContext`kon1b $CellContext`kuoff2 $CellContext`kuon2; 
      Compile`$621 = $CellContext`A1 $CellContext`B2 
        Compile`$390 $CellContext`kon1b $CellContext`kuoff2 $CellContext`kuon2; 
-     Compile`$622 = -$CellContext`A2 $CellContext`B2 
+     Compile`$622 = (-$CellContext`A2) $CellContext`B2 
        Compile`$390 $CellContext`kon1b $CellContext`kuoff2 $CellContext`kuon2; 
-     Compile`$623 = -$CellContext`A1 $CellContext`B3 
+     Compile`$623 = (-$CellContext`A1) $CellContext`B3 
        Compile`$390 $CellContext`kon1b $CellContext`kuoff2 $CellContext`kuon2; 
      Compile`$624 = $CellContext`A2 $CellContext`B3 
        Compile`$390 $CellContext`kon1b $CellContext`kuoff2 $CellContext`kuon2; 
-     Compile`$625 = -$CellContext`A2 $CellContext`B1 
+     Compile`$625 = (-$CellContext`A2) $CellContext`B1 
        Compile`$397 $CellContext`kon1b $CellContext`kuoff2 $CellContext`kuon2; 
      Compile`$626 = $CellContext`A3 $CellContext`B1 
        Compile`$397 $CellContext`kon1b $CellContext`kuoff2 $CellContext`kuon2; 
      Compile`$627 = $CellContext`A2 $CellContext`B3 
        Compile`$397 $CellContext`kon1b $CellContext`kuoff2 $CellContext`kuon2; 
-     Compile`$628 = -$CellContext`A3 $CellContext`B3 
+     Compile`$628 = (-$CellContext`A3) $CellContext`B3 
        Compile`$397 $CellContext`kon1b $CellContext`kuoff2 $CellContext`kuon2; 
      Compile`$629 = $CellContext`A1 $CellContext`B1 
        Compile`$403 $CellContext`kon1b $CellContext`kuoff2 $CellContext`kuon2; 
-     Compile`$630 = -$CellContext`A3 $CellContext`B1 
+     Compile`$630 = (-$CellContext`A3) $CellContext`B1 
        Compile`$403 $CellContext`kon1b $CellContext`kuoff2 $CellContext`kuon2; 
-     Compile`$631 = -$CellContext`A1 $CellContext`B3 
+     Compile`$631 = (-$CellContext`A1) $CellContext`B3 
        Compile`$403 $CellContext`kon1b $CellContext`kuoff2 $CellContext`kuon2; 
      Compile`$632 = $CellContext`A3 $CellContext`B3 
        Compile`$403 $CellContext`kon1b $CellContext`kuoff2 $CellContext`kuon2; 
-     Compile`$633 = -$CellContext`A1 $CellContext`B1 
+     Compile`$633 = (-$CellContext`A1) $CellContext`B1 
        Compile`$409 $CellContext`kon1b $CellContext`kuoff2 $CellContext`kuon2; 
      Compile`$634 = $CellContext`A2 $CellContext`B1 
        Compile`$409 $CellContext`kon1b $CellContext`kuoff2 $CellContext`kuon2; 
      Compile`$635 = $CellContext`A1 $CellContext`B3 
        Compile`$409 $CellContext`kon1b $CellContext`kuoff2 $CellContext`kuon2; 
-     Compile`$636 = -$CellContext`A2 $CellContext`B3 
+     Compile`$636 = (-$CellContext`A2) $CellContext`B3 
        Compile`$409 $CellContext`kon1b $CellContext`kuoff2 $CellContext`kuon2; 
      Compile`$637 = $CellContext`A2 $CellContext`B1 
        Compile`$416 $CellContext`kon1b $CellContext`kuoff2 $CellContext`kuon2; 
-     Compile`$638 = -$CellContext`A3 $CellContext`B1 
+     Compile`$638 = (-$CellContext`A3) $CellContext`B1 
        Compile`$416 $CellContext`kon1b $CellContext`kuoff2 $CellContext`kuon2; 
-     Compile`$639 = -$CellContext`A2 $CellContext`B2 
+     Compile`$639 = (-$CellContext`A2) $CellContext`B2 
        Compile`$416 $CellContext`kon1b $CellContext`kuoff2 $CellContext`kuon2; 
      Compile`$640 = $CellContext`A3 $CellContext`B2 
        Compile`$416 $CellContext`kon1b $CellContext`kuoff2 $CellContext`kuon2; 
-     Compile`$641 = -$CellContext`A1 $CellContext`B1 
+     Compile`$641 = (-$CellContext`A1) $CellContext`B1 
        Compile`$422 $CellContext`kon1b $CellContext`kuoff2 $CellContext`kuon2; 
      Compile`$642 = $CellContext`A3 $CellContext`B1 
        Compile`$422 $CellContext`kon1b $CellContext`kuoff2 $CellContext`kuon2; 
      Compile`$643 = $CellContext`A1 $CellContext`B2 
        Compile`$422 $CellContext`kon1b $CellContext`kuoff2 $CellContext`kuon2; 
-     Compile`$644 = -$CellContext`A3 $CellContext`B2 
+     Compile`$644 = (-$CellContext`A3) $CellContext`B2 
        Compile`$422 $CellContext`kon1b $CellContext`kuoff2 $CellContext`kuon2; 
      Compile`$645 = $CellContext`A1 $CellContext`B1 
        Compile`$428 $CellContext`kon1b $CellContext`kuoff2 $CellContext`kuon2; 
-     Compile`$646 = -$CellContext`A2 $CellContext`B1 
+     Compile`$646 = (-$CellContext`A2) $CellContext`B1 
        Compile`$428 $CellContext`kon1b $CellContext`kuoff2 $CellContext`kuon2; 
-     Compile`$647 = -$CellContext`A1 $CellContext`B2 
+     Compile`$647 = (-$CellContext`A1) $CellContext`B2 
        Compile`$428 $CellContext`kon1b $CellContext`kuoff2 $CellContext`kuon2; 
      Compile`$648 = $CellContext`A2 $CellContext`B2 
        Compile`$428 $CellContext`kon1b $CellContext`kuoff2 $CellContext`kuon2; 
@@ -8551,25 +8592,25 @@ $CellContext`B3 Compile`$428 $CellContext`kon1b;
      Compile`$661 = 2 $CellContext`A1 $CellContext`C2; 
      Compile`$662 = Compile`$660 + $CellContext`C1 + Compile`$661; 
      Compile`$663 = Compile`$662^(-1); 
-     Compile`$664 = -$CellContext`A1 $CellContext`C4; 
-     Compile`$666 = -Compile`$659 Compile`$665; 
+     Compile`$664 = (-$CellContext`A1) $CellContext`C4; 
+     Compile`$666 = (-Compile`$659) Compile`$665; 
      Compile`$667 = Compile`$664 + $CellContext`C5 + Compile`$666; 
      Compile`$668 = Compile`$663 Compile`$667; 
      Compile`$681 = $CellContext`A3^2; Compile`$670 = 3 Compile`$669; 
      Compile`$671 = 2 $CellContext`A2 $CellContext`C2; 
      Compile`$672 = Compile`$670 + $CellContext`C1 + Compile`$671; 
      Compile`$673 = Compile`$672^(-1); 
-     Compile`$674 = -$CellContext`A2 $CellContext`C4; 
-     Compile`$675 = -Compile`$669 Compile`$665; 
+     Compile`$674 = (-$CellContext`A2) $CellContext`C4; 
+     Compile`$675 = (-Compile`$669) Compile`$665; 
      Compile`$676 = Compile`$674 + $CellContext`C5 + Compile`$675; 
      Compile`$682 = 3 Compile`$681; 
      Compile`$683 = 2 $CellContext`A3 $CellContext`C2; 
      Compile`$684 = Compile`$682 + $CellContext`C1 + Compile`$683; 
      Compile`$685 = Compile`$684^(-1); 
-     Compile`$686 = -$CellContext`A3 $CellContext`C4; 
-     Compile`$687 = -Compile`$681 Compile`$665; 
+     Compile`$686 = (-$CellContext`A3) $CellContext`C4; 
+     Compile`$687 = (-Compile`$681) Compile`$665; 
      Compile`$688 = Compile`$686 + $CellContext`C5 + Compile`$687; 
-     Compile`$689 = -Compile`$685 Compile`$688; 
+     Compile`$689 = (-Compile`$685) Compile`$688; 
      Compile`$698 = $CellContext`B1^2; 
      Compile`$699 = $CellContext`kbon + $CellContext`kbon2; 
      Compile`$711 = $CellContext`B2^2; 
@@ -8578,8 +8619,8 @@ $CellContext`B3 Compile`$428 $CellContext`kon1b;
      Compile`$705 = 
       Compile`$703 + 
        Compile`$704 + $CellContext`koffu + $CellContext`kuon + \
-$CellContext`kuon2; Compile`$697 = -$CellContext`B1 $CellContext`C6; 
-     Compile`$700 = -Compile`$698 Compile`$699; 
+$CellContext`kuon2; Compile`$697 = (-$CellContext`B1) $CellContext`C6; 
+     Compile`$700 = (-Compile`$698) Compile`$699; 
      Compile`$701 = Compile`$697 + Compile`$700; 
      Compile`$702 = 3 Compile`$698; 
      Compile`$706 = 2 $CellContext`B1 Compile`$705; 
@@ -8587,21 +8628,21 @@ $CellContext`kuon2; Compile`$697 = -$CellContext`B1 $CellContext`C6;
      Compile`$708 = Compile`$707^(-1); 
      Compile`$709 = Compile`$701 Compile`$708; 
      Compile`$723 = $CellContext`B3^2; 
-     Compile`$710 = -$CellContext`B2 $CellContext`C6; 
-     Compile`$712 = -Compile`$711 Compile`$699; 
+     Compile`$710 = (-$CellContext`B2) $CellContext`C6; 
+     Compile`$712 = (-Compile`$711) Compile`$699; 
      Compile`$713 = Compile`$710 + Compile`$712; 
      Compile`$714 = 3 Compile`$711; 
      Compile`$715 = 2 $CellContext`B2 Compile`$705; 
      Compile`$716 = Compile`$714 + $CellContext`C3 + Compile`$715; 
      Compile`$717 = Compile`$716^(-1); 
-     Compile`$722 = -$CellContext`B3 $CellContext`C6; 
-     Compile`$724 = -Compile`$723 Compile`$699; 
+     Compile`$722 = (-$CellContext`B3) $CellContext`C6; 
+     Compile`$724 = (-Compile`$723) Compile`$699; 
      Compile`$725 = Compile`$722 + Compile`$724; 
      Compile`$726 = 3 Compile`$723; 
      Compile`$727 = 2 $CellContext`B3 Compile`$705; 
      Compile`$728 = Compile`$726 + $CellContext`C3 + Compile`$727; 
      Compile`$729 = Compile`$728^(-1); 
-     Compile`$730 = -Compile`$725 Compile`$729; 
+     Compile`$730 = (-Compile`$725) Compile`$729; 
      Compile`$1472 = Compile`$663 Compile`$667 $CellContext`t1; 
      Compile`$1473 = Compile`$701 Compile`$708 $CellContext`t2; 
      Compile`$1474 = Compile`$1472 + Compile`$1473; 
@@ -8687,6 +8728,7 @@ $CellContext`B3 Compile`$663 Compile`$416
 $CellContext`B3 Compile`$663 Compile`$416 
           Compile`$667 $CellContext`kon1b + $CellContext`A3 $CellContext`B2 \
 $CellContext`B3 Compile`$663 Compile`$416 
+           
            Compile`$667 $CellContext`kon1b - $CellContext`A2 $CellContext`B1 \
 $CellContext`B3 Compile`$663 Compile`$422 
           Compile`$667 $CellContext`kon1b + $CellContext`A2 $CellContext`B2 \
@@ -8829,13 +8871,13 @@ $CellContext`B1 $CellContext`B2 Compile`$673 Compile`$397
 $CellContext`B2 $CellContext`B3 Compile`$673 Compile`$397 
            Compile`$676 $CellContext`kon1b $CellContext`kon2b + \
 $CellContext`B1 $CellContext`B2 Compile`$673 Compile`$409 
+           
            Compile`$676 $CellContext`kon1b $CellContext`kon2b - \
 $CellContext`B2 $CellContext`B3 Compile`$673 Compile`$409 
           Compile`$676 $CellContext`kon1b $CellContext`kon2b + \
 $CellContext`B1 $CellContext`B3 Compile`$673 Compile`$416 
            Compile`$676 $CellContext`kon1b $CellContext`kon2b - \
 $CellContext`B2 $CellContext`B3 Compile`$673 Compile`$416 
-          
           Compile`$676 $CellContext`kon1b $CellContext`kon2b - \
 $CellContext`B1 $CellContext`B3 Compile`$673 Compile`$428 
           Compile`$676 $CellContext`kon1b $CellContext`kon2b + \
@@ -8968,13 +9010,13 @@ $CellContext`A2 $CellContext`B3 Compile`$663 Compile`$403
 $CellContext`A3 $CellContext`B1 Compile`$663 Compile`$409 
           Compile`$667 $CellContext`kon1b $CellContext`kuon2 + \
 $CellContext`A3 $CellContext`B3 Compile`$663 Compile`$409 
+           
            Compile`$667 $CellContext`kon1b $CellContext`kuon2 + \
 $CellContext`A2 $CellContext`B1 Compile`$663 Compile`$416 
            Compile`$667 $CellContext`kon1b $CellContext`kuon2 - \
 $CellContext`A3 $CellContext`B1 Compile`$663 Compile`$416 
           Compile`$667 $CellContext`kon1b $CellContext`kuon2 - \
 $CellContext`A2 $CellContext`B2 Compile`$663 Compile`$416 
-          
           Compile`$667 $CellContext`kon1b $CellContext`kuon2 + \
 $CellContext`A3 $CellContext`B2 Compile`$663 Compile`$416 
            Compile`$667 $CellContext`kon1b $CellContext`kuon2 - \
@@ -9184,7 +9226,6 @@ $CellContext`B2 $CellContext`c Compile`$673 Compile`$346 $CellContext`kboff
 $CellContext`B3 $CellContext`c Compile`$673 Compile`$346 $CellContext`kboff 
           Compile`$676 $CellContext`kon2b $CellContext`kuon2 - \
 $CellContext`B2 $CellContext`c Compile`$673 Compile`$390 $CellContext`kboff 
-          
           Compile`$676 $CellContext`kon2b $CellContext`kuon2 + \
 $CellContext`B3 $CellContext`c Compile`$673 Compile`$390 $CellContext`kboff 
            Compile`$676 $CellContext`kon2b $CellContext`kuon2 - \
@@ -10111,6 +10152,7 @@ $CellContext`kuon2
 $CellContext`kuon2 Compile`$729 + $CellContext`A2 Compile`$397 
            Compile`$725 $CellContext`kon1b $CellContext`kon2b \
 $CellContext`kuon2 Compile`$729 - $CellContext`A3 Compile`$397 
+          
           Compile`$725 $CellContext`kon1b $CellContext`kon2b \
 $CellContext`kuon2 Compile`$729 - $CellContext`A1 Compile`$403 
           Compile`$725 $CellContext`kon1b $CellContext`kon2b \
@@ -10264,7 +10306,6 @@ $CellContext`kuon2 Compile`$1504 + $CellContext`A1 $CellContext`B3
 $CellContext`kuon2 Compile`$1504 - $CellContext`A3 $CellContext`B3 
           Compile`$383 $CellContext`kon1b $CellContext`kon2b \
 $CellContext`kuon2 Compile`$1504 - $CellContext`A1 $CellContext`B2 
-          
           Compile`$383 $CellContext`kon1b $CellContext`kuoff2 \
 $CellContext`kuon2 
           Compile`$1504 + $CellContext`A3 $CellContext`B2 
@@ -10329,6 +10370,7 @@ $CellContext`kuon2
 $CellContext`kuon2 Compile`$1534 + $CellContext`A1 $CellContext`B2 
            Compile`$390 $CellContext`kon1b $CellContext`kuoff2 \
 $CellContext`kuon2 Compile`$1534 - $CellContext`A2 $CellContext`B2 
+          
           Compile`$390 $CellContext`kon1b $CellContext`kuoff2 \
 $CellContext`kuon2 Compile`$1534 - $CellContext`A1 $CellContext`B3 
           Compile`$390 $CellContext`kon1b $CellContext`kuoff2 \
@@ -10338,7 +10380,6 @@ $CellContext`kuon2
 $CellContext`kuon2 
            Compile`$1534 - $CellContext`A1 $CellContext`A2 $CellContext`B1 \
 $CellContext`B2 Compile`$397 $CellContext`kon1b 
-          
           Compile`$1564 + $CellContext`A1 $CellContext`A3 $CellContext`B1 \
 $CellContext`B2 Compile`$397 $CellContext`kon1b 
            Compile`$1564 + $CellContext`A1 $CellContext`A2 $CellContext`B2 \
@@ -10403,6 +10444,7 @@ $CellContext`kuon2
 $CellContext`B2 Compile`$403 $CellContext`kon1b 
            Compile`$1593 - $CellContext`A2 $CellContext`A3 $CellContext`B1 \
 $CellContext`B2 Compile`$403 $CellContext`kon1b 
+          
           Compile`$1593 - $CellContext`A1 $CellContext`A2 $CellContext`B2 \
 $CellContext`B3 Compile`$403 $CellContext`kon1b 
           Compile`$1593 + $CellContext`A2 $CellContext`A3 $CellContext`B2 \
@@ -10618,6 +10660,7 @@ $CellContext`B3 Compile`$422 $CellContext`kon1b
            Compile`$1681 - $CellContext`A2 $CellContext`A3 $CellContext`B2 
           Compile`$422 $CellContext`kon1b $CellContext`kuon2 
           Compile`$1681 - $CellContext`A1 $CellContext`B1 $CellContext`c 
+          
           Compile`$422 $CellContext`kboff $CellContext`kon2b \
 $CellContext`kuon2 
           Compile`$1681 + $CellContext`A3 $CellContext`B1 $CellContext`c 
@@ -10700,7 +10743,6 @@ $CellContext`kuon2
           Compile`$1710 + $CellContext`A2 $CellContext`B2 
            Compile`$428 $CellContext`kon1b $CellContext`kon2b \
 $CellContext`kuon2 Compile`$1710 + $CellContext`A1 $CellContext`B1 
-           
            Compile`$428 $CellContext`kon1b $CellContext`kuoff2 \
 $CellContext`kuon2 Compile`$1710 - $CellContext`A2 $CellContext`B1 
           Compile`$428 $CellContext`kon1b $CellContext`kuoff2 \
@@ -11508,75 +11550,77 @@ CellTagsIndex->{}
 *)
 (*NotebookFileOutline
 Notebook[{
-Cell[554, 20, 457, 10, 69, "Input",ExpressionUUID->"6a493ea4-13fc-4f3a-9ce6-a7eedc5734ba"],
-Cell[1014, 32, 4823, 130, 209, "Input",ExpressionUUID->"72bb594b-946d-446d-a06c-f57243be8ffa"],
+Cell[554, 20, 473, 10, 69, "Input",ExpressionUUID->"6a493ea4-13fc-4f3a-9ce6-a7eedc5734ba"],
+Cell[1030, 32, 4818, 129, 209, "Input",ExpressionUUID->"72bb594b-946d-446d-a06c-f57243be8ffa"],
 Cell[CellGroupData[{
-Cell[5862, 166, 1978, 53, 113, "Input",ExpressionUUID->"2aebfb50-1760-4819-8acb-6da0452ec651"],
-Cell[7843, 221, 7456, 154, 209, "Output",ExpressionUUID->"72f74c27-1ced-44e0-9887-2d1f9e1678ca"]
+Cell[5873, 165, 1979, 53, 113, "Input",ExpressionUUID->"2aebfb50-1760-4819-8acb-6da0452ec651"],
+Cell[7855, 220, 7482, 155, 209, "Output",ExpressionUUID->"0d0d5ec2-595d-46a6-9fd8-0cba122625a4"]
 }, Open  ]],
-Cell[15314, 378, 565, 13, 71, "Input",ExpressionUUID->"77f8807a-aed1-4fb2-bee4-0dffee868302"],
-Cell[15882, 393, 1345, 37, 129, "Input",ExpressionUUID->"a39857e1-e59b-418f-b2fa-b6df307a1f28"],
-Cell[17230, 432, 1581, 42, 129, "Input",ExpressionUUID->"17b35b2c-1fbd-4231-a144-37fab1b428bc"],
-Cell[18814, 476, 4706, 127, 367, "Input",ExpressionUUID->"6b0d765b-67fe-40b4-a533-107e3a0e58f9"],
+Cell[15352, 378, 565, 13, 71, "Input",ExpressionUUID->"77f8807a-aed1-4fb2-bee4-0dffee868302"],
+Cell[15920, 393, 1345, 37, 129, "Input",ExpressionUUID->"a39857e1-e59b-418f-b2fa-b6df307a1f28"],
+Cell[17268, 432, 1581, 42, 129, "Input",ExpressionUUID->"17b35b2c-1fbd-4231-a144-37fab1b428bc"],
+Cell[18852, 476, 4706, 127, 367, "Input",ExpressionUUID->"6b0d765b-67fe-40b4-a533-107e3a0e58f9"],
 Cell[CellGroupData[{
-Cell[23545, 607, 976, 22, 49, "Input",ExpressionUUID->"3b06583a-ca2e-4e8e-8522-bf758266adb0"],
-Cell[24524, 631, 286, 4, 33, "Output",ExpressionUUID->"81abb70c-b671-461f-862f-0b2e284fcbd8"]
-}, Open  ]],
-Cell[CellGroupData[{
-Cell[24847, 640, 944, 26, 89, "Input",ExpressionUUID->"8a7c11f8-1509-4d1e-9655-80f764d650cf"],
-Cell[25794, 668, 3422, 82, 186, "Output",ExpressionUUID->"63cef7ff-92ea-4e6b-8a82-e5b6f291b5ef"]
-}, Open  ]],
-Cell[29231, 753, 503, 13, 29, "Input",ExpressionUUID->"b572f641-ed27-4138-9715-354799540595"],
-Cell[CellGroupData[{
-Cell[29759, 770, 975, 24, 53, "Input",ExpressionUUID->"a21cf03f-ada1-477d-8825-7dcf4ef1b70c"],
-Cell[30737, 796, 273, 5, 33, "Output",ExpressionUUID->"7f72b192-d083-48ed-8051-2af4fd1b38cc"]
-}, Open  ]],
-Cell[31025, 804, 662, 16, 29, "Input",ExpressionUUID->"d05d906b-1192-4f07-a69d-592504144826"],
-Cell[CellGroupData[{
-Cell[31712, 824, 10291, 238, 592, "Input",ExpressionUUID->"bc1862e3-060d-4a1a-af19-727ab3492c5e"],
-Cell[42006, 1064, 2778, 60, 118, "Output",ExpressionUUID->"d5293a76-66af-4686-a54b-a3204f38ae13"]
+Cell[23583, 607, 976, 22, 49, "Input",ExpressionUUID->"3b06583a-ca2e-4e8e-8522-bf758266adb0"],
+Cell[24562, 631, 286, 4, 33, "Output",ExpressionUUID->"81abb70c-b671-461f-862f-0b2e284fcbd8"]
 }, Open  ]],
 Cell[CellGroupData[{
-Cell[44821, 1129, 1529, 37, 93, "Input",ExpressionUUID->"b5f8741f-291d-4628-bcf4-bba7dfa1acde"],
-Cell[46353, 1168, 239, 4, 33, "Output",ExpressionUUID->"92db9c74-7b89-4c6b-8aa6-46e0cfb80103"]
+Cell[24885, 640, 944, 26, 89, "Input",ExpressionUUID->"8a7c11f8-1509-4d1e-9655-80f764d650cf"],
+Cell[25832, 668, 3422, 82, 186, "Output",ExpressionUUID->"63cef7ff-92ea-4e6b-8a82-e5b6f291b5ef"]
+}, Open  ]],
+Cell[29269, 753, 503, 13, 29, "Input",ExpressionUUID->"b572f641-ed27-4138-9715-354799540595"],
+Cell[CellGroupData[{
+Cell[29797, 770, 975, 24, 53, "Input",ExpressionUUID->"a21cf03f-ada1-477d-8825-7dcf4ef1b70c"],
+Cell[30775, 796, 273, 5, 33, "Output",ExpressionUUID->"7f72b192-d083-48ed-8051-2af4fd1b38cc"]
+}, Open  ]],
+Cell[31063, 804, 662, 16, 29, "Input",ExpressionUUID->"d05d906b-1192-4f07-a69d-592504144826"],
+Cell[31728, 822, 10849, 246, 612, "Input",ExpressionUUID->"bc1862e3-060d-4a1a-af19-727ab3492c5e"],
+Cell[42580, 1070, 383, 10, 29, "Input",ExpressionUUID->"937a8445-542f-4372-be62-3e3182fe557c"],
+Cell[42966, 1082, 273, 6, 29, "Input",ExpressionUUID->"e46471a9-94ab-488d-81d5-1d07f45cf34a"],
+Cell[43242, 1090, 963, 24, 29, "Input",ExpressionUUID->"66cda65b-f7d1-4dcd-b2d9-50d6bc828309"],
+Cell[44208, 1116, 821, 20, 53, "Input",ExpressionUUID->"e5425f30-b7a2-4b22-a9b4-2a979a654543"],
+Cell[45032, 1138, 1025, 28, 133, "Input",ExpressionUUID->"84756472-ae1f-4059-8fa2-97e1c6bbc269"],
+Cell[CellGroupData[{
+Cell[46082, 1170, 1529, 37, 93, "Input",ExpressionUUID->"b5f8741f-291d-4628-bcf4-bba7dfa1acde"],
+Cell[47614, 1209, 239, 4, 33, "Output",ExpressionUUID->"92db9c74-7b89-4c6b-8aa6-46e0cfb80103"]
 }, Open  ]],
 Cell[CellGroupData[{
-Cell[46629, 1177, 1676, 42, 129, "Input",ExpressionUUID->"700a8e61-4d5e-42be-9381-6f2fcdf13938"],
-Cell[48308, 1221, 700, 13, 53, "Output",ExpressionUUID->"6c1f25d0-c5c1-48ba-8440-79cea8de263d"]
+Cell[47890, 1218, 1676, 42, 129, "Input",ExpressionUUID->"700a8e61-4d5e-42be-9381-6f2fcdf13938"],
+Cell[49569, 1262, 700, 13, 53, "Output",ExpressionUUID->"6c1f25d0-c5c1-48ba-8440-79cea8de263d"]
 }, Open  ]],
 Cell[CellGroupData[{
-Cell[49045, 1239, 2479, 67, 189, "Input",ExpressionUUID->"d5448778-aa35-4b02-bd47-dff9d0750ceb"],
-Cell[51527, 1308, 552936, 9422, 61, "Output",ExpressionUUID->"3551d410-1214-4f65-a285-d0af0cb1ac7a"]
+Cell[50306, 1280, 2479, 67, 189, "Input",ExpressionUUID->"d5448778-aa35-4b02-bd47-dff9d0750ceb"],
+Cell[52788, 1349, 553229, 9423, 61, "Output",ExpressionUUID->"3551d410-1214-4f65-a285-d0af0cb1ac7a"]
 }, Open  ]],
-Cell[604478, 10733, 2640, 61, 149, "Input",ExpressionUUID->"1ad060ba-207c-4939-8af2-c5e49ab7cb4f"],
+Cell[606032, 10775, 2640, 61, 149, "Input",ExpressionUUID->"1ad060ba-207c-4939-8af2-c5e49ab7cb4f"],
 Cell[CellGroupData[{
-Cell[607143, 10798, 713, 13, 49, "Input",ExpressionUUID->"88349b51-eec5-435b-905a-e585b37e3948"],
-Cell[607859, 10813, 392, 6, 33, "Output",ExpressionUUID->"8490cba8-bf99-4542-928d-3f30814f9cd5"]
+Cell[608697, 10840, 713, 13, 49, "Input",ExpressionUUID->"88349b51-eec5-435b-905a-e585b37e3948"],
+Cell[609413, 10855, 392, 6, 33, "Output",ExpressionUUID->"8490cba8-bf99-4542-928d-3f30814f9cd5"]
 }, Open  ]],
-Cell[608266, 10822, 14563, 325, 1167, "Input",ExpressionUUID->"d02b8a67-c3d1-4d28-8b10-57ac528ae5d4"],
+Cell[609820, 10864, 14563, 325, 1167, "Input",ExpressionUUID->"d02b8a67-c3d1-4d28-8b10-57ac528ae5d4"],
 Cell[CellGroupData[{
-Cell[622854, 11151, 1397, 27, 109, "Input",ExpressionUUID->"79a9b5ef-9e5e-499b-a18c-b51185dba837"],
-Cell[624254, 11180, 447, 7, 33, "Output",ExpressionUUID->"51638cc6-376e-4585-8c1e-1fbdca9e3501"]
+Cell[624408, 11193, 1397, 27, 109, "Input",ExpressionUUID->"79a9b5ef-9e5e-499b-a18c-b51185dba837"],
+Cell[625808, 11222, 447, 7, 33, "Output",ExpressionUUID->"51638cc6-376e-4585-8c1e-1fbdca9e3501"]
 }, Open  ]],
-Cell[624716, 11190, 347, 9, 30, "Input",ExpressionUUID->"d066335c-0b38-4007-b83c-8339ce2ff214"],
-Cell[625066, 11201, 329, 6, 49, "Input",ExpressionUUID->"9ddfc819-bb56-42a4-8f4b-e808591ecc78"],
+Cell[626270, 11232, 347, 9, 30, "Input",ExpressionUUID->"d066335c-0b38-4007-b83c-8339ce2ff214"],
+Cell[626620, 11243, 329, 6, 49, "Input",ExpressionUUID->"9ddfc819-bb56-42a4-8f4b-e808591ecc78"],
 Cell[CellGroupData[{
-Cell[625420, 11211, 4058, 109, 509, "Input",ExpressionUUID->"9a023ed2-8d89-43a9-94fd-7802803b6c3c"],
-Cell[629481, 11322, 507, 8, 46, "Output",ExpressionUUID->"bf88d4aa-2331-4869-8148-6044b0b6103a"],
-Cell[629991, 11332, 497, 8, 46, "Output",ExpressionUUID->"e13b7454-831d-4dff-be73-76b16da315bf"]
-}, Open  ]],
-Cell[CellGroupData[{
-Cell[630525, 11345, 677, 17, 49, "Input",ExpressionUUID->"cc0d2c12-4201-4969-96c3-19447fb4c39c"],
-Cell[631205, 11364, 1082, 18, 86, "Output",ExpressionUUID->"3786026f-6ac5-4981-b4e2-359c8ee2c8a1"]
+Cell[626974, 11253, 4058, 109, 509, "Input",ExpressionUUID->"9a023ed2-8d89-43a9-94fd-7802803b6c3c"],
+Cell[631035, 11364, 507, 8, 33, "Output",ExpressionUUID->"bf88d4aa-2331-4869-8148-6044b0b6103a"],
+Cell[631545, 11374, 497, 8, 33, "Output",ExpressionUUID->"e13b7454-831d-4dff-be73-76b16da315bf"]
 }, Open  ]],
 Cell[CellGroupData[{
-Cell[632324, 11387, 2003, 40, 169, "Input",ExpressionUUID->"a70a6082-af2a-4f76-b5a0-9b1970b1b115"],
-Cell[634330, 11429, 448, 11, 26, "Message",ExpressionUUID->"feafc233-4494-4a10-9518-b4c8159991b5"],
-Cell[634781, 11442, 1336, 25, 53, "Output",ExpressionUUID->"b2f9036a-84ec-462b-9a2b-4cb2738aa51c"]
+Cell[632079, 11387, 677, 17, 49, "Input",ExpressionUUID->"cc0d2c12-4201-4969-96c3-19447fb4c39c"],
+Cell[632759, 11406, 1082, 18, 73, "Output",ExpressionUUID->"3786026f-6ac5-4981-b4e2-359c8ee2c8a1"]
 }, Open  ]],
 Cell[CellGroupData[{
-Cell[636154, 11472, 178, 3, 29, "Input",ExpressionUUID->"b1bbe41f-57b0-4c90-91e9-2ec3f7e48655"],
-Cell[636335, 11477, 516, 11, 46, "Output",ExpressionUUID->"1f47693a-c425-48ed-a594-f209ef25a45a"]
+Cell[633878, 11429, 2003, 40, 169, "Input",ExpressionUUID->"a70a6082-af2a-4f76-b5a0-9b1970b1b115"],
+Cell[635884, 11471, 448, 11, 26, "Message",ExpressionUUID->"feafc233-4494-4a10-9518-b4c8159991b5"],
+Cell[636335, 11484, 1336, 25, 53, "Output",ExpressionUUID->"b2f9036a-84ec-462b-9a2b-4cb2738aa51c"]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[637708, 11514, 178, 3, 29, "Input",ExpressionUUID->"b1bbe41f-57b0-4c90-91e9-2ec3f7e48655"],
+Cell[637889, 11519, 516, 11, 33, "Output",ExpressionUUID->"1f47693a-c425-48ed-a594-f209ef25a45a"]
 }, Open  ]]
 }
 ]
