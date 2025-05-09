@@ -1658,6 +1658,76 @@ let
 end
 
 ## -.-.--..-.-.-.-.-.---------.-.-.--.........---.-.--
+# 6 binding sites without activation step (Johnathan's setup)
+let 
+    edges = [(1 ,2 ), (2 ,1 ),
+            (2 ,3 ), (3 ,2 ),
+            (3 ,4 ), (4 ,3 ),
+            (4 ,5 ), (5 ,4 ),
+            (5 ,6 ), (6 ,5 ),
+            (6 ,7 ), (7 ,6 )]
+
+    nstates = 7
+    input_edges = [(i,i+1) for i in range(1,6)]
+    off_ind = [1,1,1,0,0,0,0]
+    off_ind = BitArray(off_ind)
+    k = 3
+    hset = [k+1]
+    idist = ones(7) ./ 7
+    cr = 1
+
+    global m1 = OneBurstDecoyModel(;
+        nstates = nstates,
+        edges = edges,
+        input_edges = input_edges,
+        logrates = nothing,
+        cr = nothing,
+        cw = nothing,
+        gamma = nothing,
+        ind_set = off_ind,
+        start_state = k,
+        hitting_set = hset,
+        eps = eps,
+        reltol = reltol,
+        maxevals = maxevals,
+    )
+
+    global m2 = OneBurstDecoyModel(;
+        nstates = nstates,
+        edges = edges,
+        input_edges = input_edges,
+        logrates = nothing,
+        cr = nothing,
+        cw = nothing,
+        gamma = nothing,
+        ind_set = off_ind,
+        start_state = k,
+        hitting_set = hset,
+        eps = eps,
+        reltol = reltol,
+        maxevals = maxevals,
+    )
+
+    logrates = [0,1,0,1,0,1,0,1,0,1,0,1]
+
+    dc = cr/20
+    m1.cr = cr
+    m2.cr = cr + dc
+    m1.logrates = logrates
+    m2.logrates = logrates
+
+    init6bs!(m1)
+    init6bs!(m2)
+
+    tauOff(m1)
+    tauOn(m1)
+    # integrand([1,0.1],m1,m2)
+    FisherRate(m1, m2)
+    # m1._comp
+
+end
+
+## -.-.--..-.-.-.-.-.---------.-.-.--.........---.-.--
 # testing numerical inverse Laplace transform
 
 @time let 
@@ -1676,6 +1746,51 @@ end
 
 end
 
+## -.-.--..-.-.-.-.-.---------.-.-.--.........---.-.--
+# 2 binding sites without kb ku constraints
+let
+    ## circuit description
+    nstates = 6
+    edges = [(5, 1), (1, 5), (2, 6), (6, 2), (1, 2), (1, 3), 
+            (2, 4), (3, 1), (3, 4), (4, 2), (6, 5)]
+    input_edges = [(5,1), (1,3), (6,2), (2,4)]
+    off_ind = BitArray([1,0,1,0,1,0])
+
+    global m1 = OneBurstDecoyModel(;
+        nstates = nstates,
+        edges = edges,
+        input_edges = input_edges,
+        logrates = nothing,
+        cr = nothing,
+        cw = nothing,
+        gamma = nothing,
+        ind_set = off_ind,
+        start_state = 5,
+        hitting_set = [6,2,4],
+        eps = eps,
+        reltol = reltol,
+        maxevals = maxevals,
+    )
+
+    global m2 = OneBurstDecoyModel(;
+        nstates = nstates,
+        edges = edges,
+        input_edges = input_edges,
+        logrates = nothing,
+        cr = nothing,
+        cw = nothing,
+        gamma = nothing,
+        ind_set = off_ind,
+        start_state = 5,
+        hitting_set = [6,2,4],
+        eps = eps,
+        reltol = reltol,
+        maxevals = maxevals,
+    )
+
+    
+
+end
 
 
 # old tests

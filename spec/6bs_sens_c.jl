@@ -12,7 +12,7 @@ D_tf = 7.4      # um^2/s
 D_cplx = 0.1    # um^2/s
 c = 5.6         # um^-3
 dc = 0.1 * c
-dl_tf = 4*a*D_tf
+dl_tf = a*D_tf
 max_ir_full = 0.5 * (dc/c)^2 * c*4*a*D_tf
 
 ### 6-binding site circuit parameters
@@ -133,7 +133,7 @@ global m2 = OneBurstDecoyModel(;
 )
 
 ### Optimization parameters
-maxiters_acc = 100000
+maxiters_acc = 200000
 maxiters_full = 8000
 sigma0 = log10(ub) / 4
 xinit1 = (lub1 .+ llb1) ./ 2
@@ -146,9 +146,9 @@ fixed_conc = false
 
 ### temperature parameter
 # betas = vcat(range(1e-1, stop=1e-5, length=16), 10 .^ range(-4.8, stop=-9, length=16))
-# betas = 10 .^ range(0, 3.5, length=16)
+betas = 10 .^ range(-1, 3.5, length=32)
 # betas = 10 .^ range(-2.4, 0.6, length=16)
-betas = 10 .^ range(-4.4, -1.6, length=64)
+# betas = 10 .^ range(-4.4, -1.6, length=64)
 nparams = length(betas)
 gammas = [0]
 wvals = [0]
@@ -173,8 +173,8 @@ end
 @counted function target_acc(logrates, args...)
     m1, m2, beta, gamma, cw = args
     
-    cr = 3000
-    dc = cr/1000
+    cr = beta
+    dc = cr/20
     m1.cr = cr
     m2.cr = cr + dc
     m1.logrates = logrates
@@ -194,12 +194,12 @@ end
         Jplus = J + abs(J)
     end
 
-    FIR = ir_acc(m1, m2) * 4 * (c/dc)^2
+    FIR = ir_acc(m1, m2) * 2 * (cr/dc)^2
     EP = EP_ss(m1)
     s = abs(sharpness(m1, m2))
     S = s / (pion * (1 - pion))
 
-    (- FIR +beta*S + EP, cr, FIR, S)
+    (- FIR, cr, FIR, S) # +5*(S-4)^2
 end
 
 # IR FULL

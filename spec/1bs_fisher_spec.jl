@@ -30,7 +30,7 @@ off_ind = BitArray([1,1,0,0,0,1])
 cr = 1
 # beta = cr
 
-maxevals = 50000
+maxevals = 10000
 reltol = 1e-10
 eps = 1e-30
 N = 1   # legacy parameter, number of samples once optima have been found
@@ -75,30 +75,28 @@ m2 = OneBurstDecoyModel(;
     maxevals = maxevals,
 )
 
-# initOneBurst!(m1)
-# initOneBurst!(m2)
-
 ### Optimization parameters
 opt_alg = BBO_adaptive_de_rand_1_bin_radiuslimited()
 # opt_alg = Evolutionary.CMAES(μ = 5, λ = 10, sigma0 = 1)
 
 maxiters_acc = 30000
-maxiters_full = 3000
+maxiters_full = 1000
 whichf = "full"
 fixed_conc = true   # is concentration fixed, or are we sweeping over it?
 monte_carlo = false   # are we sampling trajectories and taking averages?
 
 ### Temperature parameter
-betas1 = map(x->tan(x), range(0, stop=pi/15, length=32))
-betas2 = map(x->tan(x), range(pi/15, stop=pi/2 - 0.1, length=32))
-betas = vcat(betas1, betas2)
+angle_incr = 3.141592 / 5
+# betasn = map(x->-tan(x), range(0*angle_incr, stop=0.5*angle_incr, length=16))
+betas = map(x->tan(x), range(0*angle_incr, stop=1*angle_incr, length=32))
+# betas = vcat(betasn, betasp)
 # betas = 10 .^ range(-1, stop=3, length=32)
 # betas = [0.05]
 nparams = length(betas)
 
 ### Other parameters
-gammas = [1.5,10]
-wvals = [0.01,5]
+gammas = [10]
+wvals = [0.01]
 
 
 ### objective functions
@@ -148,8 +146,8 @@ end
     fir = FisherRate(m1, m2)
     firOff = FisherRateOff(m1, m2)
     firOn = FisherRateOn(m1, m2)
-    logSpec = log2((pi_[3])/(pi_[3]+pi_[4]+pi_[5]))
+    logSpec = log2((pi_[3]+pi_[4]*pi_[3]*m1.Q[3,4]/(pi_[5]*m1.Q[5,4]+pi_[3]*m1.Q[3,4]))
+                    /(pi_[3]+pi_[4]+pi_[5]))
 
     (- fir - beta*logSpec, fir, logSpec, EP)
 end
-
