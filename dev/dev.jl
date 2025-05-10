@@ -13,6 +13,7 @@
     using Plots
     using Cubature
     using InverseLaplace
+    using PrettyTables
 end
 
 
@@ -1145,7 +1146,7 @@ end
         gamma = gamma,
         ind_set = off_ind,
         start_state = 1,
-        hitting_set = [3,4,5],
+        hitting_set = hitting_set,
         eps = eps,
         reltol = reltol,
         maxevals = maxevals,
@@ -1161,7 +1162,7 @@ end
         gamma = gamma,
         ind_set = off_ind,
         start_state = 1,
-        hitting_set = [3,4,5],
+        hitting_set = hitting_set,
         eps = eps,
         reltol = reltol,
         maxevals = maxevals,
@@ -1449,87 +1450,122 @@ end
 ## ----.-.-.--....-.---.-..-.-.-.-.-.--.-.-.-----.--
 # testing Pon, Poff, Pjoint
 @time let 
-    edges = [(1, 2), (2, 1), (1, 6), (6, 1), (4, 3), (3, 4), 
-        (4, 5), (5, 4), (6, 5), (4, 1), (2, 3), (1, 4)]
-    input_edges = [(1,2), (4,3)]
-    off_ind = BitArray([1,1,0,0,0,1])
-    on_ind = BitArray([0,0,1,1,1,0])
-    idist = ones(6) ./ 6
-    n = 1
-    k = 1
+    ## circuit specifications file
+    circuits_file = "spec/circuits.json"
+    global circuit_specs = Dict()
+
+    open(circuits_file, "r") do f
+        circuit_specs = JSON.parse(f)
+    end
+
+    ## ----.-.-.--....-.---.-..-.-.-.-.-.--.-.-.-----.--
+
+    # loading testset
+    tests_file = "test/data/example-data.json"
+    testset = Dict()
+
+    open(tests_file, "r") do f
+        testset = JSON.parse(f)
+    end
+
+    kc = "1"
+    kg = "1"
+    kw = "1"
+
+    # testing 2bs decoy circuit
+    circuitId = testset["circuit_id"]
+    global current_test = testset[kc][kg][kw]
+    logrates = current_test["logrates"]
+    cr = current_test["c0"]
+    t1 = current_test["t1"]
+    t2 = current_test["t2"]
+    dc = cr / 100
+
+    circuit_decoy = circuit_specs[circuitId]
+    edges = circuit_decoy["edges"]
+    input_edges = circuit_decoy["input_edges"]
+    nstates = circuit_decoy["nstates"]
+    off_ind = circuit_decoy["off_ind"]
+    off_ind = BitArray(off_ind)
+    start_state = circuit_decoy["start_state"]
+    hitting_set = circuit_decoy["hitting_set"]
+
     eps = 1e-30
     reltol = 1e-12
     evalrtol = 1e-12
     maxevals = 100000
 
-    ## ----.-.-.--....-.---.-..-.-.-.-.-.--.-.-.-----.--
-
-    c = 1
-    c2 = 1 
-    kboff = 1 
-    konb = 1 
-    kuon = 1 
-    kbon = 1 
-    koffu = 1 
-    kuoff = 1 
-    konu = 1 
-    gamma = 1 
-    t2 = 1.
-    t1 = 1.
-
-    cr = c
-    cw = c2
-    dc = cr / 100
-    logrates = log10.([kboff, konb, kuon, kbon, koffu, kuoff, konu])
-
-    d = OneBurstDecoyModel(;
-        nstates = 6,
+    global d = OneBurstDecoyModel(;
+        nstates = nstates,
         edges = edges,
         input_edges = input_edges,
         logrates = logrates,
         cr = cr,
-        cw = cw,
-        gamma = gamma,
+        cw = nothing,
+        gamma = nothing,
         ind_set = off_ind,
-        start_state = 1,
-        hitting_set = [3,4,5],
+        start_state = start_state,
+        hitting_set = hitting_set,
         eps = eps,
         reltol = reltol,
         maxevals = maxevals,
     )
 
     ddc = OneBurstDecoyModel(;
-        nstates = 6,
+        nstates = nstates,
         edges = edges,
         input_edges = input_edges,
         logrates = logrates,
         cr = cr + dc,
-        cw = cw,
-        gamma = gamma,
+        cw = nothing,
+        gamma = nothing,
         ind_set = off_ind,
-        start_state = 1,
-        hitting_set = [3,4,5],
+        start_state = start_state,
+        hitting_set = hitting_set,
         eps = eps,
         reltol = reltol,
         maxevals = maxevals,
     )
 
-    initDecoys!(d)
-    Pon!(t2, d)
-    Poff!(t1, d)
+    # d.weights = [kboff,     kuoff,        d.cw*kboff, d.gamma*kuoff, kbon, kuon,
+    #              d.cw*kbon, d.gamma*kuon, konb,       koffu,         konb, konu]
+    init2bsFree!(d)
+
+    # Pon!(t2, d)
+    # Poff!(t1, d)
+    
     Pjoint!(t1, t2, d)
 
-    @assert isapprox(d.F_set[3,1], 0.21390913026027936, rtol= evalrtol)
-    @assert isapprox(d.F_set[4,1], 0.18053603312097147, rtol= evalrtol)
-    @assert isapprox(d.F_set[5,1], 0.21390913026027936, rtol= evalrtol)
+    Qtest = reshape(vcat(current_test["rate_matrix"]...), (nstates, nstates))'
 
-    @assert isapprox(d.F_comp[1,3], 0.11652126742757, rtol= evalrtol)
-    @assert isapprox(d.F_comp[1,4], 0.1348369063163023, rtol= evalrtol)
-    @assert isapprox(d.F_comp[1,5], 0.11652126742757, rtol= evalrtol)
+    # @show testset
+    @assert d.edges == edges
+    @assert d.input_edges == input_edges
+    @assert d.nstates == nstates
+    @assert d.ind_set == off_ind
+    @assert d.start_state == start_state
+    @assert d.hitting_set == hitting_set
+
+    @assert d.logrates == logrates
+    @assert d.cr == cr
+    # @show pretty_table(Qtest)
+    # @show pretty_table(d.Q)
+    @assert Qtest == d.Q
+    # @show d.Pjoint
+    @assert isapprox(d.Pjoint, testset["1"]["1"]["1"]["p_joint"], rtol= evalrtol)
+
+
+    # @assert isapprox(d.F_set[3,1], 0.21390913026027936, rtol= evalrtol)
+    # @assert isapprox(d.F_set[4,1], 0.18053603312097147, rtol= evalrtol)
+    # @assert isapprox(d.F_set[5,1], 0.21390913026027936, rtol= evalrtol)
+
+    # @assert isapprox(d.F_comp[1,3], 0.11652126742757, rtol= evalrtol)
+    # @assert isapprox(d.F_comp[1,4], 0.1348369063163023, rtol= evalrtol)
+    # @assert isapprox(d.F_comp[1,5], 0.11652126742757, rtol= evalrtol)
     
-    @assert isapprox(d.Pjoint, 0.07419284612916327, rtol= evalrtol)
+    # @assert isapprox(d.Pjoint, 0.07419284612916327, rtol= evalrtol)
 
-    @show d.Pjoint
+    # @show d.Pjoint
 
 end
 
@@ -1750,11 +1786,25 @@ end
 # 2 binding sites without kb ku constraints
 let
     ## circuit description
-    nstates = 6
-    edges = [(5, 1), (1, 5), (2, 6), (6, 2), (1, 2), (1, 3), 
-            (2, 4), (3, 1), (3, 4), (4, 2), (6, 5)]
-    input_edges = [(5,1), (1,3), (6,2), (2,4)]
-    off_ind = BitArray([1,0,1,0,1,0])
+    circuits = "spec/circuits.json"
+    circuit = Dict()
+
+    open(circuits, "r") do f
+        circuit = JSON.parse(f)
+    end
+
+    circuit_decoy = circuit["2bs_no_konu"]
+    edges = circuit_decoy["edges"]
+    input_edges = circuit_decoy["input_edges"]
+    nstates = circuit_decoy["nstates"]
+    off_ind = circuit_decoy["off_ind"]
+    off_ind = BitArray(off_ind)
+
+    # nstates = 6
+    # edges = [(5, 1), (1, 5), (2, 6), (6, 2), (1, 2), (1, 3), 
+    #         (2, 4), (3, 1), (3, 4), (4, 2), (6, 5)]
+    # input_edges = [(5,1), (1,3), (6,2), (2,4)]
+    # off_ind = BitArray([1,0,1,0,1,0])
 
     global m1 = OneBurstDecoyModel(;
         nstates = nstates,
@@ -1788,10 +1838,9 @@ let
         maxevals = maxevals,
     )
 
-    
+
 
 end
-
 
 # old tests
 

@@ -1,0 +1,620 @@
+{
+ "cells": [
+  {
+   "kind": 1,
+   "value": "# Mathematica",
+   "languageId": "markdown",
+   "mime": "text/markdown",
+   "outputs": [],
+   "metadata": {},
+   "executionSummary": {}
+  },
+  {
+   "kind": 2,
+   "value": "AppendTo[$Path, \"/home/tohme/.julia/dev/LLROpt/mathematica\"];\nGet[\"ctmc`\"]\nGet[\"utils`\"]",
+   "languageId": "wolfram",
+   "outputs": [],
+   "metadata": {},
+   "executionSummary": {
+    "timing": {
+     "startTime": 1746816053699,
+     "endTime": 1746816053710
+    },
+    "executionOrder": 3,
+    "success": true
+   }
+  },
+  {
+   "kind": 1,
+   "value": "# Dependence of FIR on concentration",
+   "languageId": "markdown",
+   "mime": "text/markdown",
+   "outputs": [],
+   "metadata": {},
+   "executionSummary": {}
+  },
+  {
+   "kind": 1,
+   "value": "## 2 binding sites",
+   "languageId": "markdown",
+   "mime": "text/markdown",
+   "outputs": [],
+   "metadata": {},
+   "executionSummary": {}
+  },
+  {
+   "kind": 1,
+   "value": "### Create CTMC graph from edges and weights",
+   "languageId": "markdown",
+   "mime": "text/markdown",
+   "outputs": [],
+   "metadata": {},
+   "executionSummary": {}
+  },
+  {
+   "kind": 2,
+   "value": "ClearAll[weights2]",
+   "languageId": "wolfram",
+   "outputs": [],
+   "metadata": {},
+   "executionSummary": {
+    "timing": {
+     "startTime": 1746822269082,
+     "endTime": 1746822269087
+    },
+    "executionOrder": 290,
+    "success": true
+   }
+  },
+  {
+   "kind": 2,
+   "value": "HomeDir = \"/home/tohme/.julia/dev/LLROpt/\";\ncircuitData = Import[HomeDir<>\"spec/circuits.json\", \"RawJSON\"];\n\ncircuitId = \"2bs_no_konu\";\nedges2 = circuitData[circuitId][\"edges\"];\nweights2 = ToExpression[circuitData[circuitId][\"weight_labels\"]];\nnstates2 = circuitData[circuitId][\"nstates\"];\nvertexPartition = circuitData[circuitId][\"vertex_partition\"];\nnedges2 = Length[edges2];\n\nassum = c >= 0 && kboff > 0 && kboff2 > 0 && kuon > 0 && kuon2 > 0 && \n   kbon > 0 && kbon2 > 0 && kon1b > 0 && kuoff > 0 && kuoff2 > 0 && \n   kon2b > 0 && koffu > 0;",
+   "languageId": "wolfram",
+   "outputs": [],
+   "metadata": {},
+   "executionSummary": {
+    "timing": {
+     "startTime": 1746834186014,
+     "endTime": 1746834186026
+    },
+    "executionOrder": 822,
+    "success": true
+   }
+  },
+  {
+   "kind": 2,
+   "value": "(*Plot the circuit*)\nedgeList = Table[edges2[[i, 1]] -> edges2[[i, 2]], {i, 1, nedges2}];\ng = Graph[edges2, VertexLabels -> \"Name\", DirectedEdges -> True, \n  EdgeLabels -> \n   Table[edgeList[[i]] -> \n     Placed[(HoldForm /@ weights2)[[i]], 0.55], {i, 1, nedges2}], \n  ImageSize -> 250, \n  GraphLayout -> {\"MultipartiteEmbedding\", \n    \"VertexPartition\" -> vertexPartition}]",
+   "languageId": "wolfram",
+   "outputs": [
+    {
+     "items": [
+      {
+       "data": "<div class=\"wexpr\"><wgraph class=\"resizable\" style=\"width:334.0px;height:257.0px;\" aspect-ratio=\"0.769461\" tabIndex=\"-1\"><img src=\"data:image/png;base64,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AZG66RBLBoKAFRAQqVuBBSmDIGA6AiJ10yGWDAQBKyAgUrcCC1IGQcB0BETqpkMsGQgCVkBApG4FFqQMgoDpCIjUTYdYMhAErIBA8OLFi7t27WqkKKWlxTeOGtGvXz8S//333926dRs/fryRByWNICAIVDsClRjV92z+81B62tKlSyn0+++/P3jw4GnTplV7BaQAgoAgYASBSki9IDc7vknT0NBQ3puRkdGyZUsjGUgaQUAQsAICJ6ReUFAwbNiwm2+++dixY1zffffdiYmJTZo0ufXWW3Nycn5dsnjR3OeX/bZk6NChTz311OzZs6dOnfrggw++8cYbV1xxharJoUOHgoKCSktLrVAxKYMgIAg4I1Am9aKiopEjR6LtN998E7lOmTLl119/XbRo0Z9//rljx4577rln8JAzzrzi3gGDhvz8888ofNSoURMnTkTzgqYgIAjUCAQ0qaNzRubVq1e/8847wcHanf/+979PP/10hw4dkpKSnn/++Q8++IChvkbURwopCAgCHhHQhL1ly5bGjRszmONs41cs8NTU1Hbt2qkHuMCeP3gw3SuCR48e9ZpGEggCgkC1IKBJvW3btm+99Rbu9AceeAB/W506dZiiY7erAu3cuTMsLKxhw0blla+kpET9CWu/WuogmQoCgoBXBDSpR0REMKRfc801LJUzD+fO6NGjmYrv2rVr//79TNSvvfZaZdi7f+Li4liZ37ZtG647Nc/3mqUkEAQEgcAjcJKAZ8yYgQ2/fPnyRx99tH///oMGDerRoweLai+99FJ5Jbvkkkuuvvrq008/feDAgbfccsuIESNE7YFnUXIUBLwiEGTQ35adVzxl1qo7RnRqlxjt9aWSwJoI3D9zxZVnturTsdy5mDWLLaXSEZj64dq+nRqd06eZD5hUYguND2+XRwQBQcAiCIjULUKEFEMQMBcBkbq5+MrbBQGLICBStwgRUgxBwFwEROrm4itvFwQsgoBI3SJESDEEAXMREKmbi6+8XRCwCAIidYsQIcUQBMxFQKRuLr7mvf3MM8/8/PPP/Xw/G6g47KS/pGfPnj/++KOf75THDSJQJQy65EWYicmTJ3ssgEjdIC+1M9n3339/22231c661fZa0U0//PDD7du3j4mJufDCC3fv3l1xjUXqtb1FlFO/devW3XvvvRxksmn9a361CQM1Z86czz777I8/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\" /></wgraph></div>",
+       "mime": "x-application/wolfram-language-html"
+      }
+     ],
+     "id": "ed2b90c8-d2cb-4d2a-9557-3c31a10c3d0e"
+    }
+   ],
+   "metadata": {},
+   "executionSummary": {
+    "timing": {
+     "startTime": 1746834186401,
+     "endTime": 1746834186458
+    },
+    "executionOrder": 825,
+    "success": true
+   }
+  },
+  {
+   "kind": 1,
+   "value": "### Laplace transform of first hitting times",
+   "languageId": "markdown",
+   "mime": "text/markdown",
+   "outputs": [],
+   "metadata": {},
+   "executionSummary": {}
+  },
+  {
+   "kind": 2,
+   "value": "Q2 = RateMatrix[edges2, weights2, nstates2];\nss2 = SteadyStateProbabilities[Q2];",
+   "languageId": "wolfram",
+   "outputs": [],
+   "metadata": {},
+   "executionSummary": {}
+  },
+  {
+   "kind": 2,
+   "value": "(*Laplace transform of FPTs for individual hitting states*)\nFon = LaplaceTransformFPT[Q2, s2];\nF25 = Fon[[2, 5]][[1]];\nF45 = Fon[[4, 5]][[1]];\nF65 = Fon[[6, 5]][[1]];",
+   "languageId": "wolfram",
+   "outputs": [],
+   "metadata": {},
+   "executionSummary": {
+    "timing": {
+     "startTime": 1746816055868,
+     "endTime": 1746816072869
+    },
+    "executionOrder": 21,
+    "success": true
+   }
+  },
+  {
+   "kind": 2,
+   "value": "(*Laplace for hitting set, joint with the hitting state*)\noffStates = {5, 1, 3};\nonStates = {6, 2, 4};\nF5on = LaplaceTransformToSetByState[Q2, 5, onStates, s1];\nFoffOn = F5on[[2]][[1]]*F25 + F5on[[3]][[1]]*F45 + F5on[[1]][[1]]*F65;",
+   "languageId": "wolfram",
+   "outputs": [],
+   "metadata": {},
+   "executionSummary": {
+    "timing": {
+     "startTime": 1746816072870,
+     "endTime": 1746816072908
+    },
+    "executionOrder": 26,
+    "success": true
+   }
+  },
+  {
+   "kind": 1,
+   "value": "### Mean, variance and cov. of FPTs",
+   "languageId": "markdown",
+   "mime": "text/markdown",
+   "outputs": [],
+   "metadata": {},
+   "executionSummary": {}
+  },
+  {
+   "kind": 2,
+   "value": "(*Means, \\\nvariances and covariances of FPTs from the Laplace transforms*)\npartials1 = With[{s1 = 0, s2 = 0}, Evaluate[D[FoffOn, {s1, 1}]]];\npartials2 = With[{s1 = 0, s2 = 0}, Evaluate[D[FoffOn, {s2, 1}]]];\npartials1s1 = With[{s1 = 0, s2 = 0}, Evaluate[D[FoffOn, {s1, 2}]]];\npartials2s2 = With[{s1 = 0, s2 = 0}, Evaluate[D[FoffOn, {s2, 2}]]];\npartials1s2 = \n  With[{s1 = 0, s2 = 0}, Evaluate[D[D[FoffOn, {s2, 1}], {s1, 1}]]];\n\nmeanToffLt = -partials1;\nmeanTonLt = -partials2;\nvarToffLt = partials1s1 - meanToffLt^2;\nvarTonLt = partials2s2 - meanTonLt^2;\ncovTonToff = partials1s2 - meanToffLt*meanTonLt;\n\\[Tau] = Simplify[meanToffLt + meanTonLt, assum];\n\n\\[Tau]fun[c_?NumericQ, kboff_?NumericQ, kboff2_?NumericQ, \n   kbon_?NumericQ, kbon2_?NumericQ, koffu_?NumericQ, kon1b_?NumericQ, \n   kon2b_?NumericQ, kuoff_?NumericQ, kuoff2_?NumericQ, kuon_?NumericQ,\n    kuon2_?NumericQ ] := Evaluate[\\[Tau]];",
+   "languageId": "wolfram",
+   "outputs": [],
+   "metadata": {},
+   "executionSummary": {
+    "timing": {
+     "startTime": 1746824029747,
+     "endTime": 1746824029862
+    },
+    "executionOrder": 364,
+    "success": true
+   }
+  },
+  {
+   "kind": 1,
+   "value": "### Actual FPT distribution",
+   "languageId": "markdown",
+   "mime": "text/markdown",
+   "outputs": [],
+   "metadata": {},
+   "executionSummary": {}
+  },
+  {
+   "kind": 2,
+   "value": "expr1 = FoffOn;\nexpr2 = Factor[expr1, Modulus -> 0];\nexprS1 = Apart[expr2, s1];  (*treat s2,parameters as constants*)\nexprS12 = Apart[exprS1, s2];\n\nPjoint = \n  InverseLaplaceTransform[exprS12, {s1, s2}, {t1, t2}, \n   Assumptions -> assum];",
+   "languageId": "wolfram",
+   "outputs": [],
+   "metadata": {},
+   "executionSummary": {
+    "timing": {
+     "startTime": 1746824035305,
+     "endTime": 1746824041359
+    },
+    "executionOrder": 369,
+    "success": true
+   }
+  },
+  {
+   "kind": 2,
+   "value": "ClearAll[PjointNum]\n\n(*Joint probability density function of the first-passage times*)\nPjointNum[t1_?NumericQ, t2_?NumericQ, c_?NumericQ, kboff2_?NumericQ, kuoff_?NumericQ, \n   kuon_?NumericQ, kbon2_?NumericQ, kon1b_?NumericQ, kboff_?NumericQ, \n   kbon_?NumericQ, kuoff2_?NumericQ, kon2b_?NumericQ, kuon2_?NumericQ,\n    koffu_?NumericQ ]:=Evaluate[Pjoint];",
+   "languageId": "wolfram",
+   "outputs": [],
+   "metadata": {},
+   "executionSummary": {
+    "timing": {
+     "startTime": 1746833826455,
+     "endTime": 1746833826468
+    },
+    "executionOrder": 731,
+    "success": true
+   }
+  },
+  {
+   "kind": 2,
+   "value": "PjointNum[0.001, 0.1, 100., 0.0541925, 4.40821, 4.61333, 0.00175545, \n0.00674974, 0.0361109, 0.0041057, 0.00930819, 4.92382, 8.04452, 4.99952]//ScientificForm",
+   "languageId": "wolfram",
+   "outputs": [
+    {
+     "items": [
+      {
+       "data": "<div class=\"wexpr\"><wgraph class=\"resizable\" style=\"width:103.0px;height:22.0px;\" aspect-ratio=\"0.213592\" tabIndex=\"-1\"><img src=\"data:image/png;base64,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\" /></wgraph></div>",
+       "mime": "x-application/wolfram-language-html"
+      }
+     ],
+     "id": "95ac5265-6371-4b6b-bae0-97143c4c6732"
+    }
+   ],
+   "metadata": {},
+   "executionSummary": {
+    "timing": {
+     "startTime": 1746833829247,
+     "endTime": 1746833829321
+    },
+    "executionOrder": 732,
+    "success": true
+   }
+  },
+  {
+   "kind": 1,
+   "value": "### Simplify and compile integrand of the Fisher information",
+   "languageId": "markdown",
+   "mime": "text/markdown",
+   "outputs": [],
+   "metadata": {},
+   "executionSummary": {}
+  },
+  {
+   "kind": 2,
+   "value": "integrand = D[Pjoint, {c, 1}]^2/Pjoint;",
+   "languageId": "wolfram",
+   "outputs": [],
+   "metadata": {},
+   "executionSummary": {
+    "timing": {
+     "startTime": 1746816079049,
+     "endTime": 1746816079073
+    },
+    "executionOrder": 45,
+    "success": true
+   }
+  },
+  {
+   "kind": 2,
+   "value": "integrandSimpl = \n  integrand //. {Root[\n      c^2 kboff kboff2 kon2b + c kboff2 kon1b kon2b + \n        c kboff2 kon1b kuoff2 + (c^2 kboff kboff2 + c kboff2 kon1b + \n           c kboff kon2b + c kboff2 kon2b + kon1b kon2b + \n           kon2b kuoff + c kboff2 kuoff2 + kon1b kuoff2 + \n           kuoff kuoff2) #1 + (c kboff + c kboff2 + kon1b + kon2b + \n           kuoff + kuoff2) #1^2 + #1^3 &, 1] -> A1,\n    Root[\n      c^2 kboff kboff2 kon2b + c kboff2 kon1b kon2b + \n        c kboff2 kon1b kuoff2 + (c^2 kboff kboff2 + c kboff2 kon1b + \n           c kboff kon2b + c kboff2 kon2b + kon1b kon2b + \n           kon2b kuoff + c kboff2 kuoff2 + kon1b kuoff2 + \n           kuoff kuoff2) #1 + (c kboff + c kboff2 + kon1b + kon2b + \n           kuoff + kuoff2) #1^2 + #1^3 &, 2] -> A2,\n    Root[\n      c^2 kboff kboff2 kon2b + c kboff2 kon1b kon2b + \n        c kboff2 kon1b kuoff2 + (c^2 kboff kboff2 + c kboff2 kon1b + \n           c kboff kon2b + c kboff2 kon2b + kon1b kon2b + \n           kon2b kuoff + c kboff2 kuoff2 + kon1b kuoff2 + \n           kuoff kuoff2) #1 + (c kboff + c kboff2 + kon1b + kon2b + \n           kuoff + kuoff2) #1^2 + #1^3 &, 3] -> A3,\n    Root[\n      koffu kuon kuon2 + (c^2 kbon kbon2 + c kbon koffu + koffu kuon +\n            c kbon2 kuon2 + koffu kuon2 + kuon kuon2) #1 + (c kbon + \n           c kbon2 + koffu + kuon + kuon2) #1^2 + #1^3 &, 1] -> B1,\n    Root[\n      koffu kuon kuon2 + (c^2 kbon kbon2 + c kbon koffu + koffu kuon +\n            c kbon2 kuon2 + koffu kuon2 + kuon kuon2) #1 + (c kbon + \n           c kbon2 + koffu + kuon + kuon2) #1^2 + #1^3 &, 2] -> B2,\n    Root[\n      koffu kuon kuon2 + (c^2 kbon kbon2 + c kbon koffu + koffu kuon +\n            c kbon2 kuon2 + koffu kuon2 + kuon kuon2) #1 + (c kbon + \n           c kbon2 + koffu + kuon + kuon2) #1^2 + #1^3 &, 3] -> B3,\n    c^2 kboff kboff2 + c kboff2 kon1b + c kboff kon2b + \n      c kboff2 kon2b + kon1b kon2b + kon2b kuoff + c kboff2 kuoff2 + \n      kon1b kuoff2 + kuoff kuoff2 -> C1,\n    c kboff + c kboff2 + kon1b + kon2b + kuoff + kuoff2 -> C2,\n    c^2 kbon kbon2 + c kbon koffu + koffu kuon + c kbon2 kuon2 + \n      koffu kuon2 + kuon kuon2 -> C3,\n    2 c kboff kboff2 + kboff2 kon1b + kboff kon2b + kboff2 kon2b + \n      kboff2 kuoff2 -> C4,\n    -2 c kboff kboff2 kon2b - kboff2 kon1b kon2b - \n      kboff2 kon1b kuoff2 -> C5,\n    2 c kbon kbon2 + kbon koffu + kbon2 kuon2 -> C6};",
+   "languageId": "wolfram",
+   "outputs": [],
+   "metadata": {},
+   "executionSummary": {
+    "timing": {
+     "startTime": 1746816079073,
+     "endTime": 1746816079174
+    },
+    "executionOrder": 46,
+    "success": true
+   }
+  },
+  {
+   "kind": 2,
+   "value": "integrandSimpl /. {t1 -> 0.1, t2 -> 1, c -> 1., c2 -> 1., kboff -> 2.,\n   kboff2 -> 2., kbon -> 2., kbon2 -> 2., konb -> 3., konu -> 1., \n  kuon -> 1., kuon2 -> 1., kon1b -> 1., kon2b -> 4., koffu -> 3., \n  kuoff -> 2., kuoff2 -> 2., kuon -> 1., A1 -> 2., B1 -> 2.1, \n  A2 -> 2.2, B2 -> 2.3, A3 -> 2.4, B3 -> 2.5, C1 -> 2., C2 -> 2.1, \n  C3 -> 2.2, C4 -> 2.3, C5 -> 2.4, C6 -> 2.5}",
+   "languageId": "wolfram",
+   "outputs": [
+    {
+     "items": [
+      {
+       "data": "4.78358",
+       "mime": "text/html"
+      }
+     ],
+     "id": "90a6167c-0cc7-4e2b-82be-c7845e142f97"
+    }
+   ],
+   "metadata": {},
+   "executionSummary": {
+    "timing": {
+     "startTime": 1746816079174,
+     "endTime": 1746816079236
+    },
+    "executionOrder": 47,
+    "success": true
+   }
+  },
+  {
+   "kind": 2,
+   "value": "vars = Complement[\n    DeleteDuplicates@\n     Cases[integrandSimpl, _Symbol, {0, Infinity}], {E, I, Pi}] // \n   Sort;\npattern1 = Sequence @@ (# <> \"_?NumericQ\" & /@ ToString /@ vars);\npattern2 = {#, _Real} & /@ vars;\npattern3 = \"N[\" <> # <> \"]\" & /@ ToString /@ vars;",
+   "languageId": "wolfram",
+   "outputs": [],
+   "metadata": {},
+   "executionSummary": {
+    "timing": {
+     "startTime": 1746816079236,
+     "endTime": 1746816079248
+    },
+    "executionOrder": 51,
+    "success": true
+   }
+  },
+  {
+   "kind": 2,
+   "value": "integrandC = \n Compile[{{A1, _Real}, {A2, _Real}, {A3, _Real}, {B1, _Real}, {B2, \\\n_Real}, {B3, _Real}, {c, _Real}, {C1, _Real}, {C2, _Real}, {C3, \\\n_Real}, {C4, _Real}, {C5, _Real}, {C6, _Real}, {kboff, _Real}, \\\n{kboff2, _Real}, {kbon, _Real}, {kbon2, _Real}, {koffu, _Real}, \\\n{kon1b, _Real}, {kon2b, _Real}, {kuoff2, _Real}, {kuon, _Real}, \\\n{kuon2, _Real}, {t1, _Real}, {t2, _Real}},\n  Evaluate[integrandSimpl],\n  CompilationTarget -> \"C\",\n  RuntimeOptions -> \"Speed\"]",
+   "languageId": "wolfram",
+   "outputs": [
+    {
+     "items": [
+      {
+       "data": "<div class=\"wexpr\"><wgraph class=\"resizable\" style=\"width:473.4px;height:36.0px;\" aspect-ratio=\"0.0760456\" tabIndex=\"-1\"><img src=\"data:image/png;base64,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\" /></wgraph></div>",
+       "mime": "x-application/wolfram-language-html"
+      }
+     ],
+     "id": "6ea5c093-58a1-49b1-b79c-9199ab35f6de"
+    }
+   ],
+   "metadata": {},
+   "executionSummary": {
+    "timing": {
+     "startTime": 1746816079248,
+     "endTime": 1746816081117
+    },
+    "executionOrder": 52,
+    "success": true
+   }
+  },
+  {
+   "kind": 1,
+   "value": "### Numeric guards",
+   "languageId": "markdown",
+   "mime": "text/markdown",
+   "outputs": [],
+   "metadata": {},
+   "executionSummary": {}
+  },
+  {
+   "kind": 2,
+   "value": "integrandNum[A1_?NumericQ, A2_?NumericQ, A3_?NumericQ, B1_?NumericQ, \n   B2_?NumericQ, B3_?NumericQ, c_?NumericQ, C1_?NumericQ, \n   C2_?NumericQ, C3_?NumericQ, C4_?NumericQ, C5_?NumericQ, \n   C6_?NumericQ, kboff_?NumericQ, kboff2_?NumericQ, kbon_?NumericQ, \n   kbon2_?NumericQ, koffu_?NumericQ, kon1b_?NumericQ, kon2b_?NumericQ,\n    kuoff2_?NumericQ, kuon_?NumericQ, kuon2_?NumericQ, t1_?NumericQ, \n   t2_?NumericQ] := \n  integrandC[N[A1], N[A2], N[A3], N[B1], N[B2], N[B3], N[c], N[C1], \n   N[C2], N[C3], N[C4], N[C5], N[C6], N[kboff], N[kboff2], N[kbon], \n   N[kbon2], N[koffu], N[kon1b], N[kon2b], N[kuoff2], N[kuon], \n   N[kuon2], N[t1], N[t2]];",
+   "languageId": "wolfram",
+   "outputs": [],
+   "metadata": {},
+   "executionSummary": {
+    "timing": {
+     "startTime": 1746816081117,
+     "endTime": 1746816081123
+    },
+    "executionOrder": 53,
+    "success": true
+   }
+  },
+  {
+   "kind": 2,
+   "value": "integrandNum[1.1, 1.4, 1.5, 1.2, 1.9, 2.2, 1.1, 1.4, 1.5, 1.2, 1.9, \\\n2.2, 2., 1.4, 1.5, 2.6, 3.7, 2.8, 1.9, 3.0, 2.1, 3.2, 2.3, 1.4, 1.5]",
+   "languageId": "wolfram",
+   "outputs": [
+    {
+     "items": [
+      {
+       "data": "19470.8",
+       "mime": "text/html"
+      }
+     ],
+     "id": "0493d2a7-3a0a-4c44-805a-9d265b917e0d"
+    }
+   ],
+   "metadata": {},
+   "executionSummary": {
+    "timing": {
+     "startTime": 1746816081123,
+     "endTime": 1746816081150
+    },
+    "executionOrder": 54,
+    "success": true
+   }
+  },
+  {
+   "kind": 1,
+   "value": "### Fisher information",
+   "languageId": "markdown",
+   "mime": "text/markdown",
+   "outputs": [],
+   "metadata": {},
+   "executionSummary": {}
+  },
+  {
+   "kind": 2,
+   "value": "ClearAll[FisherFast];\nClearAll[FisherSafe];\n(*kboff2,kuoff,kuon,c*kbon2,kon1b,c*kboff,c*kbon,kuoff2,kon2b,kuon2,\\\nkoffu*)\nFisherFast[c_?NumericQ, kboff2_?NumericQ, kuoff_?NumericQ, \n   kuon_?NumericQ, kbon2_?NumericQ, kon1b_?NumericQ, kboff_?NumericQ, \n   kbon_?NumericQ, kuoff2_?NumericQ, kon2b_?NumericQ, kuon2_?NumericQ,\n    koffu_?NumericQ ] := \n  Module[{\\[Tau]eval, integral, A1, A2, A3, B1, B2, B3, C1, C2, C3, \n    C4, C5, C6},\n   \\[Tau]eval = \\[Tau]fun[c, kboff, kboff2, kbon, kbon2, koffu, kon1b,\n      kon2b, kuoff, kuoff2, kuon, kuon2];\n   A1 = Root[\n     c^2 kboff kboff2 kon2b + c kboff2 kon1b kon2b + \n       c kboff2 kon1b kuoff2 + (c^2 kboff kboff2 + c kboff2 kon1b + \n          c kboff kon2b + c kboff2 kon2b + kon1b kon2b + kon2b kuoff +\n           c kboff2 kuoff2 + kon1b kuoff2 + \n          kuoff kuoff2) #1 + (c kboff + c kboff2 + kon1b + kon2b + \n          kuoff + kuoff2) #1^2 + #1^3 &, 1];\n   A2 = Root[\n     c^2 kboff kboff2 kon2b + c kboff2 kon1b kon2b + \n       c kboff2 kon1b kuoff2 + (c^2 kboff kboff2 + c kboff2 kon1b + \n          c kboff kon2b + c kboff2 kon2b + kon1b kon2b + kon2b kuoff +\n           c kboff2 kuoff2 + kon1b kuoff2 + \n          kuoff kuoff2) #1 + (c kboff + c kboff2 + kon1b + kon2b + \n          kuoff + kuoff2) #1^2 + #1^3 &, 2];\n   A3 = Root[\n     c^2 kboff kboff2 kon2b + c kboff2 kon1b kon2b + \n       c kboff2 kon1b kuoff2 + (c^2 kboff kboff2 + c kboff2 kon1b + \n          c kboff kon2b + c kboff2 kon2b + kon1b kon2b + kon2b kuoff +\n           c kboff2 kuoff2 + kon1b kuoff2 + \n          kuoff kuoff2) #1 + (c kboff + c kboff2 + kon1b + kon2b + \n          kuoff + kuoff2) #1^2 + #1^3 &, 3];\n   B1 = Root[\n     koffu kuon kuon2 + (c^2 kbon kbon2 + c kbon koffu + koffu kuon + \n          c kbon2 kuon2 + koffu kuon2 + kuon kuon2) #1 + (c kbon + \n          c kbon2 + koffu + kuon + kuon2) #1^2 + #1^3 &, 1]; \n   B2 = Root[\n     koffu kuon kuon2 + (c^2 kbon kbon2 + c kbon koffu + koffu kuon + \n          c kbon2 kuon2 + koffu kuon2 + kuon kuon2) #1 + (c kbon + \n          c kbon2 + koffu + kuon + kuon2) #1^2 + #1^3 &, 2];\n   B3 = Root[\n     koffu kuon kuon2 + (c^2 kbon kbon2 + c kbon koffu + koffu kuon + \n          c kbon2 kuon2 + koffu kuon2 + kuon kuon2) #1 + (c kbon + \n          c kbon2 + koffu + kuon + kuon2) #1^2 + #1^3 &, 3];\n   C1 = c^2 kboff kboff2 + c kboff2 kon1b + c kboff kon2b + \n     c kboff2 kon2b + kon1b kon2b + kon2b kuoff + c kboff2 kuoff2 + \n     kon1b kuoff2 + kuoff kuoff2;\n   C2 = c kboff + c kboff2 + kon1b + kon2b + kuoff + kuoff2;\n   C3 = c^2 kbon kbon2 + c kbon koffu + koffu kuon + c kbon2 kuon2 + \n     koffu kuon2 + kuon kuon2;\n   C4 = 2 c kboff kboff2 + kboff2 kon1b + kboff kon2b + kboff2 kon2b +\n      kboff2 kuoff2;\n   C5 = -2 c kboff kboff2 kon2b - kboff2 kon1b kon2b - \n     kboff2 kon1b kuoff2;\n   C6 = 2 c kbon kbon2 + kbon koffu + kbon2 kuon2;\n   integral = \n    NIntegrate[\n     integrandNum[A1, A2, A3, B1, B2, B3, c, C1, C2, C3, C4, C5, C6, \n      kboff, kboff2, kbon, kbon2, koffu, kon1b, kon2b, kuoff2, kuon, \n      kuon2, t1, t2], {t1, 0, \\[Infinity]}, {t2, 0, \\[Infinity]},\n     Method -> {\"DoubleExponential\"},\n     PrecisionGoal -> 5,\n     MinRecursion -> 3,\n     MaxRecursion -> 10];\n   integral*c^2/\\[Tau]eval];\n\nFisherSafe[pars__?NumericQ] :=\n  Quiet[\n   Check[\n    FisherFast[pars],\n    -1,(* \\[LeftArrow] penalty when NIntegrate fails*)\n    {NIntegrate::ncvb, NIntegrate::inumri, NIntegrate::slowcon}\n    ], {NIntegrate::ncvb, NIntegrate::inumri, NIntegrate::slowcon}\n   ];\n",
+   "languageId": "wolfram",
+   "outputs": [],
+   "metadata": {},
+   "executionSummary": {
+    "timing": {
+     "startTime": 1746816081150,
+     "endTime": 1746816081169
+    },
+    "executionOrder": 59,
+    "success": true
+   }
+  },
+  {
+   "kind": 2,
+   "value": "kmin = 0.005;\nkmax = 5;\nkdl = 0.0888;\n(*        c,kboff2,kuoff,kuon,kbon2,kon1b,kboff,kbon,kuoff2,kon2b,\\\nkuon2,koffu*)\nFisherSafe[0.1, kdl, kdl, kmin, kmin, kmax, kmin, kmax, kmin, kmin, \\\nkmax, kmax]",
+   "languageId": "wolfram",
+   "outputs": [
+    {
+     "items": [
+      {
+       "data": "0.00300824",
+       "mime": "text/html"
+      }
+     ],
+     "id": "3ba2f88f-439d-42b6-85c3-8b2ef2641174"
+    }
+   ],
+   "metadata": {},
+   "executionSummary": {
+    "timing": {
+     "startTime": 1746833846350,
+     "endTime": 1746833846661
+    },
+    "executionOrder": 742,
+    "success": true
+   }
+  },
+  {
+   "kind": 1,
+   "value": "### Retrieving optimizer data",
+   "languageId": "markdown",
+   "mime": "text/markdown",
+   "outputs": [],
+   "metadata": {},
+   "executionSummary": {}
+  },
+  {
+   "kind": 2,
+   "value": "{data, params} = GetData[\"20250509/2bs-fir-free-c0\"];\n\nkc = 16;\nkg = 1;\nkw = 1;\nskc = ToString[kc];\nskg = ToString[kg];\nskw = ToString[kw];\nnrates = 11;\nlogrates = data[skc, skg, skw][[;; nrates]];\nrates = Table[10^logrates[[i]], {i, 1, nrates}];\nc0 = params[\"betas\"][[kc]];\ninput = Prepend[rates, c0];\n\nFisherSafe @@ input\ndata[skc, skg, skw][[nrates + 1]]",
+   "languageId": "wolfram",
+   "outputs": [
+    {
+     "items": [
+      {
+       "data": "1.39732",
+       "mime": "text/html"
+      }
+     ],
+     "id": "864862af-120b-4f71-92b6-8d439a73ee94"
+    },
+    {
+     "items": [
+      {
+       "data": "1.2984",
+       "mime": "text/html"
+      }
+     ],
+     "id": "534fb096-c86b-4988-8d04-76d37d532105"
+    }
+   ],
+   "metadata": {},
+   "executionSummary": {
+    "timing": {
+     "startTime": 1746816481803,
+     "endTime": 1746816482050
+    },
+    "executionOrder": 137,
+    "success": true
+   }
+  },
+  {
+   "kind": 1,
+   "value": "### Fine-tuning a julia optimization",
+   "languageId": "markdown",
+   "mime": "text/markdown",
+   "outputs": [],
+   "metadata": {},
+   "executionSummary": {}
+  },
+  {
+   "kind": 2,
+   "value": "ClearAll[constraints]\n\nlb = Table[kmin, {i, 1, nparams}];\nub = Table[kmax, {i, 1, nparams}];\nub[[1]] = 2*kdl;\nub[[4]] = 2*kdl;\nub[[6]] = kdl;\nub[[7]] = kdl;\nub[[8]] = 2*kmax;\nub[[10]] = 2*kmax;\n\nvars = {kboff2, kuoff, kuon, kbon2, kon1b, kboff, kbon, kuoff2, kon2b, kuon2, koffu};\nconstraints = Table[lb[[i]] <= vars[[i]] <= ub[[i]], {i, 1, nparams}];",
+   "languageId": "wolfram",
+   "outputs": [],
+   "metadata": {},
+   "executionSummary": {
+    "timing": {
+     "startTime": 1746816081739,
+     "endTime": 1746816081744
+    },
+    "executionOrder": 90,
+    "success": true
+   }
+  },
+  {
+   "kind": 2,
+   "value": "(* FindMaximum[{\n  FisherSafe[c0, kboff2, kuoff, kuon, kbon2, kon1b, kboff, kbon, \n   kuoff2, kon2b, kuon2, koffu],\n  constraints},\n Table[{vars[[i]], rates[[i]]}, {i, 1, nparams}],\n AccuracyGoal -> 3,\n PrecisionGoal -> 3,\n MaxIterations -> 10\n ] *)",
+   "languageId": "wolfram",
+   "outputs": [],
+   "metadata": {},
+   "executionSummary": {
+    "timing": {
+     "startTime": 1746816081744,
+     "endTime": 1746816081749
+    },
+    "executionOrder": 91,
+    "success": true
+   }
+  },
+  {
+   "kind": 1,
+   "value": "### Generating test cases",
+   "languageId": "markdown",
+   "mime": "text/markdown",
+   "outputs": [],
+   "metadata": {},
+   "executionSummary": {}
+  },
+  {
+   "kind": 1,
+   "value": "#### Dummy test case with synthetic data",
+   "languageId": "markdown",
+   "mime": "text/markdown",
+   "outputs": [],
+   "metadata": {},
+   "executionSummary": {}
+  },
+  {
+   "kind": 2,
+   "value": "outData = <|\"1\"-><|\"1\"-><|\"1\"->{}|>|>|>;\noutData[\"circuit_id\"] = circuitId;\n\nnrates = 11;\nrates = Table[i, {i, 1, nrates}];\nlogrates = Table[N[Log[10,i]], {i, 1, nrates}];\nc0 = 1.;\nt1 = 1.;\nt2 = 1.;\ncRates = Join[{c0}, rates];\nt1t2cRates = Join[{t1, t2, c0}, rates];\n\nvars = {c, kboff2, kuoff, kuon, kbon2, kon1b, kboff, kbon, kuoff2, kon2b, kuon2, koffu};\n\nQ2val = Q2 /. Table[vars[[i]] -> cRates[[i]], {i, 1, nparams+1}];\nss2val = ss2 /. Table[vars[[i]] -> cRates[[i]], {i, 1, nparams+1}];\nmeanToffVal = meanToffLt /. Table[vars[[i]] -> cRates[[i]], {i, 1, nparams+1}];\nmeanTonVal = meanTonLt /. Table[vars[[i]] -> cRates[[i]], {i, 1, nparams+1}];\n\noutData[\"1\", \"1\", \"1\"] = <|\n    \"c0\" -> c0,\n    \"t1\" -> t1,\n    \"t2\" -> t2,\n    \"rates\" -> rates,\n    \"logrates\" -> logrates,\n    \"rate_matrix\" -> Q2val,\n    \"ss_prob\" -> ss2val,\n    \"mean_toff\" -> meanToffVal,\n    \"mean_ton\" -> meanTonVal,\n    \"fisher_rate\" -> FisherSafe @@ cRates,\n    \"p_joint\" -> PjointNum @@ t1t2cRates\n|>;",
+   "languageId": "wolfram",
+   "outputs": [],
+   "metadata": {},
+   "executionSummary": {
+    "timing": {
+     "startTime": 1746837925408,
+     "endTime": 1746837925673
+    },
+    "executionOrder": 955,
+    "success": true
+   }
+  },
+  {
+   "kind": 1,
+   "value": "#### Test case with real data from optimizer",
+   "languageId": "markdown",
+   "mime": "text/markdown",
+   "outputs": [],
+   "metadata": {},
+   "executionSummary": {}
+  },
+  {
+   "kind": 2,
+   "value": "{data, params} = GetData[\"20250509/2bs-fir-free-c0\"];\n\noutData = data;\n\nDo[\n    skc = ToString[kc];\n    skg = ToString[kg];\n    skw = ToString[kw];\n    \n    nrates = 11;\n    logrates = data[skc, skg, skw][[;; nrates]];\n    rates = Table[10^logrates[[i]], {i, 1, nrates}];\n\n    c0 = params[\"betas\"][[kc]];\n    inputFisher = Join[{c0}, rates];\n    inputPjoint = Join[{0.1, 0.1, c0}, rates];\n\n    outData[skc, skg, skw] = <|\n        \"c0\" -> c0,\n        \"t1\" -> 0.1,\n        \"t2\" -> 0.1,\n        \"rates\" -> rates,\n        \"logrates\" -> logrates,\n        \"fisher_rate\" -> FisherSafe @@ inputFisher,\n        \"p_joint\" -> PjointNum @@ inputPjoint\n    |>;\n, {kc, 1, 16}, {kg, 1, 1}, {kw, 1, 1}\n]",
+   "languageId": "wolfram",
+   "outputs": [],
+   "metadata": {},
+   "executionSummary": {
+    "timing": {
+     "startTime": 1746824998294,
+     "endTime": 1746825002315
+    },
+    "executionOrder": 438,
+    "success": true
+   }
+  },
+  {
+   "kind": 1,
+   "value": "#### Export test case",
+   "languageId": "markdown",
+   "mime": "text/markdown",
+   "outputs": [],
+   "metadata": {},
+   "executionSummary": {}
+  },
+  {
+   "kind": 2,
+   "value": "filename = \"example-data.json\";\ndir = FileNameJoin[{$HomeDirectory, \".julia/dev/LLROpt/test/data\"}];\nfilepath = FileNameJoin[{dir, filename}];\n\nExport[filepath, outData, \"RawJSON\"]",
+   "languageId": "wolfram",
+   "outputs": [
+    {
+     "items": [
+      {
+       "data": "/home/tohme/.julia/dev/LLROpt/test/data/example-data.json",
+       "mime": "text/html"
+      }
+     ],
+     "id": "ba5e192f-ce9a-430c-91a2-db519a37aee1"
+    }
+   ],
+   "metadata": {},
+   "executionSummary": {
+    "timing": {
+     "startTime": 1746837928062,
+     "endTime": 1746837928121
+    },
+    "executionOrder": 959,
+    "success": true
+   }
+  }
+ ]
+}
