@@ -536,7 +536,7 @@
   },
   {
    "kind": 1,
-   "value": "#### Dummy test case with synthetic data",
+   "value": "#### Dummy test set with synthetic data",
    "languageId": "markdown",
    "mime": "text/markdown",
    "outputs": [],
@@ -545,22 +545,22 @@
   },
   {
    "kind": 2,
-   "value": "outData = <|\"1\"-><|\"1\"-><|\"1\"->{}|>|>|>;\noutData[\"circuit_id\"] = circuitId;\n\nnrates = 11;\nrates = Table[i, {i, 1, nrates}];\nlogrates = Table[N[Log[10,i]], {i, 1, nrates}];\nc0 = 1.;\nt1 = 1.;\nt2 = 1.;\ncRates = Join[{c0}, rates];\nt1t2cRates = Join[{t1, t2, c0}, rates];\n\nvars = {c, kboff2, kuoff, kuon, kbon2, kon1b, kboff, kbon, kuoff2, kon2b, kuon2, koffu};\n\nQ2val = Q2 /. Table[vars[[i]] -> cRates[[i]], {i, 1, nparams+1}];\nss2val = ss2 /. Table[vars[[i]] -> cRates[[i]], {i, 1, nparams+1}];\nmeanToffVal = meanToffLt /. Table[vars[[i]] -> cRates[[i]], {i, 1, nparams+1}];\nmeanTonVal = meanTonLt /. Table[vars[[i]] -> cRates[[i]], {i, 1, nparams+1}];\n\noutData[\"1\", \"1\", \"1\"] = <|\n    \"c0\" -> c0,\n    \"t1\" -> t1,\n    \"t2\" -> t2,\n    \"rates\" -> rates,\n    \"logrates\" -> logrates,\n    \"rate_matrix\" -> Q2val,\n    \"ss_prob\" -> ss2val,\n    \"mean_toff\" -> meanToffVal,\n    \"mean_ton\" -> meanTonVal,\n    \"fisher_rate\" -> FisherSafe @@ cRates,\n    \"p_joint\" -> PjointNum @@ t1t2cRates\n|>;",
+   "value": "outData = <|\"1\"-><|\"1\"-><|\"1\"->{}|>|>|>;\noutData[\"circuit_id\"] = circuitId;\n\nnrates = 11;\n\nDo[\n    skc = ToString[kc];\n    skg = ToString[kg];\n    skw = ToString[kw];\n    rates = Table[i, {i, 1, nrates}];\n    logrates = Table[N[Log[10,i]], {i, 1, nrates}];\n    c0 = 1.;\n    t1 = 1.;\n    t2 = 1.;\n    cRates = Join[{c0}, rates];\n    t1t2cRates = Join[{t1, t2, c0}, rates];\n\n    vars = {c, kboff2, kuoff, kuon, kbon2, kon1b, kboff, kbon, kuoff2, kon2b, kuon2, koffu};\n\n    Q2val = Q2 /. Table[vars[[i]] -> cRates[[i]], {i, 1, nparams+1}];\n    ss2val = ss2 /. Table[vars[[i]] -> cRates[[i]], {i, 1, nparams+1}];\n    meanToffVal = meanToffLt /. Table[vars[[i]] -> cRates[[i]], {i, 1, nparams+1}];\n    meanTonVal = meanTonLt /. Table[vars[[i]] -> cRates[[i]], {i, 1, nparams+1}];\n\n\n    outData[\"1\", \"1\", \"1\"] = <|\n        \"c0\" -> c0,\n        \"t1\" -> t1,\n        \"t2\" -> t2,\n        \"rates\" -> rates,\n        \"logrates\" -> logrates,\n        \"rate_matrix\" -> Q2val,\n        \"ss_prob\" -> ss2val,\n        \"tau_off\" -> meanToffVal,\n        \"tau_on\" -> meanTonVal,\n        \"fisher_rate\" -> FisherSafe @@ cRates,\n        \"p_joint\" -> PjointNum @@ t1t2cRates\n    |>;\n    ,{kc, 1, 1}, {kg, 1, 1}, {kw, 1, 1}\n];",
    "languageId": "wolfram",
    "outputs": [],
    "metadata": {},
    "executionSummary": {
     "timing": {
-     "startTime": 1746837925408,
-     "endTime": 1746837925673
+     "startTime": 1746841049059,
+     "endTime": 1746841049326
     },
-    "executionOrder": 955,
+    "executionOrder": 990,
     "success": true
    }
   },
   {
    "kind": 1,
-   "value": "#### Test case with real data from optimizer",
+   "value": "#### Test set with real data from optimizer",
    "languageId": "markdown",
    "mime": "text/markdown",
    "outputs": [],
@@ -584,7 +584,7 @@
   },
   {
    "kind": 1,
-   "value": "#### Export test case",
+   "value": "#### Export test set",
    "languageId": "markdown",
    "mime": "text/markdown",
    "outputs": [],
@@ -593,26 +593,26 @@
   },
   {
    "kind": 2,
-   "value": "filename = \"example-data.json\";\ndir = FileNameJoin[{$HomeDirectory, \".julia/dev/LLROpt/test/data\"}];\nfilepath = FileNameJoin[{dir, filename}];\n\nExport[filepath, outData, \"RawJSON\"]",
+   "value": "filename = \"synthetic-test-set.json\";\ndir = FileNameJoin[{$HomeDirectory, \".julia/dev/LLROpt/test/data\"}];\nfilepath = FileNameJoin[{dir, filename}];\n\nExport[filepath, outData, \"RawJSON\"]",
    "languageId": "wolfram",
    "outputs": [
     {
      "items": [
       {
-       "data": "/home/tohme/.julia/dev/LLROpt/test/data/example-data.json",
+       "data": "/home/tohme/.julia/dev/LLROpt/test/data/synthetic-test-set.json",
        "mime": "text/html"
       }
      ],
-     "id": "ba5e192f-ce9a-430c-91a2-db519a37aee1"
+     "id": "875f32be-f768-4b15-ab78-824193f4145b"
     }
    ],
    "metadata": {},
    "executionSummary": {
     "timing": {
-     "startTime": 1746837928062,
-     "endTime": 1746837928121
+     "startTime": 1746841132161,
+     "endTime": 1746841132200
     },
-    "executionOrder": 959,
+    "executionOrder": 998,
     "success": true
    }
   }

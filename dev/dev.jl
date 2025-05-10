@@ -1016,7 +1016,7 @@ end
 
 function outer_integrand(t_on, d_c, d_cdc, m)
     integral, _ = quadgk(t -> inner_integrand(t, t_on, d_c, d_cdc, m), 
-                         0, 30/d_c.maxeigval_comp, rtol=1e-10, maxevals=8000000)
+                         0, 30/d_c.maxeigval_comp, rtol =1e-10, maxevals=8000000)
     return integral
 end
 
@@ -1049,7 +1049,7 @@ function target_mle_exact(logrates, args...)
     initForward!(d_c)
     initForward!(d_cdc)
 
-    Fonoff, _ = quadgk(t -> outer_integrand(t, d_c, d_cdc, m), 0, 20, rtol=1e-8)
+    Fonoff, _ = quadgk(t -> outer_integrand(t, d_c, d_cdc, m), 0, 20, rtol =1e-8)
 
     return 2 * Fonoff * (cr)^2 / (m.dc^2 * tau)
     # return nothing
@@ -1067,7 +1067,7 @@ function outer_integrand_test(t_on, d)
         else
             rbound = -5/d_c.eigvals_set[i]
         end
-        piece, _ = quadde(t -> Pjoint(t, t_on, d), lbound, rbound, rtol=1e-10)
+        piece, _ = quadde(t -> Pjoint(t, t_on, d), lbound, rbound, rtol =1e-10)
         integral = integral + piece
         lbound = rbound
     end
@@ -1207,7 +1207,7 @@ end
 
     # @show integralOff
     # @show tauOff(d_c)
-    # @assert isapprox(integralOff, tauOff(d_c), rtol=1e-6)
+    # @assert isapprox(integralOff, tauOff(d_c), rtol =1e-6)
 
 end
 
@@ -1438,10 +1438,10 @@ let
     @show integralOff/tauOff_
     @show tauOn_ = tauOn(d_c)
     @show integralOn/tauOn_
-    # @assert isapprox(tauOff_, 0.2630071599045347, rtol=1e-8)
-    # @assert isapprox(tauOn_, 12.433174224343679, rtol=1e-8)    
-    @assert isapprox(integralOff/tauOff_, 1.0, rtol=1e-6)
-    @assert isapprox(integralOn/tauOn_, 1.0, rtol=1e-6)
+    # @assert isapprox(tauOff_, 0.2630071599045347, rtol =1e-8)
+    # @assert isapprox(tauOn_, 12.433174224343679, rtol =1e-8)    
+    @assert isapprox(integralOff/tauOff_, 1.0, rtol =1e-6)
+    @assert isapprox(integralOn/tauOn_, 1.0, rtol =1e-6)
 
     FisherRate(d_c, d_cdc)
 
@@ -1461,7 +1461,7 @@ end
     ## ----.-.-.--....-.---.-..-.-.-.-.-.--.-.-.-----.--
 
     # loading testset
-    tests_file = "test/data/example-data.json"
+    tests_file = "test/data/synthetic-test-set.json"
     testset = Dict()
 
     open(tests_file, "r") do f
@@ -1537,8 +1537,11 @@ end
     Pjoint!(t1, t2, d)
 
     Qtest = reshape(vcat(current_test["rate_matrix"]...), (nstates, nstates))'
+    Ptest = current_test["p_joint"]
+    PssTest = current_test["ss_prob"]
+    tOffTest = current_test["tau_off"]
+    tOnTest = current_test["tau_on"]
 
-    # @show testset
     @assert d.edges == edges
     @assert d.input_edges == input_edges
     @assert d.nstates == nstates
@@ -1548,24 +1551,12 @@ end
 
     @assert d.logrates == logrates
     @assert d.cr == cr
-    # @show pretty_table(Qtest)
-    # @show pretty_table(d.Q)
     @assert Qtest == d.Q
-    # @show d.Pjoint
-    @assert isapprox(d.Pjoint, testset["1"]["1"]["1"]["p_joint"], rtol= evalrtol)
+    @assert isapprox(tauOff(d), tOffTest, rtol = evalrtol)
+    @assert isapprox(tauOn(d), tOnTest, rtol = evalrtol)
+    @assert isapprox(P_ss(d), PssTest, rtol = evalrtol)
+    @assert isapprox(d.Pjoint, Ptest, rtol = evalrtol)
 
-
-    # @assert isapprox(d.F_set[3,1], 0.21390913026027936, rtol= evalrtol)
-    # @assert isapprox(d.F_set[4,1], 0.18053603312097147, rtol= evalrtol)
-    # @assert isapprox(d.F_set[5,1], 0.21390913026027936, rtol= evalrtol)
-
-    # @assert isapprox(d.F_comp[1,3], 0.11652126742757, rtol= evalrtol)
-    # @assert isapprox(d.F_comp[1,4], 0.1348369063163023, rtol= evalrtol)
-    # @assert isapprox(d.F_comp[1,5], 0.11652126742757, rtol= evalrtol)
-    
-    # @assert isapprox(d.Pjoint, 0.07419284612916327, rtol= evalrtol)
-
-    # @show d.Pjoint
 
 end
 
