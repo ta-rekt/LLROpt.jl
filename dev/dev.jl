@@ -1474,7 +1474,7 @@ end
 
     # testing 2bs decoy circuit
     circuitId = testset["circuit_id"]
-    global current_test = testset[kc][kg][kw]
+    current_test = testset[kc][kg][kw]
     logrates = current_test["logrates"]
     cr = current_test["c0"]
     t1 = current_test["t1"]
@@ -1485,7 +1485,7 @@ end
     edges = circuit_decoy["edges"]
     input_edges = circuit_decoy["input_edges"]
     nstates = circuit_decoy["nstates"]
-    off_ind = circuit_decoy["off_ind"]
+    off_ind = circuit_decoy["off_indicator"]
     off_ind = BitArray(off_ind)
     start_state = circuit_decoy["start_state"]
     hitting_set = circuit_decoy["hitting_set"]
@@ -1541,6 +1541,7 @@ end
     PssTest = current_test["ss_prob"]
     tOffTest = current_test["tau_off"]
     tOnTest = current_test["tau_on"]
+    varTest = current_test["var_rate"]
 
     @assert d.edges == edges
     @assert d.input_edges == input_edges
@@ -1555,6 +1556,7 @@ end
     @assert isapprox(tauOff(d), tOffTest, rtol = evalrtol)
     @assert isapprox(tauOn(d), tOnTest, rtol = evalrtol)
     @assert isapprox(P_ss(d), PssTest, rtol = evalrtol)
+    @assert isapprox(variance(d), varTest, rtol = evalrtol)
     @assert isapprox(d.Pjoint, Ptest, rtol = evalrtol)
 
 

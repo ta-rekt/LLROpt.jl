@@ -92,12 +92,17 @@ end
 
 ## . - -- .- .-.- . .- .-- -.- .- .- --.-.... - -.-
 export sharpness
-function sharpness(d_c::OneBurstDecoyModel, d_cdc::OneBurstDecoyModel)
+function sharpness(d::OneBurstDecoyModel)
     # # using FiniteDiff
     # f = _c -> pi_on(d)
     # # TODO: Check stability of this
     # g = _c -> ForwardDiff.derivative(f, _c);
     # return g(c) * c
+    
+    # using the three-point backward finite difference
+
+    h = d.dc
+
 
     return d_c.cr * (pi_on(d_cdc) - pi_on(d_c))/(d_cdc.cr - d_c.cr)
 end
