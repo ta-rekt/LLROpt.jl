@@ -62,7 +62,7 @@ function Pjoint!(t_off, t_on, d::OneBurstDecoyModel)
         sum = sum + d.F_comp[st,s] * d.F_set[s,st] 
     end
 
-    d.Pjoint = max(sum, d.eps)
+    d.Pjoint = max(sum, 0.5*d.eps)
 
     return d
 end

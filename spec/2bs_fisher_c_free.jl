@@ -48,9 +48,9 @@ hitting_set = circuit_2bs["hitting_set"]
 # cr = 100
 # dc = cr / 10
 # beta = cr
-maxevals = 50000
+maxevals = 20000
 reltol = 1e-10
-eps = 1e-30
+eps = 1e-15
 
 # initialization
 xinit1 = (lub1 .+ llb1) ./ 2
@@ -85,7 +85,7 @@ opt_alg = BBO_adaptive_de_rand_1_bin_radiuslimited()
 # opt_alg = Evolutionary.CMAES(μ = 5, λ = 10, sigma0 = 1)
 
 maxiters_acc = 30000
-maxiters_full = 3000
+maxiters_full = 2000
 whichf = "full"
 fixed_conc = false   # is concentration fixed, or are we sweeping over it?
 monte_carlo = false
@@ -97,7 +97,7 @@ n = 1
 # betasn = map(x->-tan(x), range(0*angle_incr, stop=0.5*angle_incr, length=128))
 # betasp = map(x->tan(x), range(0*angle_incr, stop=1*angle_incr, length=128))
 # betas = vcat(betasn, betasp)
-betas = 10 .^ range(-1, stop=2, length=32)
+betas = 10 .^ range(-1, stop=2, length=16)
 # betas = [0.1]
 nparams = length(betas)
 
@@ -167,8 +167,8 @@ end
     d, d1, d2 = dlist
     
     cr = beta
-    h = 0.01
     d.cr = cr
+    h = 0.01 * d.cr
     d1.cr = cr - h
     d2.cr = cr - 2*h
     d.logrates = logrates

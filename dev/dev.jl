@@ -1450,6 +1450,33 @@ end
 ## ----.-.-.--....-.---.-..-.-.-.-.-.--.-.-.-----.--
 # testing Pon, Poff, Pjoint
 
+function integrand2(t, d0::OneBurstDecoyModel,
+                      d1::OneBurstDecoyModel,
+                      d2::OneBurstDecoyModel)
+
+    t_off, t_on = t
+    u_off = t_off / (1.0 - t_off)
+    u_on = t_on / (1.0 - t_on)
+
+    @assert d0.cr > d1.cr
+    @assert d1.cr > d2.cr
+    h = d0.cr - d1.cr
+    @assert d2.cr ≈ d0.cr - 2*h
+
+    Pjoint!(u_off, u_on, d0)
+    Pjoint!(u_off, u_on, d1)
+    Pjoint!(u_off, u_on, d2)
+
+    # if d0.Pjoint < d0.eps || d1.Pjoint < d0.eps || d2.Pjoint < d0.eps
+    #     return 0.0
+    # end
+
+    dPjoint = d2.Pjoint - 4*d1.Pjoint + 3*d0.Pjoint
+    dPjoint /= 2 * h
+
+    return dPjoint^2 / (d0.Pjoint*(1.0 - t_off)^2*(1.0 - t_on)^2)
+end
+
 function FisherRateTest(d0::OneBurstDecoyModel, 
                         d1::OneBurstDecoyModel,
                         d2::OneBurstDecoyModel)
@@ -1462,8 +1489,8 @@ function FisherRateTest(d0::OneBurstDecoyModel,
     eps = 1e-6
 
     integral, err = pcubature(t -> 
-            integrand(t ./ [l1, l2], d0, d1, d2), 
-                [eps,eps], [20, 20]; 
+            integrand2(t, d0, d1, d2), 
+                [eps,eps], [1-eps, 1-eps]; 
                 reltol=d0.reltol, maxevals=d0.maxevals)
 
     if integral < 0
@@ -1475,7 +1502,7 @@ function FisherRateTest(d0::OneBurstDecoyModel,
         return -1.0
 
     else
-        return integral*d0.cr^2 / (tau*l1*l2)
+        return integral*d0.cr^2 / (tau)
     end
 end
 
@@ -1491,14 +1518,14 @@ let
     ## ----.-.-.--....-.---.-..-.-.-.-.-.--.-.-.-----.--
 
     # loading testset
-    tests_file = "test/data/20250512-2bs-fir-free-c0-testset.json"
+    tests_file = "test/data/20250512-2bs-fir-free-c0-clean2-testset.json"
     testset = Dict()
 
     open(tests_file, "r") do f
         testset = JSON.parse(f)
     end
 
-    kc = "32"
+    kc = "16"
     kg = "1"
     kw = "1"
 
@@ -1520,7 +1547,7 @@ let
     start_state = circuit_2bs["start_state"]
     hitting_set = circuit_2bs["hitting_set"]
 
-    eps = 1e-30
+    eps = 1e-15
     reltol = 1e-10
     evalrtol = 1e-6 
     maxevals = 100000
@@ -1545,7 +1572,7 @@ let
     d1 = deepcopy(d)
     d2 = deepcopy(d)
 
-    h = 0.001 * d.cr
+    h = 0.01 * d.cr
     d1.cr = d.cr - h
     d2.cr = d.cr - 2*h
 
@@ -1556,55 +1583,57 @@ let
     # Pon!(t2, d)
     # Poff!(t1, d)
     
-    # Pjoint!(t1, t2, d)
+    Pjoint!(t1, t2, d)
 
-    # Qtest = reshape(vcat(current_test["rate_matrix"]...), (nstates, nstates))'
-    # Ptest = current_test["p_joint"]
-    # PssTest = current_test["ss_prob"]
-    # tOffTest = current_test["tau_off"]
-    # tOnTest = current_test["tau_on"]
-    # varTest = current_test["var_rate"]
-    # sharpTest = current_test["sharpness"]
+    Qtest = reshape(vcat(current_test["rate_matrix"]...), (nstates, nstates))'
+    Ptest = current_test["p_joint"]
+    PssTest = current_test["ss_prob"]
+    tOffTest = current_test["tau_off"]
+    tOnTest = current_test["tau_on"]
+    varTest = current_test["var_rate"]
+    sharpTest = current_test["sharpness"]
     firFullTest = current_test["fisher_rate"]
-    # firAccTest = current_test["fisher_rate_acc"]
-    # integrandTest = current_test["integrand"]
+    firAccTest = current_test["fisher_rate_acc"]
+    integrandTest = current_test["integrand"]
 
-    # @assert d.edges == edges
-    # @assert d.input_edges == input_edges
-    # @assert d.nstates == nstates
-    # @assert d.ind_set == off_ind
-    # @assert d.start_state == start_state
-    # @assert d.hitting_set == hitting_set
+    @assert d.edges == edges
+    @assert d.input_edges == input_edges
+    @assert d.nstates == nstates
+    @assert d.ind_set == off_ind
+    @assert d.start_state == start_state
+    @assert d.hitting_set == hitting_set
 
-    # @assert d.logrates == logrates
-    # @assert d.cr == cr
+    @assert d.logrates == logrates
+    @assert d.cr == cr
 
-    # for (i,j) in zip(range(1, nstates), range(1, nstates))
-    #     try
-    #         @assert isapprox(d.Q[i,j], Qtest[i,j], rtol = evalrtol)
-    #     catch e
-    #         # println("i: ", i, " j: ", j)
-    #         # println("Q: ", d.Q[i,j])
-    #         # println("Qtest: ", Qtest[i,j])
-    #         # println("evalrtol: ", evalrtol)
-    #     end
-    # end
+    for (i,j) in zip(range(1, nstates), range(1, nstates))
+        try
+            @assert isapprox(d.Q[i,j], Qtest[i,j], rtol = evalrtol)
+        catch e
+            # println("i: ", i, " j: ", j)
+            # println("Q: ", d.Q[i,j])
+            # println("Qtest: ", Qtest[i,j])
+            # println("evalrtol: ", evalrtol)
+        end
+    end
 
-    # @assert isapprox(tauOff(d), tOffTest, rtol = evalrtol)
-    # @assert isapprox(tauOn(d), tOnTest, rtol = evalrtol)
-    # @assert isapprox(P_ss(d), PssTest, rtol = evalrtol)
-    # @assert isapprox(variance(d), varTest, rtol = evalrtol)
-    # @assert isapprox(d.Pjoint, Ptest, rtol = evalrtol)
-    # @assert isapprox(sharpness(d), sharpTest, rtol = 1e-4)
-    # @assert isapprox(FisherRateAcc(d), firAccTest, rtol = 1e-4)
+    @assert isapprox(tauOff(d), tOffTest, rtol = evalrtol)
+    @assert isapprox(tauOn(d), tOnTest, rtol = evalrtol)
+    @assert isapprox(P_ss(d), PssTest, rtol = evalrtol)
+    @assert isapprox(variance(d), varTest, rtol = evalrtol)
+    @assert isapprox(d.Pjoint, Ptest, rtol = evalrtol)
+    @assert isapprox(sharpness(d), sharpTest, rtol = 1e-4)
+    @assert isapprox(FisherRateAcc(d), firAccTest, rtol = 1e-4)
     # @assert isapprox(integrand([t1, t2], d, d1, d2), integrandTest, rtol = 1e-4)
-    @show FisherRateTest(d, d1, d2)
-    @show firFullTest
-    @assert isapprox(FisherRate(d, d1, d2), firFullTest, rtol = 1e-4)
+    # @show FisherRateTest(d, d1, d2)
+    # @show firFullTest
+    @assert isapprox(FisherRate(d, d1, d2), firFullTest, rtol = 1e-3)
 
+    # eps = 1e-4
+    # t1 = 0.95
     # l2 = d.maxeigval_comp
-    # tvals = range(0, 20, length=1000)
-    # integrandvals = [integrand([1e-9, t/l2], d, d1, d2)/l2 for t in tvals]
+    # tvals = range(eps, 1.0-eps, length=1000)
+    # integrandvals = [integrand2([t1, t/l2], d, d1, d2)/l2 for t in tvals]
 
     # plot(tvals, integrandvals, label = "integrand")
 

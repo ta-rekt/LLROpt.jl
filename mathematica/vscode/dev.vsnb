@@ -500,7 +500,7 @@
   },
   {
    "kind": 2,
-   "value": "{data, params} = GetData[\"20250512/2bs-fir-free-c0\"];\n\nkc = 28;\nkg = 1;\nkw = 1;\nskc = ToString[kc];\nskg = ToString[kg];\nskw = ToString[kw];\nnrates = 11;\nlogrates = data[skc, skg, skw][[;; nrates]];\nrates = Table[10^logrates[[i]], {i, 1, nrates}];\nc0 = params[\"betas\"][[kc]];\ninput = Prepend[rates, c0];\n\nFisherSafe @@ input\ndata[skc, skg, skw][[nrates + 1]]*c0^2",
+   "value": "{data, params} = GetData[\"20250512/2bs-fir-free-c0-clean\"];\n\nkc = 28;\nkg = 1;\nkw = 1;\nskc = ToString[kc];\nskg = ToString[kg];\nskw = ToString[kw];\nnrates = 11;\nlogrates = data[skc, skg, skw][[;; nrates]];\nrates = Table[10^logrates[[i]], {i, 1, nrates}];\nc0 = params[\"betas\"][[kc]];\ninput = Prepend[rates, c0];\n\nFisherSafe @@ input\ndata[skc, skg, skw][[nrates + 1]]*c0^2",
    "languageId": "wolfram",
    "outputs": [
     {
@@ -591,16 +591,16 @@
   },
   {
    "kind": 2,
-   "value": "{data, params} = GetData[\"20250512/2bs-fir-free-c0\"];\n\noutData = <|\"1\"-><|\"1\"-><|\"1\"->{}|>|>|>;\noutData[\"circuit_id\"] = circuitId;\n\nnrates = 11;\nvars = {c, kboff2, kuoff, kuon, kbon2, kon1b, \n        kboff, kbon, kuoff2, kon2b, kuon2, koffu};\n\nDo[\n    skc = ToString[kc];\n    skg = ToString[kg];\n    skw = ToString[kw];\n\n    outData[skc] = <||>;\n    outData[skc, skg] = <||>;\n    outData[skc, skg, skw] = <||>;\n\n    (* rates = Table[i, {i, 1, nrates}];\n    logrates = Table[N[Log[10,i]], {i, 1, nrates}]; *)\n\n    logrates = data[skc, skg, skw][[;; nrates]];\n    rates = Table[10^logrates[[i]], {i, 1, nrates}];\n    c0 = params[\"betas\"][[kc]];\n\n    t1 = 0.1;\n    t2 = 0.1;\n    cRates = Join[{c0}, rates];\n    t1t2cRates = Join[{t1, t2, c0}, rates];\n\n    Q2val = Q2 /. Table[vars[[i]] -> cRates[[i]], {i, 1, nrates+1}];\n    ss2val = ss2 /. Table[vars[[i]] -> cRates[[i]], {i, 1, nrates+1}];\n    meanToffVal = meanToffLt /. Table[vars[[i]] -> cRates[[i]], {i, 1, nrates+1}];\n    meanTonVal = meanTonLt /. Table[vars[[i]] -> cRates[[i]], {i, 1, nrates+1}];\n    FisherRateAccVal = FisherRateAcc /. Table[vars[[i]] -> cRates[[i]], {i, 1, nrates+1}];\n    varVal = var /. Table[vars[[i]] -> cRates[[i]], {i, 1, nrates+1}];\n    sharpVal = sharp /. Table[vars[[i]] -> cRates[[i]], {i, 1, nrates+1}];\n    integrandVal = integrand /. Table[vars[[i]] -> cRates[[i]], {i, 1, nrates+1}];\n\n    outData[skc, skg, skw] = <|\n        \"c0\" -> c0,\n        \"t1\" -> t1,\n        \"t2\" -> t2,\n        \"rates\" -> rates,\n        \"logrates\" -> logrates,\n        \"rate_matrix\" -> Q2val,\n        \"ss_prob\" -> ss2val,\n        \"tau_off\" -> meanToffVal,\n        \"tau_on\" -> meanTonVal,\n        \"var_rate\" -> varVal,\n        \"sharpness\" -> sharpVal,\n        \"fisher_rate_acc\" -> FisherRateAccVal,\n        \"fisher_rate\" -> FisherSafe @@ cRates,\n        \"integrand\" -> integrandVal,\n        \"p_joint\" -> PjointNum @@ t1t2cRates\n    |>;\n    ,{kc, 1, 32}, {kg, 1, 1}, {kw, 1, 1}\n];",
+   "value": "{data, params} = GetData[\"20250512/2bs-fir-free-c0-clean2\"];\n\noutData = <|\"1\"-><|\"1\"-><|\"1\"->{}|>|>|>;\noutData[\"circuit_id\"] = circuitId;\n\nnrates = 11;\nvars = {c, kboff2, kuoff, kuon, kbon2, kon1b, \n        kboff, kbon, kuoff2, kon2b, kuon2, koffu};\n\nDo[\n    skc = ToString[kc];\n    skg = ToString[kg];\n    skw = ToString[kw];\n\n    outData[skc] = <||>;\n    outData[skc, skg] = <||>;\n    outData[skc, skg, skw] = <||>;\n\n    (* rates = Table[i, {i, 1, nrates}];\n    logrates = Table[N[Log[10,i]], {i, 1, nrates}]; *)\n\n    logrates = data[skc, skg, skw][[;; nrates]];\n    rates = Table[10^logrates[[i]], {i, 1, nrates}];\n    c0 = params[\"betas\"][[kc]];\n\n    t1 = 0.1;\n    t2 = 0.1;\n    cRates = Join[{c0}, rates];\n    t1t2cRates = Join[{t1, t2, c0}, rates];\n\n    Q2val = Q2 /. Table[vars[[i]] -> cRates[[i]], {i, 1, nrates+1}];\n    ss2val = ss2 /. Table[vars[[i]] -> cRates[[i]], {i, 1, nrates+1}];\n    meanToffVal = meanToffLt /. Table[vars[[i]] -> cRates[[i]], {i, 1, nrates+1}];\n    meanTonVal = meanTonLt /. Table[vars[[i]] -> cRates[[i]], {i, 1, nrates+1}];\n    FisherRateAccVal = FisherRateAcc /. Table[vars[[i]] -> cRates[[i]], {i, 1, nrates+1}];\n    varVal = var /. Table[vars[[i]] -> cRates[[i]], {i, 1, nrates+1}];\n    sharpVal = sharp /. Table[vars[[i]] -> cRates[[i]], {i, 1, nrates+1}];\n    integrandVal = integrand /. Table[vars[[i]] -> cRates[[i]], {i, 1, nrates+1}];\n\n    outData[skc, skg, skw] = <|\n        \"c0\" -> c0,\n        \"t1\" -> t1,\n        \"t2\" -> t2,\n        \"rates\" -> rates,\n        \"logrates\" -> logrates,\n        \"rate_matrix\" -> Q2val,\n        \"ss_prob\" -> ss2val,\n        \"tau_off\" -> meanToffVal,\n        \"tau_on\" -> meanTonVal,\n        \"var_rate\" -> varVal,\n        \"sharpness\" -> sharpVal,\n        \"fisher_rate_acc\" -> FisherRateAccVal,\n        \"fisher_rate\" -> FisherSafe @@ cRates,\n        \"integrand\" -> integrandVal,\n        \"p_joint\" -> PjointNum @@ t1t2cRates\n    |>;\n    ,{kc, 1, 16}, {kg, 1, 1}, {kw, 1, 1}\n];",
    "languageId": "wolfram",
    "outputs": [],
    "metadata": {},
    "executionSummary": {
     "timing": {
-     "startTime": 1747047284216,
-     "endTime": 1747047365921
+     "startTime": 1747064877750,
+     "endTime": 1747064919636
     },
-    "executionOrder": 189,
+    "executionOrder": 532,
     "success": true
    }
   },
@@ -615,26 +615,26 @@
   },
   {
    "kind": 2,
-   "value": "filename = \"20250512-2bs-fir-free-c0-testset.json\";\ndir = FileNameJoin[{$HomeDirectory, \".julia/dev/LLROpt/test/data\"}];\nfilepath = FileNameJoin[{dir, filename}];\n\nExport[filepath, outData, \"RawJSON\"]",
+   "value": "filename = \"20250512-2bs-fir-free-c0-clean2-testset.json\";\ndir = FileNameJoin[{$HomeDirectory, \".julia/dev/LLROpt/test/data\"}];\nfilepath = FileNameJoin[{dir, filename}];\n\nExport[filepath, outData, \"RawJSON\"]",
    "languageId": "wolfram",
    "outputs": [
     {
      "items": [
       {
-       "data": "/home/tohme/.julia/dev/LLROpt/test/data/20250512-2bs-fir-free-c0-testset.json",
+       "data": "/home/tohme/.julia/dev/LLROpt/test/data/20250512-2bs-fir-free-c0-clean2-testset.json",
        "mime": "text/html"
       }
      ],
-     "id": "b8dbfb71-b02f-4b70-9266-8f65eca5adc9"
+     "id": "e443d0c7-2b95-4113-9c6b-97f39608bae9"
     }
    ],
    "metadata": {},
    "executionSummary": {
     "timing": {
-     "startTime": 1747047372460,
-     "endTime": 1747047372484
+     "startTime": 1747064969909,
+     "endTime": 1747064969933
     },
-    "executionOrder": 193,
+    "executionOrder": 536,
     "success": true
    }
   }
