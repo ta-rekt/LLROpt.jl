@@ -12,7 +12,7 @@ function build_mat(weighted_edges, input_edges, c::T) where T<:Any
     @assert N > 0
     
     # weights matrix
-    Q = zeros(Float32, N, N)
+    Q = zeros(Float64, N, N)
     for (n1, n2, w) in weighted_edges
         Q[n1, n2] = w
     end
@@ -87,35 +87,42 @@ export variance
 function variance(d::OneBurstDecoyModel)
     Z_ = Z(d)
     pss = P_ss(d)
+
     return 2 * (d.ind_set .* pss)' * (Z_ * d.ind_set)
 end
 
 ## . - -- .- .-.- . .- .-- -.- .- .- --.-.... - -.-
 export sharpness
-function sharpness(d::OneBurstDecoyModel)
-    # # using FiniteDiff
-    # f = _c -> pi_on(d)
-    # # TODO: Check stability of this
-    # g = _c -> ForwardDiff.derivative(f, _c);
-    # return g(c) * c
+function sharpness(d::OneBurstDecoyModel, h::Float64=0.01)
+
+    d1 = deepcopy(d)
+    d2 = deepcopy(d)
+    d1.cr = d.cr - h
+    d2.cr = d.cr - 2*h
     
+    initAcc!(d1)
+    initAcc!(d2)
+
+    pi0 = pi_on(d)
+    pi1 = pi_on(d1)
+    pi2 = pi_on(d2)
+
     # using the three-point backward finite difference
 
-    h = d.dc
+    dpion = pi2 - 4*pi1 + 3*pi0
+    dpion /= (2 * h)
 
-
-    return d_c.cr * (pi_on(d_cdc) - pi_on(d_c))/(d_cdc.cr - d_c.cr)
+    return abs(d.cr * dpion)
 end
 
 ## . - -- .- .-.- . .- .-- -.- .- .- - -.-.... - -.-
-export ir_acc
-function ir_acc(d_c::OneBurstDecoyModel, d_cdc::OneBurstDecoyModel)
-    p_c = pi_on(d_c)
-    p_cdc = pi_on(d_cdc)
-    var_c = variance(d_c)
-    var_cdc = variance(d_cdc)
+export FisherRateAcc
+function FisherRateAcc(d::OneBurstDecoyModel, h::Float64=0.01)
 
-    return (p_cdc - p_c)^2 * (var_cdc + var_c) / (4 * var_c * var_cdc)
+    sharp = sharpness(d, h)
+    var = variance(d)
+
+    return sharp^2 / var
 end
 
 ## . - -- .- .-.- . .- .-- -.- .- .- --.-.... - -.-

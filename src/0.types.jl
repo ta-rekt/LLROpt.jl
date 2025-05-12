@@ -47,6 +47,7 @@ end
 
 export OneBurstDecoyModel
 Base.@kwdef mutable struct OneBurstDecoyModel
+    circuitId
     nstates
     edges
     input_edges

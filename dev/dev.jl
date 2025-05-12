@@ -1449,7 +1449,37 @@ end
 
 ## ----.-.-.--....-.---.-..-.-.-.-.-.--.-.-.-----.--
 # testing Pon, Poff, Pjoint
-@time let 
+
+function FisherRateTest(d0::OneBurstDecoyModel, 
+                        d1::OneBurstDecoyModel,
+                        d2::OneBurstDecoyModel)
+    
+    tauOffVal = tauOff(d0)
+    tauOnVal = tauOn(d0)
+    tau = tauOnVal + tauOffVal
+    l1 = d0.maxeigval_comp
+    l2 = d0.maxeigval_set
+    eps = 1e-6
+
+    integral, err = pcubature(t -> 
+            integrand(t ./ [l1, l2], d0, d1, d2), 
+                [eps,eps], [20, 20]; 
+                reltol=d0.reltol, maxevals=d0.maxevals)
+
+    if integral < 0
+        # throw("Negative integral")
+        return -1.0
+
+    elseif err > 1e-3
+        # throw("Integral precision not met")
+        return -1.0
+
+    else
+        return integral*d0.cr^2 / (tau*l1*l2)
+    end
+end
+
+let 
     ## circuit specifications file
     circuits_file = "spec/circuits.json"
     global circuit_specs = Dict()
@@ -1461,41 +1491,42 @@ end
     ## ----.-.-.--....-.---.-..-.-.-.-.-.--.-.-.-----.--
 
     # loading testset
-    tests_file = "test/data/synthetic-test-set.json"
+    tests_file = "test/data/20250512-2bs-fir-free-c0-testset.json"
     testset = Dict()
 
     open(tests_file, "r") do f
         testset = JSON.parse(f)
     end
 
-    kc = "1"
+    kc = "32"
     kg = "1"
     kw = "1"
 
     # testing 2bs decoy circuit
     circuitId = testset["circuit_id"]
-    current_test = testset[kc][kg][kw]
+    global current_test = testset[kc][kg][kw]
     logrates = current_test["logrates"]
     cr = current_test["c0"]
     t1 = current_test["t1"]
     t2 = current_test["t2"]
-    dc = cr / 100
+    # dc = cr / 100
 
-    circuit_decoy = circuit_specs[circuitId]
-    edges = circuit_decoy["edges"]
-    input_edges = circuit_decoy["input_edges"]
-    nstates = circuit_decoy["nstates"]
-    off_ind = circuit_decoy["off_indicator"]
+    circuit_2bs = circuit_specs[circuitId]
+    edges = circuit_2bs["edges"]
+    input_edges = circuit_2bs["input_edges"]
+    nstates = circuit_2bs["nstates"]
+    off_ind = circuit_2bs["off_indicator"]
     off_ind = BitArray(off_ind)
-    start_state = circuit_decoy["start_state"]
-    hitting_set = circuit_decoy["hitting_set"]
+    start_state = circuit_2bs["start_state"]
+    hitting_set = circuit_2bs["hitting_set"]
 
     eps = 1e-30
-    reltol = 1e-12
-    evalrtol = 1e-12
+    reltol = 1e-10
+    evalrtol = 1e-6 
     maxevals = 100000
 
     global d = OneBurstDecoyModel(;
+        circuitId = circuitId,
         nstates = nstates,
         edges = edges,
         input_edges = input_edges,
@@ -1511,54 +1542,71 @@ end
         maxevals = maxevals,
     )
 
-    ddc = OneBurstDecoyModel(;
-        nstates = nstates,
-        edges = edges,
-        input_edges = input_edges,
-        logrates = logrates,
-        cr = cr + dc,
-        cw = nothing,
-        gamma = nothing,
-        ind_set = off_ind,
-        start_state = start_state,
-        hitting_set = hitting_set,
-        eps = eps,
-        reltol = reltol,
-        maxevals = maxevals,
-    )
+    d1 = deepcopy(d)
+    d2 = deepcopy(d)
 
-    # d.weights = [kboff,     kuoff,        d.cw*kboff, d.gamma*kuoff, kbon, kuon,
-    #              d.cw*kbon, d.gamma*kuon, konb,       koffu,         konb, konu]
-    init2bsFree!(d)
+    h = 0.001 * d.cr
+    d1.cr = d.cr - h
+    d2.cr = d.cr - 2*h
+
+    initFull!(d)
+    initFull!(d1)
+    initFull!(d2)
 
     # Pon!(t2, d)
     # Poff!(t1, d)
     
-    Pjoint!(t1, t2, d)
+    # Pjoint!(t1, t2, d)
 
-    Qtest = reshape(vcat(current_test["rate_matrix"]...), (nstates, nstates))'
-    Ptest = current_test["p_joint"]
-    PssTest = current_test["ss_prob"]
-    tOffTest = current_test["tau_off"]
-    tOnTest = current_test["tau_on"]
-    varTest = current_test["var_rate"]
+    # Qtest = reshape(vcat(current_test["rate_matrix"]...), (nstates, nstates))'
+    # Ptest = current_test["p_joint"]
+    # PssTest = current_test["ss_prob"]
+    # tOffTest = current_test["tau_off"]
+    # tOnTest = current_test["tau_on"]
+    # varTest = current_test["var_rate"]
+    # sharpTest = current_test["sharpness"]
+    firFullTest = current_test["fisher_rate"]
+    # firAccTest = current_test["fisher_rate_acc"]
+    # integrandTest = current_test["integrand"]
 
-    @assert d.edges == edges
-    @assert d.input_edges == input_edges
-    @assert d.nstates == nstates
-    @assert d.ind_set == off_ind
-    @assert d.start_state == start_state
-    @assert d.hitting_set == hitting_set
+    # @assert d.edges == edges
+    # @assert d.input_edges == input_edges
+    # @assert d.nstates == nstates
+    # @assert d.ind_set == off_ind
+    # @assert d.start_state == start_state
+    # @assert d.hitting_set == hitting_set
 
-    @assert d.logrates == logrates
-    @assert d.cr == cr
-    @assert Qtest == d.Q
-    @assert isapprox(tauOff(d), tOffTest, rtol = evalrtol)
-    @assert isapprox(tauOn(d), tOnTest, rtol = evalrtol)
-    @assert isapprox(P_ss(d), PssTest, rtol = evalrtol)
-    @assert isapprox(variance(d), varTest, rtol = evalrtol)
-    @assert isapprox(d.Pjoint, Ptest, rtol = evalrtol)
+    # @assert d.logrates == logrates
+    # @assert d.cr == cr
 
+    # for (i,j) in zip(range(1, nstates), range(1, nstates))
+    #     try
+    #         @assert isapprox(d.Q[i,j], Qtest[i,j], rtol = evalrtol)
+    #     catch e
+    #         # println("i: ", i, " j: ", j)
+    #         # println("Q: ", d.Q[i,j])
+    #         # println("Qtest: ", Qtest[i,j])
+    #         # println("evalrtol: ", evalrtol)
+    #     end
+    # end
+
+    # @assert isapprox(tauOff(d), tOffTest, rtol = evalrtol)
+    # @assert isapprox(tauOn(d), tOnTest, rtol = evalrtol)
+    # @assert isapprox(P_ss(d), PssTest, rtol = evalrtol)
+    # @assert isapprox(variance(d), varTest, rtol = evalrtol)
+    # @assert isapprox(d.Pjoint, Ptest, rtol = evalrtol)
+    # @assert isapprox(sharpness(d), sharpTest, rtol = 1e-4)
+    # @assert isapprox(FisherRateAcc(d), firAccTest, rtol = 1e-4)
+    # @assert isapprox(integrand([t1, t2], d, d1, d2), integrandTest, rtol = 1e-4)
+    @show FisherRateTest(d, d1, d2)
+    @show firFullTest
+    @assert isapprox(FisherRate(d, d1, d2), firFullTest, rtol = 1e-4)
+
+    # l2 = d.maxeigval_comp
+    # tvals = range(0, 20, length=1000)
+    # integrandvals = [integrand([1e-9, t/l2], d, d1, d2)/l2 for t in tvals]
+
+    # plot(tvals, integrandvals, label = "integrand")
 
 end
 
@@ -1778,59 +1826,20 @@ end
 ## -.-.--..-.-.-.-.-.---------.-.-.--.........---.-.--
 # 2 binding sites without kb ku constraints
 let
-    ## circuit description
-    circuits = "spec/circuits.json"
-    circuit = Dict()
+    ## load circuit specifications
+    circuits_file = "/home/tohme/.julia/dev/LLROpt/spec/circuits.json"
+    circuit_specs2 = Dict()
 
-    open(circuits, "r") do f
-        circuit = JSON.parse(f)
+    open(circuits_file, "r") do f
+        # text = read(f, String)
+        # println("File contents: ", text)
+        circuit_specs2 = JSON.parse(f)
     end
 
-    circuit_decoy = circuit["2bs_no_konu"]
-    edges = circuit_decoy["edges"]
-    input_edges = circuit_decoy["input_edges"]
-    nstates = circuit_decoy["nstates"]
-    off_ind = circuit_decoy["off_ind"]
-    off_ind = BitArray(off_ind)
+    println(circuit_specs2)
 
-    # nstates = 6
-    # edges = [(5, 1), (1, 5), (2, 6), (6, 2), (1, 2), (1, 3), 
-    #         (2, 4), (3, 1), (3, 4), (4, 2), (6, 5)]
-    # input_edges = [(5,1), (1,3), (6,2), (2,4)]
-    # off_ind = BitArray([1,0,1,0,1,0])
-
-    global m1 = OneBurstDecoyModel(;
-        nstates = nstates,
-        edges = edges,
-        input_edges = input_edges,
-        logrates = nothing,
-        cr = nothing,
-        cw = nothing,
-        gamma = nothing,
-        ind_set = off_ind,
-        start_state = 5,
-        hitting_set = [6,2,4],
-        eps = eps,
-        reltol = reltol,
-        maxevals = maxevals,
-    )
-
-    global m2 = OneBurstDecoyModel(;
-        nstates = nstates,
-        edges = edges,
-        input_edges = input_edges,
-        logrates = nothing,
-        cr = nothing,
-        cw = nothing,
-        gamma = nothing,
-        ind_set = off_ind,
-        start_state = 5,
-        hitting_set = [6,2,4],
-        eps = eps,
-        reltol = reltol,
-        maxevals = maxevals,
-    )
-
+    circuitId = "2bs_no_konu"
+    circuit_2bs = circuit_specs2[circuitId]
 
 
 end

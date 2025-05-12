@@ -29,7 +29,7 @@ end
 export tauOff
 function tauOff(d::OneBurstDecoyModel)
     A = d.Q .* 1.0
-    b = -1.0 .* ones(d.nstates,1)
+    b = -1.0 .* ones(d.nstates, 1)
     
     for k in d._comp
         A[k,:] .= 0.0

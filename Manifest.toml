@@ -2,7 +2,7 @@
 
 julia_version = "1.11.1"
 manifest_format = "2.0"
-project_hash = "00eddfd0fc6af487fccdb4e0e8bd4534aa6f6e83"
+project_hash = "f78f1090800c41c6d1c3954ae9d4fac40f0efef2"
 
 [[deps.ADTypes]]
 git-tree-sha1 = "30bb95a372787af850addf28ac937f1be7b79173"
@@ -1116,6 +1116,12 @@ version = "0.4.69"
 deps = ["Base64"]
 uuid = "d6f4376e-aef5-505a-96c1-9c027394607a"
 version = "1.11.0"
+
+[[deps.MathLink]]
+deps = ["Libdl", "Printf"]
+git-tree-sha1 = "b2216ea2deb50915511503bcd0b113fa18c69f88"
+uuid = "18c93696-a329-5786-9845-8443133fa0b4"
+version = "0.6.1"
 
 [[deps.MatrixEquations]]
 deps = ["LinearAlgebra", "LinearMaps"]

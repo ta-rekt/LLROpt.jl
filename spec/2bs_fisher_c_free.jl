@@ -5,6 +5,7 @@ using OptimizationEvolutionary
 using OptimizationManopt
 using Distributions
 using Cubature
+using JSON
 
 ### Biophysical parameters
 a = 3e-3        # um
@@ -25,20 +26,31 @@ lub1[7] = log10(dl_tf)
 lub1[8] = log10(2*ub)
 lub1[10] = log10(2*ub)
 
-## circuit description
-nstates = 6
-edges = [(5, 1), (1, 5), (2, 6), (6, 2), (1, 2), (1, 3), 
-         (2, 4), (3, 1), (3, 4), (4, 2), (6, 5)]
-input_edges = [(5,1), (1,3), (6,2), (2,4)]
-off_ind = BitArray([1,0,1,0,1,0])
+
+## load circuit specifications
+circuits_file = "/home/tohme/.julia/dev/LLROpt/spec/circuits.json"
+global circuit_specs = Dict()
+
+open(circuits_file, "r") do f
+    global circuit_specs = JSON.parse(f)
+end
+
+circuitId = "2bs_no_konu"
+circuit_2bs = circuit_specs[circuitId]
+edges = circuit_2bs["edges"]
+input_edges = circuit_2bs["input_edges"]
+nstates = circuit_2bs["nstates"]
+off_ind = circuit_2bs["off_indicator"]
+off_ind = BitArray(off_ind)
+start_state = circuit_2bs["start_state"]
+hitting_set = circuit_2bs["hitting_set"]
+
 # cr = 100
 # dc = cr / 10
 # beta = cr
-maxevals = 20000
+maxevals = 50000
 reltol = 1e-10
 eps = 1e-30
-N = 1   # legacy parameter, number of samples once optima have been found
-n = 1
 
 # initialization
 xinit1 = (lub1 .+ llb1) ./ 2
@@ -47,7 +59,8 @@ xinit1 = (lub1 .+ llb1) ./ 2
 # inpath = "/home/tohme/.julia/dev/LLROpt/data/20241118/dr-epsilon-hernan/bigsweep-cmaes-A-pn-smallw/ir_full_mix_vs_pure_pareto_pid"
 inpath = ""
 
-global m1 = OneBurstDecoyModel(;
+global d = OneBurstDecoyModel(;
+    circuitId = circuitId,
     nstates = nstates,
     edges = edges,
     input_edges = input_edges,
@@ -56,28 +69,16 @@ global m1 = OneBurstDecoyModel(;
     cw = nothing,
     gamma = nothing,
     ind_set = off_ind,
-    start_state = 5,
-    hitting_set = [6,2,4],
+    start_state = start_state,
+    hitting_set = hitting_set,
     eps = eps,
     reltol = reltol,
     maxevals = maxevals,
 )
 
-global m2 = OneBurstDecoyModel(;
-    nstates = nstates,
-    edges = edges,
-    input_edges = input_edges,
-    logrates = nothing,
-    cr = nothing,
-    cw = nothing,
-    gamma = nothing,
-    ind_set = off_ind,
-    start_state = 5,
-    hitting_set = [6,2,4],
-    eps = eps,
-    reltol = reltol,
-    maxevals = maxevals,
-)
+d1 = deepcopy(d)
+d2 = deepcopy(d)
+dlist = [d, d1, d2]
 
 ### Optimization parameters
 opt_alg = BBO_adaptive_de_rand_1_bin_radiuslimited()
@@ -88,13 +89,15 @@ maxiters_full = 3000
 whichf = "full"
 fixed_conc = false   # is concentration fixed, or are we sweeping over it?
 monte_carlo = false
+N = 1  # legacy parameter, number of repeats once optima have been found
+n = 1
 
 ### Temperature parameter
 # angle_incr = 3.141592 / 1e3
 # betasn = map(x->-tan(x), range(0*angle_incr, stop=0.5*angle_incr, length=128))
 # betasp = map(x->tan(x), range(0*angle_incr, stop=1*angle_incr, length=128))
 # betas = vcat(betasn, betasp)
-betas = 10 .^ range(-0.5, stop=2, length=16)
+betas = 10 .^ range(-1, stop=2, length=32)
 # betas = [0.1]
 nparams = length(betas)
 
@@ -160,23 +163,28 @@ end
 
 # IR FULL
 @counted function target_full(logrates, args...)
-    m1, m2, beta, gamma, w = args
+    dlist, beta, gamma, w = args
+    d, d1, d2 = dlist
     
     cr = beta
-    m1.cr = cr
-    m2.cr = cr*1.1
-    m1.logrates = logrates
-    m2.logrates = logrates
+    h = 0.01
+    d.cr = cr
+    d1.cr = cr - h
+    d2.cr = cr - 2*h
+    d.logrates = logrates
+    d1.logrates = logrates
+    d2.logrates = logrates
 
-    init2bsFree!(m1)
-    init2bsFree!(m2)
+    initFull!(d)
+    initFull!(d1)
+    initFull!(d2)
 
     # print(logrates)
-    EP = EP_ss(m1)
+    EP = EP_ss(d)
 
-    fir = FisherRate(m1, m2)
-    firOff = FisherRateOff(m1, m2)
-    firOn = FisherRateOn(m1, m2)
+    fir = FisherRate(d, d1, d2)
+    firOff = FisherRateOff(d, d1, d2)
+    firOn = FisherRateOn(d, d1, d2)
 
     (- fir, firOff, firOn, EP)
 end

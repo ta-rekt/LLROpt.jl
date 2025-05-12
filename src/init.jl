@@ -1,6 +1,6 @@
 ## ------
-export init!
-function init!(m::LLROptModel)
+export initLLR!
+function initLLR!(m::LLROptModel)
 
     init_Qs!(m)
 
@@ -37,6 +37,20 @@ function init2bsWeights!(d::OneBurstDecoyModel)
     return d
 end
 
+export initDecoyWeightsNew!
+function initDecoyWeightsNew!(d::OneBurstDecoyModel)
+    # transition rates
+
+    kboff, konb, kuon, kbon, koffu, kuoff = 10 .^ d.logrates
+
+    # edges = [(1, 2), (2, 1), (1, 6), (6, 1), (7, 3), (3, 7),
+    #          (4, 5), (5, 4), (6, 5), (7, 1), (2, 3), (4, 1), (7, 5), (4, 3)]
+    d.weights = [kboff, kuoff, d.cw*kboff, d.gamma*kuoff, kbon, kuon, 
+                 d.cw*kbon, d.gamma*kuon, konb, koffu, konb, koffu, d.cw*kbon, kbon]
+
+    return d
+end
+
 export initFreeWeights!
 function initFreeWeights!(d::OneBurstDecoyModel)
     # transition rates
@@ -45,9 +59,8 @@ function initFreeWeights!(d::OneBurstDecoyModel)
     return d
 end
 
-export initOneBurst!
-function initOneBurst!(d::OneBurstDecoyModel)
-
+export initQ!
+function initQ!(d::OneBurstDecoyModel)
     @assert length(d.weights) == length(d.edges)
 
     # building weighted adjacency matrix (rate matrix Q)
@@ -59,6 +72,14 @@ function initOneBurst!(d::OneBurstDecoyModel)
     end
 
     d.Q = build_mat(weighted_edges, d.input_edges, d.cr)
+
+    return d
+end
+
+export initOneBurst!
+function initOneBurst!(d::OneBurstDecoyModel)
+
+    initQ!(d)
 
     # ON and OFF partitions built from indicator arrays ind_set and ind_comp
     d.ind_comp = ones(Int, length(d.ind_set)) .- d.ind_set
@@ -103,38 +124,42 @@ function initOneBurst!(d::OneBurstDecoyModel)
     return d
 end
 
-export initDecoys!
-function initDecoys!(d::OneBurstDecoyModel)
+export initWeights!
+function initWeights!(d::OneBurstDecoyModel)
+   
+    if d.circuitId == "1bs_decoy"
+        initDecoyWeights!(d)
 
-    initDecoyWeights!(d)
+    elseif d.circuitId == "1bs_decoy_no_konu"
+        initDecoyWeights!(d)
+
+    elseif d.circuitId == "1bs_decoy_no_konu_new"
+        initDecoyWeightsNew!(d)
+
+    elseif d.circuitId == "2bs_no_konu"
+        initFreeWeights!(d)
+
+    elseif d.circuitId == "6bs"
+        initFreeWeights!(d)
+    end
+
+    return d
+end
+
+export initFull!
+function initFull!(d::OneBurstDecoyModel)
+
+    initWeights!(d)
     initOneBurst!(d)
 
     return d
 end
 
-export init2bs!
-function init2bs!(d::OneBurstDecoyModel)
+export initAcc!
+function initAcc!(d::OneBurstDecoyModel)
 
-    init2bsWeights!(d)
-    initOneBurst!(d)
-
-    return d
-end
-
-export init6bs!
-function init6bs!(d::OneBurstDecoyModel)
-
-    initFreeWeights!(d)
-    initOneBurst!(d)
-
-    return d
-end
-
-export init2bsFree!
-function init2bsFree!(d::OneBurstDecoyModel)
-
-    initFreeWeights!(d)
-    initOneBurst!(d)
+    initWeights!(d)
+    initQ!(d)
 
     return d
 end
