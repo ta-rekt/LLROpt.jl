@@ -38,12 +38,12 @@ off_ind = circuit_2bs["off_indicator"]
 off_ind = BitArray(off_ind)
 start_state = circuit_2bs["start_state"]
 hitting_set = circuit_2bs["hitting_set"]
-cr = 1
+cr = 50
 # beta = cr
 
 maxevals = 10000
 reltol = 1e-10
-eps = 1e-30
+eps = 1e-15
 N = 1   # legacy parameter, number of samples once optima have been found
 n = 1
 
@@ -60,7 +60,7 @@ global d = OneBurstDecoyModel(;
     edges = edges,
     input_edges = input_edges,
     logrates = nothing,
-    cr = nothing,
+    cr = cr,
     cw = nothing,
     gamma = nothing,
     ind_set = off_ind,
@@ -80,22 +80,23 @@ opt_alg = BBO_adaptive_de_rand_1_bin_radiuslimited()
 # opt_alg = Evolutionary.CMAES(μ = 5, λ = 10, sigma0 = 1)
 
 maxiters_acc = 30000
-maxiters_full = 2000
+maxiters_full = 5000
 whichf = "full"
 fixed_conc = true   # is concentration fixed, or are we sweeping over it?
 monte_carlo = false   # are we sampling trajectories and taking averages?
 
 ### Temperature parameter
 # betasn = map(x->-tan(x), range(0*angle_incr, stop=0.5*angle_incr, length=16))
-betas = map(x->tan(x), range(0, stop=pi/2 - 0.05, length=32))
+betas = map(x->tan(x), range(0, stop=pi/2 - 0.05, length=16))
 # betas = 10 .^ range(-1, stop=3, length=32)
 # betas = [0.05]
 nparams = length(betas)
 
 ### Other parameters
-gammas = [10]
-wvals = [0.01]
-
+gammas = [1.5,2.5,10]
+wvals = [0.05,0.2,1,5,10]
+# gammas = [10]
+# wvals = [0.01]
 
 ### objective functions
 
@@ -121,40 +122,31 @@ end
 end
 
 @counted function target_full(logrates, args...)
-    m1, m2, beta, gamma, w = args
+    dlist, beta, gamma, w = args
+    d, d1, d2 = dlist
 
-    m1.cw = m1.cr*w
-    m1.gamma = gamma
-    m1.logrates = logrates
+    h = 0.01 * d.cr
+    d1.cr = cr - h
+    d2.cr = cr - 2*h
 
-    m2.cw = m1.cr*w
-    m2.gamma = gamma
-    m2.logrates = logrates
+    for di in dlist
+        di.logrates = logrates
+        di.cw = d.cr*w
+        di.gamma = gamma
 
-    kboff, konb, kuon, kbon, koffu, kuoff = 10 .^ m1.logrates
-
-    # edges = [(1, 2), (2, 1), (1, 6), (6, 1), (7, 3), (3, 7),
-    #          (4, 5), (5, 4), (6, 5), (7, 1), (2, 3), (4, 1), (7, 5), (4, 3)]
-
-    m1.weights = [kboff, kuoff, m1.cw*kboff, m1.gamma*kuoff, kbon, kuon, 
-                 m1.cw*kbon, m1.gamma*kuon, konb, koffu, konb, koffu, m1.cw*kbon, kbon]
-
-    m2.weights = [kboff, kuoff, m1.cw*kboff, m1.gamma*kuoff, kbon, kuon, 
-                 m1.cw*kbon, m1.gamma*kuon, konb, koffu, konb, koffu, m1.cw*kbon, kbon]
-
-    initOneBurst!(m1)
-    initOneBurst!(m2)
+        initFull!(di)
+    end
 
     # print(logrates)
-    EP = EP_ss(m1)
+    EP = EP_ss(d)
     Jplus = 0
-    pi_ = P_ss(m1)
+    pi_ = P_ss(d)
     # J = pi_[1] * m1.Q[1,2] - pi_[2] * m1.Q[2,1]
     # Jplus = J + abs(J)   # penalty for counterclockwise flux
 
-    fir = FisherRate(m1, m2)
-    firOff = FisherRateOff(m1, m2)
-    firOn = FisherRateOn(m1, m2)
+    fir = FisherRate(d, d1, d2)
+    # firOff = FisherRateOff(d, d1, d2)
+    # firOn = FisherRateOn(d, d1, d2)
     logSpec = log2((pi_[3]+pi_[4])/(pi_[3]+pi_[4]+pi_[5]+pi_[7]))
 
     (- fir - beta*logSpec, fir, logSpec, EP)

@@ -1853,22 +1853,61 @@ end
 end
 
 ## -.-.--..-.-.-.-.-.---------.-.-.--.........---.-.--
-# 2 binding sites without kb ku constraints
+# 1 binding site forcing konu = 1e-4
 let
     ## load circuit specifications
     circuits_file = "/home/tohme/.julia/dev/LLROpt/spec/circuits.json"
-    circuit_specs2 = Dict()
+    circuit_specs = Dict()
 
     open(circuits_file, "r") do f
-        # text = read(f, String)
-        # println("File contents: ", text)
-        circuit_specs2 = JSON.parse(f)
+        circuit_specs = JSON.parse(f)
     end
 
-    println(circuit_specs2)
+    # testing 2bs decoy circuit
+    circuitId = "1bs_no_konu"
+    circuit_1bs = circuit_specs[circuitId]
+    edges = circuit_1bs["edges"]
+    input_edges = circuit_1bs["input_edges"]
+    nstates = circuit_1bs["nstates"]
+    off_ind = circuit_1bs["off_indicator"]
+    off_ind = BitArray(off_ind)
+    start_state = circuit_1bs["start_state"]
+    hitting_set = circuit_1bs["hitting_set"]
 
-    circuitId = "2bs_no_konu"
-    circuit_2bs = circuit_specs2[circuitId]
+    eps = 1e-15
+    reltol = 1e-10
+    evalrtol = 1e-6 
+    maxevals = 100000
+
+    cr = 1
+    logrates = [-1.0516309,
+                0.4808308,
+                -0.018236682,
+                -2.2916977,
+                0.63700706,
+                -3.9988296,
+                -3.993806]
+
+    global d = OneBurstDecoyModel(;
+        circuitId = circuitId,
+        nstates = nstates,
+        edges = edges,
+        input_edges = input_edges,
+        logrates = logrates,
+        cr = cr,
+        cw = nothing,
+        gamma = nothing,
+        ind_set = off_ind,
+        start_state = start_state,
+        hitting_set = hitting_set,
+        eps = eps,
+        reltol = reltol,
+        maxevals = maxevals,
+    )
+
+    initFull!(d)
+
+    EP_ss(d)
 
 
 end

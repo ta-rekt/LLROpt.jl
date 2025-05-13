@@ -37,6 +37,16 @@ function init2bsWeights!(d::OneBurstDecoyModel)
     return d
 end
 
+export init1bsWeights!
+function init1bsWeights!(d::OneBurstDecoyModel)
+    # transition rates
+    kboff, kuoff, konb, koffb, kuon, kbon, koffu = 10 .^ d.logrates
+
+    d.weights = [kboff, kuoff, konb, koffb, kuon, kbon, koffu, 1e-5]
+
+    return d
+end
+
 export initDecoyWeightsNew!
 function initDecoyWeightsNew!(d::OneBurstDecoyModel)
     # transition rates
@@ -135,6 +145,9 @@ function initWeights!(d::OneBurstDecoyModel)
 
     elseif d.circuitId == "1bs_decoy_no_konu_new"
         initDecoyWeightsNew!(d)
+
+    elseif d.circuitId == "1bs_no_konu"
+        init1bsWeights!(d)
 
     elseif d.circuitId == "2bs_no_konu"
         initFreeWeights!(d)
