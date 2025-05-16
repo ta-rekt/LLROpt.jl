@@ -80,7 +80,7 @@ opt_alg = BBO_adaptive_de_rand_1_bin_radiuslimited()
 # opt_alg = Evolutionary.CMAES(μ = 5, λ = 10, sigma0 = 1)
 
 maxiters_acc = 30000
-maxiters_full = 5000
+maxiters_full = 500
 whichf = "full"
 fixed_conc = false   # is concentration fixed, or are we sweeping over it?
 monte_carlo = false
@@ -88,8 +88,8 @@ N = 1  # legacy parameter, number of repeats once optima have been found
 n = 1
 
 ### Temperature parameter
-betas = vcat(range(6e-1, stop=2e-3, length=32), 
-             10 .^ range(-2.5, stop=-7, length=32))
+betas = vcat(range(6e-1, stop=2e-3, length=8), 
+             10 .^ range(-2.5, stop=-7, length=8))
 # betas = [0.1]
 nparams = length(betas)
 

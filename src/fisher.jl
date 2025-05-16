@@ -17,14 +17,22 @@ function integrand(t, d0::OneBurstDecoyModel,
     Pjoint!(u_off, u_on, d1)
     Pjoint!(u_off, u_on, d2)
 
-    if d0.Pjoint < d0.eps || d1.Pjoint < d0.eps || d2.Pjoint < d0.eps
-        return 0.0
-    end
+    # if d0.Pjoint < d0.eps || d1.Pjoint < d0.eps || d2.Pjoint < d0.eps
+    #     return 0.0
+    # end
 
-    dPjoint = d2.Pjoint - 4*d1.Pjoint + 3*d0.Pjoint
-    dPjoint /= 2 * h
+    # dPjoint = d2.Pjoint - 4*d1.Pjoint + 3*d0.Pjoint
+    # dPjoint /= 2 * h
 
-    return dPjoint^2 / (d0.Pjoint*(1.0 - t_off)^2*(1.0 - t_on)^2)
+    # return dPjoint^2 / (d0.Pjoint*(1.0 - t_off)^2*(1.0 - t_on)^2)
+
+    # derivative of  log P  by 3-point stencil
+    dlogP = (d2.logPjoint - 4d1.logPjoint + 3d0.logPjoint)/(2h)
+
+    # Fisher integrand  =  (dlogP)^2 * P
+    P = exp(d0.logPjoint)          # *exact* density, may underflow to 0 but never NaN
+    
+    return (dlogP^2)*P /((1-t_off)^2*(1-t_on)^2)
 end
 
 export FisherRate

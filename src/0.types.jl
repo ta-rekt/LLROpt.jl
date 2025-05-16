@@ -102,8 +102,7 @@ Base.@kwdef mutable struct OneBurstDecoyModel
     Pjoint = nothing;
 
     # log-likelihoods
-    logPc = nothing;
-    logPcdc = nothing;
+    logPjoint = nothing;
 
 end
 

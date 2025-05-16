@@ -64,6 +64,10 @@ function Pjoint!(t_off, t_on, d::OneBurstDecoyModel)
 
     d.Pjoint = max(sum, 0.5*d.eps)
 
+    d.logPjoint = log(d.Pjoint)
+    d.logPjoint = max(d.logPjoint, log(d.eps))
+    
+
     return d
 end
 

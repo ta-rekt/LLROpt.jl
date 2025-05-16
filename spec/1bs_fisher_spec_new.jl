@@ -147,7 +147,7 @@ end
     fir = FisherRate(d, d1, d2)
     # firOff = FisherRateOff(d, d1, d2)
     # firOn = FisherRateOn(d, d1, d2)
-    logSpec = log2((pi_[3]+pi_[4])/(pi_[3]+pi_[4]+pi_[5]+pi_[7]))
+    logSpec = log2((pi_[3]+pi_[7])/(pi_[3]+pi_[4]+pi_[5]+pi_[7]))
 
     (- fir - beta*logSpec, fir, logSpec, EP)
 end
