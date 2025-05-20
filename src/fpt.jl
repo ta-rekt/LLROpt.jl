@@ -62,11 +62,15 @@ function Pjoint!(t_off, t_on, d::OneBurstDecoyModel)
         sum = sum + d.F_comp[st,s] * d.F_set[s,st] 
     end
 
-    d.Pjoint = max(sum, 0.5*d.eps)
+    if sum < d.eps
+        d.Pjoint = -1
+    else
+        d.Pjoint = sum
+    end
 
-    d.logPjoint = log(d.Pjoint)
-    d.logPjoint = max(d.logPjoint, log(d.eps))
-    
+    # d.logPjoint = log(d.Pjoint)
+    # d.logPjoint = max(d.logPjoint, log(d.eps))
+    # d.logPjoint = min(d.logPjoint, log(1.0))
 
     return d
 end
@@ -102,7 +106,11 @@ function Pon!(t_on, d::OneBurstDecoyModel)
         sum = sum + d.P_comp[st,s] * d.F_set[s,st] 
     end
 
-    d.Pon = max(sum, d.eps)
+    if sum < d.eps
+        d.Pon = -1
+    else
+        d.Pon = sum
+    end
 
     return d
 end
@@ -132,7 +140,11 @@ function Poff!(t_off, d::OneBurstDecoyModel)
         sum = sum + d.F_comp[st,s]
     end
 
-    d.Poff = max(sum, d.eps)
+    if sum < d.eps
+        d.Poff = -1
+    else
+        d.Poff = sum
+    end
 
     return d
 end

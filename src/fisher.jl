@@ -17,22 +17,22 @@ function integrand(t, d0::OneBurstDecoyModel,
     Pjoint!(u_off, u_on, d1)
     Pjoint!(u_off, u_on, d2)
 
-    # if d0.Pjoint < d0.eps || d1.Pjoint < d0.eps || d2.Pjoint < d0.eps
-    #     return 0.0
-    # end
+    if d0.Pjoint < 0 || d1.Pjoint < 0 || d2.Pjoint < 0
+        return 0.0
+    end
 
-    # dPjoint = d2.Pjoint - 4*d1.Pjoint + 3*d0.Pjoint
-    # dPjoint /= 2 * h
+    dPjoint = d2.Pjoint - 4*d1.Pjoint + 3*d0.Pjoint
+    dPjoint /= 2 * h
 
-    # return dPjoint^2 / (d0.Pjoint*(1.0 - t_off)^2*(1.0 - t_on)^2)
+    return dPjoint^2 / (d0.Pjoint * (1.0 - t_off)^2 * (1.0 - t_on)^2)
 
     # derivative of  log P  by 3-point stencil
-    dlogP = (d2.logPjoint - 4d1.logPjoint + 3d0.logPjoint)/(2h)
+    # dlogP = (d2.logPjoint - 4d1.logPjoint + 3d0.logPjoint)/(2h)
 
     # Fisher integrand  =  (dlogP)^2 * P
-    P = exp(d0.logPjoint)          # *exact* density, may underflow to 0 but never NaN
+    # P = exp(d0.logPjoint)    # *exact* density, may underflow to 0 but never NaN
     
-    return (dlogP^2)*P /((1-t_off)^2*(1-t_on)^2)
+    # return (dlogP^2)*d0.Pjoint /((1-t_off)^2*(1-t_on)^2)
 end
 
 export FisherRate
@@ -47,7 +47,7 @@ function FisherRate(d0::OneBurstDecoyModel,
     l2 = d0.maxeigval_set
     eps = 1e-6
 
-    integral, err = pcubature(t -> 
+    integral, err = hcubature(t -> 
             integrand(t, d0, d1, d2), 
                 [eps,eps], [1-eps, 1-eps]; 
                 reltol=d0.reltol, maxevals=d0.maxevals)
@@ -82,7 +82,7 @@ function integrandOn(t_on, d0::OneBurstDecoyModel,
     Pon!(u_on, d1)
     Pon!(u_on, d2)
 
-    if d0.Pon < d0.eps || d1.Pon < d0.eps || d2.Pon < d0.eps
+    if d0.Pon < 0 || d1.Pon < 0 || d2.Pon < 0
         return 0.0
     end
 
@@ -136,7 +136,7 @@ function integrandOff(t_off, d0::OneBurstDecoyModel,
     Poff!(u_off, d1)
     Poff!(u_off, d2)
 
-    if d0.Poff < d0.eps || d1.Poff < d0.eps || d2.Poff < d0.eps
+    if d0.Poff < 0 || d1.Poff < 0 || d2.Poff < 0
         return 0.0
     end
 
@@ -151,7 +151,7 @@ function FisherRateOff(d0::OneBurstDecoyModel,
                        d1::OneBurstDecoyModel,
                        d2::OneBurstDecoyModel)
     
-                       tauOffVal = tauOff(d0)
+    tauOffVal = tauOff(d0)
     tauOnVal = tauOn(d0)
     tau = tauOnVal + tauOffVal
     l = d0.maxeigval_comp

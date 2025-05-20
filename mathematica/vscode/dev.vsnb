@@ -15,14 +15,7 @@
    "languageId": "wolfram",
    "outputs": [],
    "metadata": {},
-   "executionSummary": {
-    "timing": {
-     "startTime": 1747333758777,
-     "endTime": 1747333758784
-    },
-    "executionOrder": 181,
-    "success": true
-   }
+   "executionSummary": {}
   },
   {
    "kind": 1,
@@ -48,14 +41,7 @@
    "languageId": "wolfram",
    "outputs": [],
    "metadata": {},
-   "executionSummary": {
-    "timing": {
-     "startTime": 1747334104314,
-     "endTime": 1747334104327
-    },
-    "executionOrder": 299,
-    "success": true
-   }
+   "executionSummary": {}
   },
   {
    "kind": 2,
@@ -73,14 +59,7 @@
     }
    ],
    "metadata": {},
-   "executionSummary": {
-    "timing": {
-     "startTime": 1747334104756,
-     "endTime": 1747334104827
-    },
-    "executionOrder": 302,
-    "success": true
-   }
+   "executionSummary": {}
   },
   {
    "kind": 1,
@@ -97,14 +76,7 @@
    "languageId": "wolfram",
    "outputs": [],
    "metadata": {},
-   "executionSummary": {
-    "timing": {
-     "startTime": 1747333758888,
-     "endTime": 1747333758934
-    },
-    "executionOrder": 197,
-    "success": true
-   }
+   "executionSummary": {}
   },
   {
    "kind": 2,
@@ -112,14 +84,7 @@
    "languageId": "wolfram",
    "outputs": [],
    "metadata": {},
-   "executionSummary": {
-    "timing": {
-     "startTime": 1747333758934,
-     "endTime": 1747333759996
-    },
-    "executionOrder": 199,
-    "success": true
-   }
+   "executionSummary": {}
   },
   {
    "kind": 2,
@@ -127,14 +92,7 @@
    "languageId": "wolfram",
    "outputs": [],
    "metadata": {},
-   "executionSummary": {
-    "timing": {
-     "startTime": 1747333759996,
-     "endTime": 1747333760247
-    },
-    "executionOrder": 203,
-    "success": true
-   }
+   "executionSummary": {}
   },
   {
    "kind": 2,
@@ -142,14 +100,7 @@
    "languageId": "wolfram",
    "outputs": [],
    "metadata": {},
-   "executionSummary": {
-    "timing": {
-     "startTime": 1747333760247,
-     "endTime": 1747333760250
-    },
-    "executionOrder": 205,
-    "success": true
-   }
+   "executionSummary": {}
   },
   {
    "kind": 1,
@@ -166,14 +117,7 @@
    "languageId": "wolfram",
    "outputs": [],
    "metadata": {},
-   "executionSummary": {
-    "timing": {
-     "startTime": 1747333760250,
-     "endTime": 1747333777247
-    },
-    "executionOrder": 210,
-    "success": true
-   }
+   "executionSummary": {}
   },
   {
    "kind": 2,
@@ -181,14 +125,7 @@
    "languageId": "wolfram",
    "outputs": [],
    "metadata": {},
-   "executionSummary": {
-    "timing": {
-     "startTime": 1747333777247,
-     "endTime": 1747333777284
-    },
-    "executionOrder": 215,
-    "success": true
-   }
+   "executionSummary": {}
   },
   {
    "kind": 1,
@@ -205,14 +142,7 @@
    "languageId": "wolfram",
    "outputs": [],
    "metadata": {},
-   "executionSummary": {
-    "timing": {
-     "startTime": 1747333777284,
-     "endTime": 1747333777396
-    },
-    "executionOrder": 228,
-    "success": true
-   }
+   "executionSummary": {}
   },
   {
    "kind": 1,
@@ -229,14 +159,7 @@
    "languageId": "wolfram",
    "outputs": [],
    "metadata": {},
-   "executionSummary": {
-    "timing": {
-     "startTime": 1747333777396,
-     "endTime": 1747333783363
-    },
-    "executionOrder": 233,
-    "success": true
-   }
+   "executionSummary": {}
   },
   {
    "kind": 2,
@@ -244,14 +167,7 @@
    "languageId": "wolfram",
    "outputs": [],
    "metadata": {},
-   "executionSummary": {
-    "timing": {
-     "startTime": 1747333783363,
-     "endTime": 1747333783370
-    },
-    "executionOrder": 236,
-    "success": true
-   }
+   "executionSummary": {}
   },
   {
    "kind": 2,
@@ -269,14 +185,7 @@
     }
    ],
    "metadata": {},
-   "executionSummary": {
-    "timing": {
-     "startTime": 1747333783370,
-     "endTime": 1747333783451
-    },
-    "executionOrder": 237,
-    "success": true
-   }
+   "executionSummary": {}
   },
   {
    "kind": 1,
@@ -293,14 +202,7 @@
    "languageId": "wolfram",
    "outputs": [],
    "metadata": {},
-   "executionSummary": {
-    "timing": {
-     "startTime": 1747333783452,
-     "endTime": 1747333783483
-    },
-    "executionOrder": 238,
-    "success": true
-   }
+   "executionSummary": {}
   },
   {
    "kind": 2,
@@ -308,14 +210,7 @@
    "languageId": "wolfram",
    "outputs": [],
    "metadata": {},
-   "executionSummary": {
-    "timing": {
-     "startTime": 1747333783483,
-     "endTime": 1747333783585
-    },
-    "executionOrder": 239,
-    "success": true
-   }
+   "executionSummary": {}
   },
   {
    "kind": 2,
@@ -333,14 +228,7 @@
     }
    ],
    "metadata": {},
-   "executionSummary": {
-    "timing": {
-     "startTime": 1747333783586,
-     "endTime": 1747333783644
-    },
-    "executionOrder": 240,
-    "success": true
-   }
+   "executionSummary": {}
   },
   {
    "kind": 2,
@@ -348,14 +236,7 @@
    "languageId": "wolfram",
    "outputs": [],
    "metadata": {},
-   "executionSummary": {
-    "timing": {
-     "startTime": 1747333783644,
-     "endTime": 1747333783653
-    },
-    "executionOrder": 244,
-    "success": true
-   }
+   "executionSummary": {}
   },
   {
    "kind": 2,
@@ -373,14 +254,7 @@
     }
    ],
    "metadata": {},
-   "executionSummary": {
-    "timing": {
-     "startTime": 1747333783653,
-     "endTime": 1747333785616
-    },
-    "executionOrder": 245,
-    "success": true
-   }
+   "executionSummary": {}
   },
   {
    "kind": 1,
@@ -397,14 +271,7 @@
    "languageId": "wolfram",
    "outputs": [],
    "metadata": {},
-   "executionSummary": {
-    "timing": {
-     "startTime": 1747333785616,
-     "endTime": 1747333785622
-    },
-    "executionOrder": 246,
-    "success": true
-   }
+   "executionSummary": {}
   },
   {
    "kind": 2,
@@ -422,14 +289,7 @@
     }
    ],
    "metadata": {},
-   "executionSummary": {
-    "timing": {
-     "startTime": 1747333785622,
-     "endTime": 1747333785656
-    },
-    "executionOrder": 247,
-    "success": true
-   }
+   "executionSummary": {}
   },
   {
    "kind": 1,
@@ -446,14 +306,7 @@
    "languageId": "wolfram",
    "outputs": [],
    "metadata": {},
-   "executionSummary": {
-    "timing": {
-     "startTime": 1747333785657,
-     "endTime": 1747333785665
-    },
-    "executionOrder": 252,
-    "success": true
-   }
+   "executionSummary": {}
   },
   {
    "kind": 2,
@@ -471,14 +324,7 @@
     }
    ],
    "metadata": {},
-   "executionSummary": {
-    "timing": {
-     "startTime": 1747333785665,
-     "endTime": 1747333785983
-    },
-    "executionOrder": 257,
-    "success": true
-   }
+   "executionSummary": {}
   },
   {
    "kind": 1,
@@ -631,14 +477,7 @@
     }
    ],
    "metadata": {},
-   "executionSummary": {
-    "timing": {
-     "startTime": 1747333785983,
-     "endTime": 1747333786188
-    },
-    "executionOrder": 271,
-    "success": true
-   }
+   "executionSummary": {}
   },
   {
    "kind": 1,
@@ -655,14 +494,7 @@
    "languageId": "wolfram",
    "outputs": [],
    "metadata": {},
-   "executionSummary": {
-    "timing": {
-     "startTime": 1747333786188,
-     "endTime": 1747333786198
-    },
-    "executionOrder": 282,
-    "success": true
-   }
+   "executionSummary": {}
   },
   {
    "kind": 2,
@@ -670,14 +502,7 @@
    "languageId": "wolfram",
    "outputs": [],
    "metadata": {},
-   "executionSummary": {
-    "timing": {
-     "startTime": 1747333786198,
-     "endTime": 1747333786203
-    },
-    "executionOrder": 283,
-    "success": true
-   }
+   "executionSummary": {}
   },
   {
    "kind": 1,
@@ -699,18 +524,11 @@
   },
   {
    "kind": 2,
-   "value": "{data, params} = GetData[\"20250512/2bs-fir-free-c0-clean2\"];\n\noutData = <|\"1\"-><|\"1\"-><|\"1\"->{}|>|>|>;\noutData[\"circuit_id\"] = circuitId;\n\nnrates = 11;\nvars = {c, kboff2, kuoff, kuon, kbon2, kon1b, \n        kboff, kbon, kuoff2, kon2b, kuon2, koffu};\n\nDo[\n    skc = ToString[kc];\n    skg = ToString[kg];\n    skw = ToString[kw];\n\n    outData[skc] = <||>;\n    outData[skc, skg] = <||>;\n    outData[skc, skg, skw] = <||>;\n\n    (* rates = Table[i, {i, 1, nrates}];\n    logrates = Table[N[Log[10,i]], {i, 1, nrates}]; *)\n\n    logrates = data[skc, skg, skw][[;; nrates]];\n    rates = Table[10^logrates[[i]], {i, 1, nrates}];\n    c0 = params[\"betas\"][[kc]];\n\n    t1 = 0.1;\n    t2 = 0.1;\n    cRates = Join[{c0}, rates];\n    t1t2cRates = Join[{t1, t2, c0}, rates];\n\n    Q2val = Q2 /. Table[vars[[i]] -> cRates[[i]], {i, 1, nrates+1}];\n    ss2val = ss2 /. Table[vars[[i]] -> cRates[[i]], {i, 1, nrates+1}];\n    meanToffVal = meanToffLt /. Table[vars[[i]] -> cRates[[i]], {i, 1, nrates+1}];\n    meanTonVal = meanTonLt /. Table[vars[[i]] -> cRates[[i]], {i, 1, nrates+1}];\n    FisherRateAccVal = FisherRateAcc /. Table[vars[[i]] -> cRates[[i]], {i, 1, nrates+1}];\n    varVal = var /. Table[vars[[i]] -> cRates[[i]], {i, 1, nrates+1}];\n    sharpVal = sharp /. Table[vars[[i]] -> cRates[[i]], {i, 1, nrates+1}];\n    integrandVal = integrand /. Table[vars[[i]] -> cRates[[i]], {i, 1, nrates+1}];\n\n    outData[skc, skg, skw] = <|\n        \"c0\" -> c0,\n        \"t1\" -> t1,\n        \"t2\" -> t2,\n        \"rates\" -> rates,\n        \"logrates\" -> logrates,\n        \"rate_matrix\" -> Q2val,\n        \"ss_prob\" -> ss2val,\n        \"tau_off\" -> meanToffVal,\n        \"tau_on\" -> meanTonVal,\n        \"var_rate\" -> varVal,\n        \"sharpness\" -> sharpVal,\n        \"fisher_rate_acc\" -> FisherRateAccVal,\n        \"fisher_rate\" -> FisherSafe @@ cRates,\n        \"integrand\" -> integrandVal,\n        \"p_joint\" -> PjointNum @@ t1t2cRates\n    |>;\n    ,{kc, 1, 16}, {kg, 1, 1}, {kw, 1, 1}\n];",
+   "value": "{data, params} = GetData[\"20250512/2bs-fir-free-c0-clean2\"];\n\noutData = <|\"1\"-><|\"1\"-><|\"1\"->{}|>|>|>;\noutData[\"circuit_id\"] = circuitId;\n\nnrates = 11;\nvars = {c, kboff2, kuoff, kuon, kbon2, kon1b, \n        kboff, kbon, kuoff2, kon2b, kuon2, koffu};\n\nDo[\n    skc = ToString[kc];\n    skg = ToString[kg];\n    skw = ToString[kw];\n\n    outData[skc] = <||>;\n    outData[skc, skg] = <||>;\n    outData[skc, skg, skw] = <||>;\n\n    (* rates = Table[i, {i, 1, nrates}];\n    logrates = Table[N[Log[10,i]], {i, 1, nrates}]; *)\n\n    logrates = data[skc, skg, skw][[;; nrates]];\n    rates = Table[10^logrates[[i]], {i, 1, nrates}];\n    cval = params[\"betas\"][[kc]];\n\n    t1val = 0.1;\n    t2val = 0.1;\n    cRates = Join[{cval}, rates];\n    t1t2cRates = Join[{t1val, t2val, cval}, rates];\n\n    Q2val = Q2 /. Table[vars[[i]] -> cRates[[i]], {i, 1, nrates+1}];\n    ss2val = ss2 /. Table[vars[[i]] -> cRates[[i]], {i, 1, nrates+1}];\n    meanToffVal = meanToffLt /. Table[vars[[i]] -> cRates[[i]], {i, 1, nrates+1}];\n    meanTonVal = meanTonLt /. Table[vars[[i]] -> cRates[[i]], {i, 1, nrates+1}];\n    FisherRateAccVal = FisherRateAcc /. Table[vars[[i]] -> cRates[[i]], {i, 1, nrates+1}];\n    varVal = var /. Table[vars[[i]] -> cRates[[i]], {i, 1, nrates+1}];\n    sharpVal = sharp /. Table[vars[[i]] -> cRates[[i]], {i, 1, nrates+1}];\n    integrandVal = integrand /. Table[vars[[i]] -> cRates[[i]], {i, 1, nrates+1}];\n\n    outData[skc, skg, skw] = <|\n        \"c0\" -> cval,\n        \"t1\" -> t1val,\n        \"t2\" -> t2val,\n        \"rates\" -> rates,\n        \"logrates\" -> logrates,\n        \"rate_matrix\" -> Q2val,\n        \"ss_prob\" -> ss2val,\n        \"tau_off\" -> meanToffVal,\n        \"tau_on\" -> meanTonVal,\n        \"var_rate\" -> varVal,\n        \"sharpness\" -> sharpVal,\n        \"fisher_rate_acc\" -> FisherRateAccVal,\n        \"fisher_rate\" -> FisherSafe @@ cRates,\n        \"integrand\" -> integrandVal,\n        \"p_joint\" -> PjointNum @@ t1t2cRates\n    |>;\n    ,{kc, 1, 16}, {kg, 1, 1}, {kw, 1, 1}\n];",
    "languageId": "wolfram",
    "outputs": [],
    "metadata": {},
-   "executionSummary": {
-    "timing": {
-     "startTime": 1747333786203,
-     "endTime": 1747333786209
-    },
-    "executionOrder": 284,
-    "success": true
-   }
+   "executionSummary": {}
   },
   {
    "kind": 1,
@@ -737,14 +555,7 @@
     }
    ],
    "metadata": {},
-   "executionSummary": {
-    "timing": {
-     "startTime": 1747333786209,
-     "endTime": 1747333786215
-    },
-    "executionOrder": 285,
-    "success": true
-   }
+   "executionSummary": {}
   }
  ]
 }

@@ -1467,9 +1467,9 @@ function integrand2(t, d0::OneBurstDecoyModel,
     Pjoint!(u_off, u_on, d1)
     Pjoint!(u_off, u_on, d2)
 
-    # if d0.Pjoint < d0.eps || d1.Pjoint < d0.eps || d2.Pjoint < d0.eps
-    #     return 0.0
-    # end
+    if d0.Pjoint < 0 || d1.Pjoint < 0 || d2.Pjoint < 0
+        return 0.0
+    end
 
     dPjoint = d2.Pjoint - 4*d1.Pjoint + 3*d0.Pjoint
     dPjoint /= 2 * h
@@ -1519,6 +1519,7 @@ let
 
     # loading testset
     tests_file = "test/data/20250512-2bs-fir-free-c0-clean2-testset.json"
+    # tests_file = "test/data/20250510-synthetic-testset.json"
     testset = Dict()
 
     open(tests_file, "r") do f
@@ -1572,7 +1573,7 @@ let
     d1 = deepcopy(d)
     d2 = deepcopy(d)
 
-    h = 0.01 * d.cr
+    h = 0.001 * d.cr
     d1.cr = d.cr - h
     d2.cr = d.cr - 2*h
 
@@ -1595,6 +1596,8 @@ let
     firFullTest = current_test["fisher_rate"]
     firAccTest = current_test["fisher_rate_acc"]
     integrandTest = current_test["integrand"]
+
+    integrandVal = integrand([t1/(1+t1), t2/(1+t2)], d, d1, d2)
 
     @assert d.edges == edges
     @assert d.input_edges == input_edges
@@ -1624,18 +1627,23 @@ let
     @assert isapprox(d.Pjoint, Ptest, rtol = evalrtol)
     @assert isapprox(sharpness(d), sharpTest, rtol = 1e-4)
     @assert isapprox(FisherRateAcc(d), firAccTest, rtol = 1e-4)
-    # @assert isapprox(integrand([t1, t2], d, d1, d2), integrandTest, rtol = 1e-4)
-    # @show FisherRateTest(d, d1, d2)
-    # @show firFullTest
-    @assert isapprox(FisherRate(d, d1, d2), firFullTest, rtol = 1e-3)
+    # @assert isapprox(integrandVal, integrandTest, rtol = 1e-4)
+    # @show integrandVal
+    # @show integrandTest
+    @show FisherRate(d, d1, d2)
+    @show firFullTest
+    # @assert isapprox(FisherRate(d, d1, d2), firFullTest, rtol = 1e-3)
 
-    # eps = 1e-4
-    # t1 = 0.95
-    # l2 = d.maxeigval_comp
-    # tvals = range(eps, 1.0-eps, length=1000)
-    # integrandvals = [integrand2([t1, t/l2], d, d1, d2)/l2 for t in tvals]
+    eps = 1e-6
+    t1 = 0.27
+    # t1 = 1
+    l2 = d.maxeigval_comp
+    tvals = range(eps, 1.0-eps, length=1000)
+    integrandvals = [integrand2([t1, t], d, d1, d2) for t in tvals]
+    pjointvals = [Pjoint(t1, t, d1) for t in tvals]
 
-    # plot(tvals, integrandvals, label = "integrand")
+    plot(tvals, integrandvals, label = "integrand")
+    # plot(tvals, pjointvals, label = "integrand")
 
 end
 
