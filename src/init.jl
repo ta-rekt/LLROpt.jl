@@ -152,6 +152,9 @@ function initWeights!(d::OneBurstDecoyModel)
     elseif d.circuitId == "2bs_no_konu"
         initFreeWeights!(d)
 
+    elseif d.circuitId == "3bs_no_konu"
+        initFreeWeights!(d)
+
     elseif d.circuitId == "6bs"
         initFreeWeights!(d)
     end
