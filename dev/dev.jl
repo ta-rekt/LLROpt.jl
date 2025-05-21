@@ -1518,7 +1518,8 @@ let
     ## ----.-.-.--....-.---.-..-.-.-.-.-.--.-.-.-----.--
 
     # loading testset
-    tests_file = "test/data/20250512-2bs-fir-free-c0-clean2-testset.json"
+    tests_file = "test/data/20250512-2bs-fir-free-c0-clean-testset.json"
+    # tests_file = "test/data/20250521/2bs-fir-c0-testset.json"
     # tests_file = "test/data/20250510-synthetic-testset.json"
     testset = Dict()
 
@@ -1551,7 +1552,7 @@ let
     eps = 1e-15
     reltol = 1e-10
     evalrtol = 1e-6 
-    maxevals = 100000
+    maxevals = 20000
 
     global d = OneBurstDecoyModel(;
         circuitId = circuitId,
@@ -1573,7 +1574,7 @@ let
     d1 = deepcopy(d)
     d2 = deepcopy(d)
 
-    h = 0.001 * d.cr
+    h = 0.01 * d.cr
     d1.cr = d.cr - h
     d2.cr = d.cr - 2*h
 
@@ -1630,12 +1631,13 @@ let
     # @assert isapprox(integrandVal, integrandTest, rtol = 1e-4)
     # @show integrandVal
     # @show integrandTest
+
     @show FisherRate(d, d1, d2)
     @show firFullTest
-    # @assert isapprox(FisherRate(d, d1, d2), firFullTest, rtol = 1e-3)
+    @assert isapprox(FisherRate(d, d1, d2), firFullTest, rtol = 1e-3)
 
-    eps = 1e-6
-    t1 = 0.27
+    eps = 1e-3
+    t1 = 0.39
     # t1 = 1
     l2 = d.maxeigval_comp
     tvals = range(eps, 1.0-eps, length=1000)

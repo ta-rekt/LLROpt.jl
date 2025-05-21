@@ -19,6 +19,28 @@
         "start_state": 5,
         "vertex_partition": [[6, 5], [2, 1], [4, 3]]
     },
+    "3bs_no_konu":{
+        "nstates": 8,
+        "edges": [
+            [5, 1], [1, 5],
+            [2, 6], [6, 2],
+            [1, 2], [1, 3],
+            [2, 4], [3, 1],
+            [3, 4], [4, 2],
+            [6, 5], [3, 7],
+            [7, 3], [4, 8],
+            [8, 4], [7, 8]
+        ],
+        "input_edges": [
+            [5, 1], [1, 3], [3, 7], [6, 2], [2, 4], [4, 8]
+        ],
+        "weight_labels": ["c*kboff3", "kuoff", "kuon", "c*kbon3", "kon1b", "c*kboff2", "c*kbon2", 
+        "kuoff2", "kon2b", "kuon2", "koffu", "c*kboff", "kuoff3", "c*kbon", "kuon3", "kon3b"],
+        "off_indicator": [1, 0, 1, 0, 1, 0, 1, 0],
+        "hitting_set": [6,2,4,8],
+        "start_state": 5,
+        "vertex_partition": [[6, 5], [2, 1], [4, 3], [8, 7]]
+    },
     "1bs_decoy": {
         "nstates": 6,
         "edges": [
