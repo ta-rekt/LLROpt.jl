@@ -15,7 +15,7 @@ ub = 5
 lb = 1e-4
 
 ### Upper bounds for mixed ligands circuit
-#   kboff,   konb,    kuon,   kbon,   koffu,   kuoff // konu
+#   kboff, konb, kuon, kbon, koffu, kuoff
 llb1 = ones(6) .* log10(lb)
 lub1 = ones(6) .* log10(ub)
 lub1[1] = log10(dl_tf)
@@ -80,7 +80,7 @@ opt_alg = BBO_adaptive_de_rand_1_bin_radiuslimited()
 # opt_alg = Evolutionary.CMAES(μ = 5, λ = 10, sigma0 = 1)
 
 maxiters_acc = 30000
-maxiters_full = 5000
+maxiters_full = 2000
 whichf = "full"
 fixed_conc = true   # is concentration fixed, or are we sweeping over it?
 monte_carlo = false   # are we sampling trajectories and taking averages?
@@ -93,10 +93,10 @@ betas = map(x->tan(x), range(0, stop=pi/2 - 0.05, length=16))
 nparams = length(betas)
 
 ### Other parameters
-gammas = [1.5,2.5,10]
-wvals = [0.05,0.2,1,5,10]
-# gammas = [10]
-# wvals = [0.01]
+# gammas = [1.5,2.5,10]
+# wvals = [0.05,0.2,1,5,10]
+gammas = [10]
+wvals = [10]
 
 ### objective functions
 
