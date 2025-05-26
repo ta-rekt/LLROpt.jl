@@ -95,7 +95,7 @@ opt_alg = BBO_adaptive_de_rand_1_bin_radiuslimited()
 
 maxiters_acc = 30000
 maxiters_full = 3000
-whichf = "full"
+whichf = "acc"
 fixed_conc = false   # is concentration fixed, or are we sweeping over it?
 monte_carlo = false
 N = 1  # legacy parameter, number of repeats once optima have been found
@@ -106,8 +106,8 @@ n = 1
 # betasn = map(x->-tan(x), range(0*angle_incr, stop=0.5*angle_incr, length=128))
 # betasp = map(x->tan(x), range(0*angle_incr, stop=1*angle_incr, length=128))
 # betas = vcat(betasn, betasp)
-# betas = 10 .^ range(-1, stop=2, length=16)
-betas = [0.1]
+betas = 10 .^ range(-1, stop=3, length=64)
+# betas = [0.1]
 nparams = length(betas)
 
 ### Other parameters
@@ -133,41 +133,21 @@ end
 
 # IR ACC
 @counted function target_acc(logrates, args...)
-    edges, iedges, c, dc, on_ind, beta, e = args
-    nrates = length(edges)
-    kboff, konu, kbon, koffu, kuoff, kon1b, kuon, koff1b, kon2b, koff2b = logrates
+    dlist, beta, gamma, w = args
+    d, d1, d2 = dlist
+    
+    cr = beta
+    d.cr = cr
+    d.logrates = logrates
 
-    # edges = [(5,1),         (1,5),         (2,6),  (6,2),     (1,2),  (1,3),  (2,4),
-    #          (2,1),         (3,1),         (3,4),  (4,2),     (4,3),  (5,6),  (6,5)]
+    initAcc!(d)
 
-    logrates2 = [kboff+log10(2), kuoff,        kuon,  kbon+log10(2), kon1b, kboff, kbon,
-                 koff1b,       kuoff+log10(2), kon2b, kuon+log10(2), koff2b, konu,  koffu]
+    # print(logrates)
+    EP = EP_ss(d)
 
-    rates = 10 .^ logrates2
-    wedges = Vector{Tuple{Int64, Int64, Float32}}(undef, nrates)
+    fir = FisherRateAcc(d)
 
-    for i in 1:nrates
-        w1 = edges[i][1]
-        w2 = edges[i][2]
-        w3 = rates[i]
-
-        wedges[i] = (w1, w2, w3)
-    end
-
-    Q = build_mat(wedges, iedges, c)
-
-    # clockwise bias by forcing flow along edge e
-    Jplus = 0
-    m, n = e
-    if m >= 0
-        pi = P_ss(Q)
-        J = pi[m] * Q[m,n] - pi[n] * Q[n,m]
-        Jplus = J + abs(J)
-    end
-
-    IR = ir_acc(wedges, iedges, beta, beta/10, on_ind)
-
-    (- IR + Jplus, IR, beta)
+    (- fir, fir, 0, EP)
 end
 
 # IR FULL

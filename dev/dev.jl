@@ -1922,40 +1922,131 @@ let
 
 end
 
-# old tests
+## -.-.--..-.-.-.-.-.---------.-.-.--.........---.-.--
+# Doing: adding tauOn and tauOff to 1bs decoy model
+let
+    ## load circuit specifications
+    circuits_file = "/home/tohme/.julia/dev/LLROpt/spec/circuits.json"
+    circuit_specs = Dict()
 
-    # print("\n")
-    # show(tauOff(d_c))
+    open(circuits_file, "r") do f
+        circuit_specs = JSON.parse(f)
+    end
 
-    # args = [d_c, d_cdc, m, cr, gamma, cw]
+    # testing 1bs decoy circuit
+    circuitId = "1bs_decoy_no_konu"
+    circuit_1bs = circuit_specs[circuitId]
+    edges = circuit_1bs["edges"]
+    input_edges = circuit_1bs["input_edges"]
+    nstates = circuit_1bs["nstates"]
+    off_ind = circuit_1bs["off_indicator"]
+    off_ind = BitArray(off_ind)
+    start_state = circuit_1bs["start_state"]
+    hitting_set = circuit_1bs["hitting_set"]
+    nrates = 6
 
-    # plotting 
-    # global tvals = range(0,20/d_c.maxeigval_set,length=1000)
-    # global density = [outer_integrand(t, d_c, d_cdc, m) for t in tvals]
+    eps = 1e-15
+    reltol = 1e-10
+    evalrtol = 1e-6 
+    maxevals = 100000
 
-    ## toff = 1
-    # @assert isapprox(d_c.F_comp[1,3], 0.11652126742756937, atol=1e-8) 
-    # @assert isapprox(d_c.F_comp[1,4], 0.13483690631630374, atol=1e-8) 
-    # @assert isapprox(d_c.F_comp[1,5], 0.11652126742756937, atol=1e-8) 
+    cr = 1
+    dc = cr / 1000
 
-    ## t_on = 1
-    # @assert isapprox(d_c.F_set[3,1], 0.21390913026027933, atol=1e-8) 
-    # @assert isapprox(d_c.F_set[4,1], 0.18053603312097147, atol=1e-8) 
-    # @assert isapprox(d_c.F_set[5,1], 0.21390913026027933, atol=1e-8) 
+    # decoys
+    inputdir = "20250521/fir-w-g-lowc-1"
+    outputdir = "20250526/tauon-tauoff-w-g-lowc-1"
 
-    ## pure density function
-    # @assert isapprox(outer_integrand_test(1, d_c), 0.3678794411714421, atol=1e-8) 
-    # @assert isapprox(outer_integrand_test(4, d_c), 0.018315638888734224, atol=1e-8) 
-    # @assert isapprox(outer_integrand_test(5, d_c), 0.006737946999085455, atol=1e-8)
+    #1bs
+    # inputdir = "20250304/irfull-c-exact"
+    # outputdir = "20250526/irfull-c-exact-tauon-tauoff"
 
-    # integral, err = hcubature(t -> inner_integrand_vec(t, d_c, d_cdc, m), 
-    #             [0,0], [30/d_c.maxeigval_comp, 30/d_c.maxeigval_set]; reltol=1e-8, maxevals=10000)
+    # 2bs
+    # inputdir = "20250512/2bs-fir-c0-free-merged"
+    # outputdir = "20250526/2bs-tauon-tauoff-c0"
+    whichf = "full"
 
-    # xmin = [0,0]
-    # xmax = [30/d_c.maxeigval_comp, 30/d_c.maxeigval_set]
-    # integral, err = hcubature(t -> t[1]*PjointVec(t, d_c), xmin, xmax; reltol=1e-10, maxevals=8000000)
+    inpath = string("/home/tohme/.julia/dev/LLROpt/data/", inputdir, 
+                    "/ir_", whichf, "_mix_vs_pure_pareto_pid")
+    outpath = string("/home/tohme/.julia/dev/LLROpt/data/", outputdir, "/")
 
-    # @show integral, err
-    # @show tauOffVal
+    # inpath = string("/home/tohme/.julia/dev/LLROpt/data/", inputdir, 
+    #                 "/ir_", whichf, "_vs_ep_pareto_pid")
+    # outpath = string("/home/tohme/.julia/dev/LLROpt/data/", outputdir, "/")
 
-    # @show 2 * integral * (cr/dc)^2 / tau
+    # define paths for the input and output param.json files
+    inparams = string("/home/tohme/.julia/dev/LLROpt/data/", inputdir, "/params.json")
+    outparams = string("/home/tohme/.julia/dev/LLROpt/data/", outputdir, "/params.json")
+
+    results_init = Dict()
+    ncpus = 32
+    nparams = 32
+    nparams_per_cpu = div(nparams, ncpus)
+    nws = 1
+    ngs = 8
+    for cpukey in range(1, stop=ncpus)
+        infile = string(inpath, cpukey, ".json")
+        results_init = Dict()
+
+        open(infile, "r") do f
+            results_init = JSON.parse(f)
+        end
+
+        for k in 1:nparams_per_cpu
+
+            kc = (cpukey - 1) * nparams_per_cpu + k
+            kc = string(kc)
+
+            for kw in range(1, nws)
+                kw = string(kw)
+
+                for kg in range(1, ngs)
+                    kg = string(kg)
+
+                    logrates = results_init[kc][kg][kw][1:nrates]
+                    w, gamma, cw = results_init[kc][kg][kw][end-2:end]
+
+                    global d = OneBurstDecoyModel(;
+                        circuitId = circuitId,
+                        nstates = nstates,
+                        edges = edges,
+                        input_edges = input_edges,
+                        logrates = logrates,
+                        cr = 0.1,
+                        cw = w*0.1,
+                        gamma = gamma,
+                        ind_set = off_ind,
+                        start_state = start_state,
+                        hitting_set = hitting_set,
+                        eps = eps,
+                        reltol = reltol,
+                        maxevals = maxevals,
+                    )
+
+                    initFull!(d)
+
+                    results_init[kc][kg][kw][nrates+2] = tauOff(d)
+                    results_init[kc][kg][kw][nrates+3] = tauOn(d)
+                    results_init[kc][kg][kw][nrates+4] = pi_on(d)
+
+                end
+            end
+        end
+
+        file1 = string(outpath, "ir_$(whichf)_mix_vs_pure_pareto_pid$(cpukey).json")
+
+        open(file1, "w") do f
+            JSON.print(f, results_init, 4)
+        end
+    end
+
+    params = Dict()
+
+    open(inparams, "r") do f
+        params = JSON.parse(f)
+    end
+
+    open(outparams, "w") do f
+        JSON.print(f, params, 4)
+    end
+end
