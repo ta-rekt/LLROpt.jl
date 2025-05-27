@@ -1,3 +1,5 @@
+#### Univariate Fisher information rate for one-burst decoy model
+
 ### Fisher information rate given joint ON and OFF likelihood
 export integrand
 function integrand(t, d0::OneBurstDecoyModel,
@@ -160,5 +162,88 @@ function FisherRateOff(d0::OneBurstDecoyModel,
         return -1.0
     else
         return integral*d0.cr^2 / (tau)
+    end
+end
+
+
+#### Bivariatevariate Fisher information rate for one-burst decoy model
+
+### Fisher information rate given joint ON and OFF likelihood
+export integrandBivariate
+function integrandBivariate(t, v, d0::OneBurstDecoyModel,
+                                  dx1::OneBurstDecoyModel,
+                                  dx2::OneBurstDecoyModel,
+                                  dy1::OneBurstDecoyModel,
+                                  dy2::OneBurstDecoyModel)
+
+    t_off, t_on = t
+    u_off = t_off / (1.0 - t_off)
+    u_on = t_on / (1.0 - t_on)
+
+    hx = d0.cr - dx1.cr
+    hy = d0.cw - dy1.cw
+    @assert d0.cr > dx1.cr
+    @assert dx1.cr > dx2.cr
+    @assert isapprox(dx2.cr, d0.cr - 2*hx, rtol=1e-6)
+    @assert d0.cr == dy1.cr
+    @assert dy1.cr == dy2.cr
+    @assert d0.cw > dy1.cw
+    @assert dy1.cw > dy2.cw
+    @assert isapprox(dy2.cw, d0.cw - 2*hy, rtol=1e-6)
+
+    Pjoint!(u_off, u_on, d0)
+    Pjoint!(u_off, u_on, dx1)
+    Pjoint!(u_off, u_on, dx2)
+    Pjoint!(u_off, u_on, dy1)
+    Pjoint!(u_off, u_on, dy2)
+    
+    if d0.Pjoint < 0 || dx1.Pjoint < 0 || dx2.Pjoint < 0 || dy1.Pjoint < 0 || dy2.Pjoint < 0
+        v[:] = @SVector [0.0, 0.0, 0.0]
+    end
+
+    dxPjoint = dx2.Pjoint - 4*dx1.Pjoint + 3*d0.Pjoint
+    dxPjoint /= 2 * hx
+
+    dyPjoint = dy2.Pjoint - 4*dy1.Pjoint + 3*d0.Pjoint
+    dyPjoint /= 2 * hy
+
+    denom = (d0.Pjoint * (1.0 - t_off)^2 * (1.0 - t_on)^2)
+
+    v[:] = @SVector [dxPjoint^2 / denom, 
+                     dxPjoint * dyPjoint / denom, 
+                     dyPjoint^2 / denom]
+
+    return v
+end
+
+export FisherRateBivariate
+function FisherRateBivariate(d0::OneBurstDecoyModel,
+                             dx1::OneBurstDecoyModel,
+                             dx2::OneBurstDecoyModel,
+                             dy1::OneBurstDecoyModel,
+                             dy2::OneBurstDecoyModel)
+    
+    tauOffVal = tauOff(d0)
+    tauOnVal = tauOn(d0)
+    tau = tauOnVal + tauOffVal
+    l1 = d0.maxeigval_comp
+    l2 = d0.maxeigval_set
+    eps = 1e-6
+
+    integral, err = hcubature(3, (t, v) -> 
+            integrandBivariate(t, v, d0, dx1, dx2, dy1, dy2), 
+                [eps,eps], [1-eps, 1-eps]; 
+                reltol=d0.reltol, maxevals=d0.maxevals)
+
+    if any(integral .< 0)
+        # throw("Negative integral")
+        return -1.0
+
+    elseif any(err .> 1e-3)
+        # throw("Integral precision not met")
+        return -1.0
+
+    else
+        return integral .* d0.cr^2 ./ tau
     end
 end

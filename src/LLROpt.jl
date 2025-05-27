@@ -8,6 +8,7 @@ module LLROpt
     using ExtractMacro
     using Base.Threads
     using Cubature
+    using StaticArrays
 
 
     include("0.types.jl")

@@ -1954,8 +1954,8 @@ let
     dc = cr / 1000
 
     # decoys
-    inputdir = "20250521/fir-w-g-lowc-1"
-    outputdir = "20250526/tauon-tauoff-w-g-lowc-1"
+    inputdir = "20250521/fir-w-g-lowc-4"
+    outputdir = "20250526/tauon-tauoff-w-g-lowc-4"
 
     #1bs
     # inputdir = "20250304/irfull-c-exact"
@@ -2049,4 +2049,85 @@ let
     open(outparams, "w") do f
         JSON.print(f, params, 4)
     end
+end
+
+## -.-.--..-.-.-.-.-.---------.-.-.--.........---.-.--
+# testing bivariate Fisher rate
+let
+
+    # Load the circuit configuration from JSON
+    config_path = "spec/circuits.json"  # Update this path as needed
+    circuit_specs = Dict{String,Any}()
+    open(config_path, "r") do f
+        circuit_specs = JSON.parse(f)
+    end
+
+    circuit_id = "1bs_decoy_no_konu"
+    circuit = circuit_specs[circuit_id]
+    edges = circuit["edges"]
+    input_edges = circuit["input_edges"]
+    nstates = circuit["nstates"]
+    off_ind = BitArray(circuit["off_indicator"])
+    start_state = circuit["start_state"]
+    hitting_set = circuit["hitting_set"]
+
+    # Define model parameters (adjust as needed)
+    eps = 1e-15
+    reltol = 1e-10
+    maxevals = 100000
+    cr = 1.0    # example value for concentration
+    w = 1
+    cw = cr*w    # example value for an auxiliary parameter
+    gamma = 1.0
+    logrates = zeros(6)  # use a default if not specified
+
+    # Instantiate the base model d0
+    global d0 = OneBurstDecoyModel(;
+        circuitId = circuit_id,
+        nstates = nstates,
+        edges = edges,
+        input_edges = input_edges,
+        logrates = logrates,
+        cr = cr,
+        cw = cw,
+        gamma = gamma,
+        ind_set = off_ind,
+        start_state = start_state,
+        hitting_set = hitting_set,
+        eps = eps,
+        reltol = reltol,
+        maxevals = maxevals,
+    )
+
+    initFull!(d0)
+
+    # Create copies for testing multivariate Fisher Rate functions
+    global dx1 = deepcopy(d0)
+    global dx2 = deepcopy(d0)
+    global dy1 = deepcopy(d0)
+    global dy2 = deepcopy(d0)
+
+    # Modify only the cr and cw parameters as specified
+    hx = 0.01 * d0.cr
+    hy = 0.01 * d0.cw
+    dx1.cr = d0.cr - hx
+    dx2.cr = d0.cr - 2*hx
+    dy1.cw = d0.cw - hy
+    dy2.cw = d0.cw - 2*hy
+
+    # Reinitialize the modified models
+    initFull!(dx1)
+    initFull!(dx2)
+    initFull!(dy1)
+    initFull!(dy2)
+
+    # Bivariate Fisher Rate function
+    # This function will compute the Fisher Rate for the modified models
+    @show FisherRateBivariate(d0, dx1, dx2, dy1, dy2)
+
+    # Now you can test multivariate Fisher Rate functions with:
+    #    d0, dx1, dx2, dy1, dy2
+    println("d0.cr: ", d0.cr, ", dx1.cr: ", dx1.cr, ", dx2.cr: ", dx2.cr)
+    println("d0.cw: ", d0.cw, ", dy1.cw: ", dy1.cw, ", dy2.cw: ", dy2.cw)
+
 end
