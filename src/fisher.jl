@@ -237,11 +237,11 @@ function FisherRateBivariate(d0::OneBurstDecoyModel,
 
     if any(integral .< 0)
         # throw("Negative integral")
-        return -1.0
+        return ones(3) .* -1.0
 
     elseif any(err .> 1e-3)
         # throw("Integral precision not met")
-        return -1.0
+        return ones(3) .* -1.0
 
     else
         return integral .* d0.cr^2 ./ tau

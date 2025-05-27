@@ -1923,7 +1923,7 @@ let
 end
 
 ## -.-.--..-.-.-.-.-.---------.-.-.--.........---.-.--
-# Doing: adding tauOn and tauOff to 1bs decoy model
+# Doing: adding tauOn and tauOff, bivariate Fisher rates to 1bs decoy model
 let
     ## load circuit specifications
     circuits_file = "/home/tohme/.julia/dev/LLROpt/spec/circuits.json"
@@ -1954,25 +1954,14 @@ let
     dc = cr / 1000
 
     # decoys
-    inputdir = "20250521/fir-w-g-lowc-4"
-    outputdir = "20250526/tauon-tauoff-w-g-lowc-4"
+    inputdir = "20250521/fir-w-g-lowc-1"
+    outputdir = "20250527/bivariate-fisher-w-g-lowc-1"
 
-    #1bs
-    # inputdir = "20250304/irfull-c-exact"
-    # outputdir = "20250526/irfull-c-exact-tauon-tauoff"
-
-    # 2bs
-    # inputdir = "20250512/2bs-fir-c0-free-merged"
-    # outputdir = "20250526/2bs-tauon-tauoff-c0"
     whichf = "full"
 
     inpath = string("/home/tohme/.julia/dev/LLROpt/data/", inputdir, 
                     "/ir_", whichf, "_mix_vs_pure_pareto_pid")
     outpath = string("/home/tohme/.julia/dev/LLROpt/data/", outputdir, "/")
-
-    # inpath = string("/home/tohme/.julia/dev/LLROpt/data/", inputdir, 
-    #                 "/ir_", whichf, "_vs_ep_pareto_pid")
-    # outpath = string("/home/tohme/.julia/dev/LLROpt/data/", outputdir, "/")
 
     # define paths for the input and output param.json files
     inparams = string("/home/tohme/.julia/dev/LLROpt/data/", inputdir, "/params.json")
@@ -2006,7 +1995,7 @@ let
                     logrates = results_init[kc][kg][kw][1:nrates]
                     w, gamma, cw = results_init[kc][kg][kw][end-2:end]
 
-                    global d = OneBurstDecoyModel(;
+                    d0 = OneBurstDecoyModel(;
                         circuitId = circuitId,
                         nstates = nstates,
                         edges = edges,
@@ -2023,11 +2012,37 @@ let
                         maxevals = maxevals,
                     )
 
-                    initFull!(d)
+                    initFull!(d0)
 
-                    results_init[kc][kg][kw][nrates+2] = tauOff(d)
-                    results_init[kc][kg][kw][nrates+3] = tauOn(d)
-                    results_init[kc][kg][kw][nrates+4] = pi_on(d)
+                    # Create copies for testing multivariate Fisher Rate functions
+                    dx1 = deepcopy(d0)
+                    dx2 = deepcopy(d0)
+                    dy1 = deepcopy(d0)
+                    dy2 = deepcopy(d0)
+
+                    # Modify only the cr and cw parameters as specified
+                    hx = 0.1 * d0.cr
+                    hy = 0.1 * d0.cw
+                    dx1.cr = d0.cr - hx
+                    dx2.cr = d0.cr - 2*hx
+                    dy1.cw = d0.cw - hy
+                    dy2.cw = d0.cw - 2*hy
+
+                    # Reinitialize the modified models
+                    initFull!(dx1)
+                    initFull!(dx2)
+                    initFull!(dy1)
+                    initFull!(dy2)
+
+                    # results_init[kc][kg][kw][nrates+2] = tauOff(d)
+                    # results_init[kc][kg][kw][nrates+3] = tauOn(d)
+                    # results_init[kc][kg][kw][nrates+4] = pi_on(d)
+
+                    fisherBivariate = FisherRateBivariate(d0, dx1, dx2, dy1, dy2)
+
+                    results_init[kc][kg][kw][nrates+2] = fisherBivariate[1]
+                    results_init[kc][kg][kw][nrates+3] = fisherBivariate[2]
+                    results_init[kc][kg][kw][nrates+4] = fisherBivariate[3]
 
                 end
             end
