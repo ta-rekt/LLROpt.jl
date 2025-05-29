@@ -166,7 +166,7 @@ function FisherRateOff(d0::OneBurstDecoyModel,
 end
 
 
-#### Bivariatevariate Fisher information rate for one-burst decoy model
+#### Bivariate Fisher information rate for one-burst decoy model
 
 ### Fisher information rate given joint ON and OFF likelihood
 export integrandBivariate
@@ -258,6 +258,102 @@ function CovarianceMatrix(d0::OneBurstDecoyModel,
                          dy2::OneBurstDecoyModel)
 
     fmat = FisherRateMatrix(d0, dx1, dx2, dy1, dy2)
+
+    if any(fmat .== -1.0)
+        return [-1 -1; -1 -1]
+    else
+        return inv(fmat)
+    end
+end
+
+
+### Fisher information rate given ON likelihood
+export integrandOnBivariate
+function integrandOnBivariate(t_on, v, d0::OneBurstDecoyModel,
+                                       dx1::OneBurstDecoyModel,
+                                       dx2::OneBurstDecoyModel,
+                                       dy1::OneBurstDecoyModel,
+                                       dy2::OneBurstDecoyModel)
+
+    u_on = t_on / (1.0 - t_on)
+
+    hx = d0.cr - dx1.cr
+    hy = d0.cw - dy1.cw
+    @assert d0.cr > dx1.cr
+    @assert dx1.cr > dx2.cr
+    @assert isapprox(dx2.cr, d0.cr - 2*hx, rtol=1e-6)
+    @assert d0.cr == dy1.cr
+    @assert dy1.cr == dy2.cr
+    @assert d0.cw > dy1.cw
+    @assert dy1.cw > dy2.cw
+    @assert isapprox(dy2.cw, d0.cw - 2*hy, rtol=1e-6)
+
+    Pon!(u_on, d0)
+    Pon!(u_on, dx1)
+    Pon!(u_on, dx2)
+    Pon!(u_on, dy1)
+    Pon!(u_on, dy2)
+    
+    if d0.Pon < 0 || dx1.Pon < 0 || dx2.Pon < 0 || dy1.Pon < 0 || dy2.Pon < 0
+        v[:] = @SVector [0.0, 0.0, 0.0]
+    end
+
+    dxPon = dx2.Pon - 4*dx1.Pon + 3*d0.Pon
+    dxPon /= 2 * hx
+
+    dyPon = dy2.Pon - 4*dy1.Pon + 3*d0.Pon
+    dyPon /= 2 * hy
+
+    denom = (d0.Pon * (1.0 - t_on)^2)
+
+    v[:] = @SVector [dxPon^2 * d0.cr^2 / denom, 
+                     dxPon * dyPon * d0.cr * d0.cw / denom, 
+                     dyPon^2 * d0.cw^2/ denom]
+
+    return v
+end
+
+export FisherRateOnMatrix
+function FisherRateOnMatrix(d0::OneBurstDecoyModel,
+                            dx1::OneBurstDecoyModel,
+                            dx2::OneBurstDecoyModel,
+                            dy1::OneBurstDecoyModel,
+                            dy2::OneBurstDecoyModel)
+    
+    tauOffVal = tauOff(d0)
+    tauOnVal = tauOn(d0)
+    tau = tauOnVal + tauOffVal
+    l1 = d0.maxeigval_comp
+    l2 = d0.maxeigval_set
+    eps = 1e-6
+
+    integral, err = hquadrature(3, (t, v) -> 
+            integrandOnBivariate(t, v, d0, dx1, dx2, dy1, dy2), 
+                eps, 1-eps; reltol=d0.reltol, maxevals=d0.maxevals)
+
+    fxx, fxy, fyy = integral
+
+    if any(integral .< 0)
+        # throw("Negative integral")
+        return [-1 -1; -1 -1]
+
+    elseif any(err .> 1e-3)
+        # throw("Integral precision not met")
+        return [-1 -1; -1 -1]
+
+    else
+        return [fxx fxy; fxy fyy] ./ tau
+    end
+end
+
+export CovarianceOnMatrix
+function CovarianceOnMatrix(d0::OneBurstDecoyModel,
+                            dx1::OneBurstDecoyModel,
+                            dx2::OneBurstDecoyModel,
+                            dy1::OneBurstDecoyModel,
+                            dy2::OneBurstDecoyModel)
+
+    fmat = FisherRateOnMatrix(d0, dx1, dx2, dy1, dy2)
 
     if any(fmat .== -1.0)
         return [-1 -1; -1 -1]
