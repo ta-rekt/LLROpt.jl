@@ -137,26 +137,14 @@ end
 export initWeights!
 function initWeights!(d::OneBurstDecoyModel)
    
-    if d.circuitId == "1bs_decoy"
-        initDecoyWeights!(d)
-
-    elseif d.circuitId == "1bs_decoy_no_konu"
+    if d.circuitId == "1bs_decoy" || d.circuitId == "1bs_decoy_no_konu"
         initDecoyWeights!(d)
 
     elseif d.circuitId == "1bs_decoy_no_konu_new"
         initDecoyWeightsNew!(d)
 
-    elseif d.circuitId == "1bs_no_konu"
+    else
         init1bsWeights!(d)
-
-    elseif d.circuitId == "2bs_no_konu"
-        initFreeWeights!(d)
-
-    elseif d.circuitId == "3bs_no_konu"
-        initFreeWeights!(d)
-
-    elseif d.circuitId == "6bs"
-        initFreeWeights!(d)
     end
 
     return d

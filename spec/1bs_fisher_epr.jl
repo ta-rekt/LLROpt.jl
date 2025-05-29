@@ -16,9 +16,9 @@ ub = 5
 lb = 1e-4
 
 ### Upper bounds for mixed ligands circuit
-# "c*kboff","kuoff","konb","koffb","kuon","c*kbon","koffu"
-llb1 = ones(7) .* log10(lb)
-lub1 = ones(7) .* log10(ub)
+# "c*kboff","kuoff","konb","koffb","kuon","c*kbon","koffu","konu"
+llb1 = ones(8) .* log10(lb)
+lub1 = ones(8) .* log10(ub)
 lub1[1] = log10(dl_tf)
 lub1[6] = log10(dl_tf)
 
@@ -31,7 +31,7 @@ open(circuits_file, "r") do f
     global circuit_specs = JSON.parse(f)
 end
 
-circuitId = "1bs_no_konu"
+circuitId = "1bs"
 circuit_1bs = circuit_specs[circuitId]
 edges = circuit_1bs["edges"]
 input_edges = circuit_1bs["input_edges"]
@@ -41,9 +41,9 @@ off_ind = BitArray(off_ind)
 start_state = circuit_1bs["start_state"]
 hitting_set = circuit_1bs["hitting_set"]
 
-cr = 0.5
+cr = 40
 
-maxevals = 10000
+maxevals = 20000
 reltol = 1e-10
 eps = 1e-15
 
@@ -81,15 +81,15 @@ opt_alg = BBO_adaptive_de_rand_1_bin_radiuslimited()
 
 maxiters_acc = 30000
 maxiters_full = 500
-whichf = "full"
+whichf = "acc"
 fixed_conc = false   # is concentration fixed, or are we sweeping over it?
 monte_carlo = false
 N = 1  # legacy parameter, number of repeats once optima have been found
 n = 1
 
 ### Temperature parameter
-betas = vcat(range(6e-1, stop=2e-3, length=8), 
-             10 .^ range(-2.5, stop=-7, length=8))
+betas = vcat(range(6e-2, stop=1e-3, length=128), 
+             10 .^ range(-3, stop=-7, length=32))
 # betas = [0.1]
 nparams = length(betas)
 

@@ -209,19 +209,19 @@ function integrandBivariate(t, v, d0::OneBurstDecoyModel,
 
     denom = (d0.Pjoint * (1.0 - t_off)^2 * (1.0 - t_on)^2)
 
-    v[:] = @SVector [dxPjoint^2 / denom, 
-                     dxPjoint * dyPjoint / denom, 
-                     dyPjoint^2 / denom]
+    v[:] = @SVector [dxPjoint^2 * d0.cr^2 / denom, 
+                     dxPjoint * dyPjoint * d0.cr * d0.cw / denom, 
+                     dyPjoint^2 * d0.cw^2/ denom]
 
     return v
 end
 
-export FisherRateBivariate
-function FisherRateBivariate(d0::OneBurstDecoyModel,
-                             dx1::OneBurstDecoyModel,
-                             dx2::OneBurstDecoyModel,
-                             dy1::OneBurstDecoyModel,
-                             dy2::OneBurstDecoyModel)
+export FisherRateMatrix
+function FisherRateMatrix(d0::OneBurstDecoyModel,
+                          dx1::OneBurstDecoyModel,
+                          dx2::OneBurstDecoyModel,
+                          dy1::OneBurstDecoyModel,
+                          dy2::OneBurstDecoyModel)
     
     tauOffVal = tauOff(d0)
     tauOnVal = tauOn(d0)
@@ -235,15 +235,33 @@ function FisherRateBivariate(d0::OneBurstDecoyModel,
                 [eps,eps], [1-eps, 1-eps]; 
                 reltol=d0.reltol, maxevals=d0.maxevals)
 
+    fxx, fxy, fyy = integral
+
     if any(integral .< 0)
         # throw("Negative integral")
-        return ones(3) .* -1.0
+        return [-1 -1; -1 -1]
 
     elseif any(err .> 1e-3)
         # throw("Integral precision not met")
-        return ones(3) .* -1.0
+        return [-1 -1; -1 -1]
 
     else
-        return integral .* d0.cr^2 ./ tau
+        return [fxx fxy; fxy fyy] ./ tau
+    end
+end
+
+export CovarianceMatrix
+function CovarianceMatrix(d0::OneBurstDecoyModel,
+                         dx1::OneBurstDecoyModel,
+                         dx2::OneBurstDecoyModel,
+                         dy1::OneBurstDecoyModel,
+                         dy2::OneBurstDecoyModel)
+
+    fmat = FisherRateMatrix(d0, dx1, dx2, dy1, dy2)
+
+    if any(fmat .== -1.0)
+        return [-1 -1; -1 -1]
+    else
+        return inv(fmat)
     end
 end

@@ -14,6 +14,7 @@
     using Cubature
     using InverseLaplace
     using PrettyTables
+    using StaticArrays
 end
 
 
@@ -2068,37 +2069,131 @@ end
 
 ## -.-.--..-.-.-.-.-.---------.-.-.--.........---.-.--
 # testing bivariate Fisher rate
-let
 
-    # Load the circuit configuration from JSON
-    config_path = "spec/circuits.json"  # Update this path as needed
-    circuit_specs = Dict{String,Any}()
-    open(config_path, "r") do f
+function integrandBivariateTest(t, v, d0::OneBurstDecoyModel,
+                                  dx1::OneBurstDecoyModel,
+                                  dx2::OneBurstDecoyModel,
+                                  dy1::OneBurstDecoyModel,
+                                  dy2::OneBurstDecoyModel)
+
+    t_off, t_on = t
+    u_off = t_off / (1.0 - t_off)
+    u_on = t_on / (1.0 - t_on)
+
+    hx = d0.cr - dx1.cr
+    hy = d0.cw - dy1.cw
+    @assert d0.cr > dx1.cr
+    @assert dx1.cr > dx2.cr
+    @assert isapprox(dx2.cr, d0.cr - 2*hx, rtol=1e-6)
+    @assert d0.cr == dy1.cr
+    @assert dy1.cr == dy2.cr
+    @assert d0.cw > dy1.cw
+    @assert dy1.cw > dy2.cw
+    @assert isapprox(dy2.cw, d0.cw - 2*hy, rtol=1e-6)
+
+    Pjoint!(u_off, u_on, d0)
+    Pjoint!(u_off, u_on, dx1)
+    Pjoint!(u_off, u_on, dx2)
+    Pjoint!(u_off, u_on, dy1)
+    Pjoint!(u_off, u_on, dy2)
+    
+    if d0.Pjoint < 0 || dx1.Pjoint < 0 || dx2.Pjoint < 0 || dy1.Pjoint < 0 || dy2.Pjoint < 0
+        v[:] = @SVector [0.0, 0.0, 0.0]
+    end
+
+    dxPjoint = dx2.Pjoint - 4*dx1.Pjoint + 3*d0.Pjoint
+    dxPjoint /= 2 * hx
+
+    dyPjoint = dy2.Pjoint - 4*dy1.Pjoint + 3*d0.Pjoint
+    dyPjoint /= 2 * hy
+
+    denom = (d0.Pjoint * (1.0 - t_off)^2 * (1.0 - t_on)^2)
+
+    v[:] = @SVector [dxPjoint^2 * d0.cr^2 / denom, 
+                     dxPjoint * dyPjoint * d0.cr * d0.cw / denom, 
+                     dyPjoint^2 * d0.cw^2/ denom]
+
+    return v
+end
+
+function FisherRateBivariateTest(d0::OneBurstDecoyModel,
+                             dx1::OneBurstDecoyModel,
+                             dx2::OneBurstDecoyModel,
+                             dy1::OneBurstDecoyModel,
+                             dy2::OneBurstDecoyModel)
+    
+    tauOffVal = tauOff(d0)
+    tauOnVal = tauOn(d0)
+    tau = tauOnVal + tauOffVal
+    l1 = d0.maxeigval_comp
+    l2 = d0.maxeigval_set
+    eps = 1e-6
+
+    integral, err = hcubature(3, (t, v) -> 
+            integrandBivariateTest(t, v, d0, dx1, dx2, dy1, dy2), 
+                [eps,eps], [1-eps, 1-eps]; 
+                reltol=d0.reltol, maxevals=d0.maxevals)
+
+    if any(integral .< 0)
+        # throw("Negative integral")
+        return ones(3) .* -1.0
+
+    elseif any(err .> 1e-3)
+        # throw("Integral precision not met")
+        return ones(3) .* -1.0
+
+    else
+        return integral ./ tau
+    end
+end
+
+let 
+    ## circuit specifications file
+    circuits_file = "spec/circuits.json"
+    global circuit_specs = Dict()
+
+    open(circuits_file, "r") do f
         circuit_specs = JSON.parse(f)
     end
 
-    circuit_id = "1bs_decoy_no_konu"
-    circuit = circuit_specs[circuit_id]
+    ## ----.-.-.--....-.---.-..-.-.-.-.-.--.-.-.-----.--
+
+    # loading testset
+    tests_file = "test/data/20250528/bivariate-fisher-w-g-lowc-4-testset.json"
+    testset = Dict()
+
+    open(tests_file, "r") do f
+        testset = JSON.parse(f)
+    end
+
+    kc = "7"
+    kg = "1"
+    kw = "1"
+
+    # testing 2bs decoy circuit
+    circuitId = testset["circuit_id"]
+    current_test = testset[kc][kg][kw]
+    logrates = current_test["logrates"]
+    cr = current_test["c0"]
+    cw = current_test["c2"]
+    gamma = current_test["gamma"]
+
+    circuit = circuit_specs[circuitId]
     edges = circuit["edges"]
     input_edges = circuit["input_edges"]
     nstates = circuit["nstates"]
-    off_ind = BitArray(circuit["off_indicator"])
+    off_ind = circuit["off_indicator"]
+    off_ind = BitArray(off_ind)
     start_state = circuit["start_state"]
     hitting_set = circuit["hitting_set"]
 
-    # Define model parameters (adjust as needed)
     eps = 1e-15
     reltol = 1e-10
-    maxevals = 100000
-    cr = 1.0    # example value for concentration
-    w = 1
-    cw = cr*w    # example value for an auxiliary parameter
-    gamma = 1.0
-    logrates = zeros(6)  # use a default if not specified
+    evalrtol = 1e-6 
+    maxevals = 2000
 
-    # Instantiate the base model d0
     global d0 = OneBurstDecoyModel(;
-        circuitId = circuit_id,
+        circuitId = circuitId,
         nstates = nstates,
         edges = edges,
         input_edges = input_edges,
@@ -2114,15 +2209,11 @@ let
         maxevals = maxevals,
     )
 
-    initFull!(d0)
+    dx1 = deepcopy(d0)
+    dx2 = deepcopy(d0)
+    dy1 = deepcopy(d0)
+    dy2 = deepcopy(d0)
 
-    # Create copies for testing multivariate Fisher Rate functions
-    global dx1 = deepcopy(d0)
-    global dx2 = deepcopy(d0)
-    global dy1 = deepcopy(d0)
-    global dy2 = deepcopy(d0)
-
-    # Modify only the cr and cw parameters as specified
     hx = 0.01 * d0.cr
     hy = 0.01 * d0.cw
     dx1.cr = d0.cr - hx
@@ -2130,19 +2221,65 @@ let
     dy1.cw = d0.cw - hy
     dy2.cw = d0.cw - 2*hy
 
-    # Reinitialize the modified models
+    initFull!(d0)
     initFull!(dx1)
     initFull!(dx2)
     initFull!(dy1)
     initFull!(dy2)
+    
+    # Pjoint!(t1, t2, d)
 
-    # Bivariate Fisher Rate function
-    # This function will compute the Fisher Rate for the modified models
-    @show FisherRateBivariate(d0, dx1, dx2, dy1, dy2)
+    Qtest = reshape(vcat(current_test["rate_matrix"]...), (nstates, nstates))'
+    firFullTestcr = current_test["fisher_cr"]
+    firFullTestcw = current_test["fisher_cw"]
+    firFullTestcross = current_test["fisher_cross"]
 
-    # Now you can test multivariate Fisher Rate functions with:
-    #    d0, dx1, dx2, dy1, dy2
-    println("d0.cr: ", d0.cr, ", dx1.cr: ", dx1.cr, ", dx2.cr: ", dx2.cr)
-    println("d0.cw: ", d0.cw, ", dy1.cw: ", dy1.cw, ", dy2.cw: ", dy2.cw)
+    @assert d0.edges == edges
+    @assert d0.input_edges == input_edges
+    @assert d0.nstates == nstates
+    @assert d0.ind_set == off_ind
+    @assert d0.start_state == start_state
+    @assert d0.hitting_set == hitting_set
+
+    @assert d0.logrates == logrates
+    @assert d0.cr == cr
+
+    for (i,j) in zip(range(1, nstates), range(1, nstates))
+        try
+            @assert isapprox(d0.Q[i,j], Qtest[i,j], rtol = evalrtol)
+        catch e
+            # println("i: ", i, " j: ", j)
+            # println("Q: ", d0.Q[i,j])
+            # println("Qtest: ", Qtest[i,j])
+            # println("evalrtol: ", evalrtol)
+        end
+    end
+
+    fcr, fcross, _, fcw = FisherRateMatrix(d0, dx1, dx2, dy1, dy2)
+
+    @show cr, cw, gamma
+    @show fcr
+    @show firFullTestcr
+    @show fcw
+    @show firFullTestcw
+    @show fcross
+    @show firFullTestcross
+
+    @show CovarianceMatrix(d0, dx1, dx2, dy1, dy2) .^ (-1)
+    
+    @assert isapprox(fcr, firFullTestcr, rtol=1e-3)
+    @assert isapprox(fcw, firFullTestcw, rtol=1e-3)
+    @assert isapprox(fcross, firFullTestcross, rtol=1e-3)
+
+    # eps = 1e-3
+    # t1 = 0.39
+    # # t1 = 1
+    # l2 = d.maxeigval_comp
+    # tvals = range(eps, 1.0-eps, length=1000)
+    # integrandvals = [integrandBivariateTest([t1, t], v, d0, dx1, dx2, dy1, dy2) for t in tvals]
+    # pjointvals = [Pjoint(t1, t, d1) for t in tvals]
+
+    # plot(tvals, integrandvals, label = "integrand")
+    # plot(tvals, pjointvals, label = "integrand")
 
 end
