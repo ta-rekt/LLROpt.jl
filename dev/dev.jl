@@ -2166,7 +2166,7 @@ let
         testset = JSON.parse(f)
     end
 
-    kc = "7"
+    kc = "2"
     kg = "1"
     kw = "1"
 
@@ -2209,10 +2209,10 @@ let
         maxevals = maxevals,
     )
 
-    dx1 = deepcopy(d0)
-    dx2 = deepcopy(d0)
-    dy1 = deepcopy(d0)
-    dy2 = deepcopy(d0)
+    global dx1 = deepcopy(d0)
+    global dx2 = deepcopy(d0)
+    global dy1 = deepcopy(d0)
+    global dy2 = deepcopy(d0)
 
     hx = 0.01 * d0.cr
     hy = 0.01 * d0.cw
@@ -2265,21 +2265,23 @@ let
     @show fcross
     @show firFullTestcross
 
-    @show CovarianceMatrix(d0, dx1, dx2, dy1, dy2) .^ (-1)
+    @show integrandOnBivariate(0.884, [0.0,0.0,0.0], d0, dx1, dx2, dy1, dy2)
+    # @show FisherRateOnMatrix(d0, dx1, dx2, dy1, dy2)
     
     @assert isapprox(fcr, firFullTestcr, rtol=1e-3)
     @assert isapprox(fcw, firFullTestcw, rtol=1e-3)
     @assert isapprox(fcross, firFullTestcross, rtol=1e-3)
 
-    # eps = 1e-3
-    # t1 = 0.39
-    # # t1 = 1
-    # l2 = d.maxeigval_comp
-    # tvals = range(eps, 1.0-eps, length=1000)
-    # integrandvals = [integrandBivariateTest([t1, t], v, d0, dx1, dx2, dy1, dy2) for t in tvals]
+    eps = 1e-4
+    t1 = 0.39
+    l2 = d0.maxeigval_comp
+    v = [0.0,0.0,0.0]
+    tvals = range(0, 1, length=1000)
+    integrandvals = [integrandOnBivariate(t, v, d0, dx1, dx2, dy1, dy2)[3]
+                        for t in tvals]
     # pjointvals = [Pjoint(t1, t, d1) for t in tvals]
 
-    # plot(tvals, integrandvals, label = "integrand")
+    plot(tvals, integrandvals, label = "integrand")
     # plot(tvals, pjointvals, label = "integrand")
 
 end

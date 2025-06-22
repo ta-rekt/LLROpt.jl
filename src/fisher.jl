@@ -199,6 +199,7 @@ function integrandBivariate(t, v, d0::OneBurstDecoyModel,
     
     if d0.Pjoint < 0 || dx1.Pjoint < 0 || dx2.Pjoint < 0 || dy1.Pjoint < 0 || dy2.Pjoint < 0
         v[:] = @SVector [0.0, 0.0, 0.0]
+        return v
     end
 
     dxPjoint = dx2.Pjoint - 4*dx1.Pjoint + 3*d0.Pjoint
@@ -237,11 +238,7 @@ function FisherRateMatrix(d0::OneBurstDecoyModel,
 
     fxx, fxy, fyy = integral
 
-    if any(integral .< 0)
-        # throw("Negative integral")
-        return [-1 -1; -1 -1]
-
-    elseif any(err .> 1e-3)
+    if any(err .> 1e-3)
         # throw("Integral precision not met")
         return [-1 -1; -1 -1]
 
@@ -296,6 +293,7 @@ function integrandOnBivariate(t_on, v, d0::OneBurstDecoyModel,
     
     if d0.Pon < 0 || dx1.Pon < 0 || dx2.Pon < 0 || dy1.Pon < 0 || dy2.Pon < 0
         v[:] = @SVector [0.0, 0.0, 0.0]
+        return v
     end
 
     dxPon = dx2.Pon - 4*dx1.Pon + 3*d0.Pon
@@ -333,12 +331,8 @@ function FisherRateOnMatrix(d0::OneBurstDecoyModel,
 
     fxx, fxy, fyy = integral
 
-    if any(integral .< 0)
-        # throw("Negative integral")
-        return [-1 -1; -1 -1]
-
-    elseif any(err .> 1e-3)
-        # throw("Integral precision not met")
+    if any(err .> 1e-3)
+        throw("Integral precision not met")
         return [-1 -1; -1 -1]
 
     else

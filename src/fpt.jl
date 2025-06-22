@@ -84,7 +84,7 @@ export Pon!
 function Pon!(t_on, d::OneBurstDecoyModel)
 
     # hitting probabilities
-    tol = 1e-20
+    tol = 1e-10
     d.D_aux = Diagonal(map(x -> x < -tol ? 0.0 : (abs(x) <= tol ? 1.0 : Inf), d.D_comp))
     mul!(d.aux_comp, d.W_comp, d.D_aux)
     mul!(d.P_comp, d.aux_comp, d.W_comp_inv)
