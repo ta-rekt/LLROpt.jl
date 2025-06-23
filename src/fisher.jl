@@ -355,3 +355,96 @@ function CovarianceOnMatrix(d0::OneBurstDecoyModel,
         return inv(fmat)
     end
 end
+
+
+### Fisher information rate given ON likelihood
+export integrandOffBivariate
+function integrandOffBivariate(t_off, v, d0::OneBurstDecoyModel,
+                                       dx1::OneBurstDecoyModel,
+                                       dx2::OneBurstDecoyModel,
+                                       dy1::OneBurstDecoyModel,
+                                       dy2::OneBurstDecoyModel)
+
+    u_on = t_off / (1.0 - t_off)
+
+    hx = d0.cr - dx1.cr
+    hy = d0.cw - dy1.cw
+    @assert d0.cr > dx1.cr
+    @assert dx1.cr > dx2.cr
+    @assert isapprox(dx2.cr, d0.cr - 2*hx, rtol=1e-6)
+    @assert d0.cr == dy1.cr
+    @assert dy1.cr == dy2.cr
+    @assert d0.cw > dy1.cw
+    @assert dy1.cw > dy2.cw
+    @assert isapprox(dy2.cw, d0.cw - 2*hy, rtol=1e-6)
+
+    Poff!(u_off, d0)
+    Poff!(u_off, dx1)
+    Poff!(u_off, dx2)
+    Poff!(u_off, dy1)
+    Poff!(u_off, dy2)
+    
+    if d0.Poff < 0 || dx1.Poff < 0 || dx2.Poff < 0 || dy1.Poff < 0 || dy2.Poff < 0
+        v[:] = @SVector [0.0, 0.0, 0.0]
+        return v
+    end
+
+    dxPoff = dx2.Poff - 4*dx1.Poff + 3*d0.Poff
+    dxPoff /= 2 * hx
+
+    dyPoff = dy2.Poff - 4*dy1.Poff + 3*d0.Poff
+    dyPoff /= 2 * hy
+
+    denom = (d0.Poff * (1.0 - t_off)^2)
+
+    v[:] = @SVector [dxPoff^2 * d0.cr^2 / denom, 
+                     dxPoff * dyPoff * d0.cr * d0.cw / denom, 
+                     dyPoff^2 * d0.cw^2/ denom]
+
+    return v
+end
+
+export FisherRateOffMatrix
+function FisherRateOffMatrix(d0::OneBurstDecoyModel,
+                            dx1::OneBurstDecoyModel,
+                            dx2::OneBurstDecoyModel,
+                            dy1::OneBurstDecoyModel,
+                            dy2::OneBurstDecoyModel)
+    
+    tauOffVal = tauOff(d0)
+    tauOnVal = tauOn(d0)
+    tau = tauOnVal + tauOffVal
+    l1 = d0.maxeigval_comp
+    l2 = d0.maxeigval_set
+    eps = 1e-6
+
+    integral, err = hquadrature(3, (t, v) -> 
+            integrandOffBivariate(t, v, d0, dx1, dx2, dy1, dy2), 
+                eps, 1-eps; reltol=d0.reltol, maxevals=d0.maxevals)
+
+    fxx, fxy, fyy = integral
+
+    if any(err .> 1e-3)
+        throw("Integral precision not met")
+        return [-1 -1; -1 -1]
+
+    else
+        return [fxx fxy; fxy fyy] ./ tau
+    end
+end
+
+export CovarianceOffMatrix
+function CovarianceOffMatrix(d0::OneBurstDecoyModel,
+                            dx1::OneBurstDecoyModel,
+                            dx2::OneBurstDecoyModel,
+                            dy1::OneBurstDecoyModel,
+                            dy2::OneBurstDecoyModel)
+
+    fmat = FisherRateOffMatrix(d0, dx1, dx2, dy1, dy2)
+
+    if any(fmat .== -1.0)
+        return [-1 -1; -1 -1]
+    else
+        return inv(fmat)
+    end
+end
