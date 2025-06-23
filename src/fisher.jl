@@ -365,7 +365,7 @@ function integrandOffBivariate(t_off, v, d0::OneBurstDecoyModel,
                                        dy1::OneBurstDecoyModel,
                                        dy2::OneBurstDecoyModel)
 
-    u_on = t_off / (1.0 - t_off)
+    u_off = t_off / (1.0 - t_off)
 
     hx = d0.cr - dx1.cr
     hy = d0.cw - dy1.cw
