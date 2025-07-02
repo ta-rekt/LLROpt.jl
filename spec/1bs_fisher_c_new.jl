@@ -38,7 +38,7 @@ off_ind = circuit["off_indicator"]
 off_ind = BitArray(off_ind)
 start_state = circuit["start_state"]
 hitting_set = circuit["hitting_set"]
-cr = 0.1
+cr = 1
 # beta = cr
 
 maxevals = 2000
@@ -82,19 +82,20 @@ opt_alg = BBO_adaptive_de_rand_1_bin_radiuslimited()
 # opt_alg = Evolutionary.CMAES(μ = 5, λ = 10, sigma0 = 1)
 
 maxiters_acc = 30000
-maxiters_full = 2000
+maxiters_full = 8000
 whichf = "both"
 fixed_conc = true   # is concentration fixed, or are we sweeping over it?
 monte_carlo = false   # are we sampling trajectories and taking averages?
 
 ### Temperature parameter
-betas = 10 .^ range(-2, stop=2, length=16)
-# betas = [0.05]
+# betas = 10 .^ range(-2, stop=2, length=16)
+betas = range(0, stop=2, length=16)
+# betas = [0]
 nparams = length(betas)
 
 ### Other parameters
-gammas = [6]
-wvals = [10]
+gammas = [10]
+wvals = [1e-5, 0.1, 10]
 # gammas = [10]
 # wvals = [0.01]
 
@@ -118,7 +119,7 @@ end
 
 # returns - IR_acc_mix - beta * IR_acc_pure - gamma * EP
 @counted function target_acc(logrates, args...)
-    dlist, w, gamma, _ = args
+    dlist, beta, gamma, w = args
     d0, __, __, _, _ = dlist
 
     d0.cw = d0.cr*w
@@ -136,7 +137,7 @@ end
 
 
 @counted function target_full(logrates, args...)
-    dlist, w, gamma, _ = args
+    dlist, beta, gamma, w = args
     d0, dx1, dx2, dy1, dy2 = dlist
 
     for di in dlist
@@ -157,11 +158,17 @@ end
         initFull!(di)
     end
 
+    tauOffVal = tauOff(d0)
+    tauOnVal = tauOn(d0)
+    tau = tauOnVal + tauOffVal
+
     pi_ = P_ss(d0)
     fir = FisherRate(d0, dx1, dx2)
     cov = CovarianceMatrix(d0, dx1, dx2, dy1, dy2)
-    covOn = CovarianceOnMatrix(d0, dx1, dx2, dy1, dy2)
+    # covOn = CovarianceOnMatrix(d0, dx1, dx2, dy1, dy2)
+    # covOff = CovarianceOffMatrix(d0, dx1, dx2, dy1, dy2)
     logSpec = log2((pi_[3]+pi_[7])/(pi_[3]+pi_[4]+pi_[5]+pi_[7]))
 
-    (- 1/cov[1,1], fir, 1/covOn[1,1], logSpec)
+    (- 1/cov[1,1], 1/covOff[1,1], 1/covOn[1,1], logSpec)
+    # (- 1/(cov[1,1]*tau^(beta-1)), 0, 0, logSpec)
 end

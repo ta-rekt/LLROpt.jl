@@ -38,10 +38,9 @@ off_ind = circuit_2bs["off_indicator"]
 off_ind = BitArray(off_ind)
 start_state = circuit_2bs["start_state"]
 hitting_set = circuit_2bs["hitting_set"]
-cr = 50
-# beta = cr
+cr = 1
 
-maxevals = 10000
+maxevals = 2000
 reltol = 1e-10
 eps = 1e-15
 N = 1   # legacy parameter, number of samples once optima have been found
@@ -54,7 +53,7 @@ xinit1 = (lub1 .+ llb1) ./ 2
 # inpath = "/home/tohme/.julia/dev/LLROpt/data/20241118/dr-epsilon-hernan/bigsweep-cmaes-A-pn-smallw/ir_full_mix_vs_pure_pareto_pid"
 inpath = ""
 
-global d = OneBurstDecoyModel(;
+global d0 = OneBurstDecoyModel(;
     circuitId = circuitId,
     nstates = nstates,
     edges = edges,
@@ -71,32 +70,33 @@ global d = OneBurstDecoyModel(;
     maxevals = maxevals,
 )
 
-d1 = deepcopy(d)
-d2 = deepcopy(d)
-dlist = [d, d1, d2]
+dx1 = deepcopy(d0)
+dx2 = deepcopy(d0)
+dy1 = deepcopy(d0)
+dy2 = deepcopy(d0)
+dlist = [d0, dx1, dx2, dy1, dy2]
 
 ### Optimization parameters
 opt_alg = BBO_adaptive_de_rand_1_bin_radiuslimited()
 # opt_alg = Evolutionary.CMAES(μ = 5, λ = 10, sigma0 = 1)
 
 maxiters_acc = 30000
-maxiters_full = 2000
+maxiters_full = 4000
 whichf = "full"
 fixed_conc = true   # is concentration fixed, or are we sweeping over it?
 monte_carlo = false   # are we sampling trajectories and taking averages?
 
 ### Temperature parameter
 # betasn = map(x->-tan(x), range(0*angle_incr, stop=0.5*angle_incr, length=16))
-betas = map(x->tan(x), range(0, stop=pi/2 - 0.05, length=16))
-# betas = 10 .^ range(-1, stop=3, length=32)
+betas = map(x->tan(x), range(0, stop=pi/2 - 0.05, length=64))
 # betas = [0.05]
 nparams = length(betas)
 
 ### Other parameters
 # gammas = [1.5,2.5,10]
 # wvals = [0.05,0.2,1,5,10]
-gammas = [10]
-wvals = [10]
+gammas = [2,8]
+wvals = [0.1, 0.3, 1, 3, 10]
 
 ### objective functions
 
@@ -123,31 +123,30 @@ end
 
 @counted function target_full(logrates, args...)
     dlist, beta, gamma, w = args
-    d, d1, d2 = dlist
-
-    h = 0.01 * d.cr
-    d1.cr = cr - h
-    d2.cr = cr - 2*h
+    d0, dx1, dx2, dy1, dy2 = dlist
 
     for di in dlist
         di.logrates = logrates
-        di.cw = d.cr*w
+        di.cr = d0.cr
+        di.cw = d0.cr*w
         di.gamma = gamma
+    end
 
+    hx = 0.05 * d0.cr
+    hy = 0.05 * d0.cw
+    dx1.cr = d0.cr - hx
+    dx2.cr = d0.cr - 2*hx
+    dy1.cw = d0.cw - hy
+    dy2.cw = d0.cw - 2*hy
+
+    for di in dlist
         initFull!(di)
     end
 
-    # print(logrates)
-    EP = EP_ss(d)
-    Jplus = 0
-    pi_ = P_ss(d)
-    # J = pi_[1] * m1.Q[1,2] - pi_[2] * m1.Q[2,1]
-    # Jplus = J + abs(J)   # penalty for counterclockwise flux
-
-    fir = FisherRate(d, d1, d2)
-    # firOff = FisherRateOff(d, d1, d2)
-    # firOn = FisherRateOn(d, d1, d2)
+    pi_ = P_ss(d0)
+    fir = FisherRate(d0, dx1, dx2)
+    cov = CovarianceMatrix(d0, dx1, dx2, dy1, dy2)
     logSpec = log2((pi_[3]+pi_[7])/(pi_[3]+pi_[4]+pi_[5]+pi_[7]))
 
-    (- fir - beta*logSpec, fir, logSpec, EP)
+    (- 1/cov[1,1] - beta*logSpec, 1/cov[1,1], fir, logSpec)
 end

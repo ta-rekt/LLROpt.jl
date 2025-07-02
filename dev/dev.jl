@@ -2166,7 +2166,7 @@ let
         testset = JSON.parse(f)
     end
 
-    kc = "2"
+    kc = "30"
     kg = "1"
     kw = "1"
 
@@ -2174,6 +2174,7 @@ let
     circuitId = testset["circuit_id"]
     current_test = testset[kc][kg][kw]
     logrates = current_test["logrates"]
+    # logrates[4] = -1.0
     cr = current_test["c0"]
     cw = current_test["c2"]
     gamma = current_test["gamma"]
@@ -2241,47 +2242,50 @@ let
     @assert d0.start_state == start_state
     @assert d0.hitting_set == hitting_set
 
-    @assert d0.logrates == logrates
+    # @assert d0.logrates == logrates
     @assert d0.cr == cr
 
-    for (i,j) in zip(range(1, nstates), range(1, nstates))
-        try
-            @assert isapprox(d0.Q[i,j], Qtest[i,j], rtol = evalrtol)
-        catch e
-            # println("i: ", i, " j: ", j)
-            # println("Q: ", d0.Q[i,j])
-            # println("Qtest: ", Qtest[i,j])
-            # println("evalrtol: ", evalrtol)
-        end
-    end
+    # for (i,j) in zip(range(1, nstates), range(1, nstates))
+    #     try
+    #         # @assert isapprox(d0.Q[i,j], Qtest[i,j], rtol = evalrtol)
+    #     catch e
+    #         # println("i: ", i, " j: ", j)
+    #         # println("Q: ", d0.Q[i,j])
+    #         # println("Qtest: ", Qtest[i,j])
+    #         # println("evalrtol: ", evalrtol)
+    #     end
+    # end
 
-    fcr, fcross, _, fcw = FisherRateMatrix(d0, dx1, dx2, dy1, dy2)
+    # fcr, fcross, _, fcw = FisherRateMatrix(d0, dx1, dx2, dy1, dy2)
 
     @show cr, cw, gamma
-    @show fcr
-    @show firFullTestcr
-    @show fcw
-    @show firFullTestcw
-    @show fcross
-    @show firFullTestcross
+    # @show fcr
+    # @show firFullTestcr
+    # @show fcw
+    # @show firFullTestcw
+    # @show fcross
+    # @show firFullTestcross
+    @show logrates # kboff, konb, kuon, kbon, koffu, kuoff
 
-    @show integrandOnBivariate(0.884, [0.0,0.0,0.0], d0, dx1, dx2, dy1, dy2)
-    # @show FisherRateOnMatrix(d0, dx1, dx2, dy1, dy2)
+    # @show integrandOnBivariate(0.884, [0.0,0.0,0.0], d0, dx1, dx2, dy1, dy2)
+    @show 1/CovarianceMatrix(d0, dx1, dx2, dy1, dy2)[1,1]
+    @show 1/CovarianceOnMatrix(d0, dx1, dx2, dy1, dy2)[1,1]
+    @show 1/CovarianceOffMatrix(d0, dx1, dx2, dy1, dy2)[1,1]
     
-    @assert isapprox(fcr, firFullTestcr, rtol=1e-3)
-    @assert isapprox(fcw, firFullTestcw, rtol=1e-3)
-    @assert isapprox(fcross, firFullTestcross, rtol=1e-3)
+    # @assert isapprox(fcr, firFullTestcr, rtol=1e-3)
+    # @assert isapprox(fcw, firFullTestcw, rtol=1e-3)
+    # @assert isapprox(fcross, firFullTestcross, rtol=1e-3)
 
-    eps = 1e-4
-    t1 = 0.39
-    l2 = d0.maxeigval_comp
-    v = [0.0,0.0,0.0]
-    tvals = range(0, 1, length=1000)
-    integrandvals = [integrandOnBivariate(t, v, d0, dx1, dx2, dy1, dy2)[3]
-                        for t in tvals]
+    # eps = 1e-4
+    # t1 = 0.39
+    # l2 = d0.maxeigval_comp
+    # v = [0.0,0.0,0.0]
+    # tvals = range(0, 1, length=1000)
+    # integrandvals = [integrandOnBivariate(t, v, d0, dx1, dx2, dy1, dy2)[3]
+    #                     for t in tvals]
     # pjointvals = [Pjoint(t1, t, d1) for t in tvals]
 
-    plot(tvals, integrandvals, label = "integrand")
+    # plot(tvals, integrandvals, label = "integrand")
     # plot(tvals, pjointvals, label = "integrand")
 
 end
